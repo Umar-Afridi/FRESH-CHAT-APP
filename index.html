@@ -310,107 +310,109 @@
         .gift-price { font-size: 10px; color: #facc15; margin-top: 2px; display: block; }
 
         /* LUCKY FRUIT GAME STYLES */
-       #game-modal { background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); display: none; align-items: flex-end; justify-content: center; z-index: 3000; position: fixed; inset: 0; padding-bottom: 25px; }
-        .game-container { width: 92%; max-width: 360px; height: auto; background: #3f0000; border: 2px solid #fbbf24; border-radius: 15px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box; margin: 0 auto; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); }
-        .fruit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px; background: #2a0a0a; align-content: center; box-sizing: border-box; position: relative; }
-        .fruit-item { aspect-ratio: 1; background: #111; border: 1px solid #555; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; box-sizing: border-box; overflow: hidden; }
-        .fruit-img { width: 45%; height: 45%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); margin: auto; }
-       .fruit-item.active { border: 2px solid #fbbf24; box-shadow: 0 0 15px #fbbf24; background: #4a0404; transform: scale(1.05); z-index: 5; }
-        .center-timer { grid-column: 2 / span 2; grid-row: 2; background: #000; border: 2px solid #fbbf24; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; color: #fbbf24; font-family: 'Courier New', monospace; box-shadow: inset 0 0 15px #fbbf24; text-shadow: 0 0 10px red; }
+    /* ہوبہو سکرین شاٹ جیسا گیم کنٹینر */
+        #game-modal { background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; position: fixed; inset: 0; padding-bottom: 0; }
+        .game-container { width: 100%; max-width: 500px; height: auto; background: linear-gradient(to bottom, #3b0000, #1a0000); border-top: 4px solid #b8860b; border-top-left-radius: 20px; border-top-right-radius: 20px; position: relative; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); }
         
-        .bet-controls { padding: 10px; background: linear-gradient(to top, #450a0a, #2a0a0a); border-top: 2px solid #fbbf24; box-sizing: border-box; flex-shrink: 0; }
-        .chip-row { display: flex; justify-content: space-between; gap: 5px; margin-bottom: 8px; }
-        .chip-btn { flex: 1; background: linear-gradient(to bottom, #fcd34d, #d97706); color: #450a0a; font-weight: bold; border-radius: 20px; font-size: 10px; padding: 8px 0; border: 1px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.5); transform: scale(1); transition: transform 0.1s; }
-        .chip-btn.selected { border: 2px solid #fff; box-shadow: 0 0 10px #fbbf24; transform: scale(1.1); background: #fbbf24; }
+        /* گیم کا ہیڈر اور راؤنڈ ٹیکسٹ */
+        .game-header-top { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px; position: relative; }
+        .game-title-img { height: 40px; object-fit: contain; margin-bottom: 2px; }
+        .round-text-box { background: rgba(0,0,0,0.5); border-radius: 15px; padding: 2px 20px; font-size: 10px; color: #8b7355; border: 1px solid #331a00; margin-bottom: 8px; }
+
+        /* فروٹ گرڈ (چھوٹے اور پرفیکٹ خانے) */
+        .fruit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 15px; background: #260000; border-radius: 10px; margin: 0 10px; border: 2px solid #5c1e06; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .fruit-item { height: 60px; background: linear-gradient(to bottom, #1a0000, #0d0000); border: 1px solid #ff4500; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .fruit-img { width: 35px; height: 35px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)); margin: auto; z-index: 2; transition: transform 0.2s; }
+        .text-multiplier { font-size: 9px; color: #facc15; font-weight: 900; margin-bottom: 2px; z-index: 10; }
+        .fruit-item.active { border: 2px solid #fff !important; box-shadow: 0 0 15px #fff, inset 0 0 10px #ffeb3b !important; background: radial-gradient(circle, #ff8c00 0%, #8b0000 100%) !important; transform: scale(1.05) !important; }
         
-        .game-footer { display: flex; justify-content: space-between; padding: 8px 15px; color: #fbbf24; font-size: 12px; font-weight: bold; background: #111; border-top: 1px solid #333; flex-shrink: 0; }
+        /* سینٹر ٹائمر سکرین شاٹ کے مطابق */
+        .center-timer { grid-column: 2 / span 2; grid-row: 2; height: 60px; background: #330000; border: 2px dotted #ff4500; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #ffeb3b; font-family: 'Courier New', monospace; box-shadow: inset 0 0 15px rgba(0,0,0,0.9); }
+
+        /* بیٹ بٹنز (چپس) سکرین شاٹ کے مطابق (100, 1K, 10K, 50K) */
+        .bet-controls { display: flex; justify-content: space-between; gap: 8px; padding: 12px 15px; width: 100%; }
+        .chip-btn { flex: 1; height: 30px; background: linear-gradient(to bottom, #ffda44, #d97706); color: #3f0000; font-weight: 900; border-radius: 15px; font-size: 11px; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        .chip-btn.selected { border-color: #ff0000; box-shadow: 0 0 15px #ff4500; transform: scale(1.05); color: #fff; background: linear-gradient(to bottom, #ff4500, #8b0000); }
+
+        /* بیلنس اور ٹوڈے وننگ */
+        .game-footer { display: flex; justify-content: space-between; padding: 5px 20px; }
+        .footer-box { display: flex; flex-direction: column; align-items: center; }
+        .footer-label { font-size: 10px; color: #8b7355; font-weight: bold; margin-bottom: 2px; }
+        .footer-value { font-size: 12px; color: #8b7355; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+
+        /* رزلٹ ہسٹری (نیچے والی پٹی) */
+        .history-strip { display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: #261300; border-top: 1px solid #331a00; overflow-x: auto; width: 100%; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .history-label { font-size: 11px; color: #6b5335; font-weight: bold; }
+        .history-item { position: relative; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .history-item img { width: 100%; height: 100%; object-fit: contain; filter: opacity(0.7); }
+        .history-item.newest img { filter: opacity(1); transform: scale(1.2); }
+        .new-tag { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: transparent; border: 1px solid #d97706; color: #d97706; font-size: 7px; padding: 0 4px; border-radius: 8px; font-weight: bold; }
+
+        /* نیا رزلٹ پاپ اپ سکرین شاٹ کے مطابق */
+        #new-result-popup { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 320px; background: #e67e22; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); display: none; flex-direction: column; overflow: hidden; z-index: 5000; border: 2px solid #f39c12; }
+        .popup-header-bar { display: flex; align-items: center; background: linear-gradient(to right, #f39c12, #f1c40f, #f39c12); padding: 10px; border-bottom: 2px dashed #fff; }
+        .popup-header-bar img { width: 35px; height: 35px; object-fit: contain; margin-right: 10px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        .popup-header-bar span { font-size: 12px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px #000; flex: 1; text-align: center; }
+        .popup-body { display: flex; align-items: center; justify-content: center; padding: 20px; background: #d35400; flex-direction: column; }
+        .popup-icon-circle { width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+        .popup-win-amount { font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 4px #000; }
         
-        .history-strip { display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 5px 10px; background: #0a0a0a; border-top: 1px solid #222; overflow-x: auto; flex-shrink: 0; }
-        .history-item { width: 22px; height: 22px; background: #222; border-radius: 4px; border: 1px solid #444; padding: 2px; display: flex; align-items: center; justify-content: center; }
-        .history-item img { width: 100%; height: 100%; object-fit: contain; }
-        .history-label { font-size: 9px; color: #888; margin-right: auto; text-transform: uppercase; letter-spacing: 1px; }
+        /* Global Broadcast Fix */
+        #global-winner-broadcast { z-index: 99999 !important; }
         .bet-overlay { position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.8); color: white; font-size: 9px; font-weight: bold; padding: 2px 4px; border-radius: 4px; z-index: 10; }
 
         #game-result-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: transform 0.3s ease-out; transform: scale(0); }
 
-        /* ================== GLOBAL BROADCAST (GAME WINS) ================== */
-        #global-winner-broadcast {
-            position: fixed;
-            top: 85px; 
-            left: 2%; 
-            width: 96%; 
-            height: 65px; 
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            pointer-events: none;
-            transform: translateX(120vw); 
-        }
+        /* ================== 2-SLOT BROADCAST SYSTEM ================== */
+        /* 1. شروع میں بینر دائیں (Right) طرف چھپا رہے گا (बिना किसी एनीमेशन के ताकि वापस जाते हुए नजर ना आए) */
+        .global-broadcast-slot { position: fixed; left: 2%; width: 96%; height: 60px; z-index: 99999; display: flex; align-items: center; pointer-events: none; transform: translateX(120vw); transition: none; }
+        .slot-1 { top: 85px; } 
+        .slot-2 { top: 155px; } 
+        
+        /* 2. بینر دائیں سے سکرین کے درمیان میں آئے گا */
+        .bc-show { transform: translateX(0) !important; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        
+        /* 3. بینر درمیان سے بائیں (Left) طرف نکل جائے گا */
+        .bc-hide { transform: translateX(-120vw) !important; transition: transform 0.5s ease-in !important; }
 
-        .broadcast-animate { animation: slideRightLeft 7s ease-in-out forwards; }
-
-        @keyframes slideRightLeft {
-            0% { transform: translateX(120vw); opacity: 0; }
-            10% { transform: translateX(0); opacity: 1; }
-            90% { transform: translateX(0); opacity: 1; }
-            100% { transform: translateX(-120vw); opacity: 0; }
-        }
-
+        /* WIN BANNER STYLE */
+        .bc-wrapper { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: space-between; }
         .bc-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1; }
         .bc-user-col { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 60px; margin-left: 15px; z-index: 2; }
         .bc-dp { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
-        .bc-name { font-size: 11px; color: #ffffff; font-weight: 900; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 5px rgba(0,0,0,0.8); margin-top: 2px; max-width: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-        .bc-coins-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; z-index: 2; width: max-content; }
-        .bc-coins { font-size: 20px; font-weight: 900; color: #ffffff; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 4px 10px rgba(0,0,0,0.8); animation: pulse-coin 1s infinite; }
-        @keyframes pulse-coin { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .bc-name { font-size: 11px; color: #ffffff; font-weight: 900; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; margin-top: 2px; max-width: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+        .bc-coins-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
+        .bc-coins { font-size: 20px; font-weight: 900; color: #ffffff; text-shadow: 2px 2px 0 #000, 0 4px 10px rgba(0,0,0,0.8); animation: pulse-coin 1s infinite; }
 
-        /* ================== NEW: GLOBAL ROCKET BROADCAST WITH TIMER ================== */
-        #global-rocket-broadcast {
-            position: fixed;
-            top: 100px; 
-            left: 2%; 
-            width: 96%; 
-            height: 65px; 
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            transform: translateX(120vw); 
-        }
+        /* ROCKET BANNER STYLE */
+        .rb-wrapper { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, rgba(15,23,42,0.95) 0%, rgba(88,28,135,0.95) 100%); border: 2px solid #a855f7; border-radius: 35px; box-shadow: 0 0 15px rgba(168,85,247,0.6); padding-right: 10px; pointer-events: auto;}
+        .rb-png { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); margin-left: 10px; }
+        .rb-center-col { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .rb-roomname { font-size: 13px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 0 #000; }
+        .rb-go-btn { background: linear-gradient(to bottom, #ef4444, #991b1b); color: white; font-weight: 900; font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 2px solid #facc15; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        .rb-show { transform: translateX(0) !important; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .rb-hide { transform: translateX(-120vw) !important; transition: transform 0.5s ease-in; }
-
-        .rb-wrapper { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, rgba(15,23,42,0.95) 0%, rgba(88,28,135,0.95) 100%); border: 2px solid #a855f7; border-radius: 35px; box-shadow: 0 0 15px rgba(168,85,247,0.6); padding-right: 10px; }
-        
-        .rb-rocket-col { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 60px; margin-left: 15px; z-index: 2; }
-        .rb-png { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
-        .rb-level { font-size: 10px; color: #facc15; font-weight: 900; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; margin-top: 0px; text-transform: uppercase; }
-        
-        .rb-center-col { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; width: max-content; pointer-events: none; }
-        .rb-roomname { font-size: 14px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 4px 10px rgba(0,0,0,0.8); }
-        .rb-roomid { font-size: 11px; font-weight: bold; color: #facc15; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; letter-spacing: 1px; }
-
-        .rb-right-col { display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        .rb-timer { font-size: 14px; font-weight: 900; color: #ef4444; text-shadow: 0 0 5px white, 0 0 10px white; margin-bottom: 2px; animation: pulse-timer 1s infinite; }
-        @keyframes pulse-timer { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-        .rb-go-btn { background: linear-gradient(to bottom, #ef4444, #991b1b); color: white; font-weight: 900; font-size: 12px; padding: 4px 15px; border-radius: 20px; border: 2px solid #facc15; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .rb-go-btn:active { transform: scale(0.95); }
-
-        /* LEADERBOARD MODALS */
-        .lb-modal-box { width: 90%; max-width: 400px; max-height: 80vh; background: #111; border: 2px solid #444; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .lb-header { background: linear-gradient(to right, #b91c1c, #dc2626); padding: 15px; text-align: center; color: white; font-weight: 900; font-size: 18px; letter-spacing: 1px; flex-shrink: 0; }
-        .lb-list-area { flex: 1; overflow-y: auto; padding: 10px; background: #1a1a1a; }
+        /* NEW GIFT BANNER STYLE */
+        .gb-wrapper { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, rgba(220,38,38,0.9) 0%, rgba(245,158,11,0.9) 100%); border: 2px solid #fcd34d; border-radius: 35px; box-shadow: 0 0 15px rgba(245,158,11,0.6); padding: 0 5px; }
+        .gb-user { display: flex; flex-direction: column; align-items: center; width: 50px; }
+        .gb-dp { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
+        .gb-name { font-size: 9px; color: #fff; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50px; text-shadow: 1px 1px 0 #000; }
+        .gb-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gb-action-text { font-size: 10px; color: #fff; font-weight: bold; font-style: italic; }
+        .gb-gift-img { height: 35px; object-fit: contain; animation: bounce 1s infinite; }
+        .gb-coins { font-size: 10px; color: #facc15; font-weight: 900; text-shadow: 1px 1px 0 #000; background: rgba(0,0,0,0.4); padding: 1px 6px; border-radius: 10px; margin-top: 2px; }
+         /* SweetAlert Z-index Fix for Recharge Modal */
+        .swal2-container {
+    z-index: 99999 !important;
+}
     </style>
 </head>
 <body>
 
     <audio id="rocket-sound" src="./rocket_sound.mp3" preload="auto"></audio>
 
-    <!-- GAME WIN BROADCAST STRIP -->
-    <div id="global-winner-broadcast"></div>
-
-    <!-- NEW ROCKET LAUNCH BROADCAST STRIP -->
-    <div id="global-rocket-broadcast"></div>
+    <!-- UNIFIED 2-SLOT BROADCAST SYSTEM -->
+    <div id="broadcast-slot-1" class="global-broadcast-slot slot-1"></div>
+    <div id="broadcast-slot-2" class="global-broadcast-slot slot-2"></div>
     
     <input type="file" id="image-upload" accept="image/*" style="display: none;">
     <input type="file" id="video-upload" accept="video/*" style="display: none;">
@@ -527,7 +529,7 @@
                     <div class="space-y-3">
                         <div onclick="buyCoins(300, 300000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md">
                             <div class="flex items-center gap-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" class="w-8 h-8">
+                                <img src="./coins_small.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-8 h-8 object-contain">
                                 <div class="flex flex-col">
                                     <span class="text-white font-bold text-sm">300,000 Coins</span>
                                     <span class="text-[9px] text-gray-400">Basic Package</span>
@@ -538,7 +540,7 @@
                         <div onclick="buyCoins(1400, 1000000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md relative overflow-hidden">
                             <div class="absolute -left-4 top-2 bg-red-600 text-white text-[8px] font-bold px-4 py-0.5 rotate-[-45deg] z-0">HOT</div>
                             <div class="flex items-center gap-3 z-10 pl-2">
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" class="w-10 h-10">
+                                <img src="./coins_medium.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-10 h-10 object-contain">
                                 <div class="flex flex-col">
                                     <span class="text-yellow-400 font-black text-sm">1,000,000 Coins</span>
                                     <span class="text-[9px] text-gray-400">Popular Package</span>
@@ -548,7 +550,7 @@
                         </div>
                         <div onclick="buyCoins(3000, 2000000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md">
                             <div class="flex items-center gap-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" class="w-12 h-12">
+                                <img src="./coins_large.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-12 h-12 object-contain">
                                 <div class="flex flex-col">
                                     <span class="text-white font-bold text-sm">2,000,000 Coins</span>
                                     <span class="text-[9px] text-gray-400">Mega Package</span>
@@ -728,7 +730,15 @@
             </div>
         </div>
 
-        <div id="view-room">
+           <div id="view-room">
+            <!-- FULL SCREEN GIFT VIDEO ANIMATION -->
+            <!-- گفٹ اینیمیشن 8 سیکنڈ والا کنٹینر -->
+<div id="gift-animation-container" class="fixed inset-0 w-full h-full z-[3500] pointer-events-none hidden flex-col items-center justify-center">
+    <video id="gift-animation-player" class="w-full h-full object-contain absolute inset-0" muted playsinline></video>
+    <div id="gift-animation-text" class="absolute bottom-1/4 text-white text-3xl font-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)] text-center animate-bounce z-10" style="text-shadow: 2px 2px 4px #000;"></div>
+</div>
+            
+           
             <div id="room-exit-bar">
                 <button onclick="minimizeRoom()" class="exit-icon-btn"><img src="./minimize.png" class="icon-img" alt="Minimize"></button>
                 <button onclick="leaveRoomFull()" class="exit-icon-btn"><img src="./exit.png" class="icon-img" alt="Leave"></button>
@@ -882,106 +892,84 @@
     <!-- LUCKY FRUIT GAME MODAL -->
     <div id="game-modal">
         <div class="game-container">
-            <!-- GAME RESULT OVERLAY (اس کو ہم نے نہیں چھیڑا، ویسا ہی رکھا ہے) -->
-            <div id="game-result-overlay">
-                <h2 id="result-title" class="text-4xl font-black mb-4 tracking-widest text-center uppercase" style="text-shadow: 0 4px 10px currentColor;"></h2>
-                <div class="relative w-28 h-28 rounded-full border-4 flex items-center justify-center bg-gray-900 mb-4 animate-bounce" id="result-ring">
-                    <img id="result-img" src="" class="w-20 h-20 object-contain drop-shadow-xl">
-                </div>
-                <div id="result-coins" class="text-3xl font-extrabold text-yellow-400 drop-shadow-lg"></div>
-                <div id="result-msg" class="text-sm font-bold text-gray-300 mt-2 uppercase tracking-wider"></div>
+            
+            <div class="game-header-top">
+                <button onclick="closeGame()" class="absolute top-2 right-4 text-[#8b7355] text-xl z-50 hover:text-red-500"><i class="fa-solid fa-circle-xmark"></i></button>
+                <button onclick="openGameHistory()" class="absolute top-2 left-4 text-[#8b7355] text-xl z-50 hover:text-yellow-400"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                
+                <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#ffda44] to-[#d97706] tracking-wider mb-1" style="-webkit-text-stroke: 1px #5c1e06;">LUCKY FRUIT</h2>
+                <div class="round-text-box" id="round-number-display">Round ... of today</div>
             </div>
 
-            <!-- NEW CENTERED HEADER WITH PNG & HISTORY BUTTON (یہ نیا ہیڈر ہے) -->
-            <div class="game-header flex justify-between items-center px-4">
-                <button onclick="openGameHistory()" class="text-white text-xl z-50 hover:text-yellow-400 transition"><i class="fa-solid fa-clock-rotate-left"></i></button>
-                
-                <div class="flex flex-col items-center justify-center flex-1">
-                    <img src="./mixed_fruits.png" class="w-10 h-10 object-contain mb-1 drop-shadow-lg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137044.png'">
-                    <h2 class="text-xl font-extrabold text-yellow-400 tracking-wider leading-none" style="text-shadow: 0 2px 0 #000;">LUCKY FRUIT</h2>
+            <!-- ہوبہو سکرین شاٹ جیسا رزلٹ پاپ اپ -->
+            <div id="new-result-popup">
+                <div class="popup-header-bar">
+                    <div style="width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 5px; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        <img id="popup-fruit-img" src="" alt="Fruit">
+                    </div>
+                    <span id="popup-text">You didn't participate this round</span>
                 </div>
-                
-                <button onclick="closeGame()" class="text-yellow-400 text-xl z-50 hover:text-red-500 transition"><i class="fa-solid fa-circle-xmark"></i></button>
+                <div class="popup-body">
+                    <div id="popup-circle" class="popup-icon-circle">!</div>
+                    <div id="popup-amount" class="popup-win-amount hidden"></div>
+                </div>
             </div>
             
             <div class="fruit-grid">
-                <div class="fruit-item" id="f-0" onclick="placeBet(0)"><img src="./orange.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137000.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">5x (Orange)</div><div class="bet-overlay" id="bet-0"></div></div>
-                <div class="fruit-item" id="f-1" onclick="placeBet(1)"><img src="./lemon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1182/1182141.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">5x (Lemon)</div><div class="bet-overlay" id="bet-1"></div></div>
-                <div class="fruit-item" id="f-2" onclick="placeBet(2)"><img src="./grapes.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137042.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">5x (Grapes)</div><div class="bet-overlay" id="bet-2"></div></div>
-                <div class="fruit-item" id="f-3" onclick="placeBet(3)"><img src="./cherry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137014.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">5x (Cherry)</div><div class="bet-overlay" id="bet-3"></div></div>
+                <div class="fruit-item" id="f-0" onclick="placeBet(0)"><img src="./orange.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137000.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-0"></div></div>
+                <div class="fruit-item" id="f-1" onclick="placeBet(1)"><img src="./lemon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1182/1182141.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-1"></div></div>
+                <div class="fruit-item" id="f-2" onclick="placeBet(2)"><img src="./grapes.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137042.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-2"></div></div>
+                <div class="fruit-item" id="f-3" onclick="placeBet(3)"><img src="./cherry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137014.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-3"></div></div>
                 
                 <div class="fruit-item" id="f-4">
-                    <img src="./small_bonus.png" onerror="this.src='https://placehold.co/100x100/ff9900/white?text=Small'" class="fruit-img">
-                    <div class="text-[9px] text-yellow-400 font-bold text-center mt-1">SMALL</div>
+                    <img src="./small_bonus.png" onerror="this.src='https://placehold.co/100x100/00bfff/white?text=Lucky'" class="fruit-img" style="width: 80%; height: 80%;">
                 </div>
                 
                 <div class="center-timer" id="game-timer">30</div>
-                <!-- NEW MINI RESULT POPUP (ABOVE TIMER) -->
-                <div id="mini-grid-result" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/95 border-2 border-yellow-400 rounded-xl p-3 z-[60] text-center flex-col items-center justify-center min-w-[160px] shadow-[0_0_30px_rgba(0,0,0,0.9)] hidden">
-                    <img id="mini-result-icon" src="" class="w-12 h-12 object-contain mx-auto mb-1 animate-bounce">
-                    <div id="mini-result-text" class="text-[11px] text-white font-bold uppercase mb-1"></div>
-                    <div id="mini-result-amount" class="text-lg font-black drop-shadow-md"></div>
-                </div>
                 
                 <div class="fruit-item" id="f-5">
-                    <img src="./big_bonus.png" onerror="this.src='https://placehold.co/100x100/ff0000/white?text=Big'" class="fruit-img">
-                    <div class="text-[9px] text-yellow-400 font-bold text-center mt-1">BIG</div>
+                    <img src="./big_bonus.png" onerror="this.src='https://placehold.co/100x100/ff00ff/white?text=Lucky'" class="fruit-img" style="width: 80%; height: 80%;">
                 </div>
                 
-                <div class="fruit-item" id="f-6" onclick="placeBet(6)"><img src="./apple.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/415/415733.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">10x (Apple)</div><div class="bet-overlay" id="bet-6"></div></div>
-                <div class="fruit-item" id="f-7" onclick="placeBet(7)"><img src="./melon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137030.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">15x (Melon)</div><div class="bet-overlay" id="bet-7"></div></div>
-                <div class="fruit-item" id="f-8" onclick="placeBet(8)"><img src="./mango.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6864/6864273.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">25x (Mango)</div><div class="bet-overlay" id="bet-8"></div></div>
-                <div class="fruit-item" id="f-9" onclick="placeBet(9)"><img src="./berry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/590/590685.png'" class="fruit-img"><div class="text-[8px] text-yellow-400">45x (Berry)</div><div class="bet-overlay" id="bet-9"></div></div>
+                <div class="fruit-item" id="f-6" onclick="placeBet(6)"><img src="./apple.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/415/415733.png'" class="fruit-img"><div class="text-multiplier">10 times</div><div class="bet-overlay" id="bet-6"></div></div>
+                <div class="fruit-item" id="f-7" onclick="placeBet(7)"><img src="./melon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137030.png'" class="fruit-img"><div class="text-multiplier">15 times</div><div class="bet-overlay" id="bet-7"></div></div>
+                <div class="fruit-item" id="f-8" onclick="placeBet(8)"><img src="./mango.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6864/6864273.png'" class="fruit-img"><div class="text-multiplier">25 times</div><div class="bet-overlay" id="bet-8"></div></div>
+                <div class="fruit-item" id="f-9" onclick="placeBet(9)"><img src="./berry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/590/590685.png'" class="fruit-img"><div class="text-multiplier">45 times</div><div class="bet-overlay" id="bet-9"></div></div>
             </div>
 
+            <!-- بڑے بیٹس (10K سے 1M تک) -->
             <div class="bet-controls">
-                <div class="chip-row">
-                    <button class="chip-btn selected" onclick="selectChip(50, this)">50</button>
-                    <button class="chip-btn" onclick="selectChip(100, this)">100</button>
-                    <button class="chip-btn" onclick="selectChip(500, this)">500</button>
-                    <button class="chip-btn" onclick="selectChip(1000, this)">1K</button>
-                </div>
-                <div class="chip-row">
-                    <button class="chip-btn" onclick="selectChip(10000, this)">10K</button>
-                    <button class="chip-btn" onclick="selectChip(50000, this)">50K</button>
-                    <button class="chip-btn" onclick="selectChip(100000, this)">100K</button>
-                    <button class="chip-btn" onclick="selectChip(500000, this)">500K</button>
-                </div>
+                <button class="chip-btn selected" onclick="selectChip(10000, this)">10K</button>
+                <button class="chip-btn" onclick="selectChip(50000, this)">50K</button>
+                <button class="chip-btn" onclick="selectChip(500000, this)">500K</button>
+                <button class="chip-btn" onclick="selectChip(1000000, this)">1M <i class="fa-brands fa-bitcoin"></i></button>
             </div>
 
             <div class="game-footer">
-                <div>Balance: <span id="game-balance" class="text-white">0</span></div>
-                <div>Win: <span id="game-win" class="text-green-400">0</span></div>
-            </div>
-            <!-- DETAILED HISTORY MODAL -->
-            <div id="game-history-modal" class="absolute inset-0 bg-black/95 z-[100] hidden flex-col">
-                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-900">
-                    <h3 class="text-white font-bold"><i class="fa-solid fa-clock-rotate-left text-yellow-400 mr-2"></i>Bet History</h3>
-                    <button onclick="closeGameHistory()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                <div class="footer-box">
+                    <span class="footer-label">Balance</span>
+                    <span class="footer-value"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" style="width:12px;"> <span id="game-balance">0</span></span>
                 </div>
-                <div id="game-history-list" class="flex-1 overflow-y-auto p-2 space-y-2">
-                    <!-- History items will appear here -->
-                </div>
-           
-            </div>
-            <div class="history-strip" id="game-history-strip">
-                <span class="history-label">History:</span>
-            </div>
-            
-            <!-- DETAILED HISTORY MODAL -->
-            <div id="game-history-modal" class="absolute inset-0 bg-black/95 z-[100] hidden flex-col">
-                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-900">
-                    <h3 class="text-white font-bold"><i class="fa-solid fa-clock-rotate-left text-yellow-400 mr-2"></i>Bet History</h3>
-                    <button onclick="closeGameHistory()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div id="game-history-list" class="flex-1 overflow-y-auto p-2 space-y-2">
-                    <!-- History items will appear here -->
+                <div class="footer-box">
+                    <span class="footer-label">Today's Winnings</span>
+                    <span class="footer-value"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" style="width:12px;"> <span id="game-today-win">0</span></span>
                 </div>
             </div>
 
+            <!-- ہسٹری سکرین شاٹ کے مطابق -->
+            <div class="history-strip" id="game-history-strip">
+                <span class="history-label">Results:</span>
+            </div>
+
+            <div id="game-history-modal" class="absolute inset-0 bg-black/95 z-[100] hidden flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-900">
+                    <h3 class="text-white font-bold"><i class="fa-solid fa-clock-rotate-left text-yellow-400 mr-2"></i>Bet History</h3>
+                    <button onclick="closeGameHistory()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="game-history-list" class="flex-1 overflow-y-auto p-2 space-y-2"></div>
+            </div>
         </div>
     </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -1034,6 +1022,7 @@
         let lastRocketLevel = 0;
         let rocketQueue = [];
         let isRocketFlying = false;
+        let isFirstRocketLoad = true; 
         // ================= LEVEL SYSTEM LOGIC =================
         function getUserLevel(exp) {
             let xp = exp || 0;
@@ -1223,6 +1212,7 @@
 
         function initRocketListener(rid) {
             document.getElementById('rocket-trigger-btn').classList.remove('hidden');
+            isFirstRocketLoad = true; // جب بھی روم میں جائیں، یہ بتا دے کہ یہ پہلی بار ہے
             onValue(ref(db, `rooms/${rid}/roomExp`), (snap) => { currentRoomExp = snap.val() || 0; updateRocketUI(currentRoomExp); });
         }
 
@@ -1248,8 +1238,13 @@
             percentage = Math.max(0, Math.min(100, percentage));
             document.getElementById('rocket-tube-fill').style.height = `${percentage}%`; document.getElementById('rocket-tube-text').innerText = `${Math.floor(percentage)}%`;
 
-            // FIXED QUEUE LOGIC - اب ری سیٹ ہونے کے بعد بھی راکٹ چلے گا
-            if (targetLevel > lastRocketLevel) {
+            // FIXED QUEUE LOGIC
+            if (isFirstRocketLoad) {
+                // اگر پہلی بار روم اوپن کیا ہے تو صرف لیول سیٹ کرو، راکٹ مت اڑاؤ
+                lastRocketLevel = targetLevel;
+                isFirstRocketLoad = false;
+            } else if (targetLevel > lastRocketLevel) {
+                // اگر گیم کے دوران کوئی گفٹ کرے تو راکٹ اڑاؤ
                 let startLoop = Math.max(1, lastRocketLevel + 1);
                 if (lastRocketLevel === 0 && targetLevel > 0) { startLoop = 1; } // جب زیرو سے سیدھا بڑا گفٹ لگے
 
@@ -1342,120 +1337,103 @@
         }
 
         // ================== GLOBAL ROCKET BROADCAST LOGIC ==================
-        function broadcastRocketLaunch(roomId, roomName, level, img) {
-            push(ref(db, `sys/rocket_broadcasts`), { 
-                roomId: roomId,
-                roomName: roomName,
-                level: level,
-                img: img,
-                time: Date.now() 
-            });
-        }
+        // ================== UNIFIED 2-SLOT BROADCAST SYSTEM ==================
+        let globalBroadcastQueue =[];
+        let slots = {
+            slot1: { isBusy: false, el: document.getElementById('broadcast-slot-1') },
+            slot2: { isBusy: false, el: document.getElementById('broadcast-slot-2') }
+        };
 
-        onChildAdded(ref(db, 'sys/rocket_broadcasts'), (snap) => {
-            const data = snap.val();
-            const now = Date.now();
-            const diff = now - data.time;
-
-            if(data && diff < 9000) { 
-                let timeLeft = Math.ceil((9000 - diff) / 1000);
-                
-                const banner = document.getElementById('global-rocket-broadcast');
-                const timerId = 'rb-timer-' + snap.key;
-                
-                banner.innerHTML = `
-                    <div class="rb-wrapper">
-                        <div class="rb-rocket-col">
-                            <img src="${data.img}" class="rb-png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                            <span class="rb-level">Level ${data.level}</span>
-                        </div>
-
-                        <div class="rb-center-col">
-                            <div class="rb-roomname">${data.roomName}</div>
-                            <div class="rb-roomid">ID: ${data.roomId.substring(0,6)}...</div>
-                        </div>
-
-                        <div class="rb-right-col">
-                            <div class="rb-timer" id="${timerId}">${timeLeft}s</div>
-                            <button class="rb-go-btn" onclick="window.joinRoom('${data.roomId}')">GO 🚀</button>
-                        </div>
-                    </div>
-                `;
-                
-                banner.classList.remove('rb-hide');
-                void banner.offsetWidth; 
-                banner.classList.add('rb-show');
-
-                const bcInterval = setInterval(() => {
-                    timeLeft--;
-                    const timerEl = document.getElementById(timerId);
-                    if(timerEl) {
-                        timerEl.innerText = timeLeft + 's';
-                    }
-                    if(timeLeft <= 0) {
-                        clearInterval(bcInterval);
-                        banner.classList.remove('rb-show');
-                        banner.classList.add('rb-hide');
-                    }
-                }, 1000);
-            }
-        });
-
-        // ================== GAME WINS BROADCAST QUEUE LOGIC ==================
-        let broadcastQueue = [];
-        let isBroadcasting = false;
-
+        // 1. Send Game Win
         function broadcastWin(name, amount, dpUrl) {
-            push(ref(db, `sys/broadcasts`), { 
-                name: name, 
-                amount: amount, 
-                dp: dpUrl || 'https://placehold.co/100', 
-                time: Date.now() 
-            });
+            push(ref(db, `sys/broadcasts`), { type: 'win', name, amount, dp: dpUrl || 'https://placehold.co/100', time: Date.now() });
         }
         
+        // 2. Send Rocket
+        function broadcastRocketLaunch(roomId, roomName, level, img) {
+            push(ref(db, `sys/broadcasts`), { type: 'rocket', roomId, roomName, level, img, amount: 9999999, time: Date.now() }); // Amount fake high to prioritize
+        }
+
+        // 3. Send Gift
+        function broadcastGift(senderName, senderDp, receiverName, receiverDp, giftName, img, coins) {
+            push(ref(db, `sys/broadcasts`), { type: 'gift', senderName, senderDp, receiverName, receiverDp, giftName, img, amount: coins, time: Date.now() });
+        }
+
+        // Listen to all broadcasts
         onChildAdded(ref(db, 'sys/broadcasts'), (snap) => {
             const data = snap.val();
-            if(data && (Date.now() - data.time < 60000)) {
-                broadcastQueue.push(data);
-                if(!isBroadcasting) {
-                    processBroadcastQueue();
-                }
+            if(data && (Date.now() - data.time < 30000)) { // 30 seconds expiry
+                globalBroadcastQueue.push(data);
+                processBroadcastSlots();
             }
         });
 
-        function processBroadcastQueue() {
-            if(broadcastQueue.length === 0) {
-                isBroadcasting = false;
-                return;
+        function processBroadcastSlots() {
+            // Sort queue so biggest amount wins/gifts show first
+            globalBroadcastQueue.sort((a, b) => b.amount - a.amount);
+
+            if (globalBroadcastQueue.length > 0) {
+                if (!slots.slot1.isBusy) { playInSlot('slot1', globalBroadcastQueue.shift()); }
+                else if (!slots.slot2.isBusy) { playInSlot('slot2', globalBroadcastQueue.shift()); }
             }
+        }
+
+        function playInSlot(slotKey, data) {
+            if(!data) return;
+            const slot = slots[slotKey];
+            slot.isBusy = true;
             
-            isBroadcasting = true;
-            const data = broadcastQueue.shift();
-            const banner = document.getElementById('global-winner-broadcast');
+            let innerHTML = '';
             
-            banner.innerHTML = `
+            if (data.type === 'win') {
+                innerHTML = `
                 <div class="bc-wrapper">
                     <img src="./broadcast_bg.png" class="bc-bg" onerror="this.style.display='none'">
+                    <!-- یوزر نیم اب بائیں طرف (Left) آئے گا -->
+                    <div class="bc-user-col" style="margin-left: 10px; margin-right: auto;"><img src="${data.dp}" class="bc-dp"><span class="bc-name">${data.name}</span></div>
+                    <div class="bc-coins-container"><div class="bc-coins">${data.amount.toLocaleString()} 🪙</div></div>
                     <div style="width: 60px;"></div>
-                    <div class="bc-coins-container">
-                        <div class="bc-coins">${data.amount.toLocaleString()} 🪙</div>
+                </div>`;
+            } 
+            else if (data.type === 'rocket') {
+                innerHTML = `
+                <div class="rb-wrapper">
+                    <img src="${data.img}" class="rb-png">
+                    <div class="rb-center-col">
+                        <div class="rb-roomname">${data.roomName}</div><div class="text-yellow-400 text-[10px] font-bold">Launched Level ${data.level} Rocket!</div>
                     </div>
-                    <div class="bc-user-col">
-                        <img src="${data.dp}" class="bc-dp" onerror="this.src='https://placehold.co/100'">
-                        <span class="bc-name">${data.name}</span>
+                    <button class="rb-go-btn" onclick="window.joinRoom('${data.roomId}')">GO 🚀</button>
+                </div>`;
+            }
+            else if (data.type === 'gift') {
+                innerHTML = `
+                <div class="gb-wrapper">
+                    <div class="gb-user"><img src="${data.senderDp}" class="gb-dp"><span class="gb-name">${data.senderName}</span></div>
+                    <div class="gb-center">
+                        <span class="gb-action-text">sent to</span>
+                        <img src="${data.img}" class="gb-gift-img">
+                        <span class="gb-coins">${data.amount.toLocaleString()} 🪙</span>
                     </div>
-                </div>
-            `;
-            
-            banner.classList.remove('broadcast-animate');
-            void banner.offsetWidth; 
-            banner.classList.add('broadcast-animate');
+                    <div class="gb-user"><img src="${data.receiverDp}" class="gb-dp"><span class="gb-name">${data.receiverName}</span></div>
+                </div>`;
+            }
 
-            // Wait 7.5 seconds for animation to finish before showing next
+            slot.el.innerHTML = innerHTML;
+            slot.el.classList.remove('bc-hide');
+            void slot.el.offsetWidth; // Trigger reflow
+            slot.el.classList.add('bc-show');
+
+            // Wait 6 seconds, then hide
             setTimeout(() => {
-                processBroadcastQueue();
-            }, 7500);
+                slot.el.classList.remove('bc-show');
+                slot.el.classList.add('bc-hide');
+                
+                // Wait for hide animation to finish, then free slot
+                setTimeout(() => {
+                    slot.isBusy = false;
+                    processBroadcastSlots(); // Check queue again
+                }, 600);
+            }, 6000);
         }
 
         // ================== TARGETED GIFTING LOGIC ==================
@@ -1548,8 +1526,20 @@
             await runTransaction(ref(db, `users/${selectedGiftTargetUid}/diamonds`), (current) => (current || 0) + diamondGain);
             await runTransaction(ref(db, `users/${selectedGiftTargetUid}/charm`), (current) => (current || 0) + cost);
 
-            // 4. Send Message & Show Subtle Toast
-            await push(ref(db, `rooms/${currentRoomId}/messages`), { name: currentUser.displayName, text: `Sent ${giftName} 🎁 to ${selectedGiftTargetName}`, type: 'gift', timestamp: Date.now() });
+            // 4. Send Message & MP4 Video Trigger
+            let giftImgSrc = document.querySelector(`.gift-item[onclick*="${giftName}"] .gift-img`).src;
+            
+            await push(ref(db, `rooms/${currentRoomId}/messages`), { 
+                name: currentUser.displayName, 
+                text: `Sent ${giftName} 🎁 to ${selectedGiftTargetName}`, 
+                type: 'gift',
+                giftName: giftName, // For playing MP4
+                timestamp: Date.now() 
+            });
+
+            // 5. Global Gift Broadcast
+            let targetPic = document.querySelector('.gift-target-avatar.selected').src;
+            broadcastGift(currentUser.displayName, currentUser.photoURL, selectedGiftTargetName, targetPic, giftName, giftImgSrc, cost);
             
             document.getElementById('gift-modal').classList.add('hidden'); 
             Swal.fire({
@@ -1687,7 +1677,64 @@
             const rr = ref(db, `rooms/${rid}`);
             onValue(child(rr, 'videoId'), s => { const v=s.val(); const iframe=document.getElementById('video-iframe'); const trigger=document.getElementById('empty-state-trigger'); const local=document.getElementById('local-video-player'); local.classList.add('hidden'); if(v) { trigger.style.display = 'none'; iframe.classList.remove('hidden'); if(v.type === 'yt') { const origin = window.location.origin; const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; if(iframe.src !== embedUrl) iframe.src = embedUrl; } } else { trigger.style.display = 'flex'; iframe.classList.add('hidden'); iframe.src=""; } }); 
             onValue(child(rr, 'seats'), s => { currentRoomSeats = s.val() || {}; updateSeat('seat1', currentRoomSeats.seat1, "UMAR"); updateSeat('seat2', currentRoomSeats.seat2, "GURIYA"); updateSeat('seat3', currentRoomSeats.seat3, "1"); updateSeat('seat4', currentRoomSeats.seat4, "2"); updateSeat('seat5', currentRoomSeats.seat5, "3"); updateSeat('seat6', currentRoomSeats.seat6, "4"); const hc = document.getElementById('heartbeat-container'); const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid; const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid; if(seat1Occupied && seat2Occupied) { hc.classList.add('heartbeat-active'); } else { hc.classList.remove('heartbeat-active'); } document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); }); 
-            onValue(child(rr, 'messages'), s => { const chatArea = document.getElementById('chat-display-area'); chatArea.innerHTML = ''; if(s.exists()) { Object.values(s.val()).forEach(m => { if(m.timestamp > currentUserJoinTime) { if(m.type === 'system') { chatArea.innerHTML+=`<div class="chat-system-msg">${m.text}</div>`; } else { chatArea.innerHTML+=`<div class="chat-message-bubble"><b>${m.name}:</b> ${m.text}</div>`; } } }); setTimeout(forceScrollBottom, 100); } });
+            // MP4 Video Mapping (اپنے فولڈر میں ان ناموں سے ویڈیوز رکھ لیں)
+            const giftVideos = {
+                'Rose': './rose.mp4',
+                'Ring': './ring.mp4',
+                'Car': './car.mp4',
+                'Rocket': './rocket_gift.mp4',
+                'Crown': './crown.mp4',
+                'Castle': './castle.mp4',
+                'Yacht': './yacht.mp4',
+                'Dragon': './dragon.mp4'
+            };
+
+            onValue(child(rr, 'messages'), s => { 
+                const chatArea = document.getElementById('chat-display-area'); 
+                chatArea.innerHTML = ''; 
+                if(s.exists()) { 
+                    Object.values(s.val()).forEach(m => { 
+                        if(m.timestamp > currentUserJoinTime) { 
+                            if(m.type === 'system') { 
+                                chatArea.innerHTML += `<div class="chat-system-msg">${m.text}</div>`; 
+                            } else { 
+                                chatArea.innerHTML += `<div class="chat-message-bubble"><b>${m.name}:</b> ${m.text}</div>`; 
+                            }
+                            
+                            // گفٹ اینیمیشن (8 سیکنڈ ٹائمر کے ساتھ)
+                            if(m.type === 'gift' && m.giftName && (Date.now() - m.timestamp < 3000)) {
+                                let videoSrc = giftVideos[m.giftName];
+                                if(videoSrc) {
+                                    let containerEl = document.getElementById('gift-animation-container');
+                                    let vidEl = document.getElementById('gift-animation-player');
+                                    let textEl = document.getElementById('gift-animation-text');
+                                    
+                                    // چیک کریں کہ کوئی اور ویڈیو پہلے سے تو نہیں چل رہی
+                                    if(containerEl && containerEl.classList.contains('hidden')) {
+                                        vidEl.src = videoSrc;
+                                        
+                                        // نام اور گفٹ کا نام دکھائیں
+                                        textEl.innerHTML = `${m.name} sent <br><span class="text-yellow-400 text-4xl">${m.giftName}</span>!`;
+                                        
+                                        containerEl.classList.remove('hidden');
+                                        containerEl.style.display = 'flex';
+                                        vidEl.play().catch(e => console.log("Video auto-play prevented:", e));
+                                        
+                                        // ٹھیک 8 سیکنڈ (8000 ملی سیکنڈ) بعد سکرین کلیئر کر دیں
+                                        setTimeout(() => {
+                                            containerEl.classList.add('hidden');
+                                            containerEl.style.display = 'none';
+                                            vidEl.pause();
+                                            vidEl.currentTime = 0; // ویڈیو کو شروع پر ری سیٹ کر دیں
+                                        }, 8000);
+                                    }
+                                }
+                            }
+                        } 
+                    }); 
+                    setTimeout(forceScrollBottom, 100); 
+                } 
+            });
         };
 
         window.updateSeat = (seatId, data, defaultName) => { const visualDiv = document.getElementById(`${seatId}-visual`); const nameSpan = document.getElementById(`${seatId}-name`); const container = document.getElementById(`cont-${seatId}`); if (!visualDiv || !nameSpan || !container) return; container.classList.remove('seat-occupied', 'seat-locked', 'has-frame'); const oldBadge = container.querySelector('.seat-mute-badge'); if(oldBadge) oldBadge.remove(); container.style.border = "2px solid #333"; if (data && data.locked) { visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; container.classList.add('seat-locked'); nameSpan.innerText = "Locked"; nameSpan.className = "seat-name text-red-500"; } else if (data && data.uid) { container.classList.add('seat-occupied'); let html = `<div class="visual-root">`; html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; if (data.frame) { html += `<img src="${data.frame}" class="visual-frame">`; container.classList.add('has-frame'); } else { container.style.border = "2px solid #22c55e"; } html += `</div>`; visualDiv.innerHTML = html; nameSpan.innerText = data.name || defaultName; nameSpan.className = "seat-name occupied text-green-500"; if (data.uid === currentUser?.uid && isMicMuted) { const badge = document.createElement('div'); badge.className = 'seat-mute-badge'; badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; container.appendChild(badge); } } else { visualDiv.innerHTML = ''; nameSpan.innerText = defaultName; nameSpan.className = "seat-name"; container.style.border = "2px solid #333"; } };
@@ -1763,7 +1810,7 @@
            ======================================= */
         let gameTimer = 30;
         let isSpinning = false;
-        let currentBet = 50;
+        let currentBet = 10000; // <-- گیم سٹارٹ ہوتے ہی ڈیفالٹ بیٹ 10K ہوگا
         let activeBets = {}; 
         
         const ODDS = { 0: 5, 1: 5, 2: 5, 3: 5, 4: 0, 5: 0, 6: 10, 7: 15, 8: 25, 9: 45 };
@@ -1776,8 +1823,39 @@
         let detailedBetHistory = []; // نئی لائن: یوزر کی ہسٹری محفوظ کرنے کے لیے
         function getDeterministicWinner(roundId) {
             let hash = Math.sin(roundId) * 10000;
-            let rand = hash - Math.floor(hash);
-            return Math.floor(rand * spinPath.length); 
+            let rand = hash - Math.floor(hash); // 0.0 to 0.9999
+            
+            // WEIGHTS (یہاں ہم نے گیم کو مشکل کر دیا ہے)
+            // ٹوٹل 10,000 ٹکٹس ہیں۔
+            // 45x (id 9): 27 ٹکٹس (دن میں ~6 بار)
+            // Lucky Small/Big (id 4, 5): 10, 10 ٹکٹس (دن میں ~2 بار)
+            const items =[
+                {id: 9, weight: 27},    // 45x Berry
+                {id: 4, weight: 10},    // Lucky Small
+                {id: 5, weight: 10},    // Lucky Big
+                {id: 8, weight: 200},   // 25x Mango
+                {id: 7, weight: 600},   // 15x Melon
+                {id: 6, weight: 1500},  // 10x Apple
+                {id: 0, weight: 1913},  // 5x Orange
+                {id: 1, weight: 1913},  // 5x Lemon
+                {id: 2, weight: 1913},  // 5x Grapes
+                {id: 3, weight: 1914}   // 5x Cherry
+            ];
+
+            let cumulative = 0;
+            let randWeight = rand * 10000;
+            let selectedId = 0;
+
+            for (let i = 0; i < items.length; i++) {
+                cumulative += items[i].weight;
+                if (randWeight <= cumulative) {
+                    selectedId = items[i].id;
+                    break;
+                }
+            }
+
+            // spinPath کے اندر موجود اس کی اصل پوزیشن واپس کریں
+            return spinPath.indexOf(selectedId);
         }
 
         setInterval(() => {
@@ -1811,6 +1889,13 @@
         window.openGame = () => {
             document.getElementById('game-modal').style.display = 'flex';
             if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = (currentCoins || 0).toLocaleString(); }
+            
+            // Load Today's Winnings on startup
+            let today = new Date().toLocaleDateString();
+            let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
+            if (savedData.date !== today) { savedData.amount = 0; }
+            let displayEl = document.getElementById('game-today-win');
+            if(displayEl) displayEl.innerText = savedData.amount.toLocaleString();
         };
 
         window.closeGame = () => { 
@@ -1879,22 +1964,35 @@
 
         
                     
-                    function finalizeResult(winningFruitId) {
+                    // روزانہ کی وننگز کو اپڈیٹ اور ری سیٹ کرنے کا فنکشن
+        function updateTodayWinnings(winAmt) {
+            let today = new Date().toLocaleDateString();
+            let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
+
+            if (savedData.date !== today) {
+                savedData = { date: today, amount: 0 }; // اگر نیا دن ہے تو ری سیٹ کر دیں
+            }
+
+            savedData.amount += winAmt;
+            localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
+
+            let displayEl = document.getElementById('game-today-win');
+            if(displayEl) displayEl.innerText = savedData.amount.toLocaleString();
+        }
+
+        function finalizeResult(winningFruitId) {
             let winAmount = 0;
             let totalBetThisRound = 0;
             
-            // فروٹس کے نام سیٹ کریں تاکہ ہسٹری اور پاپ اپ میں شو ہوں
-            const fruitNames = {0: 'Orange', 1: 'Lemon', 2: 'Grapes', 3: 'Cherry', 4: 'Small Bonus', 5: 'Big Bonus', 6: 'Apple', 7: 'Melon', 8: 'Mango', 9: 'Berry'};
+            const fruitNames = {0: 'Orange', 1: 'Lemon', 2: 'Grapes', 3: 'Cherry', 4: 'Lucky', 5: 'Lucky', 6: 'Apple', 7: 'Watermelon', 8: 'Mango', 9: 'Strawberry'};
             const wonFruitName = fruitNames[winningFruitId];
 
             for(let key in activeBets) { totalBetThisRound += activeBets[key]; }
 
-            if (winningFruitId === 4) {
-                let totalSmallBets = (activeBets[0]||0) + (activeBets[1]||0) + (activeBets[2]||0) + (activeBets[3]||0);
-                winAmount = totalSmallBets * 5; 
-            } else if (winningFruitId === 5) {
-                let totalBigBets = (activeBets[6]||0) + (activeBets[7]||0) + (activeBets[8]||0) + (activeBets[9]||0);
-                winAmount = totalBigBets * 5; 
+            if (winningFruitId === 4 || winningFruitId === 5) {
+                // Lucky hit
+                let totalBonusBets = (activeBets[4]||0) + (activeBets[5]||0);
+                winAmount = totalBonusBets * 5; 
             } else {
                 const multiplier = ODDS[winningFruitId] || 0;
                 if(activeBets[winningFruitId]) {
@@ -1907,16 +2005,16 @@
 
             if(winningImgSrc) {
                 resultHistory.unshift(winningImgSrc);
-                if(resultHistory.length > 7) resultHistory.pop();
+                if(resultHistory.length > 8) resultHistory.pop();
                 updateHistoryStripUI();
             }
 
-            // --- NEW: HISTORY RECORD LOGIC (SINGLE CARD PER ROUND) ---
+            // ہسٹری کے لیے ڈیٹا محفوظ کرنا (History Log)
             if(totalBetThisRound > 0) {
                 const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const roundId = Math.floor(1000 + Math.random() * 9000); // راؤنڈ کا نمبر
+                const roundId = Math.floor(1000 + Math.random() * 9000);
                 
-                let selectedFruitsArray = [];
+                let selectedFruitsArray =[];
                 for(let key in activeBets) {
                     let betImgElement = document.querySelector(`#f-${key} img`);
                     let betImgSrc = betImgElement ? betImgElement.src : '';
@@ -1935,59 +2033,68 @@
                 if(detailedBetHistory.length > 20) detailedBetHistory.pop(); 
             }
 
-            // --- NEW: MINI GRID POPUP LOGIC ---
-            const miniPopup = document.getElementById('mini-grid-result');
-            const miniIcon = document.getElementById('mini-result-icon');
-            const miniText = document.getElementById('mini-result-text');
-            const miniAmount = document.getElementById('mini-result-amount');
+            // --- نیا پاپ اپ شو کرنے کا طریقہ ---
+            const popup = document.getElementById('new-result-popup');
+            const popupImg = document.getElementById('popup-fruit-img');
+            const popupText = document.getElementById('popup-text');
+            const popupCircle = document.getElementById('popup-circle');
+            const popupAmount = document.getElementById('popup-amount');
 
-            miniIcon.src = winningImgSrc;
+            if(popup) {
+                if(popupImg) popupImg.src = winningImgSrc;
+                if(popupCircle) popupCircle.classList.remove('hidden');
+                if(popupAmount) popupAmount.classList.add('hidden');
 
-            if(winAmount > 0) {
-                // USER WON
-                currentCoins += winAmount;
-                update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
-                document.getElementById('game-win').innerText = winAmount.toLocaleString();
-                document.getElementById('game-balance').innerText = currentCoins.toLocaleString();
-                if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-                
-                miniText.innerHTML = `WON ON <span class="text-yellow-400">${wonFruitName}</span>`;
-                miniAmount.innerText = `+${winAmount.toLocaleString()}`;
-                miniAmount.className = "text-xl font-black drop-shadow-md text-green-500";
-                miniPopup.style.borderColor = "#22c55e"; // Green border
-                
-                if(typeof broadcastWin === "function"){
-                    broadcastWin(currentUser.displayName, winAmount, currentUser.photoURL);
+                if(winAmount > 0) {
+                    // USER WON
+                    currentCoins += winAmount;
+                    update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
+                    
+                    let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
+                    savedData.amount += winAmount;
+                    localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
+
+                    let gameBalanceEl = document.getElementById('game-balance');
+                    if(gameBalanceEl) gameBalanceEl.innerText = currentCoins.toLocaleString();
+                    
+                    let todayWinEl = document.getElementById('game-today-win');
+                    if(todayWinEl) todayWinEl.innerText = savedData.amount.toLocaleString();
+                    
+                    if(popupText) popupText.innerText = "Congratulations! You won";
+                    if(popupCircle) popupCircle.classList.add('hidden');
+                    if(popupAmount) {
+                        popupAmount.classList.remove('hidden');
+                        popupAmount.innerText = winAmount.toLocaleString();
+                    }
+                    
+                    // وننگ پٹی (Broadcast) فکس
+                    if(typeof broadcastWin === "function"){
+                        broadcastWin(currentUser.displayName, winAmount, currentUser.photoURL);
+                    }
+                } else if (totalBetThisRound > 0) {
+                    // USER LOST
+                    if(popupText) popupText.innerText = "You didn't win this round";
+                    if(popupCircle) popupCircle.innerText = "!";
+                } else {
+                    // NO BET
+                    if(popupText) popupText.innerText = "You didn't participate this round";
+                    if(popupCircle) popupCircle.innerText = "!";
                 }
-            } else if (totalBetThisRound > 0) {
-                // USER LOST
-                document.getElementById('game-win').innerText = "0";
-                miniText.innerHTML = `LOST ON <span class="text-yellow-400">${wonFruitName}</span>`;
-                miniAmount.innerText = `-${totalBetThisRound.toLocaleString()}`;
-                miniAmount.className = "text-xl font-black drop-shadow-md text-red-500";
-                miniPopup.style.borderColor = "#ef4444"; // Red border
-            } else {
-                // NO BET
-                miniText.innerHTML = `RESULT: <span class="text-yellow-400">${wonFruitName}</span>`;
-                miniAmount.innerText = "NO BET";
-                miniAmount.className = "text-sm font-bold drop-shadow-md text-gray-400";
-                miniPopup.style.borderColor = "#fbbf24"; // Yellow border
-            }
 
-            // Show Mini Popup
-            miniPopup.classList.remove('hidden');
-            miniPopup.classList.add('flex');
-            
-            // Hide Mini Popup after 4 seconds
-            setTimeout(() => {
-                miniPopup.classList.add('hidden');
-                miniPopup.classList.remove('flex');
-            }, 4000);
+                // پاپ اپ شو کریں
+                popup.style.display = 'flex';
+                
+                // 4 سیکنڈ بعد پاپ اپ غائب کر دیں
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 4000);
+            }
         }
 
         // --- NEW: HISTORY MODAL FUNCTIONS ---
         window.openGameHistory = () => {
             const listContainer = document.getElementById('game-history-list');
+            if(!listContainer) return;
             listContainer.innerHTML = '';
             
             if(detailedBetHistory.length === 0) {
@@ -2051,18 +2158,34 @@
         };
 
         window.closeGameHistory = () => {
-            document.getElementById('game-history-modal').classList.add('hidden');
-            document.getElementById('game-history-modal').classList.remove('flex');
+            const histModal = document.getElementById('game-history-modal');
+            if(histModal) {
+                histModal.classList.add('hidden');
+                histModal.classList.remove('flex');
+            }
         };
 
+        // --- "new" ٹیگ کے ساتھ ہسٹری اپڈیٹ ---
         function updateHistoryStripUI() {
             const strip = document.getElementById('game-history-strip');
             if(!strip) return;
-            strip.innerHTML = '<span class="history-label">History:</span>';
-            resultHistory.forEach(src => {
-                strip.innerHTML += `<div class="history-item"><img src="${src}"></div>`;
+            strip.innerHTML = '<span class="history-label">Results:</span>';
+            resultHistory.forEach((src, index) => {
+                if(index === 0) {
+                    strip.innerHTML += `<div class="history-item newest"><img src="${src}"><div class="new-tag">new</div></div>`;
+                } else {
+                    strip.innerHTML += `<div class="history-item"><img src="${src}"></div>`;
+                }
             });
         }
+        
+        // راؤنڈ نمبر شو کرنے کے لیے
+        setInterval(() => {
+            if(document.getElementById('round-number-display') && currentRoundId > 0) {
+                let roundNum = Math.floor((Date.now() % 86400000) / 40000); // Daily Round calculation
+                document.getElementById('round-number-display').innerText = "Round " + roundNum + " of today";
+            }
+        }, 1000);
         
     </script>
 </body>
