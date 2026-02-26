@@ -404,6 +404,46 @@
         .swal2-container {
     z-index: 99999 !important;
 }
+/* --- NEW LEADERBOARD & HOME TOP 3 CSS --- */
+/* --- NEW LEADERBOARD & HOME TOP 3 CSS (ANIMATED) --- */
+.home-top3-container { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-end; justify-content: center; width: 100%; pointer-events: none; z-index: 5; }
+.home-top-dp { border-radius: 50%; object-fit: cover; box-shadow: 0 3px 6px rgba(0,0,0,0.9); background: #222; border: 1.5px solid #fff; }
+.dp-rank-2 { width: 22px; height: 22px; border-color: #c0c0c0; z-index: 2; margin-right: -8px; margin-bottom: 2px; }
+.dp-rank-1 { width: 30px; height: 30px; border-color: #facc15; z-index: 3; animation: popBounce 3s infinite ease-in-out; }
+.dp-rank-3 { width: 22px; height: 22px; border-color: #cd7f32; z-index: 1; margin-left: -8px; margin-bottom: 2px; }
+
+@keyframes popBounce {
+    0%, 30%, 100% { transform: translateY(0) scale(1); box-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    15% { transform: translateY(-6px) scale(1.15); box-shadow: 0 8px 15px rgba(250, 204, 21, 0.9); }
+}
+
+/* ================= VIP ROYAL BLUE LEADERBOARD ================= */
+#leaderboard-modal { background: linear-gradient(to bottom, #0a1930, #020813); display: none; flex-direction: column; z-index: 3000; position: fixed; inset: 0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+
+.lb-m-tab { color: #888; font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 18px; cursor: pointer; transition: 0.3s; }
+.lb-m-tab.active { color: #fff; background: linear-gradient(to right, #d4af37, #aa7c11); box-shadow: 0 2px 10px rgba(212, 175, 55, 0.5); }
+
+.lb-s-tab { color: #888; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; padding-bottom: 5px; border-bottom: 2px solid transparent; }
+.lb-s-tab.active { color: #fff; border-bottom: 2px solid #fff; }
+
+.lb-stage-bg { background: url('https://i.ibb.co/3sX8M8K/stage-bg.png') bottom center no-repeat; background-size: cover; padding: 30px 10px 20px 10px; display: flex; justify-content: center; align-items: flex-end; gap: 15px; min-height: 250px; }
+.vip-podium-item { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 10; }
+.vip-podium-dp { border-radius: 50%; object-fit: cover; border: 3px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.8); background: #111; }
+.rank-1-dp { width: 80px; height: 80px; border-color: #facc15; z-index: 3; }
+.rank-2-dp, .rank-3-dp { width: 60px; height: 60px; border-color: #c0c0c0; z-index: 2; margin-bottom: -15px; }
+.rank-3-dp { border-color: #cd7f32; }
+
+.vip-crown { position: absolute; top: -25px; width: 40px; object-fit: contain; filter: drop-shadow(0 2px 4px black); }
+.vip-rank-badge { margin-top: -10px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: white; border: 2px solid #000; z-index: 5; }
+.bg-gold { background: linear-gradient(to bottom, #fde047, #ca8a04); }
+.bg-silver { background: linear-gradient(to bottom, #e2e8f0, #64748b); }
+.bg-bronze { background: linear-gradient(to bottom, #fdba74, #b45309); }
+
+.vip-list-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); margin: 8px 15px; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+
+.lb-my-rank-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; background: linear-gradient(to right, #0d47a1, #1565c0); border-top: 1px solid #4fc3f7; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50; }
+
+.lb-list-container { flex: 1; overflow-y: auto; padding: 10px 15px; padding-bottom: max(20px, env(safe-area-inset-bottom)); background: #111; }
     </style>
 </head>
 <body>
@@ -563,12 +603,39 @@
             </div>
         </div>
 
-        <!-- NEW: LEADERBOARD MODALS -->
+        <!-- NEW VIP LEADERBOARD MODAL -->
         <div id="leaderboard-modal">
-            <div class="lb-modal-box">
-                <button onclick="closeLeaderboard()" class="absolute top-3 right-3 text-white z-10"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <div class="lb-header" id="lb-title">RANKING</div>
-                <div class="lb-list-area" id="lb-list"></div>
+            <!-- Top Header -->
+            <div class="lb-header flex justify-between items-center px-4 py-3">
+                <button onclick="closeLeaderboard()" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="lb-main-tabs flex gap-2 bg-black/40 p-1 rounded-full">
+                    <span class="lb-m-tab active" onclick="switchMainTab(0)">Contribution</span>
+                    <span class="lb-m-tab" onclick="switchMainTab(1)">Charm</span>
+                    <span class="lb-m-tab" onclick="switchMainTab(2)">Room</span>
+                </div>
+                <button class="text-white text-xl"><i class="fa-regular fa-calendar-days"></i></button>
+            </div>
+
+            <!-- Sub Tabs (Daily, Weekly, Monthly) -->
+            <div class="lb-sub-tabs flex justify-around px-4 py-2 border-b border-white/10">
+                <span class="lb-s-tab active" onclick="switchSubTab('daily')">Daily</span>
+                <span class="lb-s-tab" onclick="switchSubTab('weekly')">Weekly</span>
+                <span class="lb-s-tab" onclick="switchSubTab('monthly')">Monthly</span>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div class="lb-content-area flex-1 overflow-y-auto pb-24" id="lb-content-area">
+                <!-- Podium & List will be generated here by JS -->
+            </div>
+
+            <!-- Bottom Sticky Bar (My Rank) -->
+            <div class="lb-my-rank-bar">
+                <div class="text-white font-bold text-sm" id="my-rank-text">No ranking</div>
+                <div class="flex items-center gap-2">
+                    <img src="" id="my-rank-dp" class="w-10 h-10 rounded-full border-2 border-yellow-400 object-cover">
+                    <span class="text-white font-bold text-sm" id="my-rank-name">User</span>
+                </div>
+                <div class="text-yellow-400 font-bold text-sm">🪙 <span id="my-rank-score">0</span></div>
             </div>
         </div>
 
@@ -662,9 +729,18 @@
                 </div>
             </div>
             <div class="mid-menu-container">
-                <div class="mid-menu-item" onclick="showContributionBoard()"><img src="./icon_contribution.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Contrib'"></div>
-                <div class="mid-menu-item" onclick="showCharmBoard()"><img src="./icon_charm.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Charm'"></div>
-                <div class="mid-menu-item" onclick="showRoomBoard()"><img src="./icon_room.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Room'"></div>
+                <div class="mid-menu-item" onclick="openLeaderboard(0)">
+                    <img src="./icon_contribution.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Contrib'">
+                    <div class="home-top3-container" id="home-top-contrib"></div>
+                </div>
+                <div class="mid-menu-item" onclick="openLeaderboard(1)">
+                    <img src="./icon_charm.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Charm'">
+                    <div class="home-top3-container" id="home-top-charm"></div>
+                </div>
+                <div class="mid-menu-item" onclick="openLeaderboard(2)">
+                    <img src="./icon_room.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Room'">
+                    <div class="home-top3-container" id="home-top-room"></div>
+                </div>
             </div>
             <div id="home-content-container">
                 <h3 class="text-sm font-extrabold px-4 mt-2 mb-1 text-gray-800 tracking-wider">ROOMS</h3>
@@ -1043,117 +1119,211 @@
         }
 
 
-        // =============== LEADERBOARDS LOGIC ===============
-        window.closeLeaderboard = () => {
-            document.getElementById('leaderboard-modal').classList.add('hidden');
-            document.getElementById('leaderboard-modal').classList.remove('flex');
-        }
+     // =============== VIP LEADERBOARDS LOGIC ===============
+let currentLbMainTab = 0; // 0=Contrib, 1=Charm, 2=Room
+let currentLbSubTab = 'daily'; // daily, weekly, monthly
 
-        // 1. CHARM BOARD (Receivers)
-        window.showCharmBoard = async () => {
-            document.getElementById('leaderboard-modal').classList.add('flex');
-            document.getElementById('leaderboard-modal').classList.remove('hidden');
-            document.getElementById('lb-title').innerText = "CHARM RANKING";
-            const lbList = document.getElementById('lb-list');
-            lbList.innerHTML = '<div class="text-center text-gray-400 mt-5 text-xs">Loading Top Charmers...</div>';
+window.openLeaderboard = async (tabIndex = 0) => {
+    document.getElementById('leaderboard-modal').style.display = 'flex';
+    document.getElementById('my-rank-dp').src = currentUser.photoURL || 'https://placehold.co/100';
+    document.getElementById('my-rank-name').innerText = currentUser.displayName || 'User';
+    switchMainTab(tabIndex);
+};
 
-            const usersSnap = await get(ref(db, 'users'));
-            if(!usersSnap.exists()) return;
-            let users = [];
-            usersSnap.forEach(s => {
-                let u = s.val();
-                if(u.charm && u.charm > 0) users.push(u);
-            });
-            users.sort((a,b) => b.charm - a.charm);
-            users = users.slice(0, 50); // Top 50
+window.closeLeaderboard = () => { document.getElementById('leaderboard-modal').style.display = 'none'; };
+
+window.switchMainTab = (index) => {
+    currentLbMainTab = index;
+    document.querySelectorAll('.lb-m-tab').forEach((t, i) => {
+        if(i === index) t.classList.add('active'); else t.classList.remove('active');
+    });
+    fetchAllLeaderboardsVIP();
+};
+
+window.switchSubTab = (type) => {
+    currentLbSubTab = type;
+    document.querySelectorAll('.lb-s-tab').forEach(t => {
+        if(t.innerText.toLowerCase() === type) t.classList.add('active'); else t.classList.remove('active');
+    });
+    fetchAllLeaderboardsVIP();
+};
+
+async function fetchAllLeaderboardsVIP() {
+    const contentArea = document.getElementById('lb-content-area');
+    contentArea.innerHTML = '<div class="text-center text-white mt-20 font-bold">Loading Data...</div>';
+
+    const usersSnap = await get(ref(db, 'users'));
+    const roomsSnap = await get(ref(db, 'rooms'));
+    
+    let uArr = [], rArr =[];
+    let timeKey = currentLbSubTab; // 'daily', 'weekly', 'monthly'
+
+    if(usersSnap.exists()) {
+        usersSnap.forEach(s => { 
+            let u = s.val(); u.uid = s.key;
+            u.exp_score = Number(u[`userExp_${timeKey}`]) || 0; 
+            u.charm_score = Number(u[`charm_${timeKey}`]) || 0;
+            uArr.push(u); 
+        });
+    }
+    
+    if(roomsSnap.exists()) {
+        roomsSnap.forEach(s => { 
+            let r = s.val(); r.id = s.key;
+            r.wealth_score = Number(r[`wealth_${timeKey}`]) || 0;
+            rArr.push(r); 
+        });
+    }
+
+    let sortedData =[]; let icon = '🪙'; let myScore = 0; let myRank = "No ranking";
+
+    if (currentLbMainTab === 0) {
+        sortedData =[...uArr].sort((a,b) => b.exp_score - a.exp_score); icon = '🪙';
+        let me = sortedData.findIndex(u => u.uid === currentUser.uid);
+        if(me !== -1 && sortedData[me].exp_score > 0) { myRank = me + 1; myScore = sortedData[me].exp_score; }
+    } else if (currentLbMainTab === 1) {
+        sortedData = [...uArr].sort((a,b) => b.charm_score - a.charm_score); icon = '💎';
+        let me = sortedData.findIndex(u => u.uid === currentUser.uid);
+        if(me !== -1 && sortedData[me].charm_score > 0) { myRank = me + 1; myScore = sortedData[me].charm_score; }
+    } else {
+        sortedData = [...rArr].sort((a,b) => b.wealth_score - a.wealth_score); icon = '🎁';
+        let me = sortedData.findIndex(r => r.owner === currentUser.uid);
+        if(me !== -1 && sortedData[me].wealth_score > 0) { myRank = me + 1; myScore = sortedData[me].wealth_score; }
+    }
+
+    document.getElementById('my-rank-text').innerText = myRank !== "No ranking" ? `No. ${myRank}` : myRank;
+    document.getElementById('my-rank-score').innerText = myScore.toLocaleString();
+
+    renderVIPLeaderboard(sortedData.filter(d => (d.exp_score > 0 || d.charm_score > 0 || d.wealth_score > 0)), currentLbMainTab, icon);
+}
+
+function renderVIPLeaderboard(dataList, tabType, icon) {
+    const contentArea = document.getElementById('lb-content-area');
+    if(dataList.length === 0) {
+        contentArea.innerHTML = '<div class="text-center text-gray-400 mt-20 font-bold">No ranking for this period.</div>'; return;
+    }
+
+    let top1 = dataList[0], top2 = dataList[1], top3 = dataList[2];
+    
+    let podiumHTML = `<div class="lb-stage-bg">`;
+    if(top2) podiumHTML += createVIPPodiumUser(top2, 2, tabType, icon);
+    if(top1) podiumHTML += createVIPPodiumUser(top1, 1, tabType, icon);
+    if(top3) podiumHTML += createVIPPodiumUser(top3, 3, tabType, icon);
+    podiumHTML += `</div>`;
+
+    let listHTML = `<div class="pb-5 pt-2">`;
+    for(let i = 3; i < dataList.length; i++) {
+        let d = dataList[i];
+        let name = d.username || d.roomName;
+        let pic = tabType === 2 ? d.roomCover : d.photoURL;
+        if(!pic) pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+        let score = tabType === 0 ? d.exp_score : (tabType === 1 ? d.charm_score : d.wealth_score);
+        let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : '';
+
+        listHTML += `
+        <div class="vip-list-item" ${clickAct}>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-400 font-bold w-4 text-center">${i+1}</span>
+                <img src="${pic}" class="vip-list-dp">
+                <span class="text-white font-bold text-sm max-w-[120px] truncate">${name}</span>
+            </div>
+            <div class="text-yellow-400 font-bold text-xs">${score.toLocaleString()} ${icon}</div>
+        </div>`;
+    }
+    listHTML += `</div>`;
+    contentArea.innerHTML = podiumHTML + listHTML;
+}
+
+function createVIPPodiumUser(d, rank, tabType, icon) {
+    let name = d.username || d.roomName;
+    let pic = tabType === 2 ? d.roomCover : d.photoURL;
+    if(!pic) pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+    let score = tabType === 0 ? d.exp_score : (tabType === 1 ? d.charm_score : d.wealth_score);
+    let crown = rank === 1 ? '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135692.png" class="vip-crown">' : '';
+    let badgeClass = rank === 1 ? 'bg-gold' : (rank === 2 ? 'bg-silver' : 'bg-bronze');
+    
+    return `
+    <div class="vip-podium-item">
+        ${crown}
+        <img src="${pic}" class="vip-podium-dp rank-${rank}-dp">
+        <div class="vip-rank-badge ${badgeClass}">${rank}</div>
+        <span class="text-white font-bold text-[10px] mt-2 max-w-[70px] truncate">${name}</span>
+        <span class="text-yellow-400 font-bold text-[9px] drop-shadow-md">${score.toLocaleString()} ${icon}</span>
+    </div>`;
+}
+
+       // اصلی تصویر نکالنے کا فنکشن
+        function getRealAvatar(d, isRoom) {
+    if(!d) return 'https://ui-avatars.com/api/?name=?&background=random';
+    let name = d.username || d.roomName || 'User';
+    let pic = isRoom ? d.roomCover : d.photoURL;
+    
+    if(!pic || pic.trim() === '') {
+        // نام میں موجود سپیس کو فکس کرنے کے لیے encodeURIComponent لگایا ہے تاکہ تصویر غائب نہ ہو
+        let safeName = encodeURIComponent(name);
+        pic = `https://ui-avatars.com/api/?name=${safeName}&background=random&color=fff&bold=true`;
+    }
+    return pic;
+}
+
+        // یہ فنکشن ہوم سکرین کے بٹنوں پر تصویریں لگائے گا
+        window.updateHomeTopDPs = async () => {
+    const usersSnap = await get(ref(db, 'users'));
+    const roomsSnap = await get(ref(db, 'rooms'));
+    
+    let uArr = [], rArr =[];
+    if(usersSnap.exists()) {
+        usersSnap.forEach(s => { 
+            let u = s.val(); 
+            u.uid = s.key;
+            // Force Number() لگایا ہے تاکہ لاکھوں کروڑوں کی ویلیو غلط نہ ہو
+            u.userExp = Number(u.userExp) || 0; 
+            u.charm = Number(u.charm) || 0;
+            uArr.push(u); 
+        });
+    }
+    if(roomsSnap.exists()) {
+        roomsSnap.forEach(s => { 
+            let r = s.val(); 
+            r.id = s.key;
+            r.wealth = Number(r.wealth) || 0;
+            rArr.push(r); 
+        });
+    }
+    
+    // 100% رئیل سورٹنگ جو اندر اور باہر بالکل سیم رزلٹ دے گی
+    let topContrib = [...uArr].sort((a,b) => b.userExp - a.userExp).slice(0,3);
+    let topCharm   = [...uArr].sort((a,b) => b.charm - a.charm).slice(0,3);
+    let topRoom    = [...rArr].sort((a,b) => b.wealth - a.wealth).slice(0,3);
+
+    renderHomeDPs('home-top-contrib', topContrib, false, "0s");
+    renderHomeDPs('home-top-charm', topCharm, false, "1s");
+    renderHomeDPs('home-top-room', topRoom, true, "2s");
+};
+        function renderHomeDPs(elementId, top3Array, isRoom, animDelay) {
+            const container = document.getElementById(elementId);
+            if(!container) return;
+            container.innerHTML = '';
             
-            lbList.innerHTML = '';
-            if(users.length === 0) lbList.innerHTML = '<div class="text-center text-gray-500 mt-5 text-xs">No Charm Data Yet.</div>';
-            users.forEach((u, index) => {
-                let lvlHtml = renderLevelHTML(u.userExp);
-                lbList.innerHTML += `<div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg mb-2 border border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="text-yellow-400 font-bold w-4 text-center">${index+1}</div>
-                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full object-cover border border-gray-500">
-                        <div class="flex flex-col">
-                            <span class="text-white text-sm font-bold truncate max-w-[100px]">${u.username}</span>
-                            ${lvlHtml}
-                        </div>
-                    </div>
-                    <div class="text-pink-400 text-xs font-bold bg-pink-900/30 px-2 py-1 rounded-full border border-pink-500/50 shadow-sm">${u.charm.toLocaleString()} <i class="fa-solid fa-heart"></i></div>
-                </div>`;
-            });
-        }
+            if(top3Array.length === 0) return; 
 
-        // 2. CONTRIBUTION BOARD (Senders / XP)
-        window.showContributionBoard = async () => {
-            document.getElementById('leaderboard-modal').classList.add('flex');
-            document.getElementById('leaderboard-modal').classList.remove('hidden');
-            document.getElementById('lb-title').innerText = "WEALTH RANKING";
-            const lbList = document.getElementById('lb-list');
-            lbList.innerHTML = '<div class="text-center text-gray-400 mt-5 text-xs">Loading Top Gifters...</div>';
-
-            const usersSnap = await get(ref(db, 'users'));
-            if(!usersSnap.exists()) return;
-            let users = [];
-            usersSnap.forEach(s => {
-                let u = s.val();
-                if(u.userExp && u.userExp > 0) users.push(u);
-            });
-            users.sort((a,b) => b.userExp - a.userExp);
-            users = users.slice(0, 50); // Top 50
+            let html = '';
             
-            lbList.innerHTML = '';
-            if(users.length === 0) lbList.innerHTML = '<div class="text-center text-gray-500 mt-5 text-xs">No Wealth Data Yet.</div>';
-            users.forEach((u, index) => {
-                let lvlHtml = renderLevelHTML(u.userExp);
-                lbList.innerHTML += `<div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg mb-2 border border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="text-yellow-400 font-bold w-4 text-center">${index+1}</div>
-                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full object-cover border border-gray-500">
-                        <div class="flex flex-col">
-                            <span class="text-white text-sm font-bold truncate max-w-[100px]">${u.username}</span>
-                            ${lvlHtml}
-                        </div>
-                    </div>
-                    <div class="text-yellow-400 text-xs font-bold bg-yellow-900/30 px-2 py-1 rounded-full border border-yellow-500/50 shadow-sm">${u.userExp.toLocaleString()} <i class="fa-solid fa-crown"></i></div>
-                </div>`;
-            });
-        }
-
-        // 3. ROOM BOARD
-        window.showRoomBoard = async () => {
-            document.getElementById('leaderboard-modal').classList.add('flex');
-            document.getElementById('leaderboard-modal').classList.remove('hidden');
-            document.getElementById('lb-title').innerText = "TOP ROOMS";
-            const lbList = document.getElementById('lb-list');
-            lbList.innerHTML = '<div class="text-center text-gray-400 mt-5 text-xs">Loading Top Rooms...</div>';
-
-            const roomsSnap = await get(ref(db, 'rooms'));
-            if(!roomsSnap.exists()) return;
-            let rooms = [];
-            roomsSnap.forEach(s => {
-                let r = s.val();
-                if(r.wealth && r.wealth > 0) { r.id = s.key; rooms.push(r); }
-            });
-            rooms.sort((a,b) => b.wealth - a.wealth);
-            rooms = rooms.slice(0, 50); // Top 50
+            // Rank 2 (Left Side)
+            if(top3Array[1]) {
+                html += `<img src="${getRealAvatar(top3Array[1], isRoom)}" class="home-top-dp dp-rank-2" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
+            }
+            // Rank 1 (Center - with Animation)
+            if(top3Array[0]) {
+                html += `<img src="${getRealAvatar(top3Array[0], isRoom)}" class="home-top-dp dp-rank-1" style="animation-delay: ${animDelay};" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
+            }
+            // Rank 3 (Right Side)
+            if(top3Array[2]) {
+                html += `<img src="${getRealAvatar(top3Array[2], isRoom)}" class="home-top-dp dp-rank-3" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
+            }
             
-            lbList.innerHTML = '';
-            if(rooms.length === 0) lbList.innerHTML = '<div class="text-center text-gray-500 mt-5 text-xs">No Room Wealth Data Yet.</div>';
-            rooms.forEach((r, index) => {
-                let cover = r.roomCover || `https://ui-avatars.com/api/?name=${r.roomName}`;
-                lbList.innerHTML += `<div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg mb-2 border border-gray-700 cursor-pointer active:scale-95" onclick="joinRoom('${r.id}'); closeLeaderboard();">
-                    <div class="flex items-center gap-3">
-                        <div class="text-yellow-400 font-bold w-4 text-center">${index+1}</div>
-                        <img src="${cover}" class="w-10 h-10 rounded-lg object-cover border border-gray-500">
-                        <span class="text-white text-sm font-bold truncate max-w-[100px]">${r.roomName}</span>
-                    </div>
-                    <div class="text-yellow-400 text-xs font-bold bg-yellow-900/30 px-2 py-1 rounded-full border border-yellow-500/50 shadow-sm">${r.wealth.toLocaleString()} <i class="fa-solid fa-coins"></i></div>
-                </div>`;
-            });
+            container.innerHTML = html;
         }
-
         // =============== RECHARGE & WALLET LOGIC ===============
         window.openRechargeModal = () => {
             document.getElementById('wallet-balance-display').innerText = (currentCoins || 0).toLocaleString();
@@ -1499,59 +1669,78 @@
         window.sendGift = async (giftName, cost) => {
             if(!currentRoomId) return;
             if(!selectedGiftTargetUid) return Swal.fire({toast:true, icon:'warning', title:'No user selected!', position:'center', timer:1500, showConfirmButton:false});
+            if(currentCoins < cost) return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
 
-            if(currentCoins < cost) {
-                return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
-            }
+            // --- 5 AM PKT آٹو ریسیٹ سسٹم ---
+            let now = new Date();
+            let pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+            if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
+
+            let dateStr = pktTime.toISOString().split('T')[0]; // Daily 
+            let weekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7); // Weekly 
+            let monthStr = dateStr.substring(0, 7); // Monthly
+
+            // 1. SENDER UPDATE (Contribution)
+            const sSnap = await get(ref(db, `users/${currentUser.uid}`));
+            let sData = sSnap.val() || {};
             
-            // 1. Deduct Sender Coins & Add Sender XP (Level System)
+            let exp_d = (sData.lastGiftDate === dateStr) ? (Number(sData.userExp_daily) || 0) : 0;
+            let exp_w = (sData.lastGiftWeek === weekStr) ? (Number(sData.userExp_weekly) || 0) : 0;
+            let exp_m = (sData.lastGiftMonth === monthStr) ? (Number(sData.userExp_monthly) || 0) : 0;
+
             currentCoins -= cost;
             currentUserExp += cost; 
-            await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins, userExp: currentUserExp });
-            
-            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-            
-            // Update Local UI Level
-            document.getElementById('profile-level-text').innerText = `Lv.${getUserLevel(currentUserExp)}`;
-            document.getElementById('profile-medal-img').src = getMedalImage(getUserLevel(currentUserExp));
-            
-            // 2. Add Room Exp & Wealth
-            const expRef = ref(db, `rooms/${currentRoomId}/roomExp`); 
-            await runTransaction(expRef, (currentExp) => (currentExp || 0) + cost);
-            const wealthRef = ref(db, `rooms/${currentRoomId}/wealth`); 
-            await runTransaction(wealthRef, (currentWealth) => (currentWealth || 0) + cost);
 
-            // 3. Add Diamonds (30%) & Charm to TARGET USER
-            const diamondGain = cost * 0.30;
-            await runTransaction(ref(db, `users/${selectedGiftTargetUid}/diamonds`), (current) => (current || 0) + diamondGain);
-            await runTransaction(ref(db, `users/${selectedGiftTargetUid}/charm`), (current) => (current || 0) + cost);
-
-            // 4. Send Message & MP4 Video Trigger
-            let giftImgSrc = document.querySelector(`.gift-item[onclick*="${giftName}"] .gift-img`).src;
-            
-            await push(ref(db, `rooms/${currentRoomId}/messages`), { 
-                name: currentUser.displayName, 
-                text: `Sent ${giftName} 🎁 to ${selectedGiftTargetName}`, 
-                type: 'gift',
-                giftName: giftName, // For playing MP4
-                timestamp: Date.now() 
+            await update(ref(db, `users/${currentUser.uid}`), { 
+                coins: currentCoins, userExp: currentUserExp,
+                userExp_daily: exp_d + cost, userExp_weekly: exp_w + cost, userExp_monthly: exp_m + cost,
+                lastGiftDate: dateStr, lastGiftWeek: weekStr, lastGiftMonth: monthStr
             });
 
-            // 5. Global Gift Broadcast
+            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
+            document.getElementById('profile-level-text').innerText = `Lv.${getUserLevel(currentUserExp)}`;
+            document.getElementById('profile-medal-img').src = getMedalImage(getUserLevel(currentUserExp));
+
+            // 2. RECEIVER UPDATE (Charm)
+            const rSnap = await get(ref(db, `users/${selectedGiftTargetUid}`));
+            let rData = rSnap.val() || {};
+            
+            let charm_d = (rData.lastGiftDate === dateStr) ? (Number(rData.charm_daily) || 0) : 0;
+            let charm_w = (rData.lastGiftWeek === weekStr) ? (Number(rData.charm_weekly) || 0) : 0;
+            let charm_m = (rData.lastGiftMonth === monthStr) ? (Number(rData.charm_monthly) || 0) : 0;
+
+            await update(ref(db, `users/${selectedGiftTargetUid}`), {
+                charm: (Number(rData.charm)||0) + cost, diamonds: (Number(rData.diamonds)||0) + (cost*0.3),
+                charm_daily: charm_d + cost, charm_weekly: charm_w + cost, charm_monthly: charm_m + cost,
+                lastGiftDate: dateStr, lastGiftWeek: weekStr, lastGiftMonth: monthStr
+            });
+
+            // 3. ROOM UPDATE (Wealth)
+            const rmSnap = await get(ref(db, `rooms/${currentRoomId}`));
+            let rmData = rmSnap.val() || {};
+            
+            let wlt_d = (rmData.lastGiftDate === dateStr) ? (Number(rmData.wealth_daily) || 0) : 0;
+            let wlt_w = (rmData.lastGiftWeek === weekStr) ? (Number(rmData.wealth_weekly) || 0) : 0;
+            let wlt_m = (rmData.lastGiftMonth === monthStr) ? (Number(rmData.wealth_monthly) || 0) : 0;
+
+            await update(ref(db, `rooms/${currentRoomId}`), {
+                roomExp: (Number(rmData.roomExp)||0) + cost, wealth: (Number(rmData.wealth)||0) + cost,
+                wealth_daily: wlt_d + cost, wealth_weekly: wlt_w + cost, wealth_monthly: wlt_m + cost,
+                lastGiftDate: dateStr, lastGiftWeek: weekStr, lastGiftMonth: monthStr
+            });
+
+            // 4. Send Message & Global Broadcast
+            let giftImgSrc = document.querySelector(`.gift-item[onclick*="${giftName}"] .gift-img`).src;
+            await push(ref(db, `rooms/${currentRoomId}/messages`), { 
+                name: currentUser.displayName, text: `Sent ${giftName} 🎁 to ${selectedGiftTargetName}`, 
+                type: 'gift', giftName: giftName, timestamp: Date.now() 
+            });
+
             let targetPic = document.querySelector('.gift-target-avatar.selected').src;
             broadcastGift(currentUser.displayName, currentUser.photoURL, selectedGiftTargetName, targetPic, giftName, giftImgSrc, cost);
             
             document.getElementById('gift-modal').classList.add('hidden'); 
-            Swal.fire({
-                toast: true, 
-                icon: 'success', 
-                title: `${giftName} Sent to ${selectedGiftTargetName}!`, 
-                position: 'bottom', 
-                timer: 1500, 
-                showConfirmButton: false,
-                background: 'rgba(0,0,0,0.8)',
-                color: '#fff'
-            });
+            Swal.fire({ toast: true, icon: 'success', title: `${giftName} Sent!`, position: 'bottom', timer: 1500, showConfirmButton: false, background: '#111', color: '#fff' });
         };
 
         const bannerTrack = document.getElementById('banner-track'); const bannerDots = document.getElementById('banner-dots'); let bannerIndex = 0; let bannerInterval; const totalBanners = 3; 
@@ -1637,6 +1826,7 @@
                 if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
                 if(document.getElementById('gift-modal-coins')) { document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString(); }
             }
+            updateHomeTopDPs();
             onValue(ref(db, `users/${currentUser.uid}/friends`), async (snap) => { const chatList = document.getElementById('friends-chat-list'); chatList.innerHTML = ''; let count = 0; if(snap.exists()) { count = Object.keys(snap.val()).length; for (const [uid, name] of Object.entries(snap.val())) { const fSnap = await get(ref(db, `users/${uid}`)); const fData = fSnap.val() || {}; const pic = fData.photoURL || `https://ui-avatars.com/api/?name=${name}`; chatList.innerHTML += `<div onclick="openDirectChat('${uid}', '${name}')" class="bg-white p-3 rounded flex items-center justify-between cursor-pointer border border-gray-200 shadow-sm hover:shadow-md transition"><div class="flex items-center gap-3"><img src="${pic}" class="w-10 h-10 rounded-full border border-gray-300 object-cover"><span class="text-gray-900 text-sm font-medium">${name}</span></div></div>`; } } document.getElementById('stat-following').innerText = count; document.getElementById('stat-fans').innerText = count; refreshHomeRooms(); });
             onValue(ref(db, `users/${currentUser.uid}/inbox`), snap => { const list = document.getElementById('inbox-list'); const badge = document.getElementById('inbox-dot'); list.innerHTML = ''; let count = 0; if(snap.exists()) { const data = snap.val(); if(data.requests) Object.entries(data.requests).forEach(([key, val]) => { count++; list.innerHTML += inboxItem(key, val, 'req'); }); if(data.invites) Object.entries(data.invites).forEach(([key, val]) => { count++; list.innerHTML += inboxItem(key, val, 'inv'); }); } if(count > 0) badge.classList.remove('hidden'); else badge.classList.add('hidden'); });
         }
