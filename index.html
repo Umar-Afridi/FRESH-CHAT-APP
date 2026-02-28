@@ -2106,7 +2106,29 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
         document.getElementById('auth-form').addEventListener('submit', async (e) => { e.preventDefault(); const email = document.getElementById('email').value; const pass = document.getElementById('password').value; try { if(isSignup) { const username = document.getElementById('username').value.trim(); if(!username) return Swal.fire('Error', 'Name required', 'error'); const cred = await createUserWithEmailAndPassword(auth, email, pass); await generateAndSaveId(cred.user.uid, username, email); await updateProfile(cred.user, { displayName: username, photoURL: `https://ui-avatars.com/api/?name=${username}&background=random` }); localStorage.setItem('user_logged_in', 'true'); } else { await signInWithEmailAndPassword(auth, email, pass); localStorage.setItem('user_logged_in', 'true'); } hideEmailForm(); } catch(err) { Swal.fire('Error', err.message, 'error'); } });
         async function generateAndSaveId(uid, username, email, photoURL) { const countRef = ref(db, 'sys/userCount'); const result = await runTransaction(countRef, (current) => (current || 0) + 1); const newId = 10000 + result.snapshot.val(); await set(ref(db, `users/${uid}`), { username: username, email: email, uid: uid, photoURL: photoURL || `https://ui-avatars.com/api/?name=${username}`, customId: newId, bio: "YARAAN User", currentFrame: null, userExp: 0 }); await set(ref(db, `idToUid/${newId}`), uid); return newId; }
         
-        onAuthStateChanged(auth, (user) => { currentUser = user; const authView = document.getElementById('view-auth'); if (user) { localStorage.setItem('user_logged_in', 'true'); authView.classList.remove('view-active'); authView.style.display = 'none'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('bottom-nav').classList.add('flex'); document.getElementById('app-header').style.display = 'flex'; loadData(); switchTab('view-home', document.querySelector('#btn-home')); switchHomeTab('popular'); } else { localStorage.removeItem('lastRoomId'); localStorage.removeItem('user_logged_in'); authView.style.display = 'flex'; authView.classList.add('view-active'); } });
+        onAuthStateChanged(auth, (user) => { currentUser = user; const authView = document.getElementById('view-auth'); if (user) { localStorage.setItem('user_logged_in', 'true'); authView.classList.remove('view-active'); authView.style.display = 'none'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('bottom-nav').classList.add('flex'); document.getElementById('app-header').style.display = 'flex'; loadData(); // 🟢 NEW: Listen for ban/deletion changes
+const userRef = ref(db, `users/${currentUser.uid}`);
+onValue(userRef, (snap) => {
+    const userData = snap.val();
+    if (userData && (userData.isBanned || userData.isDeleted)) {
+        let title = userData.isBanned ? 'Account Banned' : 'Account Deleted';
+        let text = userData.isBanned 
+            ? 'Your account has been banned by YARAAN Official.' 
+            : 'Your account has been deleted by YARAAN Official.';
+        Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            background: '#111',
+            color: '#fff'
+        }).then(() => {
+            logout();
+        });
+    }
+});switchTab('view-home', document.querySelector('#btn-home')); switchHomeTab('popular'); } else { localStorage.removeItem('lastRoomId'); localStorage.removeItem('user_logged_in'); authView.style.display = 'flex'; authView.classList.add('view-active'); } });
         window.logout = () => { localStorage.removeItem('lastRoomId'); localStorage.removeItem('user_logged_in'); signOut(auth).then(()=> window.location.reload()); };
         window.switchHomeTab = (tabName) => { currentHomeTab = tabName; document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active')); document.getElementById(`tab-${tabName}`).classList.add('active'); refreshHomeRooms(); }
 
@@ -2124,22 +2146,21 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
                 let rExp = d.roomExp || 0;
                 let nextRocket = './rocket1.png';
                 let rLvl = 1;
-                if(rExp >= 2000000) { nextRocket = './rocket4.png'; rLvl = 4; }
-                else if(rExp >= 500000) { nextRocket = './rocket3.png'; rLvl = 3; }
-                else if(rExp >= 300000) { nextRocket = './rocket2.png'; rLvl = 2; }
-                
+                if(rExp >= 2000000) { nextRocket = "./rocket4.png"; rLvl = 4; }
+else if(rExp >= 500000) { nextRocket = "./rocket3.png"; rLvl = 3; }
+else if(rExp >= 300000) { nextRocket = "./rocket2.png"; rLvl = 2; }
+else { nextRocket = "./rocket1.png"; rLvl = 1; }
                 let rocketTagHTML = `<div class="room-target-tag"><img src="${nextRocket}" onerror="this.style.display='none'"><span>Lv.${rLvl}</span></div>`;
 
                 homeList.innerHTML += `<div onclick="joinRoom('${d.id}')" class="room-card-wrapper cursor-pointer">
-                    <div class="room-card-new">
-                        <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
-                        <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
-                        ${rocketTagHTML}
-                        <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
-                        <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
-                    </div>
-                    <div class="room-info-bottom"><img src="${genderIcon}" class="room-gender-icon"><div class="room-owner-name ${d.nameColorClass}">${d.ownerName}</div></div>
-                </div>`; 
+    <div class="room-card-new">
+        <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
+        <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
+        ${rocketTagHTML}
+        <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
+        <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
+    </div>
+</div>`;
             });
             if(!hasLive) homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms.</p>`;
         }
@@ -2153,6 +2174,35 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
                 } else { 
                     document.getElementById('profile-id').innerText = d.customId; 
                 } 
+                // 🟢 NEW: Real-time warning listener (only once per warning)
+const systemRef = ref(db, `users/${currentUser.uid}/inbox/system`);
+onChildAdded(systemRef, async (snap) => {
+    const msg = snap.val();
+    const warningId = snap.key; // منفرد کلید
+    if (msg && msg.message && msg.message.includes('WARNING')) {
+        // چیک کریں کہ یہ وارننگ پہلے دیکھی جا چکی ہے یا نہیں
+        const userSnap = await get(ref(db, `users/${currentUser.uid}`));
+        const userData = userSnap.val() || {};
+        const seenWarnings = userData.seenWarnings || {};
+        
+        if (!seenWarnings[warningId]) {
+            // پہلی بار دکھائیں
+            Swal.fire({
+                icon: 'warning',
+                title: 'Official Warning',
+                html: `<div style="white-space: pre-line;">${msg.message}</div>`,
+                confirmButtonText: 'I Understand',
+                background: '#111',
+                color: '#fff'
+            });
+            
+            // نشان زد کریں کہ یہ وارننگ دیکھ لی گئی
+            await update(ref(db, `users/${currentUser.uid}/seenWarnings`), {
+                [warningId]: true
+            });
+        }
+    }
+});
                 let nameEl = document.getElementById('profile-name');
                 nameEl.innerHTML = `<span class="${d.nameColorClass || 'text-gray-900'}">${d.username}</span> <img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
                 document.getElementById('profile-bio').innerText = d.bio || ""; 
@@ -2244,6 +2294,7 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
                 if(count > 0) badge.classList.remove('hidden'); else badge.classList.add('hidden'); 
             });
         }
+        
 
         function inboxItem(key, val, type) { 
             if(type === 'req') return `<div class="bg-white border border-gray-200 shadow-sm p-2 rounded flex justify-between items-center mb-1"><span class="text-xs text-gray-800 font-medium">Followed you: ${val.fromName}</span><div class="flex gap-2"><button onclick="acceptFriend('${val.fromUid}', '${val.fromName}')" class="text-blue-600 text-xs font-bold border border-blue-600 px-2 py-1 rounded hover:bg-blue-50">FOLLOW BACK</button><button onclick="delNotif('requests/${key}')" class="text-red-500"><i class="fa-solid fa-xmark"></i></button></div></div>`; 
