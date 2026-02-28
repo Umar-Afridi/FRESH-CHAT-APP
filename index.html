@@ -50,23 +50,54 @@
         .mid-menu-item:active { transform: scale(0.95); }
         .mid-menu-img { width: 100%; height: 100%; object-fit: fill; }
 
-        /* GRID ROOM LAYOUT CSS */
-        #home-room-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; row-gap: 25px; padding: 0 15px 80px 15px; }
-        .room-card-wrapper { display: flex; flex-direction: column; gap: 6px; }
-        .room-card-new { position: relative; aspect-ratio: 1 / 1.1; border-radius: 12px; overflow: hidden; background-color: #f3f4f6; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
-        .room-card-cover { width: 100%; height: 100%; object-fit: cover; }
-        .room-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 8px; display: flex; align-items: flex-end; justify-content: center; }
-        .room-live-tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.6); border: 1px solid #22c55e; color: #22c55e; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 4px; z-index: 20;}
-        
-        .room-target-tag { position: absolute; top: 32px; left: 8px; background: rgba(0,0,0,0.7); border: 1px solid #eab308; color: #eab308; font-size: 8px; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: flex; align-items: center; gap: 3px; z-index: 20;}
-        .room-target-tag img { width: 10px; height: 10px; object-fit: contain; }
+        /* GRID ROOM LAYOUT CSS - نیا */
+#home-room-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; row-gap: 25px; padding: 0 15px 80px 15px; }
+.room-card-wrapper { display: flex; flex-direction: column; gap: 8px; }
+.room-card-new { position: relative; aspect-ratio: 1 / 1.1; border-radius: 16px; overflow: hidden; background-color: #f3f4f6; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; transition: transform 0.2s; }
+.room-card-new:active { transform: scale(0.98); }
+.room-card-cover { width: 100%; height: 100%; object-fit: cover; }
+.room-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 10px; display: flex; align-items: flex-end; justify-content: center; }
+.room-live-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); border: 1.5px solid #22c55e; color: #22c55e; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 4px; z-index: 20; backdrop-filter: blur(2px); }
+.room-live-tag .pulse-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+.room-target-tag { position: absolute; top: 45px; left: 10px; background: rgba(0,0,0,0.7); border: 1.5px solid #facc15; color: #facc15; font-size: 9px; padding: 3px 8px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 4px; z-index: 20; backdrop-filter: blur(2px); }
+.room-target-tag img { width: 12px; height: 12px; object-fit: contain; }
+.room-user-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 700; display: flex; align-items: center; gap: 5px; backdrop-filter: blur(2px); z-index: 20; }
+.room-card-title { color: white; font-size: 15px; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; letter-spacing: 0.3px; }
 
-        .room-user-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 4px; cursor: pointer; z-index: 20; }
-        .room-card-title { color: white; font-size: 14px; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-        .room-info-bottom { display: flex; align-items: center; gap: 6px; padding-left: 2px; }
-        .room-gender-icon { width: 16px; height: 16px; object-fit: contain; }
-        .room-owner-name { font-size: 12px; font-weight: 600; color: #374151; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
+/* نیچے والے نام اور جینڈر کے لیے - بہتر ڈیزائن */
+.room-info-bottom { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 8px 5px 4px 5px; 
+    background: white;
+    border-radius: 0 0 16px 16px;
+}
+.room-gender-icon { 
+    width: 18px; 
+    height: 18px; 
+    object-fit: contain; 
+    border-radius: 50%;
+    background: #f3f4f6;
+    padding: 2px;
+    border: 1px solid #e5e7eb;
+}
+.room-owner-name { 
+    font-size: 13px; 
+    font-weight: 700; 
+    color: #1f2937; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    flex: 1;
+    letter-spacing: 0.2px;
+}
+.room-owner-name::before {
+    content: "👤 ";
+    opacity: 0.6;
+    font-size: 11px;
+}
         /* GENERAL STYLES */
         .visual-root { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
         .visual-img { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 78%; height: 78%; border-radius: 50%; object-fit: cover; z-index: 10; }
@@ -1163,14 +1194,14 @@
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="admin-action-btn bg-yellow-600" onclick="adminAction('warn')"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Send Warning</div>
-                    <div class="admin-action-btn bg-green-600" onclick="adminAction('coins')"><i class="fa-solid fa-coins mr-1"></i> Send Coins</div>
-                    <div class="admin-action-btn bg-red-600" onclick="adminAction('ban')"><i class="fa-solid fa-ban mr-1"></i> Ban User</div>
-                    <div class="admin-action-btn bg-blue-600" onclick="adminAction('unban')"><i class="fa-solid fa-unlock mr-1"></i> Unban User</div>
-                    <div class="admin-action-btn bg-purple-600" id="btn-make-official" onclick="adminAction('official')"><i class="fa-solid fa-certificate mr-1"></i> Make Official</div>
-                    <div class="admin-action-btn bg-gray-700" onclick="adminAction('delete')"><i class="fa-solid fa-trash mr-1"></i> Delete ID</div>
-                </div>
+             <div class="grid grid-cols-2 gap-2">
+    <div class="admin-action-btn bg-yellow-600" onclick="adminAction('warn')"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Send Warning</div>
+    <div class="admin-action-btn bg-green-600" onclick="adminAction('coins')"><i class="fa-solid fa-coins mr-1"></i> Send Coins</div>
+    <div class="admin-action-btn bg-red-600" id="btn-ban-user" onclick="adminAction('ban')"><i class="fa-solid fa-ban mr-1"></i> Ban User</div>
+    <div class="admin-action-btn bg-blue-600" id="btn-unban-user" onclick="adminAction('unban')"><i class="fa-solid fa-unlock mr-1"></i> Unban User</div>
+    <div class="admin-action-btn bg-purple-600" id="btn-make-official" onclick="adminAction('official')"><i class="fa-solid fa-certificate mr-1"></i> Make Official</div>
+    <div class="admin-action-btn bg-gray-700" onclick="adminAction('delete')"><i class="fa-solid fa-trash mr-1"></i> Delete ID</div>
+</div>
             </div>
         </div>
     </div>
@@ -2193,31 +2224,42 @@
             if(!currentUser) return; const homeList = document.getElementById('home-room-list'); homeList.innerHTML = '<p class="text-center text-gray-400 text-xs mt-4 col-span-2">Loading...</p>'; const roomsSnap = await get(ref(db, 'rooms')); if(!roomsSnap.exists()) { homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms found.</p>`; return; } const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : []; let history = JSON.parse(localStorage.getItem('room_history') || '[]'); homeList.innerHTML = ''; let hasLive = false; const promises = [];
             roomsSnap.forEach(r => { const d = r.val(); const roomId = r.key; const isOwnerPresent = d.activeUsers && Object.keys(d.activeUsers).includes(d.owner); if (d.isLocked === true) return; if (d.isLive === true && isOwnerPresent) { let shouldShow = false; if (currentHomeTab === 'following') { if (friendIds.includes(d.owner) || d.owner === currentUser.uid) shouldShow = true; } else if (currentHomeTab === 'popular') shouldShow = true; else if (currentHomeTab === 'recent') { if (history.includes(roomId)) shouldShow = true; } if (shouldShow) { hasLive = true; const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { const uData = uSnap.exists() ? uSnap.val() : {}; return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '' }; }); promises.push(p); } } }); 
             const results = await Promise.all(promises);
-            results.forEach(d => { 
-                const roomNameDisplay = d.roomName || (d.ownerName + "'s Room"); 
-                const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${roomNameDisplay}&background=random&size=200`; 
-                const genderIcon = d.gender === 'female' ? './female.png' : './male.png'; 
-                const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
-                
-                let rExp = d.roomExp || 0;
-                let nextRocket = './rocket1.png';
-                let rLvl = 1;
-                if(rExp >= 2000000) { nextRocket = "./rocket4.png"; rLvl = 4; }
-                else if(rExp >= 500000) { nextRocket = "./rocket3.png"; rLvl = 3; }
-                else if(rExp >= 300000) { nextRocket = "./rocket2.png"; rLvl = 2; }
-                else { nextRocket = "./rocket1.png"; rLvl = 1; }
-                let rocketTagHTML = `<div class="room-target-tag"><img src="${nextRocket}" onerror="this.style.display='none'"><span>Lv.${rLvl}</span></div>`;
+            // refreshHomeRooms فنکشن میں - یہ اپڈیٹڈ لائنیں ہیں
 
-                homeList.innerHTML += `<div onclick="joinRoom('${d.id}')" class="room-card-wrapper cursor-pointer">
-                    <div class="room-card-new">
-                        <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
-                        <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
-                        ${rocketTagHTML}
-                        <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
-                        <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
-                    </div>
-                </div>`;
-            });
+results.forEach(d => { 
+    const roomNameDisplay = d.roomName || (d.ownerName + "'s Room"); 
+    const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${roomNameDisplay}&background=random&size=200`; 
+    const genderIcon = d.ownerGender === 'female' ? './female.png' : './male.png'; 
+    const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
+    
+    // Owner Name Color Class (VIP names)
+    const ownerNameColorClass = d.ownerNameColorClass || '';
+    const ownerNameDisplay = `<span class="${ownerNameColorClass}">${d.ownerName || 'User'}</span>`;
+    
+    let rExp = d.roomExp || 0;
+    let nextRocket = './rocket1.png';
+    let rLvl = 1;
+    if(rExp >= 2000000) { nextRocket = "./rocket4.png"; rLvl = 4; }
+    else if(rExp >= 500000) { nextRocket = "./rocket3.png"; rLvl = 3; }
+    else if(rExp >= 300000) { nextRocket = "./rocket2.png"; rLvl = 2; }
+    else { nextRocket = "./rocket1.png"; rLvl = 1; }
+    let rocketTagHTML = `<div class="room-target-tag"><img src="${nextRocket}" onerror="this.style.display='none'"><span>Lv.${rLvl}</span></div>`;
+
+    homeList.innerHTML += `<div onclick="joinRoom('${d.id}')" class="room-card-wrapper cursor-pointer">
+        <div class="room-card-new">
+            <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
+            <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
+            ${rocketTagHTML}
+            <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
+            <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
+        </div>
+        <!-- Owner Info Section (NEW) -->
+        <div class="room-info-bottom flex items-center gap-1 px-1">
+            <img src="${genderIcon}" class="room-gender-icon" onerror="this.style.display='none'">
+            <div class="room-owner-name" style="color: #374151;">By: ${ownerNameDisplay}</div>
+        </div>
+    </div>`;
+});
             if(!hasLive) homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms.</p>`;
         }
 
@@ -3294,54 +3336,64 @@
         let adminTargetUid = null;
 
         window.openAdminPanel = async function() {
-            console.log("✅ Official Panel button clicked!");
-            
-            try {
-                if (!currentUser) {
-                    Swal.fire('Error', 'Please login first', 'error');
-                    return;
-                }
+    console.log("✅ Official Panel button clicked!");
+    
+    try {
+        if (!currentUser) {
+            Swal.fire('Error', 'Please login first', 'error');
+            return;
+        }
 
-                const modal = document.getElementById('admin-panel-modal');
-                if (!modal) {
-                    console.error("❌ admin-panel-modal not found!");
-                    return;
-                }
+        const modal = document.getElementById('admin-panel-modal');
+        if (!modal) {
+            console.error("❌ admin-panel-modal not found!");
+            return;
+        }
+        
+        modal.style.display = 'flex';
+        
+        const targetUser = document.getElementById('admin-target-user');
+        if(targetUser) targetUser.classList.add('hidden');
+        
+        const searchInput = document.getElementById('admin-search-id');
+        if(searchInput) searchInput.value = '';
+
+        const userSnap = await get(ref(db, `users/${currentUser.uid}`));
+        const userData = userSnap.val();
+        
+        if (!userData) {
+            Swal.fire('Error', 'User data not found', 'error');
+            return;
+        }
+
+        const isHeadOfficial = (userData.customId === 10005);
+        console.log("Is Head Official:", isHeadOfficial);
+
+        const makeOfficialBtn = document.getElementById('btn-make-official');
+        const banBtn = document.getElementById('btn-ban-user');
+        const unbanBtn = document.getElementById('btn-unban-user');
+
+        if (makeOfficialBtn) {
+            if (isHeadOfficial) {
+                makeOfficialBtn.style.display = 'block';
+                makeOfficialBtn.innerHTML = '<i class="fa-solid fa-certificate mr-1"></i> Toggle Official';
                 
-                modal.style.display = 'flex';
-                
-                const targetUser = document.getElementById('admin-target-user');
-                if(targetUser) targetUser.classList.add('hidden');
-                
-                const searchInput = document.getElementById('admin-search-id');
-                if(searchInput) searchInput.value = '';
-
-                const userSnap = await get(ref(db, `users/${currentUser.uid}`));
-                const userData = userSnap.val();
-                
-                if (!userData) {
-                    Swal.fire('Error', 'User data not found', 'error');
-                    return;
-                }
-
-                const isHeadOfficial = (userData.customId === 10005);
-                console.log("Is Head Official:", isHeadOfficial);
-
-                const makeOfficialBtn = document.getElementById('btn-make-official');
-                if (makeOfficialBtn) {
-                    if (isHeadOfficial) {
-                        makeOfficialBtn.style.display = 'block';
-                        makeOfficialBtn.innerHTML = '<i class="fa-solid fa-certificate mr-1"></i> Toggle Official';
-                    } else {
-                        makeOfficialBtn.style.display = 'none';
-                    }
-                }
-
-            } catch (error) {
-                console.error("❌ Error:", error);
-                Swal.fire('Error', error.message, 'error');
+                // Head Official کے پاس تمام بٹن ہوں گے
+                if(banBtn) banBtn.style.display = 'block';
+                if(unbanBtn) unbanBtn.style.display = 'block';
+            } else {
+                makeOfficialBtn.style.display = 'none';
+                // Other Officials کے پاس بھی بن/ان بین کے بٹن ہوں گے (لیکن صرف عام یوزرز کے لیے)
+                if(banBtn) banBtn.style.display = 'block';
+                if(unbanBtn) unbanBtn.style.display = 'block';
             }
-        };
+        }
+
+    } catch (error) {
+        console.error("❌ Error:", error);
+        Swal.fire('Error', error.message, 'error');
+    }
+};
 
         window.closeAdminPanel = function() {
             const modal = document.getElementById('admin-panel-modal');
@@ -3378,104 +3430,158 @@
         };
 
         window.adminAction = async function(action) {
-            if(!adminTargetUid) return;
+    if(!adminTargetUid) return;
 
-            try {
-                if(action === 'warn') {
-                    const { value: message } = await Swal.fire({
-                        title: 'Send Warning',
-                        input: 'textarea',
-                        inputPlaceholder: 'Type warning message...',
-                        showCancelButton: true,
-                        background: '#111',
-                        color: '#fff'
-                    });
-                    
-                    if (message) {
-                        await set(ref(db, `users/${adminTargetUid}/inbox/system/${Date.now()}`), {
-                            fromName: 'YARAAN Official',
-                            icon: './yaraan_dp.png',
-                            message: `WARNING: ${message}`,
-                            type: 'sys'
-                        });
-                        Swal.fire('Sent', 'Warning sent successfully.', 'success');
-                    }
-                }
-                else if(action === 'coins') {
-                    const { value: amount } = await Swal.fire({
-                        title: 'Send Coins',
-                        input: 'number',
-                        inputPlaceholder: 'Enter Amount',
-                        showCancelButton: true,
-                        background: '#111',
-                        color: '#fff'
-                    });
-                    
-                    if (amount) {
-                        const uSnap = await get(ref(db, `users/${adminTargetUid}`));
-                        const uData = uSnap.val();
-                        await update(ref(db, `users/${adminTargetUid}`), {
-                            coins: (Number(uData.coins) || 0) + parseInt(amount)
-                        });
-                        Swal.fire('Sent', `Sent ${amount} coins.`, 'success');
-                    }
-                }
-                else if(action === 'ban') {
-                    const result = await Swal.fire({
-                        title: 'Ban User?',
-                        text: 'This user will not be able to login.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        background: '#111',
-                        color: '#fff'
-                    });
-                    
-                    if (result.isConfirmed) {
-                        await update(ref(db, `users/${adminTargetUid}`), { isBanned: true });
-                        Swal.fire('Banned', 'User has been banned.', 'success');
-                    }
-                }
-                else if(action === 'unban') {
-                    const result = await Swal.fire({
-                        title: 'Unban User?',
-                        text: 'This user will be able to login again.',
-                        icon: 'question',
-                        showCancelButton: true,
-                        background: '#111',
-                        color: '#fff'
-                    });
-                    
-                    if (result.isConfirmed) {
-                        await update(ref(db, `users/${adminTargetUid}`), { isBanned: null });
-                        Swal.fire('Unbanned', 'User has been restored.', 'success');
-                    }
-                }
-                else if(action === 'delete') {
-                    const result = await Swal.fire({
-                        title: 'Delete Account?',
-                        text: 'This action can be recovered later.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        background: '#111',
-                        color: '#fff'
-                    });
-                    
-                    if (result.isConfirmed) {
-                        await update(ref(db, `users/${adminTargetUid}`), { 
-                            isBanned: true, 
-                            isDeleted: true,
-                            username: "Deleted User"
-                        });
-                        Swal.fire('Deleted', 'Account has been deleted.', 'success');
-                        closeAdminPanel();
-                    }
-                }
+    try {
+        // موجودہ ایڈمن کی معلومات حاصل کریں
+        const currentAdminSnap = await get(ref(db, `users/${currentUser.uid}`));
+        const currentAdminData = currentAdminSnap.val();
+        const isHeadOfficial = (currentAdminData.customId === 10005);
+        
+        // Target user کی معلومات حاصل کریں
+        const targetSnap = await get(ref(db, `users/${adminTargetUid}`));
+        const targetData = targetSnap.val();
+        const isTargetOfficial = targetData.isOfficial || false;
+        const isTargetHeadOfficial = (targetData.customId === 10005);
+        
+        // Rule 1: کوئی بھی Head Official (10005) کو نہیں روک سکتا
+        if(isTargetHeadOfficial) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Access Denied',
+                text: 'Cannot perform actions on Head Official (ID 10005).',
+                background: '#111',
+                color: '#fff'
+            });
+        }
+        
+        // Rule 2: اگر ٹارگٹ Official ہے اور کرنٹ ایڈمن Head Official نہیں ہے
+        if(isTargetOfficial && !isHeadOfficial) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Access Denied',
+                text: 'Only Head Official can perform actions on other Officials.',
+                background: '#111',
+                color: '#fff'
+            });
+        }
 
-            } catch (error) {
-                console.error("Admin action error:", error);
-                Swal.fire('Error', error.message, 'error');
+        if(action === 'warn') {
+            const { value: message } = await Swal.fire({
+                title: 'Send Warning',
+                input: 'textarea',
+                inputPlaceholder: 'Type warning message...',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (message) {
+                await set(ref(db, `users/${adminTargetUid}/inbox/system/${Date.now()}`), {
+                    fromName: 'YARAAN Official',
+                    icon: './yaraan_dp.png',
+                    message: `WARNING: ${message}`,
+                    type: 'sys'
+                });
+                Swal.fire('Sent', 'Warning sent successfully.', 'success');
             }
-        };
+        }
+        else if(action === 'coins') {
+            const { value: amount } = await Swal.fire({
+                title: 'Send Coins',
+                input: 'number',
+                inputPlaceholder: 'Enter Amount',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (amount) {
+                const uSnap = await get(ref(db, `users/${adminTargetUid}`));
+                const uData = uSnap.val();
+                await update(ref(db, `users/${adminTargetUid}`), {
+                    coins: (Number(uData.coins) || 0) + parseInt(amount)
+                });
+                Swal.fire('Sent', `Sent ${amount} coins.`, 'success');
+            }
+        }
+        else if(action === 'ban') {
+            const result = await Swal.fire({
+                title: 'Ban User?',
+                text: 'This user will not be able to login.',
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                await update(ref(db, `users/${adminTargetUid}`), { isBanned: true });
+                Swal.fire('Banned', 'User has been banned.', 'success');
+            }
+        }
+        else if(action === 'unban') {
+            const result = await Swal.fire({
+                title: 'Unban User?',
+                text: 'This user will be able to login again.',
+                icon: 'question',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                await update(ref(db, `users/${adminTargetUid}`), { isBanned: null });
+                Swal.fire('Unbanned', 'User has been restored.', 'success');
+            }
+        }
+        else if(action === 'official') {
+            // Toggle Official Status (صرف Head Official کے لیے)
+            const isHeadOfficial = (currentAdminData.customId === 10005);
+            if(!isHeadOfficial) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'Access Denied',
+                    text: 'Only Head Official can make/unmake Officials.',
+                    background: '#111',
+                    color: '#fff'
+                });
+            }
+            
+            const newOfficialStatus = !targetData.isOfficial;
+            await update(ref(db, `users/${adminTargetUid}`), { 
+                isOfficial: newOfficialStatus,
+                currentFrame: newOfficialStatus ? './frame_official.png' : null
+            });
+            
+            Swal.fire('Success', `User is now ${newOfficialStatus ? 'an Official' : 'a regular user'}.`, 'success');
+        }
+        else if(action === 'delete') {
+            const result = await Swal.fire({
+                title: 'Delete Account?',
+                text: 'This action can be recovered later.',
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                await update(ref(db, `users/${adminTargetUid}`), { 
+                    isBanned: true, 
+                    isDeleted: true,
+                    username: "Deleted User"
+                });
+                Swal.fire('Deleted', 'Account has been deleted.', 'success');
+                closeAdminPanel();
+            }
+        }
+
+    } catch (error) {
+        console.error("Admin action error:", error);
+        Swal.fire('Error', error.message, 'error');
+    }
+};
 
         document.addEventListener('click', function(e) {
             const modal = document.getElementById('admin-panel-modal');
