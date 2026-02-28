@@ -565,8 +565,8 @@
                 </div>
             </div>
             <div id="header-inbox-content" class="w-full hidden">
-                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Messages</h1> 
-            </div>
+    <!-- خالی رکھیں -->
+</div>
             <div id="header-profile-content" class="w-full hidden"></div>
         </header>
 
@@ -842,12 +842,45 @@
         </div>
 
         <div id="view-inbox" class="view-section light-bg">
-            <div class="p-4">
-                <div id="requests-section"><h2 class="text-xs font-bold uppercase tracking-widest mb-2">Notifications</h2><div id="inbox-list" class="space-y-2 mb-6"></div></div>
-                <h2 class="text-xs font-bold uppercase tracking-widest mb-2">My Following (Chat)</h2><div id="friends-chat-list" class="space-y-2"></div>
+    <div class="p-4">
+        <!-- ========== صرف ایک بڑا Messages ========== -->
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Messages</h2>
+
+        <!-- ========== دو بڑے لوگو ========== -->
+        <div class="flex gap-6 mb-6">
+            <!-- Official / System Logo -->
+            <div onclick="toggleNotifSection('official')" class="flex flex-col items-center flex-1 cursor-pointer">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg border-2 border-white">
+                    <img src="./yaraan_dp.png" class="w-12 h-12 rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
+                </div>
+                <span class="text-xs font-bold text-gray-700 mt-1">Official</span>
+            </div>
+            <!-- Rocket Rewards Logo -->
+            <div onclick="toggleNotifSection('rocket')" class="flex flex-col items-center flex-1 cursor-pointer">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center shadow-lg border-2 border-white">
+                    <img src="./rocket1.png" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/100?text=🚀'">
+                </div>
+                <span class="text-xs font-bold text-gray-700 mt-1">Rocket Rewards</span>
             </div>
         </div>
 
+        <!-- ========== نوٹیفکیشنز کی لسٹ ========== -->
+        <div id="official-notifications" class="space-y-2 mb-4 hidden"></div>
+        <div id="rocket-rewards-list" class="space-y-2 mb-4 hidden"></div>
+
+        <!-- ========== فالو ریگزسٹ ========== -->
+        <div id="follow-requests-container" class="mt-2 mb-4">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Follow Requests</h3>
+            <div id="follow-requests-list" class="space-y-3"></div>
+        </div>
+
+        <!-- ========== دوستوں کی لسٹ ========== -->
+        <div class="mt-4">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Chats</h3>
+            <div id="friends-chat-list" class="space-y-3"></div>
+        </div>
+    </div>
+</div>
         <div id="view-chat" class="view-section bg-white flex-col hidden" style="z-index: 100;">
             <div class="flex items-center gap-3 p-3 border-b border-gray-200 bg-gray-50 shadow-sm sticky top-0 z-10" id="dm-header">
                 <button onclick="closeDirectChat(); event.stopPropagation();" class="text-gray-600 p-2"><i class="fa-solid fa-arrow-left text-lg"></i></button>
@@ -999,9 +1032,8 @@
                 <video id="theme-video-bg" loop muted playsinline class="hidden absolute top-0 left-0 w-full h-full object-cover -z-10"></video>
 
                 <div id="rocket-trigger-btn" onclick="openRocketDetails()">
-                    <img src="./rocket1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="rocket-display-icon" id="main-rocket-icon">
-                </div>
-                
+    <img src="./rocket1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="rocket-display-icon" id="main-rocket-icon">
+</div>
                 <!-- NEW GAME (GREEDY) ICON - SQAURE PNG -->
                 <div id="game-trigger-btn" onclick="openGame()" class="absolute bottom-2 right-4 w-10 h-10 z-50 cursor-pointer hover:scale-105 transition">
                     <img src="./game_icon.png" onerror="this.src='https://placehold.co/100x100?text=Game'" class="w-full h-full object-cover rounded-lg shadow-[0_0_10px_rgba(250,204,21,0.5)] border border-yellow-400">
@@ -1095,17 +1127,47 @@
             </div>
 
             <div class="gift-grid">
-                <div class="gift-item" onclick="sendGift('Rose', 10000)"><img src="https://placehold.co/50?text=🌹" class="gift-img"><span class="gift-price">10k</span></div>
-                <div class="gift-item" onclick="sendGift('Ring', 50000)"><img src="https://placehold.co/50?text=💍" class="gift-img"><span class="gift-price">50k</span></div>
-                <div class="gift-item" onclick="sendGift('Car', 300000)"><img src="https://placehold.co/50?text=🏎️" class="gift-img"><span class="gift-price">300k</span></div>
-                <div class="gift-item" onclick="sendGift('Rocket', 500000)"><img src="./rocket4.png" onerror="this.src='https://placehold.co/50?text=🚀'" class="gift-img"><span class="gift-price">500k</span></div>
-                <div class="gift-item" onclick="sendGift('Crown', 1000000)"><img src="./crown.png" onerror="this.src='https://placehold.co/50?text=👑'" class="gift-img"><span class="gift-price">1M</span></div>
-                <div class="gift-item" onclick="sendGift('Castle', 5000000)"><img src="./castle.png" onerror="this.src='https://placehold.co/50?text=🏰'" class="gift-img"><span class="gift-price">5M</span></div>
-                <div class="gift-item" onclick="sendGift('Yacht', 10000000)"><img src="./yacht.png" onerror="this.src='https://placehold.co/50?text=🛥️'" class="gift-img"><span class="gift-price">10M</span></div>
-                <div class="gift-item" onclick="sendGift('Dragon', 50000000)"><img src="./dragon.png" onerror="this.src='https://placehold.co/50?text=🐉'" class="gift-img"><span class="gift-price">50M</span></div>
-            </div>
-        </div>
+    <!-- 1. Rose -->
+    <div class="gift-item" onclick="sendGift('Rose', 10000)">
+        <img src="./gifts/rose.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🌹'">
+        <span class="gift-price">10k</span>
     </div>
+    <!-- 2. Ring -->
+    <div class="gift-item" onclick="sendGift('Ring', 50000)">
+        <img src="./gifts/ring.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=💍'">
+        <span class="gift-price">50k</span>
+    </div>
+    <!-- 3. Car -->
+    <div class="gift-item" onclick="sendGift('Car', 300000)">
+        <img src="./gifts/car.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏎️'">
+        <span class="gift-price">300k</span>
+    </div>
+    <!-- 4. Rocket -->
+    <div class="gift-item" onclick="sendGift('Rocket', 500000)">
+        <img src="./gifts/rocket.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🚀'">
+        <span class="gift-price">500k</span>
+    </div>
+    <!-- 5. Crown -->
+    <div class="gift-item" onclick="sendGift('Crown', 1000000)">
+        <img src="./gifts/crown.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=👑'">
+        <span class="gift-price">1M</span>
+    </div>
+    <!-- 6. Castle -->
+    <div class="gift-item" onclick="sendGift('Castle', 5000000)">
+        <img src="./gifts/castle.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏰'">
+        <span class="gift-price">5M</span>
+    </div>
+    <!-- 7. Yacht -->
+    <div class="gift-item" onclick="sendGift('Yacht', 10000000)">
+        <img src="./gifts/yacht.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🛥️'">
+        <span class="gift-price">10M</span>
+    </div>
+    <!-- 8. Dragon -->
+    <div class="gift-item" onclick="sendGift('Dragon', 50000000)">
+        <img src="./gifts/dragon.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🐉'">
+        <span class="gift-price">50M</span>
+    </div>
+</div>
 <!-- SUPER ADMIN PANEL MODAL -->
     <div id="admin-panel-modal">
         <div class="admin-box relative">
@@ -1720,47 +1782,98 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
         }
 
         function updateRocketUI(exp) {
-            let targetLevel = 0; let targetImg = ROCKET_LEVELS[0].img; let nextThreshold = ROCKET_LEVELS[0].cost; let prevThreshold = 0;
-            for (let i = 0; i < ROCKET_LEVELS.length; i++) {
-                if (exp >= ROCKET_LEVELS[i].cost) {
-                    targetLevel = ROCKET_LEVELS[i].level; targetImg = ROCKET_LEVELS[i].img; prevThreshold = ROCKET_LEVELS[i].cost;
-                    if (i < ROCKET_LEVELS.length - 1) { nextThreshold = ROCKET_LEVELS[i+1].cost; } else { nextThreshold = exp * 1.5; }
-                }
-            }
-            
-            const triggerImg = document.getElementById('main-rocket-icon'); if (triggerImg) triggerImg.src = targetImg;
-            document.getElementById('modal-big-rocket').src = targetImg;
-            document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
-            if(targetLevel >= 1) document.getElementById('btn-lvl-1').classList.add('active'); 
-            if(targetLevel >= 2) document.getElementById('btn-lvl-2').classList.add('active'); 
-            if(targetLevel >= 3) document.getElementById('btn-lvl-3').classList.add('active'); 
-            if(targetLevel >= 4) document.getElementById('btn-lvl-4').classList.add('active');
-            
-            let percentage = 0;
-            if (targetLevel < 4) { percentage = ((exp - prevThreshold) / (nextThreshold - prevThreshold)) * 100; } else { percentage = 100; }
-            percentage = Math.max(0, Math.min(100, percentage));
-            document.getElementById('rocket-tube-fill').style.height = `${percentage}%`; document.getElementById('rocket-tube-text').innerText = `${Math.floor(percentage)}%`;
+    let targetLevel = 0; 
+    let targetImg = ROCKET_LEVELS[0].img; 
+    let nextThreshold = ROCKET_LEVELS[0].cost; 
+    let prevThreshold = 0;
+    window.openRocketDetails = () => {
+    document.getElementById('rocket-details-modal').style.display = 'flex';
+};
 
-            // FIXED QUEUE LOGIC
-            if (isFirstRocketLoad) {
-                // اگر پہلی بار روم اوپن کیا ہے تو صرف لیول سیٹ کرو، راکٹ مت اڑاؤ
-                lastRocketLevel = targetLevel;
-                isFirstRocketLoad = false;
-            } else if (targetLevel > lastRocketLevel) {
-                // اگر گیم کے دوران کوئی گفٹ کرے تو راکٹ اڑاؤ
-                let startLoop = Math.max(1, lastRocketLevel + 1);
-                if (lastRocketLevel === 0 && targetLevel > 0) { startLoop = 1; } // جب زیرو سے سیدھا بڑا گفٹ لگے
-
-                for(let lvl = startLoop; lvl <= targetLevel; lvl++) {
-                    const rData = ROCKET_LEVELS.find(r => r.level === lvl);
-                    if(rData) {
-                        rocketQueue.push({ imgSrc: rData.img, targetLevel: lvl, isMaxLevel: (lvl === 4) });
-                    }
-                }
-                processRocketQueue();
+window.closeRocketDetails = () => {
+    document.getElementById('rocket-details-modal').style.display = 'none';
+};
+    for (let i = 0; i < ROCKET_LEVELS.length; i++) {
+        if (exp >= ROCKET_LEVELS[i].cost) {
+            targetLevel = ROCKET_LEVELS[i].level; 
+            targetImg = ROCKET_LEVELS[i].img; 
+            prevThreshold = ROCKET_LEVELS[i].cost;
+            if (i < ROCKET_LEVELS.length - 1) { 
+                nextThreshold = ROCKET_LEVELS[i+1].cost; 
+            } else { 
+                nextThreshold = exp * 1.5; 
             }
-            lastRocketLevel = targetLevel;
         }
+    }
+    
+    const triggerImg = document.getElementById('main-rocket-icon'); 
+    if (triggerImg) triggerImg.src = targetImg;
+    document.getElementById('modal-big-rocket').src = targetImg;
+    
+    document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
+    if(targetLevel >= 1) document.getElementById('btn-lvl-1').classList.add('active'); 
+    if(targetLevel >= 2) document.getElementById('btn-lvl-2').classList.add('active'); 
+    if(targetLevel >= 3) document.getElementById('btn-lvl-3').classList.add('active'); 
+    if(targetLevel >= 4) document.getElementById('btn-lvl-4').classList.add('active');
+    
+    let percentage = 0;
+    if (targetLevel < 4) { 
+        percentage = ((exp - prevThreshold) / (nextThreshold - prevThreshold)) * 100; 
+    } else { 
+        percentage = 100; 
+    }
+    percentage = Math.max(0, Math.min(100, percentage));
+    document.getElementById('rocket-tube-fill').style.height = `${percentage}%`; 
+    document.getElementById('rocket-tube-text').innerText = `${Math.floor(percentage)}%`;
+
+    // راکٹ لیول چیک کریں
+    if (isFirstRocketLoad) {
+        lastRocketLevel = targetLevel;
+        isFirstRocketLoad = false;
+    } else if (targetLevel > lastRocketLevel) {
+        // نیا لیول آنے پر راکٹ اڑائیں
+        let startLoop = Math.max(1, lastRocketLevel + 1);
+        if (lastRocketLevel === 0 && targetLevel > 0) startLoop = 1;
+        
+        for(let lvl = startLoop; lvl <= targetLevel; lvl++) {
+            const rData = ROCKET_LEVELS.find(r => r.level === lvl);
+            if(rData) {
+                rocketQueue.push({ 
+                    imgSrc: rData.img, 
+                    targetLevel: lvl, 
+                    isMaxLevel: (lvl === 4) 
+                });
+            }
+        }
+        processRocketQueue();
+
+        // ریوارڈ سب یوزرز کو دیں
+        if (currentRoomId) {
+            get(ref(db, `rooms/${currentRoomId}/activeUsers`)).then(snap => {
+                if (snap.exists()) {
+                    Object.keys(snap.val()).forEach(uid => {
+                        addRocketRewardForUser(uid, currentRoomId, targetLevel);
+                    });
+                }
+            });
+        }
+    } 
+    // 🟢 نیا: اگر لیول 4 ہے اور exp 3 ملین سے زیادہ ہے تو ری سیٹ کریں
+    else if (targetLevel === 4 && exp >= 3000000) {
+        // 5 سیکنڈ بعد ری سیٹ کریں (تاکہ راکٹ اڑنے کا وقت ملے)
+        setTimeout(() => {
+            set(ref(db, `rooms/${currentRoomId}/roomExp`), 0);
+            push(ref(db, `rooms/${currentRoomId}/messages`), { 
+                name: "System", 
+                text: "✨ Rocket Cycle Reset! Start again! ✨", 
+                type: 'system', 
+                timestamp: Date.now() 
+            });
+        }, 5000);
+    }
+    
+    lastRocketLevel = targetLevel;
+}
 
         function processRocketQueue() {
             if (isRocketFlying || rocketQueue.length === 0) return;
@@ -2264,35 +2377,136 @@ onChildAdded(systemRef, async (snap) => {
             }
             updateHomeTopDPs();
             
-            onValue(ref(db, `users/${currentUser.uid}/friends`), async (snap) => { 
-                const chatList = document.getElementById('friends-chat-list'); 
-                chatList.innerHTML = ''; let count = 0; 
-                if(snap.exists()) { 
-                    count = Object.keys(snap.val()).length; 
-                    for (const [uid, name] of Object.entries(snap.val())) { 
-                        const fSnap = await get(ref(db, `users/${uid}`)); 
-                        const fData = fSnap.val() || {}; 
-                        const pic = fData.photoURL || `https://ui-avatars.com/api/?name=${name}`; 
-                        chatList.innerHTML += `<div onclick="openDirectChat('${uid}', '${name}')" class="bg-white p-3 rounded flex items-center justify-between cursor-pointer border border-gray-200 shadow-sm hover:shadow-md transition"><div class="flex items-center gap-3"><img src="${pic}" class="w-10 h-10 rounded-full border border-gray-300 object-cover"><span class="text-gray-900 text-sm font-medium">${name}</span></div></div>`; 
-                    } 
-                } 
-                document.getElementById('stat-following').innerText = count; 
-                document.getElementById('stat-fans').innerText = count; 
-                refreshHomeRooms(); 
-            });
+            onValue(ref(db, `users/${currentUser.uid}/friends`), async (snap) => {
+    const chatList = document.getElementById('friends-chat-list');
+    chatList.innerHTML = '';
+    let count = 0;
 
-            onValue(ref(db, `users/${currentUser.uid}/inbox`), snap => { 
-                const list = document.getElementById('inbox-list'); 
-                const badge = document.getElementById('inbox-dot'); 
-                list.innerHTML = ''; let count = 0; 
-                if(snap.exists()) { 
-                    const data = snap.val(); 
-                    if(data.requests) Object.entries(data.requests).forEach(([key, val]) => { count++; list.innerHTML += inboxItem(key, val, 'req'); }); 
-                    if(data.invites) Object.entries(data.invites).forEach(([key, val]) => { count++; list.innerHTML += inboxItem(key, val, 'inv'); }); 
-                    if(data.system) Object.entries(data.system).forEach(([key, val]) => { count++; list.innerHTML += inboxItem(key, val, 'sys'); }); 
-                } 
-                if(count > 0) badge.classList.remove('hidden'); else badge.classList.add('hidden'); 
+    if (snap.exists()) {
+        count = Object.keys(snap.val()).length;
+        for (const [uid, name] of Object.entries(snap.val())) {
+            // دوست کی مکمل معلومات حاصل کریں
+            const fSnap = await get(ref(db, `users/${uid}`));
+            const fData = fSnap.val() || {};
+            const pic = fData.photoURL || `https://ui-avatars.com/api/?name=${name}&background=random`;
+            const status = fData.status === 'online' ? 'online' : 'offline';
+            const statusDot = status === 'online' ? 'bg-green-500' : 'bg-gray-400';
+            
+            // (اختیاری) آخری میسج حاصل کرنے کی کوشش
+            const chatId = [currentUser.uid, uid].sort().join('_');
+            const lastMsgSnap = await get(ref(db, `direct_messages/${chatId}`));
+            let lastMsg = '';
+            if (lastMsgSnap.exists()) {
+                const msgs = Object.values(lastMsgSnap.val());
+                const last = msgs[msgs.length - 1];
+                lastMsg = last.text.length > 20 ? last.text.substring(0, 20) + '…' : last.text;
+            }
+
+            chatList.innerHTML += `
+            <div onclick="openDirectChat('${uid}', '${name}')" class="flex items-center gap-3 p-2 bg-white rounded-lg shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition">
+                <div class="relative">
+                    <img src="${pic}" class="w-12 h-12 rounded-full border-2 border-gray-200 object-cover">
+                    <span class="absolute bottom-0 right-0 w-3 h-3 ${statusDot} rounded-full border-2 border-white"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-gray-900 text-sm truncate">${name}</h4>
+                        <span class="text-[10px] text-gray-400">${fData.lastSeen ? new Date(fData.lastSeen).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 truncate">${lastMsg || 'No messages yet'}</p>
+                </div>
+            </div>`;
+        }
+    }
+    document.getElementById('stat-following').innerText = count;
+    document.getElementById('stat-fans').innerText = count;
+    refreshHomeRooms();
+});
+
+            
+        onValue(ref(db, `users/${currentUser.uid}/inbox`), async (snap) => {
+    const officialDiv = document.getElementById('official-notifications');
+    const rocketDiv = document.getElementById('rocket-rewards-list');
+    const followDiv = document.getElementById('follow-requests-list');
+    const badge = document.getElementById('inbox-dot');
+
+    officialDiv.innerHTML = '';
+    rocketDiv.innerHTML = '';
+    followDiv.innerHTML = '';
+
+    let totalUnread = 0;
+
+    if (snap.exists()) {
+        const data = snap.val();
+
+        await cleanOldRocketRewards();
+
+        // ===== آفیشل نوٹیفکیشنز (صرف system) =====
+        if (data.system) {
+            Object.entries(data.system).forEach(([key, val]) => {
+                totalUnread++;
+                officialDiv.innerHTML += `
+                <div class="bg-red-50 border border-red-200 p-3 rounded-lg flex items-start gap-3 cursor-pointer hover:bg-red-100 transition" onclick="viewOfficialNotifFull('${key}')">
+                    <img src="${val.icon || './yaraan_dp.png'}" class="w-10 h-10 rounded-full border-2 border-red-400 object-cover">
+                    <div class="flex-1">
+                        <p class="text-xs text-gray-700 line-clamp-2">${val.message}</p>
+                        <span class="text-[10px] text-gray-400">${new Date(val.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <button onclick="delNotif('system/${key}'); event.stopPropagation();" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
             });
+        }
+
+        // ===== فالو کی درخواستیں (requests) - اب الگ سیکشن میں =====
+        if (data.requests) {
+            Object.entries(data.requests).forEach(([key, val]) => {
+                totalUnread++;
+                // صارف کی ڈی پی حاصل کریں
+                let profilePic = `https://ui-avatars.com/api/?name=${val.fromName}&background=random`;
+                
+                followDiv.innerHTML += `
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg flex items-start gap-3">
+                    <img src="${profilePic}" class="w-12 h-12 rounded-full border-2 border-blue-400 object-cover">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> followed you</p>
+                        <span class="text-[10px] text-gray-400">${new Date().toLocaleDateString()}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="acceptFriend('${val.fromUid}', '${val.fromName}')" class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow">Follow back</button>
+                        <button onclick="delNotif('requests/${key}')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // ===== راکٹ ریوارڈز =====
+        if (data.rocketRewards) {
+            Object.entries(data.rocketRewards).forEach(([key, val]) => {
+                if (!val.claimed) totalUnread++;
+                rocketDiv.innerHTML += `
+                <div id="reward-${key}" class="bg-gradient-to-r from-yellow-100 to-amber-100 border border-yellow-400 p-3 rounded-lg flex items-start gap-3 cursor-pointer hover:shadow-md transition" onclick="viewRocketRewardFull('${key}')">
+                    <img src="./rocket1.png" class="w-10 h-10 object-contain">
+                    <div class="flex-1">
+                        <p class="text-xs text-gray-800 line-clamp-2">${val.message}</p>
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-[10px] text-gray-500">${new Date(val.timestamp).toLocaleDateString()}</span>
+                            <span class="font-bold text-amber-600 text-sm">🪙 ${val.amount.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    ${!val.claimed ? 
+                        `<button onclick="event.stopPropagation(); collectRocketReward('${key}', ${val.amount})" class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Collect</button>` 
+                        : '<span class="text-xs text-gray-400">Claimed</span>'}
+                </div>`;
+            });
+        }
+    }
+
+    if (totalUnread > 0) badge.classList.remove('hidden'); else badge.classList.add('hidden');
+    
+    // Default tab selection
+    switchInboxTab('notifications');
+    switchNotifTab('official');
+});
         }
         
 
@@ -3590,6 +3804,198 @@ window.removeVIPName = async () => {
                 Swal.fire('Error', 'Support center is currently unavailable.', 'error');
             }
         };
+        // ========== INBOX TABS ==========
+window.switchInboxTab = (tab) => {
+    const notifContent = document.getElementById('inbox-notifications-content');
+    const followingContent = document.getElementById('inbox-following-content');
+    const tabNotif = document.getElementById('inbox-tab-notifications');
+    const tabFollow = document.getElementById('inbox-tab-following');
+    
+    if (tab === 'notifications') {
+        notifContent.classList.remove('hidden');
+        followingContent.classList.add('hidden');
+        tabNotif.classList.add('text-red-600', 'border-b-2', 'border-red-600');
+        tabNotif.classList.remove('text-gray-400');
+        tabFollow.classList.remove('text-red-600', 'border-b-2', 'border-red-600');
+        tabFollow.classList.add('text-gray-400');
+        // default sub‑tab = official
+        switchNotifTab('official');
+    } else {
+        notifContent.classList.add('hidden');
+        followingContent.classList.remove('hidden');
+        tabFollow.classList.add('text-red-600', 'border-b-2', 'border-red-600');
+        tabFollow.classList.remove('text-gray-400');
+        tabNotif.classList.remove('text-red-600', 'border-b-2', 'border-red-600');
+        tabNotif.classList.add('text-gray-400');
+    }
+};
+
+window.switchNotifTab = (subtab) => {
+    const officialDiv = document.getElementById('official-notifications');
+    const rocketDiv = document.getElementById('rocket-rewards-list');
+    const tabOfficial = document.getElementById('notif-tab-official');
+    const tabRocket = document.getElementById('notif-tab-rocket');
+    
+    if (subtab === 'official') {
+        officialDiv.classList.remove('hidden');
+        rocketDiv.classList.add('hidden');
+        tabOfficial.classList.add('bg-red-600', 'text-white');
+        tabOfficial.classList.remove('bg-gray-200', 'text-gray-700');
+        tabRocket.classList.remove('bg-red-600', 'text-white');
+        tabRocket.classList.add('bg-gray-200', 'text-gray-700');
+    } else {
+        officialDiv.classList.add('hidden');
+        rocketDiv.classList.remove('hidden');
+        tabRocket.classList.add('bg-red-600', 'text-white');
+        tabRocket.classList.remove('bg-gray-200', 'text-gray-700');
+        tabOfficial.classList.remove('bg-red-600', 'text-white');
+        tabOfficial.classList.add('bg-gray-200', 'text-gray-700');
+    }
+};
+
+// ========== ROCKET REWARD FUNCTIONS ==========
+// ✅ Moved here
+async function addRocketRewardForUser(uid, roomId, level) {
+    const rewards = { 1: 10000, 2: 50000, 3: 200000, 4: 500000 };
+    const amount = rewards[level];
+    if (!amount) return;
+    const rewardRef = ref(db, `users/${uid}/inbox/rocketRewards/${roomId}_${level}_${Date.now()}`);
+    await set(rewardRef, {
+        amount: amount,
+        message: `🚀 Rocket reached Level ${level} in a room you joined! You received ${amount.toLocaleString()} coins.`,
+        claimed: false,
+        timestamp: Date.now()
+    });
+
+    // Update inbox badge
+    updateInboxBadge();
+};
+
+window.collectRocketReward = async (key, amount) => {
+  
+    if (!currentUser) return;
+    // Add coins to wallet
+    currentCoins += amount;
+    await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
+    // Mark as claimed
+    await update(ref(db, `users/${currentUser.uid}/inbox/rocketRewards/${key}`), { claimed: true });
+    // Remove from UI after a short delay
+    const el = document.getElementById(`reward-${key}`);
+    if (el) el.remove();
+    updateInboxBadge();
+    Swal.fire({ toast: true, icon: 'success', title: `${amount.toLocaleString()} coins collected!`, position: 'top', timer: 1500, showConfirmButton: false });
+};
+
+// Clean old rewards (older than today's 5 AM PKT)
+window.cleanOldRocketRewards = async () => {
+    if (!currentUser) return;
+    const now = Date.now();
+    // Calculate today's 5 AM PKT timestamp
+    const pktOffset = 5 * 60 * 60 * 1000; // 5 hours in ms
+    const dayStart = new Date();
+    dayStart.setUTCHours(0,0,0,0);
+    const today5amPKT = dayStart.getTime() + pktOffset; // 5 AM PKT in UTC ms
+    
+    const rewardsSnap = await get(ref(db, `users/${currentUser.uid}/inbox/rocketRewards`));
+    if (!rewardsSnap.exists()) return;
+    
+    const updates = {};
+    rewardsSnap.forEach(child => {
+        const data = child.val();
+        if (data.timestamp < today5amPKT) {
+            updates[child.key] = null; // delete
+        }
+    });
+    if (Object.keys(updates).length > 0) {
+        await update(ref(db, `users/${currentUser.uid}/inbox/rocketRewards`), updates);
+    }
+};
+
+// Update red dot on Inbox icon
+window.updateInboxBadge = async () => {
+    if (!currentUser) return;
+    const snap = await get(ref(db, `users/${currentUser.uid}/inbox`));
+    const data = snap.val() || {};
+    let count = 0;
+    if (data.requests) count += Object.keys(data.requests).length;
+    if (data.invites) count += Object.keys(data.invites).length;
+    if (data.system) count += Object.keys(data.system).length;
+    if (data.rocketRewards) {
+        const unclaimed = Object.values(data.rocketRewards).filter(r => !r.claimed).length;
+        count += unclaimed;
+    }
+    const badge = document.getElementById('inbox-dot');
+    if (count > 0) badge.classList.remove('hidden');
+    else badge.classList.add('hidden');
+};
+// فل ویو میں آفیشل نوٹیفکیشن دکھانے کا فنکشن
+window.viewOfficialNotifFull = async (key) => {
+    const snap = await get(ref(db, `users/${currentUser.uid}/inbox/system/${key}`));
+    if (!snap.exists()) {
+        Swal.fire({ icon: 'error', title: 'نہیں ملا', text: 'یہ نوٹیفکیشن اب موجود نہیں ہے۔', background: '#111', color: '#fff' });
+        return;
+    }
+    const data = snap.val();
+    Swal.fire({
+        title: data.fromName || 'YARAAN Official',
+        html: `
+            <div style="text-align: center;">
+                <img src="${data.icon || './yaraan_dp.png'}" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #dc2626; margin-bottom: 15px;">
+                <div style="background: #1f2937; padding: 20px; border-radius: 12px; text-align: left; color: #fff; white-space: pre-line; max-height: 400px; overflow-y: auto;">
+                    ${data.message}
+                </div>
+            </div>
+        `,
+        background: '#111',
+        color: '#fff',
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'OK',
+        width: '90%',
+        padding: '20px'
+    });
+};
+
+// فل ویو میں راکٹ ریوارڈ دکھانے کا فنکشن
+window.viewRocketRewardFull = async (key) => {
+    const snap = await get(ref(db, `users/${currentUser.uid}/inbox/rocketRewards/${key}`));
+    if (!snap.exists()) {
+        Swal.fire({ icon: 'error', title: 'نہیں ملا', text: 'یہ ریوارڈ اب موجود نہیں ہے۔', background: '#111', color: '#fff' });
+        return;
+    }
+    const data = snap.val();
+    Swal.fire({
+        title: '🚀 Rocket Reward',
+        html: `
+            <div style="text-align: center;">
+                <img src="./rocket1.png" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 15px;">
+                <div style="background: #1f2937; padding: 20px; border-radius: 12px; text-align: left; color: #fff;">
+                    <p style="font-size: 14px; margin-bottom: 10px;">${data.message}</p>
+                    <p style="font-size: 18px; font-weight: bold; color: #facc15;">🪙 ${data.amount.toLocaleString()} Coins</p>
+                    ${!data.claimed ? '<p style="color: #4ade80; margin-top: 10px;">ابھی کلیکٹ نہیں کیا گیا</p>' : '<p style="color: #9ca3af;">کلیکٹ ہو چکا ہے</p>'}
+                </div>
+            </div>
+        `,
+        background: '#111',
+        color: '#fff',
+        confirmButtonColor: '#facc15',
+        confirmButtonText: 'Close',
+        width: '90%',
+        padding: '20px'
+    });
+};
+// آفیشل / راکٹ لسٹ دکھانے/چھپانے کا فنکشن
+window.toggleNotifSection = (type) => {
+    const officialDiv = document.getElementById('official-notifications');
+    const rocketDiv = document.getElementById('rocket-rewards-list');
+
+    if (type === 'official') {
+        officialDiv.classList.toggle('hidden');
+        rocketDiv.classList.add('hidden');
+    } else {
+        rocketDiv.classList.toggle('hidden');
+        officialDiv.classList.add('hidden');
+    }
+};
     </script>
 </body>
 </html>
