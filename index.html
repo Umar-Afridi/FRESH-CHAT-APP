@@ -853,28 +853,33 @@
             </div>
         </div>
 
-        <!-- ================= INTIMACY / CP TAB CONTENT ================= -->
-        <div id="fpv-tab-intimacy" class="hidden px-5 py-16 flex-col items-center justify-center min-h-[300px]">
-            <div class="flex items-center justify-center gap-6 w-full max-w-xs relative">
-                
+        <!-- ================= INTIMACY / CP TAB CONTENT (UPDATED & RESIZED) ================= -->
+        <div id="fpv-tab-intimacy" class="hidden px-5 py-8 flex-col items-center justify-center min-h-[160px] relative bg-cover bg-center mt-4 mx-4 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500" style="background-image: url('./cp_bg1.png');">
+            <!-- Semi-transparent overlay for readability -->
+            <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
+            
+            <div class="flex items-center justify-center gap-6 w-full max-w-xs relative z-10">
                 <!-- CP User 1 (Me) -->
                 <div class="flex flex-col items-center z-10">
-                    <div class="w-20 h-20 rounded-full border-2 border-pink-400 overflow-hidden shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                    <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
                         <img id="cp-user-img" src="" class="w-full h-full object-cover">
                     </div>
-                    <span id="cp-user-name" class="text-xs font-bold text-gray-800 mt-2 truncate w-20 text-center">Name</span>
+                    <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
                 </div>
 
-                <!-- Animated Heart -->
-                <img src="./cp_heart.png" class="w-12 h-12 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.8)] z-20" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                <!-- Animated Heart WITH Text On Top -->
+                <div class="relative flex items-center justify-center z-20">
+                    <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                    <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8);">LV 1</span>
+                </div>
 
                 <!-- CP User 2 -->
                 <div class="flex flex-col items-center z-10" id="cp-partner-container">
                     <!-- Loaded dynamically -->
                 </div>
-
             </div>
-            <p class="text-xs text-gray-400 mt-10 text-center px-4">Find your special someone and build an intimacy space together!</p>
+            
+            <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
         </div>
 
     </div>
@@ -2304,6 +2309,21 @@
                 lastGiftDate: dateStr, lastGiftWeek: weekStr, lastGiftMonth: monthStr
             });
 
+            // =========== YAHAN CP GIFT LEVEL TRACKING ADD KI GAYI HAI ===========
+            if (sData.cp && sData.cp.partnerUid === selectedGiftTargetUid) {
+                let currentCPGiftMe = sData.cp.cpGiftAmount || 0;
+                let currentCPGiftThem = rData.cp ? (rData.cp.cpGiftAmount || 0) : 0;
+                
+                // Add gift cost to both users' CP Data
+                await update(ref(db, `users/${currentUser.uid}/cp`), { 
+                    cpGiftAmount: currentCPGiftMe + cost 
+                });
+                await update(ref(db, `users/${selectedGiftTargetUid}/cp`), { 
+                    cpGiftAmount: currentCPGiftThem + cost 
+                });
+            }
+            // =====================================================================
+
             let giftImgSrc = document.querySelector(`.gift-item[onclick*="${giftName}"] .gift-img`).src;
             await push(ref(db, `rooms/${currentRoomId}/messages`), { 
                 name: currentUser.displayName, text: `Sent ${giftName} 🎁 to ${selectedGiftTargetName}`, 
@@ -2925,14 +2945,19 @@ results.forEach(d => {
             onDisconnect(targetSeatRef).remove(); 
             document.getElementById(`menu-${sid}`).style.display = 'none'; 
         };
-        window.openPropHouse = async () => { 
+       window.openPropHouse = async () => { 
             const grid = document.getElementById('frame-grid'); 
-            grid.innerHTML = ''; 
+            grid.innerHTML = '<div class="text-white text-center w-full mt-10">Loading...</div>'; 
+            
             const snap = await get(ref(db, `users/${currentUser.uid}`)); 
             const userData = snap.val() || {};
             const currentEquipped = userData.currentFrame; 
             const currentNameClass = userData.nameColorClass || '';
             
+            // سارا ایچ ٹی ایم ایل اس میں جمع کریں گے تاکہ ایپ ہینگ نہ ہو
+            let htmlContent = ''; 
+            
+            // VIP Names کا کوڈ
             if (userData.unlockedVIPs) {
                 const vipList =[
                     { key: 'name-vip-green', title: 'VIP 3 (Green)', color: '#22c55e', img: './vip_green.png' },
@@ -2948,7 +2973,7 @@ results.forEach(d => {
                         const btnClass = isEquipped ? "bg-gray-600 hover:bg-gray-700" : "bg-blue-600 hover:bg-blue-700"; 
                         const btnAction = isEquipped ? "removeVIPName()" : `applyVIPName('${vip.key}')`; 
                         
-                        grid.innerHTML += `
+                        htmlContent += `
                         <div class="frame-card" style="border: 2px solid ${vip.color}; box-shadow: 0 0 10px ${vip.color}50;">
                             <div class="frame-preview-box">
                                 <img src="${vip.img}" class="w-14 h-14 object-contain" onerror="this.src='https://placehold.co/100x100?text=VIP'">
@@ -2960,6 +2985,7 @@ results.forEach(d => {
                 });
             }
 
+            // 50 Frames کا کوڈ
             for(let i=1; i<=50; i++) { 
                 const fileName = `./frames/frame_${i}.png`; 
                 const frameName = `Frame ${i}`; 
@@ -2967,8 +2993,22 @@ results.forEach(d => {
                 const btnText = isEquipped ? "REMOVE" : "USE"; 
                 const btnClass = isEquipped ? "bg-gray-600" : "bg-red-600"; 
                 const btnAction = isEquipped ? "removeFrame()" : `applyFrame('${fileName}')`; 
-                grid.innerHTML += `<div class="frame-card" style="display:flex"><div class="frame-preview-box"><div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img"><img src="${fileName}" class="visual-frame" onerror="this.parentElement.parentElement.parentElement.style.display='none'"></div></div><span class="text-xs font-bold text-white mb-2">${frameName}</span><button onclick="${btnAction}" class="w-full ${btnClass} text-white text-xs py-1 rounded transition">${btnText}</button></div>`; 
+                
+                // FIXED: this.onerror=null; لگایا ہے تاکہ Infinite Loop نہ بنے اور ایپ ہینگ نہ ہو
+                htmlContent += `<div class="frame-card" style="display:flex">
+                    <div class="frame-preview-box">
+                        <div class="visual-root">
+                            <img src="${currentUser.photoURL}" class="visual-img">
+                            <img src="${fileName}" class="visual-frame" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Missing'; this.style.opacity='0.2';">
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-white mb-2">${frameName}</span>
+                    <button onclick="${btnAction}" class="w-full ${btnClass} text-white text-xs py-1 rounded transition">${btnText}</button>
+                </div>`; 
             } 
+            
+            // سارا ڈیٹا ایک ساتھ پرنٹ کروائیں
+            grid.innerHTML = htmlContent;
             document.getElementById('prophouse-modal').classList.add('open'); 
         };
 
@@ -3173,108 +3213,91 @@ results.forEach(d => {
             }
         };
 
-        // ================= CP / INTIMACY LOGIC =================
         function loadCPData(userData) {
             document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
             document.getElementById('cp-user-name').innerText = userData.username || 'User';
 
             const partnerContainer = document.getElementById('cp-partner-container');
             
+            // CP Level Calculation based on Gifts
+            let cpGiftAmount = (userData.cp && userData.cp.cpGiftAmount) ? userData.cp.cpGiftAmount : 0;
+            let cpLevel = 1;
+            let nextGoal = "3M";
+            
+            if(cpGiftAmount >= 15000000) { cpLevel = 4; nextGoal = "Max"; }
+            else if(cpGiftAmount >= 8000000) { cpLevel = 3; nextGoal = "15M"; }
+            else if(cpGiftAmount >= 3000000) { cpLevel = 2; nextGoal = "8M"; }
+
+            // Update UI Images dynamically
+            document.getElementById('fpv-tab-intimacy').style.backgroundImage = `url('./cp_bg${cpLevel}.png')`;
+            document.getElementById('cp-heart-icon').src = `./cp_heart${cpLevel}.png`;
+
             if (userData.cp && userData.cp.partnerUid) {
+                // Partner Found
                 partnerContainer.innerHTML = `
-                    <div class="w-20 h-20 rounded-full border-2 border-pink-400 overflow-hidden shadow-[0_0_15px_rgba(236,72,153,0.3)]">
-                        <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover">
+                    <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] cursor-pointer">
+                        <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover pointer-events-none">
                     </div>
-                    <span class="text-xs font-bold text-gray-800 mt-2 truncate w-20 text-center">${userData.cp.partnerName}</span>
+                    <span class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">${userData.cp.partnerName}</span>
                 `;
+                
+                document.getElementById('cp-empty-text').style.display = 'none';
+                let cpText = document.getElementById('cp-level-text');
+                cpText.style.display = 'block';
+                // YAHAN TEXT CHANGE KIYA GAYA HAI TAAKE SIRF LV AAYE
+                cpText.innerText = `LV ${cpLevel}`;
+
+                // Long Press Logic to Remove CP Partner
+                let pressTimer;
+                const partnerDiv = document.getElementById('my-cp-partner');
+                
+                const startPress = () => { 
+                    pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
+                };
+                const cancelPress = () => { clearTimeout(pressTimer); };
+                
+                partnerDiv.addEventListener('touchstart', startPress);
+                partnerDiv.addEventListener('touchend', cancelPress);
+                partnerDiv.addEventListener('touchmove', cancelPress);
+                partnerDiv.addEventListener('mousedown', startPress);
+                partnerDiv.addEventListener('mouseup', cancelPress);
+                partnerDiv.addEventListener('mouseleave', cancelPress);
+
             } else {
+                // No Partner
+                document.getElementById('cp-level-text').style.display = 'none';
+                document.getElementById('cp-empty-text').style.display = 'block';
                 partnerContainer.innerHTML = `
-                    <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-2 border-dashed border-pink-400 flex items-center justify-center bg-pink-50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                    <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
                         <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
                     </div>
-                    <span class="text-xs text-gray-400 mt-2 font-bold">Add Partner</span>
+                    <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
                 `;
             }
         }
 
-        window.inviteCP = async () => {
-            const { value: targetId } = await Swal.fire({
-                title: 'Invite CP Partner',
-                input: 'number',
-                inputPlaceholder: 'Enter User ID to send request',
+        // Remove CP Partner Function
+        window.promptRemoveCP = async (partnerUid, partnerName) => {
+            const res = await Swal.fire({
+                title: 'Remove Partner?',
+                text: `Are you sure you want to break CP with ${partnerName}?`,
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ec4899',
-                confirmButtonText: 'Send Request'
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#3b82f6',
+                confirmButtonText: 'Yes, Remove',
+                background: '#111',
+                color: '#fff'
             });
 
-            if (targetId) {
-                Swal.fire({title: 'Sending...', showConfirmButton: false});
-                const s = await get(ref(db, `idToUid/${targetId}`));
-                if (!s.exists()) return Swal.fire('Error', 'ID Not Found', 'error');
-                
-                const targetUid = s.val();
-                if (targetUid === currentUser.uid) return Swal.fire('Error', 'You cannot send a request to yourself.', 'error');
-
-                // Send Request to Target User's Inbox
-                await set(ref(db, `users/${targetUid}/inbox/cpRequests/${currentUser.uid}`), {
-                    fromName: currentUser.displayName,
-                    fromUid: currentUser.uid,
-                    fromPic: currentUser.photoURL,
-                    type: 'cpReq',
-                    timestamp: Date.now()
-                });
-
-                Swal.fire('Sent!', 'CP Request sent successfully.', 'success');
+            if(res.isConfirmed) {
+                Swal.fire({title: 'Removing...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
+                await update(ref(db, `users/${currentUser.uid}`), { cp: null });
+                await update(ref(db, `users/${partnerUid}`), { cp: null });
+                Swal.fire({icon: 'success', title: 'Removed', text: 'CP Partner removed successfully.', background: '#111', color: '#fff'});
+                openFullProfileView(); // Refresh UI
             }
         };
-
-        window.acceptCP = async (partnerUid, partnerName, partnerPic, reqKey) => {
-            Swal.fire({title: 'Processing...', showConfirmButton: false});
-            
-            // Set for Me
-            await update(ref(db, `users/${currentUser.uid}/cp`), {
-                partnerUid: partnerUid,
-                partnerName: partnerName,
-                partnerPic: partnerPic
-            });
-            
-            // Set for Them
-            await update(ref(db, `users/${partnerUid}/cp`), {
-                partnerUid: currentUser.uid,
-                partnerName: currentUser.displayName,
-                partnerPic: currentUser.photoURL
-            });
-
-            // Remove Request
-            await remove(ref(db, `users/${currentUser.uid}/inbox/${reqKey}`));
-            
-            Swal.fire('Congratulations!', `You and ${partnerName} are now CP partners!`, 'success');
-            if (document.getElementById('full-profile-view').classList.contains('hidden') === false) {
-                openFullProfileView(); // refresh view
-            }
-        };
-
-        // Make sure to add this inside your Inbox loading function (onValue(ref(db, `users/${currentUser.uid}/inbox`)))
-        // I am providing the specific block to inject or replace where follow requests are loaded:
-        /*
-            if (data.cpRequests) {
-                Object.entries(data.cpRequests).forEach(([key, val]) => {
-                    totalUnread++;
-                    followDiv.innerHTML += `
-                    <div class="bg-pink-50 border border-pink-200 p-3 rounded-lg flex items-start gap-3">
-                        <img src="${val.fromPic || 'https://placehold.co/100'}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover">
-                        <div class="flex-1">
-                            <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> sent a CP Request ❤️</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${val.fromPic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-xs px-3 py-1 rounded-full shadow">Accept</button>
-                            <button onclick="delNotif('cpRequests/${key}')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`;
-                });
-            }
-        */
-
         // ================= OTHER PROFILE RENDERERS =================
         function renderFPVFrames(currentEquipped) {
             const list = document.getElementById('fpv-frames-list');
@@ -3282,12 +3305,14 @@ results.forEach(d => {
             for(let i=1; i<=4; i++) {
                 let framePath = `./frames/frame_${i}.png`;
                 let isUsing = currentEquipped && currentEquipped.includes(framePath);
-                let btnClass = isUsing ? 'border border-purple-600 text-purple-600 bg-transparent' : 'bg-purple-600 text-white border border-transparent';
-                let btnText = isUsing ? '✓ Using' : 'Use';
+                
+                let btnClass = isUsing ? 'bg-gray-600 text-white border border-transparent' : 'bg-purple-600 text-white border border-transparent';
+                let btnText = isUsing ? '✓ Remove' : 'Use';
+                let btnAction = isUsing ? `removeFrame()` : `applyFrame('${framePath}')`;
                 
                 list.innerHTML += `<div class="flex flex-col items-center min-w-[75px]">
                     <img src="${framePath}" class="h-16 object-contain mb-1 drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Frame'">
-                    <button class="text-[10px] rounded-full px-4 py-0.5 font-bold transition mt-2 ${btnClass}" onclick="applyFrame('${framePath}')">${btnText}</button>
+                    <button class="text-[10px] rounded-full px-4 py-0.5 font-bold transition mt-2 ${btnClass}" onclick="${btnAction}">${btnText}</button>
                 </div>`;
             }
         }
