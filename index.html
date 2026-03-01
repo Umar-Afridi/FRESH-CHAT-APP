@@ -744,30 +744,203 @@
             </div>
         </div>
 
-        <div id="edit-modal">
-            <div class="bg-white p-6 rounded-xl w-11/12 max-w-sm border border-gray-300 relative shadow-2xl">
-                <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h3 class="text-gray-900 font-bold mb-4 text-center">Edit Profile</h3>
-                <div class="flex flex-col items-center mb-2">
-                    <div class="profile-page-container" style="width: 100px; height: 100px;">
-                        <div id="edit-preview-visual" class="visual-root"></div>
-                    </div>
-                    <div class="flex gap-3 text-xs mt-2"><button onclick="triggerImageUpload()" class="text-blue-600 font-medium hover:underline">Upload File</button></div>
-                </div>
-                <div class="gender-options">
-                    <div class="gender-option" id="opt-male" onclick="selectGender('male')"><img src="./male.png" class="gender-img" onerror="this.src='https://placehold.co/40?text=M'"><span class="text-[10px] font-bold text-gray-500">MALE</span></div>
-                    <div class="gender-option" id="opt-female" onclick="selectGender('female')"><img src="./female.png" class="gender-img" onerror="this.src='https://placehold.co/40?text=F'"><span class="text-[10px] font-bold text-gray-500">FEMALE</span></div>
-                </div>
-                <p id="gender-lock-msg" class="text-[9px] text-red-500 text-center mb-3 hidden">Gender change locked for 7 days.</p>
-                <div class="space-y-3">
-                    <div><input type="text" id="edit-name" class="w-full bg-gray-100 border border-gray-300 rounded p-2 text-gray-900 focus:border-red-600 outline-none" placeholder="Display Name"></div>
-                    <div><input type="text" id="edit-img-url" class="w-full bg-gray-100 border border-gray-300 rounded p-2 text-gray-900 focus:border-red-600 outline-none text-xs" placeholder="Image URL (Optional)"></div>
-                    <div><input type="text" id="edit-email" disabled class="w-full bg-gray-200 border border-gray-300 rounded p-2 text-gray-600 outline-none text-xs cursor-not-allowed" placeholder="Registered Email"></div>
-                    <div><textarea id="edit-bio" rows="2" class="w-full bg-gray-100 border border-gray-300 rounded p-2 text-gray-900 focus:border-red-600 outline-none" placeholder="Bio"></textarea></div>
-                </div>
-                <button onclick="saveProfile()" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded mt-6 shadow-md">SAVE PROFILE</button>
+       <!-- ================= FIXED FULL PROFILE VIEW ================= -->
+<div id="full-profile-view" class="fixed inset-0 bg-[#0f1015] z-[5000] hidden flex-col overflow-y-auto pb-10 transition-transform transform translate-x-full duration-300 ease-in-out">
+    
+    <!-- Top Background & Info Area -->
+    <div class="relative w-full h-80 flex-shrink-0 bg-black">
+        <!-- Blurred Background -->
+        <div id="fpv-cover" class="absolute inset-0 bg-cover bg-center filter blur-xl brightness-50 scale-110"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f1015] to-transparent"></div>
+        
+        <!-- Top Nav (Edit Button in Top Corner) -->
+        <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-8 text-white z-50">
+            <i class="fa-solid fa-chevron-left text-2xl cursor-pointer hover:text-gray-300 drop-shadow-md" onclick="closeFullProfileView()"></i>
+            <!-- Top Right Edit Option -->
+            <div onclick="openEditProfileScreen()" class="cursor-pointer flex items-center gap-2 hover:text-gray-300 drop-shadow-md p-2">
+                <i class="fa-regular fa-pen-to-square text-2xl"></i>
             </div>
         </div>
+
+        <!-- YAHAN CHANGES KI GAYI HAIN: DP aur Name ko upar set kiya gaya hai -->
+        <div class="absolute top-24 left-6 w-full flex items-center gap-4 z-40 pr-6">
+            
+            <!-- DP, Frame & V-Badge -->
+            <div class="relative w-[90px] h-[90px] flex-shrink-0 flex items-center justify-center">
+                <!-- User DP -->
+                <img id="fpv-dp" src="" class="w-[85px] h-[85px] rounded-full object-cover border-2 border-[#111] z-10 relative shadow-lg">
+                
+                <!-- Frame (FIXED Z-INDEX AND SIZE WITH ERROR HANDLING) -->
+                <img id="fpv-frame" src="" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130px] h-[130px] object-contain pointer-events-none hidden z-20" onerror="this.style.display='none'">
+                
+                <!-- Official V-Badge on DP -->
+                <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute bottom-1 right-1 w-6 h-6 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
+
+                <!-- Level Badge Overlapping Bottom of DP (CENTERED BELOW DP) -->
+                <div id="fpv-level-badge-container" class="absolute -bottom-4 z-30 user-level-badge scale-[0.85] origin-center flex items-center justify-center">
+                    <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
+                </div>
+            </div>
+
+            <!-- Name, Badges, ID, Followers -->
+            <div class="flex flex-col justify-center flex-1 relative z-40 mt-2">
+                <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
+                    <!-- NAME -->
+                    <h2 id="fpv-name" class="text-xl font-extrabold text-white drop-shadow-md">User Name</h2>
+                    
+                    <!-- OFFICIAL BADGE (.png) - SIZE INCREASED (h-6) -->
+                    <img id="fpv-official" src="./verify_official.png" class="h-6 hidden object-contain drop-shadow-md" onerror="this.style.display='none'">
+                    
+                    <!-- GENDER & AGE -->
+                    <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-bold border border-blue-300/50 shadow-sm">
+                        <i class="fa-solid fa-mars"></i> 18
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-3 text-xs font-bold text-gray-300 drop-shadow-md mt-1">
+                    <div class="bg-black/40 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
+                        ID: <span id="fpv-id" class="text-white">0000</span> <i class="fa-regular fa-copy text-[10px] cursor-pointer hover:text-white" onclick="copyToClipboard(document.getElementById('fpv-id').innerText)"></i>
+                    </div>
+                    <div class="bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
+                        <span id="fpv-followers" class="text-white">0</span> followers
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- White Content Area (Rounded Top) -->
+    <div class="bg-white rounded-t-2xl -mt-4 z-30 relative min-h-screen pt-2">
+        
+        <!-- Tabs -->
+        <div class="flex px-6 mt-4 border-b border-gray-100">
+            <div id="tab-btn-profile" onclick="switchProfileTab('profile')" class="pb-2 border-b-2 border-purple-600 text-gray-900 font-bold mr-6 text-sm cursor-pointer transition">Profile</div>
+            <div id="tab-btn-intimacy" onclick="switchProfileTab('intimacy')" class="pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm cursor-pointer transition">Intimacy</div>
+        </div>
+
+        <!-- ================= PROFILE TAB CONTENT ================= -->
+        <div id="fpv-tab-profile" class="block">
+            <div class="px-5 mt-5">
+                <div class="flex items-center gap-2 text-gray-600 text-sm mb-2 font-medium">
+                    <i class="fa-solid fa-location-dot text-gray-400"></i> <span>Pakistan</span>
+                </div>
+                
+                <!-- Bio Box (Pencil removed, completely clean) -->
+                <div class="flex items-start text-sm text-gray-700 relative mt-2">
+                    <p id="fpv-bio" class="italic whitespace-pre-line leading-relaxed flex-1">No bio added yet.</p>
+                </div>
+            </div>
+
+            <!-- Vehicles -->
+            <div class="mt-8 px-5">
+                <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Vehicles</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-vehicles-list">
+                    <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Tiger" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">30 days</span><button class="text-[10px] border border-purple-600 text-purple-600 rounded-full px-3 py-0.5 font-bold">✓ Using</button></div>
+                    <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Dragon" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">5 days</span><button class="text-[10px] bg-purple-600 text-white rounded-full px-4 py-0.5 font-bold">Use</button></div>
+                </div>
+            </div>
+
+            <!-- Frames -->
+            <div class="mt-6 px-5">
+                <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Frames</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-frames-list"></div>
+            </div>
+
+            <!-- Medals -->
+            <div class="mt-6 px-5 mb-10">
+                <h3 class="font-bold text-gray-900 mb-3">Medal</h3>
+                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-medals-list"></div>
+            </div>
+        </div>
+
+        <!-- ================= INTIMACY / CP TAB CONTENT ================= -->
+        <div id="fpv-tab-intimacy" class="hidden px-5 py-16 flex-col items-center justify-center min-h-[300px]">
+            <div class="flex items-center justify-center gap-6 w-full max-w-xs relative">
+                
+                <!-- CP User 1 (Me) -->
+                <div class="flex flex-col items-center z-10">
+                    <div class="w-20 h-20 rounded-full border-2 border-pink-400 overflow-hidden shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                        <img id="cp-user-img" src="" class="w-full h-full object-cover">
+                    </div>
+                    <span id="cp-user-name" class="text-xs font-bold text-gray-800 mt-2 truncate w-20 text-center">Name</span>
+                </div>
+
+                <!-- Animated Heart -->
+                <img src="./cp_heart.png" class="w-12 h-12 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.8)] z-20" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+
+                <!-- CP User 2 -->
+                <div class="flex flex-col items-center z-10" id="cp-partner-container">
+                    <!-- Loaded dynamically -->
+                </div>
+
+            </div>
+            <p class="text-xs text-gray-400 mt-10 text-center px-4">Find your special someone and build an intimacy space together!</p>
+        </div>
+
+    </div>
+</div>
+<!-- ================= UPDATED EDIT PROFILE SCREEN ================= -->
+<div id="edit-profile-view" class="fixed inset-0 bg-white z-[6000] hidden flex-col overflow-y-auto transition-transform transform translate-x-full duration-300 ease-in-out">
+    <div class="flex justify-between items-center p-4 border-b border-gray-100 pt-6">
+        <i class="fa-solid fa-chevron-left text-2xl text-gray-800 cursor-pointer" onclick="closeEditProfileScreen()"></i>
+        <h2 class="font-black text-lg text-gray-900">Edit</h2>
+        <button onclick="saveProfile()" class="text-purple-600 font-bold text-base active:scale-95 transition">Save</button>
+    </div>
+
+    <!-- گیلری سے اپلوڈ کرنے کے لئے -->
+    <div class="flex flex-col items-center mt-8 relative">
+        <div class="w-24 h-24 rounded-full bg-gray-200 relative overflow-hidden cursor-pointer shadow-md" onclick="triggerImageUpload()">
+            <img id="edit-preview-img" src="" class="w-full h-full object-cover filter brightness-75">
+            <i class="fa-solid fa-camera absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-2xl"></i>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">Tap to upload from Gallery</p>
+    </div>
+
+    <!-- URL سے اپلوڈ کرنے کے لئے (Option) -->
+    <div class="px-5 mt-4">
+        <span class="font-bold text-sm text-gray-900">Image URL (Optional)</span>
+        <input type="text" id="edit-img-url" class="w-full mt-1 bg-gray-50 border border-gray-200 rounded p-3 text-xs outline-none focus:border-purple-400" placeholder="Or Paste Image Link Here">
+    </div>
+
+    <div class="px-5 mt-4 pb-10">
+        <div class="border-t border-gray-100 pt-2 mt-4">
+            <div class="flex justify-between items-center py-4 border-b border-gray-50">
+                <span class="font-bold text-sm text-gray-900">NickName</span>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="edit-name" class="text-right text-sm text-gray-600 outline-none w-40 bg-transparent font-medium" placeholder="Name">
+                    <i class="fa-regular fa-pen-to-square text-gray-400 text-xs"></i>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center py-4 border-b border-gray-50">
+                <span class="font-bold text-sm text-gray-900">Gender</span>
+                <div class="flex gap-2">
+                     <button id="btn-edit-male" onclick="selectGender('male')" class="text-xs px-3 py-1.5 rounded-md bg-gray-100 text-gray-600 font-bold border border-transparent transition">Male</button>
+                     <button id="btn-edit-female" onclick="selectGender('female')" class="text-xs px-3 py-1.5 rounded-md bg-gray-100 text-gray-600 font-bold border border-transparent transition">Female</button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center py-4 border-b border-gray-50">
+                <span class="font-bold text-sm text-gray-900">BirthDay</span>
+                <div class="flex items-center gap-2">
+                    <input type="date" id="edit-birthday" class="text-right text-sm text-gray-600 outline-none bg-transparent font-medium appearance-none">
+                    <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-4">
+            <h3 class="font-bold text-sm mb-3 text-gray-900">Add bio</h3>
+            <div class="relative bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <textarea id="edit-bio" rows="4" class="w-full bg-transparent text-sm text-gray-700 outline-none resize-none leading-relaxed font-medium" placeholder="Write about yourself..."></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
         
         <div id="friend-profile-modal">
             <div class="bg-white p-6 rounded-xl w-11/12 max-w-sm border border-gray-300 relative shadow-2xl flex flex-col items-center">
@@ -931,31 +1104,32 @@
         </div>
 
         <div id="view-profile" class="view-section light-bg">
-            <div onclick="openEditModal()" class="flex items-center p-5 bg-white cursor-pointer relative">
-                <div class="profile-page-visual mr-4" id="profile-visual-container"></div>
-                <div class="flex-1 flex flex-col justify-center">
-                    <h2 id="profile-name" class="text-2xl font-extrabold text-gray-900 mb-0.5 flex items-center">...<img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'"></h2>
-                    
-                    <div class="flex justify-between items-center w-full pr-4">
-                        <div>
-                            <div id="profile-level-badge" class="user-level-badge mb-1 w-max">
-                                <img id="profile-medal-img" src="" class="level-medal-img" onerror="this.style.display='none'"> 
-                                <span id="profile-level-text">Lv.1</span>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <span class="text-gray-400 text-xs font-bold uppercase tracking-wide">ID:</span>
-                                <span id="profile-id" class="text-gray-800 font-mono text-base font-bold">...</span>
-                                <div onclick="copyToClipboard(document.getElementById('profile-id').innerText); event.stopPropagation();" class="p-1 cursor-pointer active:scale-90 transition"><i class="fa-regular fa-copy text-gray-400 text-xs ml-1"></i></div>
-                            </div>
-                        </div>
-                        
-                        <img id="profile-verify-official" src="./verify_official.png" class="h-8 object-contain hidden filter drop-shadow-md" onerror="this.style.display='none'">
-                    </div>
+            <!-- NEW TRIGGER FOR FULL PROFILE -->
+<div onclick="openFullProfileView()" class="flex items-center p-5 bg-white cursor-pointer relative">
+    <div class="profile-page-visual mr-4" id="profile-visual-container"></div>
+    <div class="flex-1 flex flex-col justify-center">
+        <h2 id="profile-name" class="text-2xl font-extrabold text-gray-900 mb-0.5 flex items-center">...<img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'"></h2>
+        
+        <div class="flex justify-between items-center w-full pr-4">
+            <div>
+                <div id="profile-level-badge" class="user-level-badge mb-1 w-max">
+                    <img id="profile-medal-img" src="" class="level-medal-img" onerror="this.style.display='none'"> 
+                    <span id="profile-level-text">Lv.1</span>
                 </div>
-                <div class="flex items-center justify-center"><i class="fa-solid fa-chevron-right text-gray-300 text-lg"></i></div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wide">ID:</span>
+                    <span id="profile-id" class="text-gray-800 font-mono text-base font-bold">...</span>
+                    <div onclick="copyToClipboard(document.getElementById('profile-id').innerText); event.stopPropagation();" class="p-1 cursor-pointer active:scale-90 transition"><i class="fa-regular fa-copy text-gray-400 text-xs ml-1"></i></div>
+                </div>
             </div>
-            <p id="profile-bio" class="text-gray-500 text-xs px-5 pb-3 bg-white truncate italic">...</p>
+            
+            <img id="profile-verify-official" src="./verify_official.png" class="h-8 object-contain hidden filter drop-shadow-md" onerror="this.style.display='none'">
+        </div>
+    </div>
+    <div class="flex items-center justify-center"><i class="fa-solid fa-chevron-right text-gray-300 text-lg"></i></div>
+</div>
+<p id="profile-bio" class="hidden text-gray-500 text-xs px-5 pb-3 bg-white truncate italic">...</p>
             <div class="flex justify-around items-center bg-white border-t border-b border-gray-100 py-3 mb-2">
                 <div onclick="showFriendList('following')" class="flex flex-col items-center flex-1 border-r border-gray-100 cursor-pointer active:bg-gray-50"><span id="stat-following" class="font-bold text-lg text-gray-900">0</span><span class="text-[10px] text-gray-500 uppercase tracking-wide">Follow</span></div>
                 <div onclick="showFriendList('fans')" class="flex flex-col items-center flex-1 cursor-pointer active:bg-gray-50"><span id="stat-fans" class="font-bold text-lg text-gray-900">0</span><span class="text-[10px] text-gray-500 uppercase tracking-wide">Fans</span></div>
@@ -2298,10 +2472,10 @@ results.forEach(d => {
                 document.getElementById('profile-bio').innerText = d.bio || ""; 
                 const container = document.getElementById('profile-visual-container'); 
                 let html = `<div class="visual-root"><img src="${d.photoURL}" class="visual-img">`; 
-                if(d.currentFrame) html += `<img src="${d.currentFrame}" class="visual-frame">`; 
+                if(d.currentFrame) html += `<img src="${d.currentFrame}" class="visual-frame" onerror="this.style.display='none'">`; 
                 html += `</div>`; 
                 container.innerHTML = html; 
-                document.getElementById('edit-preview-visual').innerHTML = html; 
+                // document.getElementById('edit-preview-visual').innerHTML = html; // Removed to avoid errors if element doesn't exist 
                 selectedGender = d.gender || null; 
                 updateGenderUI(d.lastGenderChange);
                 
@@ -2332,7 +2506,8 @@ results.forEach(d => {
                 let vBadgeName = document.getElementById('profile-v-badge');
                 let vBadgeProfile = document.getElementById('profile-verify-official');
 
-                const isSuperAdmin = (d.customId === window.SUPER_ADMIN_ID);
+                // FIX: Added Number() to accurately detect ID whether it's stored as text or number
+                const isSuperAdmin = (Number(d.customId) === window.SUPER_ADMIN_ID);
                 const isOfficial = window.currentUserIsOfficial;
 
                 if(isSuperAdmin || isOfficial) {
@@ -2348,6 +2523,7 @@ results.forEach(d => {
                         update(ref(db, `users/${currentUser.uid}`), { 
                             currentFrame: './frame_official.png' 
                         });
+                        d.currentFrame = './frame_official.png'; // Update immediately for UI
                     }
                 } else {
                     if(adminBtn) {
@@ -2460,6 +2636,28 @@ results.forEach(d => {
                             </div>`;
                         });
                     }
+
+                    // ====== NEW: CP REQUESTS UI IN INBOX ======
+                    if (data.cpRequests) {
+                        Object.entries(data.cpRequests).forEach(([key, val]) => {
+                            totalUnread++;
+                            let profilePic = val.fromPic || `https://ui-avatars.com/api/?name=${val.fromName}&background=random`;
+                            
+                            followDiv.innerHTML += `
+                            <div class="bg-pink-50 border border-pink-200 p-3 rounded-lg flex items-start gap-3 mt-2 shadow-sm">
+                                <img src="${profilePic}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover">
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> sent a CP Request ❤️</p>
+                                    <span class="text-[10px] text-gray-400">${new Date(val.timestamp || Date.now()).toLocaleDateString()}</span>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${profilePic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-[10px] px-3 py-1 rounded-full shadow font-bold hover:bg-pink-600 transition">Accept</button>
+                                    <button onclick="delNotif('cpRequests/${key}')" class="bg-gray-200 text-gray-700 text-[10px] px-3 py-1 rounded-full shadow font-bold hover:bg-gray-300 transition">Reject</button>
+                                </div>
+                            </div>`;
+                        });
+                    }
+                    // ==========================================
 
                     if (data.rocketRewards) {
                         Object.entries(data.rocketRewards).forEach(([key, val]) => {
@@ -2808,16 +3006,398 @@ results.forEach(d => {
         window.applyFrame = async (furl) => { await update(ref(db, `users/${currentUser.uid}`), { currentFrame: furl }); if(currentRoomId) { const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); if(seatsSnap.exists()) { const seats = seatsSnap.val(); Object.keys(seats).forEach(async (k) => { if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: furl }); } }); } } window.openPropHouse(); loadData(); Swal.fire({toast:true, icon:'success', title:'Frame Applied!', position:'top-end', showConfirmButton:false, timer:1500}); };
         window.removeFrame = async () => { await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null }); if(currentRoomId) { const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); if(seatsSnap.exists()) { const seats = seatsSnap.val(); Object.keys(seats).forEach(async (k) => { if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: null }); } }); } } window.openPropHouse(); loadData(); Swal.fire({toast:true, icon:'info', title:'Frame Removed', position:'top-end', showConfirmButton:false, timer:1500}); };
 
-        window.openEditModal = async () => { const s=await get(ref(db, `users/${currentUser.uid}`)); const d=s.val()||{}; document.getElementById('edit-name').value=d.username; document.getElementById('edit-bio').value=d.bio; let currentImg = d.photoURL; document.getElementById('edit-img-url').value=currentImg; currentEditingImg=currentImg; const container = document.getElementById('edit-preview-visual'); let html = `<div class="visual-root"><img src="${currentImg}" class="visual-img">`; if(d.currentFrame) html += `<img src="${d.currentFrame}" class="visual-frame">`; html += `</div>`; container.innerHTML = html; document.getElementById('edit-email').value = currentUser.email || 'No Email'; selectedGender = d.gender || null; updateGenderUI(d.lastGenderChange); document.getElementById('edit-modal').classList.add('open'); };
-        window.closeEditModal=()=>document.getElementById('edit-modal').classList.remove('open');
-        window.triggerImageUpload=()=>document.getElementById('image-upload').click();
-        document.getElementById('image-upload').addEventListener('change',(e)=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=(ev)=>{const i=new Image(); i.onload=()=>{const c=document.createElement('canvas');const ctx=c.getContext('2d');const s=300/Math.max(i.width,i.height);c.width=i.width*s;c.height=i.height*s;ctx.drawImage(i,0,0,c.width,c.height);const b64=c.toDataURL('image/jpeg',0.6);currentEditingImg=b64; document.getElementById('edit-img-url').value=b64; const container = document.getElementById('edit-preview-visual'); container.querySelector('.visual-img').src=b64; };i.src=ev.target.result;};r.readAsDataURL(f); });
-        
-        window.selectGender = (g) => { const now = Date.now(); if (document.querySelector('.gender-option').classList.contains('locked-gender')) return; selectedGender = g; updateGenderUI(null, true); }
-        function updateGenderUI(lastChange, isSelectionMode=false) { const mBtn = document.getElementById('opt-male'); const fBtn = document.getElementById('opt-female'); const msg = document.getElementById('gender-lock-msg'); mBtn.classList.remove('selected', 'locked-gender'); fBtn.classList.remove('selected', 'locked-gender'); msg.classList.add('hidden'); const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; const isLocked = lastChange && (Date.now() - lastChange < SEVEN_DAYS); if (selectedGender === 'male') mBtn.classList.add('selected'); if (selectedGender === 'female') fBtn.classList.add('selected'); if (isLocked && !isSelectionMode) { mBtn.classList.add('locked-gender'); fBtn.classList.add('locked-gender'); msg.classList.remove('hidden'); } }
+    // ================= گیلری سے تصویر اپلوڈ کرنے کا لاجک =================
+        window.triggerImageUpload = () => {
+            document.getElementById('image-upload').click();
+        };
 
-        window.saveProfile=async()=>{ const n=document.getElementById('edit-name').value; const b=document.getElementById('edit-bio').value; const u=document.getElementById('edit-img-url').value.trim(); let finalImg = currentEditingImg; if(u && u.length > 5) finalImg = u; let updateData = {username:n, bio:b, photoURL:finalImg}; if (selectedGender) { const s = await get(ref(db, `users/${currentUser.uid}`)); const d = s.val() || {}; const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; if (d.gender !== selectedGender) { if (d.lastGenderChange && (Date.now() - d.lastGenderChange < SEVEN_DAYS)) { return Swal.fire('Locked', 'You can only change gender once every 7 days.', 'error'); } updateData.gender = selectedGender; updateData.lastGenderChange = Date.now(); } } await updateProfile(currentUser,{displayName:n,photoURL:finalImg}); await update(ref(db,`users/${currentUser.uid}`), updateData); document.getElementById('profile-name').innerText=n; document.getElementById('profile-bio').innerText=b; const container = document.getElementById('profile-visual-container'); const hasFrame = document.querySelector('.visual-frame') !== null; let html = `<div class="visual-root"><img src="${finalImg}" class="visual-img">`; if(hasFrame) html += `<img src="${document.querySelector('.visual-frame').src}" class="visual-frame">`; html += `</div>`; container.innerHTML = html; closeEditModal(); };
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    // تصویر دکھائیں
+                    document.getElementById('edit-preview-img').src = base64String;
+                    // URL والے باکس میں بھی ڈال دیں تاکہ saveProfile اسے اٹھا لے
+                    document.getElementById('edit-img-url').value = base64String; 
+                    currentEditingImg = base64String;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+      // ================= FIXED FULL PROFILE VIEW LOGIC =================
+        let viewingProfileUid = null;
+
+        window.openFullProfileView = async () => {
+            viewingProfileUid = currentUser.uid; 
+            
+            const view = document.getElementById('full-profile-view');
+            view.classList.remove('hidden');
+            setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
+
+            const snap = await get(ref(db, `users/${viewingProfileUid}`));
+            const d = snap.val() || {};
+
+            // Basic Info & VIP COLOR LOGIC APPLIED HERE
+            const fpvNameEl = document.getElementById('fpv-name');
+            fpvNameEl.innerText = d.username || 'User';
+            
+            // Check and apply VIP colorful name class
+            if (d.nameColorClass && d.nameColorClass !== "") {
+                fpvNameEl.className = `text-xl drop-shadow-md ${d.nameColorClass}`;
+            } else {
+                fpvNameEl.className = "text-xl font-extrabold text-white drop-shadow-md"; // Default
+            }
+
+            document.getElementById('fpv-id').innerText = d.customId || '0000';
+            document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
+            
+            // DP and Cover
+            let profilePic = d.photoURL || 'https://placehold.co/100';
+            document.getElementById('fpv-dp').src = profilePic;
+            document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
+            
+            // FRAME FIX: Reset display properties safely
+            const frameImg = document.getElementById('fpv-frame');
+            if(d.currentFrame && d.currentFrame !== "") {
+                frameImg.src = d.currentFrame;
+                frameImg.style.display = 'block'; // Make sure it shows if onerror hid it before
+                frameImg.classList.remove('hidden');
+            } else {
+                frameImg.classList.add('hidden');
+                frameImg.src = "";
+            }
+
+            // DOB SE AGE NIKALNE KA SAFE FORMULA (To prevent -1)
+            let age = 18; // Default
+            if (d.birthday) {
+                const birthDate = new Date(d.birthday);
+                if (!isNaN(birthDate)) { // Check if valid date
+                    const today = new Date();
+                    let calcAge = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        calcAge--;
+                    }
+                    if (calcAge > 0 && calcAge < 100) {
+                        age = calcAge; // Sirf tab set karo jab valid ho (mains ya zero na ho)
+                    }
+                }
+            }
+
+            // GENDER & AGE FIX
+            const genderContainer = document.getElementById('fpv-gender-age');
+            if(d.gender === 'female') {
+                genderContainer.innerHTML = `<i class="fa-solid fa-venus"></i> ${age}`;
+                genderContainer.className = "bg-pink-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-bold border border-pink-300/50 shadow-sm";
+            } else {
+                genderContainer.innerHTML = `<i class="fa-solid fa-mars"></i> ${age}`;
+                genderContainer.className = "bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-bold border border-blue-300/50 shadow-sm";
+            }
+
+            // OFFICIAL BADGES FIX (Text badge + DP V-Badge)
+            const offTextBadge = document.getElementById('fpv-official');
+            const vBadgeDp = document.getElementById('fpv-v-badge-dp');
+            
+            // FIX: Using Number() to safely match 10005
+            if(d.isOfficial || Number(d.customId) === 10005) {
+                offTextBadge.classList.remove('hidden');
+                vBadgeDp.classList.remove('hidden');
+            } else {
+                offTextBadge.classList.add('hidden');
+                vBadgeDp.classList.add('hidden');
+            }
+
+            // LEVEL FIX
+            let exp = d.userExp || 0;
+            let lvl = getUserLevel(exp);
+            document.getElementById('fpv-level-text').innerText = `Lv.${lvl}`;
+            document.getElementById('fpv-medal-img').src = getMedalImage(lvl);
+
+            // Followers
+            let followersCount = document.getElementById('stat-fans') ? document.getElementById('stat-fans').innerText : "0";
+            document.getElementById('fpv-followers').innerText = followersCount;
+
+            // Render Grids
+            renderFPVFrames(d.currentFrame);
+            renderFPVMedals(lvl);
+            
+            // Intimacy / CP Setup
+            loadCPData(d);
+
+            // Default to profile tab
+            window.switchProfileTab('profile');
+        };
+
+        window.closeFullProfileView = () => {
+            const view = document.getElementById('full-profile-view');
+            view.classList.add('translate-x-full');
+            setTimeout(() => { view.classList.add('hidden'); }, 300);
+        };
         
+        
+        
+        
+        
+        
+        
+        
+
+        // FIXED TABS SWITCHING LOGIC (No crashes)
+        window.switchProfileTab = (tab) => {
+            try {
+                const tabProf = document.getElementById('tab-btn-profile');
+                const tabIntim = document.getElementById('tab-btn-intimacy');
+                const contentProf = document.getElementById('fpv-tab-profile');
+                const contentIntim = document.getElementById('fpv-tab-intimacy');
+
+                if (tab === 'profile') {
+                    tabProf.className = "pb-2 border-b-2 border-purple-600 text-gray-900 font-bold mr-6 text-sm cursor-pointer transition";
+                    tabIntim.className = "pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm cursor-pointer transition";
+                    contentProf.classList.remove('hidden');
+                    contentProf.classList.add('block');
+                    contentIntim.classList.remove('flex');
+                    contentIntim.classList.add('hidden');
+                } else if (tab === 'intimacy') {
+                    tabProf.className = "pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm mr-6 cursor-pointer transition";
+                    tabIntim.className = "pb-2 border-b-2 border-purple-600 text-gray-900 font-bold text-sm cursor-pointer transition";
+                    contentProf.classList.remove('block');
+                    contentProf.classList.add('hidden');
+                    contentIntim.classList.remove('hidden');
+                    contentIntim.classList.add('flex');
+                }
+            } catch (err) {
+                console.error("Tab switch error:", err);
+            }
+        };
+
+        // ================= CP / INTIMACY LOGIC =================
+        function loadCPData(userData) {
+            document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
+            document.getElementById('cp-user-name').innerText = userData.username || 'User';
+
+            const partnerContainer = document.getElementById('cp-partner-container');
+            
+            if (userData.cp && userData.cp.partnerUid) {
+                partnerContainer.innerHTML = `
+                    <div class="w-20 h-20 rounded-full border-2 border-pink-400 overflow-hidden shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                        <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xs font-bold text-gray-800 mt-2 truncate w-20 text-center">${userData.cp.partnerName}</span>
+                `;
+            } else {
+                partnerContainer.innerHTML = `
+                    <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-2 border-dashed border-pink-400 flex items-center justify-center bg-pink-50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                        <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
+                    </div>
+                    <span class="text-xs text-gray-400 mt-2 font-bold">Add Partner</span>
+                `;
+            }
+        }
+
+        window.inviteCP = async () => {
+            const { value: targetId } = await Swal.fire({
+                title: 'Invite CP Partner',
+                input: 'number',
+                inputPlaceholder: 'Enter User ID to send request',
+                showCancelButton: true,
+                confirmButtonColor: '#ec4899',
+                confirmButtonText: 'Send Request'
+            });
+
+            if (targetId) {
+                Swal.fire({title: 'Sending...', showConfirmButton: false});
+                const s = await get(ref(db, `idToUid/${targetId}`));
+                if (!s.exists()) return Swal.fire('Error', 'ID Not Found', 'error');
+                
+                const targetUid = s.val();
+                if (targetUid === currentUser.uid) return Swal.fire('Error', 'You cannot send a request to yourself.', 'error');
+
+                // Send Request to Target User's Inbox
+                await set(ref(db, `users/${targetUid}/inbox/cpRequests/${currentUser.uid}`), {
+                    fromName: currentUser.displayName,
+                    fromUid: currentUser.uid,
+                    fromPic: currentUser.photoURL,
+                    type: 'cpReq',
+                    timestamp: Date.now()
+                });
+
+                Swal.fire('Sent!', 'CP Request sent successfully.', 'success');
+            }
+        };
+
+        window.acceptCP = async (partnerUid, partnerName, partnerPic, reqKey) => {
+            Swal.fire({title: 'Processing...', showConfirmButton: false});
+            
+            // Set for Me
+            await update(ref(db, `users/${currentUser.uid}/cp`), {
+                partnerUid: partnerUid,
+                partnerName: partnerName,
+                partnerPic: partnerPic
+            });
+            
+            // Set for Them
+            await update(ref(db, `users/${partnerUid}/cp`), {
+                partnerUid: currentUser.uid,
+                partnerName: currentUser.displayName,
+                partnerPic: currentUser.photoURL
+            });
+
+            // Remove Request
+            await remove(ref(db, `users/${currentUser.uid}/inbox/${reqKey}`));
+            
+            Swal.fire('Congratulations!', `You and ${partnerName} are now CP partners!`, 'success');
+            if (document.getElementById('full-profile-view').classList.contains('hidden') === false) {
+                openFullProfileView(); // refresh view
+            }
+        };
+
+        // Make sure to add this inside your Inbox loading function (onValue(ref(db, `users/${currentUser.uid}/inbox`)))
+        // I am providing the specific block to inject or replace where follow requests are loaded:
+        /*
+            if (data.cpRequests) {
+                Object.entries(data.cpRequests).forEach(([key, val]) => {
+                    totalUnread++;
+                    followDiv.innerHTML += `
+                    <div class="bg-pink-50 border border-pink-200 p-3 rounded-lg flex items-start gap-3">
+                        <img src="${val.fromPic || 'https://placehold.co/100'}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> sent a CP Request ❤️</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${val.fromPic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-xs px-3 py-1 rounded-full shadow">Accept</button>
+                            <button onclick="delNotif('cpRequests/${key}')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`;
+                });
+            }
+        */
+
+        // ================= OTHER PROFILE RENDERERS =================
+        function renderFPVFrames(currentEquipped) {
+            const list = document.getElementById('fpv-frames-list');
+            list.innerHTML = '';
+            for(let i=1; i<=4; i++) {
+                let framePath = `./frames/frame_${i}.png`;
+                let isUsing = currentEquipped && currentEquipped.includes(framePath);
+                let btnClass = isUsing ? 'border border-purple-600 text-purple-600 bg-transparent' : 'bg-purple-600 text-white border border-transparent';
+                let btnText = isUsing ? '✓ Using' : 'Use';
+                
+                list.innerHTML += `<div class="flex flex-col items-center min-w-[75px]">
+                    <img src="${framePath}" class="h-16 object-contain mb-1 drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Frame'">
+                    <button class="text-[10px] rounded-full px-4 py-0.5 font-bold transition mt-2 ${btnClass}" onclick="applyFrame('${framePath}')">${btnText}</button>
+                </div>`;
+            }
+        }
+
+        function renderFPVMedals(currentLvl) {
+            const list = document.getElementById('fpv-medals-list');
+            list.innerHTML = '';
+            let milestones =[10, 20, 30, 40];
+            milestones.forEach(m => {
+                let medalImg = getMedalImage(m);
+                let title = `Lv.${m} Title`;
+                let opacity = currentLvl >= m ? 'opacity-100' : 'opacity-40 grayscale';
+                
+                list.innerHTML += `<div class="flex flex-col items-center min-w-[75px] ${opacity}">
+                    <img src="${medalImg}" class="h-16 object-contain mb-1 drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Medal'">
+                    <span class="text-[10px] text-gray-700 font-bold text-center w-full truncate">${title}</span>
+                </div>`;
+            });
+        }
+
+        // ================= EDIT PROFILE SCREEN LOGIC =================
+        window.openEditProfileScreen = async () => {
+            const view = document.getElementById('edit-profile-view');
+            view.classList.remove('hidden');
+            setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
+
+            const s = await get(ref(db, `users/${currentUser.uid}`)); 
+            const d = s.val() || {}; 
+            
+            document.getElementById('edit-name').value = d.username; 
+            document.getElementById('edit-bio').value = d.bio || ''; 
+            document.getElementById('edit-birthday').value = d.birthday || ''; // Load Birthday
+            
+            let currentImg = d.photoURL || 'https://placehold.co/100'; 
+            document.getElementById('edit-img-url').value = currentImg; 
+            currentEditingImg = currentImg; 
+            document.getElementById('edit-preview-img').src = currentImg; 
+            
+            selectedGender = d.gender || null; 
+            updateGenderUI(); 
+        };
+
+        window.closeEditProfileScreen = () => {
+            const view = document.getElementById('edit-profile-view');
+            view.classList.add('translate-x-full');
+            setTimeout(() => { view.classList.add('hidden'); }, 300);
+        };
+
+        window.selectGender = (g) => { 
+            selectedGender = g; 
+            updateGenderUI(); 
+        }
+
+        function updateGenderUI() { 
+            const mBtn = document.getElementById('btn-edit-male'); 
+            const fBtn = document.getElementById('btn-edit-female'); 
+            
+            mBtn.className = "text-xs px-3 py-1.5 rounded-md bg-gray-100 text-gray-600 font-bold border border-transparent transition";
+            fBtn.className = "text-xs px-3 py-1.5 rounded-md bg-gray-100 text-gray-600 font-bold border border-transparent transition";
+            
+            if (selectedGender === 'male') {
+                mBtn.classList.remove('bg-gray-100', 'text-gray-600');
+                mBtn.classList.add('bg-purple-100', 'text-purple-600', 'border-purple-600');
+            } else if (selectedGender === 'female') {
+                fBtn.classList.remove('bg-gray-100', 'text-gray-600');
+                fBtn.classList.add('bg-purple-100', 'text-purple-600', 'border-purple-600');
+            }
+        }
+
+        window.saveProfile = async () => { 
+            const btn = event.target;
+            btn.innerText = "Saving...";
+            
+            const n = document.getElementById('edit-name').value; 
+            const b = document.getElementById('edit-bio').value; 
+            const bday = document.getElementById('edit-birthday').value; // Save Birthday
+            const u = document.getElementById('edit-img-url').value.trim(); 
+            
+            let finalImg = currentEditingImg; 
+            if(u && u.length > 5) finalImg = u; 
+            
+            let updateData = {username: n, bio: b, birthday: bday, photoURL: finalImg}; 
+            
+            if (selectedGender) { 
+                updateData.gender = selectedGender; 
+            } 
+            
+            await updateProfile(currentUser, {displayName: n, photoURL: finalImg}); 
+            await update(ref(db,`users/${currentUser.uid}`), updateData); 
+            
+            // Update Base Profile View
+            document.getElementById('profile-name').innerHTML = `<span class="${updateData.nameColorClass || 'text-gray-900'}">${n}</span> <img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
+            document.getElementById('profile-bio').innerText = b; 
+            
+            const container = document.getElementById('profile-visual-container'); 
+            const hasFrame = document.querySelector('.visual-frame') !== null; 
+            let html = `<div class="visual-root"><img src="${finalImg}" class="visual-img">`; 
+            if(hasFrame) html += `<img src="${document.querySelector('.visual-frame').src}" class="visual-frame">`; 
+            html += `</div>`; 
+            container.innerHTML = html; 
+
+            // Refresh Full Profile UI
+            if(!document.getElementById('full-profile-view').classList.contains('hidden')) {
+                openFullProfileView();
+            }
+            
+            btn.innerText = "Save";
+            closeEditProfileScreen(); 
+            Swal.fire({toast:true, icon:'success', title:'Profile Updated', position:'top', timer:1500, showConfirmButton:false});
+        };
         window.toggleExitMenu = () => { const bar = document.getElementById('room-exit-bar'); const blocker = document.getElementById('room-exit-blocker'); if(bar.style.display === 'flex') { bar.style.display = 'none'; blocker.style.display = 'none'; } else { bar.style.display = 'flex'; blocker.style.display = 'block'; } };
         window.closeExitMenu = () => { document.getElementById('room-exit-bar').style.display = 'none'; document.getElementById('room-exit-blocker').style.display = 'none'; }
         
