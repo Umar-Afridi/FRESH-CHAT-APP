@@ -65,38 +65,28 @@
 .room-user-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 700; display: flex; align-items: center; gap: 5px; backdrop-filter: blur(2px); z-index: 20; }
 .room-card-title { color: white; font-size: 15px; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; letter-spacing: 0.3px; }
 
-/* نیچے والے نام اور جینڈر کے لیے - بہتر ڈیزائن */
+/* نیچے والے نام اور جینڈر کے لیے - بہتر ڈیزائن (UPDATED) */
 .room-info-bottom { 
     display: flex; 
     align-items: center; 
-    gap: 8px; 
-    padding: 8px 5px 4px 5px; 
+    gap: 5px; 
+    padding: 8px 8px 6px 8px; 
     background: white;
     border-radius: 0 0 16px 16px;
 }
 .room-gender-icon { 
-    width: 18px; 
-    height: 18px; 
+    width: 14px; 
+    height: 14px; 
     object-fit: contain; 
-    border-radius: 50%;
-    background: #f3f4f6;
-    padding: 2px;
-    border: 1px solid #e5e7eb;
 }
 .room-owner-name { 
-    font-size: 13px; 
-    font-weight: 700; 
-    color: #1f2937; 
+    font-size: 12px; 
+    font-weight: 800; 
+    color: #374151; 
     overflow: hidden; 
     text-overflow: ellipsis; 
     white-space: nowrap;
     flex: 1;
-    letter-spacing: 0.2px;
-}
-.room-owner-name::before {
-    content: "👤 ";
-    opacity: 0.6;
-    font-size: 11px;
 }
         /* GENERAL STYLES */
         .visual-root { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: visible !important; }
@@ -1201,6 +1191,7 @@
     <div class="admin-action-btn bg-blue-600" id="btn-unban-user" onclick="adminAction('unban')"><i class="fa-solid fa-unlock mr-1"></i> Unban User</div>
     <div class="admin-action-btn bg-purple-600" id="btn-make-official" onclick="adminAction('official')"><i class="fa-solid fa-certificate mr-1"></i> Make Official</div>
     <div class="admin-action-btn bg-gray-700" onclick="adminAction('delete')"><i class="fa-solid fa-trash mr-1"></i> Delete ID</div>
+    <div class="admin-action-btn bg-teal-600" onclick="adminAction('recover')"><i class="fa-solid fa-trash-arrow-up mr-1"></i> Recover ID</div>
 </div>
             </div>
         </div>
@@ -2222,20 +2213,23 @@
 
         window.refreshHomeRooms = async () => {
             if(!currentUser) return; const homeList = document.getElementById('home-room-list'); homeList.innerHTML = '<p class="text-center text-gray-400 text-xs mt-4 col-span-2">Loading...</p>'; const roomsSnap = await get(ref(db, 'rooms')); if(!roomsSnap.exists()) { homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms found.</p>`; return; } const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : []; let history = JSON.parse(localStorage.getItem('room_history') || '[]'); homeList.innerHTML = ''; let hasLive = false; const promises = [];
-            roomsSnap.forEach(r => { const d = r.val(); const roomId = r.key; const isOwnerPresent = d.activeUsers && Object.keys(d.activeUsers).includes(d.owner); if (d.isLocked === true) return; if (d.isLive === true && isOwnerPresent) { let shouldShow = false; if (currentHomeTab === 'following') { if (friendIds.includes(d.owner) || d.owner === currentUser.uid) shouldShow = true; } else if (currentHomeTab === 'popular') shouldShow = true; else if (currentHomeTab === 'recent') { if (history.includes(roomId)) shouldShow = true; } if (shouldShow) { hasLive = true; const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { const uData = uSnap.exists() ? uSnap.val() : {}; return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '' }; }); promises.push(p); } } }); 
-            const results = await Promise.all(promises);
-            // refreshHomeRooms فنکشن میں - یہ اپڈیٹڈ لائنیں ہیں
+            roomsSnap.forEach(r => { const d = r.val(); const roomId = r.key; const isOwnerPresent = d.activeUsers && Object.keys(d.activeUsers).includes(d.owner); if (d.isLocked === true) return; if (d.isLive === true && isOwnerPresent) { let shouldShow = false; if (currentHomeTab === 'following') { if (friendIds.includes(d.owner) || d.owner === currentUser.uid) shouldShow = true; } else if (currentHomeTab === 'popular') shouldShow = true; else if (currentHomeTab === 'recent') { if (history.includes(roomId)) shouldShow = true; } if (shouldShow) { hasLive = true; const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { const uData = uSnap.exists() ? uSnap.val() : {}; return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '', liveUserName: uData.username || d.ownerName }; }); promises.push(p); } } }); 
+const results = await Promise.all(promises);
 
 results.forEach(d => { 
-    const roomNameDisplay = d.roomName || (d.ownerName + "'s Room"); 
-    const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${roomNameDisplay}&background=random&size=200`; 
-    const genderIcon = d.ownerGender === 'female' ? './female.png' : './male.png'; 
+    // یہاں ہم یوزر کا بالکل تازہ (Live) نام استعمال کر رہے ہیں
+    const currentUserName = d.liveUserName || 'User';
+    const roomNameDisplay = d.roomName || (currentUserName + "'s Room"); 
+    const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${encodeURIComponent(roomNameDisplay)}&background=random&size=200`; 
+    
+    // جینڈر کا ایشو یہاں فکس کر دیا ہے (لڑکے کے لیے male.png اور لڑکی کے لیے female.png)
+    const genderIcon = d.gender === 'female' ? './female.png' : './male.png'; 
     const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
     
     // Owner Name Color Class (VIP names)
-    const ownerNameColorClass = d.ownerNameColorClass || '';
-    const ownerNameDisplay = `<span class="${ownerNameColorClass}">${d.ownerName || 'User'}</span>`;
-    
+    const ownerNameColorClass = d.nameColorClass || '';
+    const ownerNameDisplay = `<span class="${ownerNameColorClass}">${currentUserName}</span>`;
+
     let rExp = d.roomExp || 0;
     let nextRocket = './rocket1.png';
     let rLvl = 1;
@@ -2253,10 +2247,10 @@ results.forEach(d => {
             <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
             <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
         </div>
-        <!-- Owner Info Section (NEW) -->
-        <div class="room-info-bottom flex items-center gap-1 px-1">
+        <!-- Owner Info Section (UPDATED) -->
+        <div class="room-info-bottom">
             <img src="${genderIcon}" class="room-gender-icon" onerror="this.style.display='none'">
-            <div class="room-owner-name" style="color: #374151;">By: ${ownerNameDisplay}</div>
+            <div class="room-owner-name">${ownerNameDisplay}</div>
         </div>
     </div>`;
 });
@@ -3570,9 +3564,28 @@ results.forEach(d => {
                 await update(ref(db, `users/${adminTargetUid}`), { 
                     isBanned: true, 
                     isDeleted: true,
-                    username: "Deleted User"
+                    username: "YARAAN User" // <-- Changed to YARAAN User
                 });
-                Swal.fire('Deleted', 'Account has been deleted.', 'success');
+                Swal.fire('Deleted', 'Account has been deleted and name changed to YARAAN User.', 'success');
+                closeAdminPanel();
+            }
+        }
+        else if(action === 'recover') {
+            const result = await Swal.fire({
+                title: 'Recover Account?',
+                text: 'This will restore the deleted account and unban it.',
+                icon: 'question',
+                showCancelButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                await update(ref(db, `users/${adminTargetUid}`), { 
+                    isBanned: null, 
+                    isDeleted: null
+                });
+                Swal.fire('Recovered', 'Account has been successfully recovered.', 'success');
                 closeAdminPanel();
             }
         }
