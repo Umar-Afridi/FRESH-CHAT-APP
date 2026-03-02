@@ -22,6 +22,52 @@
             --seat-size: 68px;
             --bottom-bar-height: 45px; 
         }
+        /* Full Profile View - SCROLLING FIX */
+#full-profile-view {
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+    background-color: white !important;
+}
+
+#full-profile-view .bg-white.rounded-t-2xl {
+    margin-top: 0 !important;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 320px); /* Top black area height fixed */
+}
+
+#full-profile-view .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto !important;
+    scroll-behavior: smooth;
+}
+
+/* Ensure content is visible */
+#profile-scrollable-content {
+    min-height: min-content;
+}
+
+/* CP Section Fixes */
+#fpv-tab-intimacy .w-20.h-20 {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+#fpv-tab-intimacy .text-xs {
+    font-size: 12px !important;
+}
+
+/* Scrollbar Hide but Functionality Keep */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; background-color: var(--app-bg) !important; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
         body { font-family: 'Montserrat', sans-serif; color: #1f2937; overflow: hidden; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
@@ -257,6 +303,7 @@
     0%, 100% { transform: scale(1); opacity: 0.5; }
     50% { transform: scale(1.2); opacity: 1; }
 }
+
         /* ================== HUGE ROCKET SYSTEM STYLES ================== */
         #rocket-trigger-btn { position: absolute; bottom: 70px; right: 15px; width: 50px; height: 50px; z-index: 50; cursor: pointer; animation: floatRocket 3s ease-in-out infinite; }
         .rocket-display-icon { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
@@ -745,63 +792,50 @@
         </div>
 
        <!-- ================= FIXED FULL PROFILE VIEW ================= -->
-<div id="full-profile-view" class="fixed inset-0 bg-[#0f1015] z-[5000] hidden flex-col overflow-y-auto pb-10 transition-transform transform translate-x-full duration-300 ease-in-out">
+<!-- ================= FIXED FULL PROFILE VIEW - BLACK LINE REMOVED ================= -->
+<div id="full-profile-view" class="fixed inset-0 bg-white z-[5000] hidden flex-col overflow-hidden transition-transform transform translate-x-full duration-300 ease-in-out">
     
-    <!-- Top Background & Info Area -->
-    <div class="relative w-full h-80 flex-shrink-0 bg-black">
+    <!-- Top Background & Info Area - BLACK BACKGROUND ONLY FOR TOP SECTION -->
+    <div class="relative w-full h-80 flex-shrink-0 bg-black overflow-hidden">
         <!-- Blurred Background -->
         <div id="fpv-cover" class="absolute inset-0 bg-cover bg-center filter blur-xl brightness-50 scale-110"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0f1015] to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
         
-        <!-- Top Nav (Edit Button in Top Corner) -->
+        <!-- Top Nav -->
         <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-8 text-white z-50">
             <i class="fa-solid fa-chevron-left text-2xl cursor-pointer hover:text-gray-300 drop-shadow-md" onclick="closeFullProfileView()"></i>
-            <!-- Top Right Edit Option -->
             <div onclick="openEditProfileScreen()" class="cursor-pointer flex items-center gap-2 hover:text-gray-300 drop-shadow-md p-2">
                 <i class="fa-regular fa-pen-to-square text-2xl"></i>
             </div>
         </div>
 
-        <!-- YAHAN CHANGES KI GAYI HAIN: DP aur Name ko upar set kiya gaya hai -->
+        <!-- DP and Name Area -->
         <div class="absolute top-24 left-6 w-full flex items-center gap-4 z-40 pr-6">
-            
             <!-- DP, Frame & V-Badge -->
             <div class="relative w-[90px] h-[90px] flex-shrink-0 flex items-center justify-center">
-                <!-- User DP -->
-                <img id="fpv-dp" src="" class="w-[85px] h-[85px] rounded-full object-cover border-2 border-[#111] z-10 relative shadow-lg">
-                
-                <!-- Frame (FIXED Z-INDEX AND SIZE WITH ERROR HANDLING) -->
+                <img id="fpv-dp" src="" class="w-[85px] h-[85px] rounded-full object-cover border-2 border-white z-10 relative shadow-lg">
                 <img id="fpv-frame" src="" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130px] h-[130px] object-contain pointer-events-none hidden z-20" onerror="this.style.display='none'">
-                
-                <!-- Official V-Badge on DP -->
                 <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute bottom-1 right-1 w-6 h-6 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
-
-                <!-- Level Badge Overlapping Bottom of DP (CENTERED BELOW DP) -->
                 <div id="fpv-level-badge-container" class="absolute -bottom-4 z-30 user-level-badge scale-[0.85] origin-center flex items-center justify-center">
                     <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
                 </div>
             </div>
 
-            <!-- Name, Badges, ID, Followers -->
+            <!-- Name, Badges, ID, Followers - NOW WITH WHITE TEXT ON BLACK -->
             <div class="flex flex-col justify-center flex-1 relative z-40 mt-2">
                 <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
-                    <!-- NAME -->
                     <h2 id="fpv-name" class="text-xl font-extrabold text-white drop-shadow-md">User Name</h2>
-                    
-                    <!-- OFFICIAL BADGE (.png) - SIZE INCREASED (h-6) -->
                     <img id="fpv-official" src="./verify_official.png" class="h-6 hidden object-contain drop-shadow-md" onerror="this.style.display='none'">
-                    
-                    <!-- GENDER & AGE -->
                     <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-bold border border-blue-300/50 shadow-sm">
                         <i class="fa-solid fa-mars"></i> 18
                     </span>
                 </div>
                 
-                <div class="flex items-center gap-3 text-xs font-bold text-gray-300 drop-shadow-md mt-1">
-                    <div class="bg-black/40 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
+                <div class="flex items-center gap-3 text-xs font-bold text-gray-200 drop-shadow-md mt-1">
+                    <div class="bg-black/60 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
                         ID: <span id="fpv-id" class="text-white">0000</span> <i class="fa-regular fa-copy text-[10px] cursor-pointer hover:text-white" onclick="copyToClipboard(document.getElementById('fpv-id').innerText)"></i>
                     </div>
-                    <div class="bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
+                    <div class="bg-black/60 px-2 py-0.5 rounded backdrop-blur-sm">
                         <span id="fpv-followers" class="text-white">0</span> followers
                     </div>
                 </div>
@@ -809,81 +843,85 @@
         </div>
     </div>
 
-    <!-- White Content Area (Rounded Top) -->
-    <div class="bg-white rounded-t-2xl -mt-4 z-30 relative min-h-screen pt-2">
+    <!-- White Content Area (Rounded Top) - NOW ATTACHED PERFECTLY -->
+    <div class="bg-white rounded-t-2xl z-30 relative flex-1 flex flex-col overflow-hidden">
         
-        <!-- Tabs -->
-        <div class="flex px-6 mt-4 border-b border-gray-100">
-            <div id="tab-btn-profile" onclick="switchProfileTab('profile')" class="pb-2 border-b-2 border-purple-600 text-gray-900 font-bold mr-6 text-sm cursor-pointer transition">Profile</div>
-            <div id="tab-btn-intimacy" onclick="switchProfileTab('intimacy')" class="pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm cursor-pointer transition">Intimacy</div>
+        <!-- Tabs - STICKY AT TOP -->
+        <div class="sticky top-0 bg-white z-10 px-6 pt-4 pb-2 border-b border-gray-100 flex-shrink-0">
+            <div class="flex">
+                <div id="tab-btn-profile" onclick="switchProfileTab('profile')" class="pb-2 border-b-2 border-purple-600 text-gray-900 font-bold mr-6 text-sm cursor-pointer transition">Profile</div>
+                <div id="tab-btn-intimacy" onclick="switchProfileTab('intimacy')" class="pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm cursor-pointer transition">Intimacy</div>
+            </div>
         </div>
 
-        <!-- ================= PROFILE TAB CONTENT ================= -->
-        <div id="fpv-tab-profile" class="block">
-            <div class="px-5 mt-5">
-                <div class="flex items-center gap-2 text-gray-600 text-sm mb-2 font-medium">
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto pb-6 px-5">
+            
+            <!-- ================= PROFILE TAB CONTENT ================= -->
+            <div id="fpv-tab-profile" class="block">
+                
+                <!-- Location -->
+                <div class="flex items-center gap-2 text-gray-600 text-sm mb-2 font-medium mt-2">
                     <i class="fa-solid fa-location-dot text-gray-400"></i> <span>Pakistan</span>
                 </div>
                 
-                <!-- Bio Box (Pencil removed, completely clean) -->
+                <!-- Bio Box -->
                 <div class="flex items-start text-sm text-gray-700 relative mt-2">
                     <p id="fpv-bio" class="italic whitespace-pre-line leading-relaxed flex-1">No bio added yet.</p>
                 </div>
-            </div>
 
-            <!-- Vehicles -->
-            <div class="mt-8 px-5">
-                <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Vehicles</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
-                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-vehicles-list">
-                    <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Tiger" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">30 days</span><button class="text-[10px] border border-purple-600 text-purple-600 rounded-full px-3 py-0.5 font-bold">✓ Using</button></div>
-                    <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Dragon" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">5 days</span><button class="text-[10px] bg-purple-600 text-white rounded-full px-4 py-0.5 font-bold">Use</button></div>
-                </div>
-            </div>
-
-            <!-- Frames -->
-            <div class="mt-6 px-5">
-                <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Frames</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
-                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-frames-list"></div>
-            </div>
-
-            <!-- Medals -->
-            <div class="mt-6 px-5 mb-10">
-                <h3 class="font-bold text-gray-900 mb-3">Medal</h3>
-                <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-medals-list"></div>
-            </div>
-        </div>
-
-        <!-- ================= INTIMACY / CP TAB CONTENT (UPDATED & RESIZED) ================= -->
-        <div id="fpv-tab-intimacy" class="hidden px-5 py-8 flex-col items-center justify-center min-h-[160px] relative bg-cover bg-center mt-4 mx-4 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500" style="background-image: url('./cp_bg1.png');">
-            <!-- Semi-transparent overlay for readability -->
-            <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
-            
-            <div class="flex items-center justify-center gap-6 w-full max-w-xs relative z-10">
-                <!-- CP User 1 (Me) -->
-                <div class="flex flex-col items-center z-10">
-                    <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
-                        <img id="cp-user-img" src="" class="w-full h-full object-cover">
+                <!-- Vehicles -->
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Vehicles</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-vehicles-list">
+                        <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Tiger" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">30 days</span><button class="text-[10px] border border-purple-600 text-purple-600 rounded-full px-3 py-0.5 font-bold">✓ Using</button></div>
+                        <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Dragon" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">5 days</span><button class="text-[10px] bg-purple-600 text-white rounded-full px-4 py-0.5 font-bold">Use</button></div>
                     </div>
-                    <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
                 </div>
 
-                <!-- Animated Heart WITH Text On Top -->
-                <div class="relative flex items-center justify-center z-20">
-                    <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
-                    <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8);">LV 1</span>
+                <!-- Frames -->
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Frames</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-frames-list"></div>
                 </div>
 
-                <!-- CP User 2 -->
-                <div class="flex flex-col items-center z-10" id="cp-partner-container">
-                    <!-- Loaded dynamically -->
+                <!-- Medals -->
+                <div class="mt-6 mb-4">
+                    <h3 class="font-bold text-gray-900 mb-3">Medal</h3>
+                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-medals-list"></div>
                 </div>
             </div>
-            
-            <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
+
+           <!-- ================= INTIMACY / CP TAB CONTENT - FIXED SIZES ================= -->
+<div id="fpv-tab-intimacy" class="hidden px-2 py-6 flex-col items-center justify-center min-h-[180px] relative bg-cover bg-center mt-2 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500" style="background-image: url('./cp_bg1.png');">
+    <!-- Semi-transparent overlay -->
+    <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
+    
+    <div class="flex items-center justify-center gap-6 w-full relative z-10">
+        <!-- CP User 1 (Me) - NOW SAME SIZE AS PARTNER -->
+        <div class="flex flex-col items-center z-10">
+            <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
+                <img id="cp-user-img" src="" class="w-full h-full object-cover">
+            </div>
+            <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
         </div>
 
+        <!-- Animated Heart - SLIGHTLY BIGGER -->
+        <div class="relative flex items-center justify-center z-20">
+            <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+            <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;">LV 1</span>
+        </div>
+
+        <!-- CP User 2 - SAME SIZE AS USER 1 -->
+        <div class="flex flex-col items-center z-10" id="cp-partner-container"></div>
     </div>
+    
+    <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
 </div>
+        </div> <!-- END SCROLLABLE CONTENT -->
+    </div> <!-- END WHITE CONTAINER -->
+</div> <!-- END FULL PROFILE VIEW -->
+  
 <!-- ================= UPDATED EDIT PROFILE SCREEN ================= -->
 <div id="edit-profile-view" class="fixed inset-0 bg-white z-[6000] hidden flex-col overflow-y-auto transition-transform transform translate-x-full duration-300 ease-in-out">
     <div class="flex justify-between items-center p-4 border-b border-gray-100 pt-6">
@@ -2357,7 +2395,31 @@
         window.hideEmailForm = () => { document.getElementById('email-auth-full-page').classList.remove('open'); }
         window.loginWithGoogle = async () => { const provider = new GoogleAuthProvider(); try { const result = await signInWithPopup(auth, provider); const user = result.user; const userRef = ref(db, `users/${user.uid}`); const snap = await get(userRef); if(!snap.exists()) { await generateAndSaveId(user.uid, user.displayName, user.email, user.photoURL); } localStorage.setItem('user_logged_in', 'true'); } catch (error) { Swal.fire('Login Error', error.message, 'error'); } };
 
-        let touchStartX = 0; let touchStartY = 0; document.addEventListener('touchstart', e => { if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: false}); document.addEventListener('touchend', e => { if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleGesture(touchStartX, touchStartY, touchEndX, touchEndY); }, {passive: false});
+        let touchStartX = 0; let touchStartY = 0; 
+document.addEventListener('touchstart', e => { 
+    // FULL PROFILE VIEW CHECK - AGAR KHUla Hai TO KAM NA KARE
+    const fullProfileView = document.getElementById('full-profile-view');
+    if (fullProfileView && !fullProfileView.classList.contains('hidden') && !fullProfileView.classList.contains('translate-x-full')) {
+        return; // FULL PROFILE VIEW MEIN SWIPE NA KARE
+    }
+    
+    if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+    touchStartX = e.changedTouches[0].screenX; 
+    touchStartY = e.changedTouches[0].screenY; 
+}, {passive: false}); 
+
+document.addEventListener('touchend', e => { 
+    // FULL PROFILE VIEW CHECK - AGAR KHUla Hai TO KAM NA KARE
+    const fullProfileView = document.getElementById('full-profile-view');
+    if (fullProfileView && !fullProfileView.classList.contains('hidden') && !fullProfileView.classList.contains('translate-x-full')) {
+        return; // FULL PROFILE VIEW MEIN SWIPE NA KARE
+    }
+    
+    if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+    let touchEndX = e.changedTouches[0].screenX; 
+    let touchEndY = e.changedTouches[0].screenY; 
+    handleGesture(touchStartX, touchStartY, touchEndX, touchEndY); 
+}, {passive: false});
         function handleGesture(sX, sY, eX, eY) { const diffX = eX - sX; const diffY = eY - sY; if (Math.abs(diffX) < 50) return; const roomView = document.getElementById('view-room'); const profileView = document.getElementById('view-profile'); const propModal = document.getElementById('prophouse-modal'); const homeView = document.getElementById('view-home'); if (diffX < -50 && Math.abs(diffX) > Math.abs(diffY)) { if (roomView.style.display === 'flex') { window.toggleExitMenu(); return; } if (profileView.style.display === 'flex') { switchTab('view-home', document.getElementById('btn-home')); return; } if (propModal.classList.contains('open')) { closePropHouse(); return; } } if (homeView.style.display === 'flex' && Math.abs(diffX) > Math.abs(diffY)) { let tabs = ['following', 'popular', 'recent']; let currentIndex = tabs.indexOf(currentHomeTab); if (diffX < -50 && currentIndex < tabs.length - 1) switchHomeTab(tabs[currentIndex + 1]); else if (diffX > 50 && currentIndex > 0) switchHomeTab(tabs[currentIndex - 1]); return; } }
 
         const homeView = document.getElementById('view-home'); const refreshIndicator = document.getElementById('pull-refresh-indicator'); let homeStartY = 0; homeView.addEventListener('touchstart', (e) => { if (homeView.scrollTop === 0) homeStartY = e.touches[0].pageY; }, {passive: true}); homeView.addEventListener('touchmove', (e) => { if (homeView.scrollTop === 0 && e.touches[0].pageY > homeStartY) refreshIndicator.style.height = `${(e.touches[0].pageY - homeStartY)/2}px`; }, {passive: true}); homeView.addEventListener('touchend', () => { if (parseInt(refreshIndicator.style.height) > 30) { refreshIndicator.style.height = '40px'; refreshHomeRooms(); setTimeout(() => { refreshIndicator.style.height = '0px'; }, 1000); } else { refreshIndicator.style.height = '0px'; } });
@@ -3213,91 +3275,200 @@ results.forEach(d => {
             }
         };
 
-        function loadCPData(userData) {
-            document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
-            document.getElementById('cp-user-name').innerText = userData.username || 'User';
+        // ================= CP (INTIMACY) FUNCTIONS =================
 
-            const partnerContainer = document.getElementById('cp-partner-container');
-            
-            // CP Level Calculation based on Gifts
-            let cpGiftAmount = (userData.cp && userData.cp.cpGiftAmount) ? userData.cp.cpGiftAmount : 0;
-            let cpLevel = 1;
-            let nextGoal = "3M";
-            
-            if(cpGiftAmount >= 15000000) { cpLevel = 4; nextGoal = "Max"; }
-            else if(cpGiftAmount >= 8000000) { cpLevel = 3; nextGoal = "15M"; }
-            else if(cpGiftAmount >= 3000000) { cpLevel = 2; nextGoal = "8M"; }
+// CP Level Load Karne Ka Function (OLD WALA LEKIN FIXED)
+function loadCPData(userData) {
+    document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
+    document.getElementById('cp-user-name').innerText = userData.username || 'User';
 
-            // Update UI Images dynamically
-            document.getElementById('fpv-tab-intimacy').style.backgroundImage = `url('./cp_bg${cpLevel}.png')`;
-            document.getElementById('cp-heart-icon').src = `./cp_heart${cpLevel}.png`;
+    const partnerContainer = document.getElementById('cp-partner-container');
+    
+    // CP Level Calculation based on Gifts
+    let cpGiftAmount = (userData.cp && userData.cp.cpGiftAmount) ? userData.cp.cpGiftAmount : 0;
+    let cpLevel = 1;
+    
+    if(cpGiftAmount >= 15000000) { cpLevel = 4; }
+    else if(cpGiftAmount >= 8000000) { cpLevel = 3; }
+    else if(cpGiftAmount >= 3000000) { cpLevel = 2; }
 
-            if (userData.cp && userData.cp.partnerUid) {
-                // Partner Found
-                partnerContainer.innerHTML = `
-                    <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] cursor-pointer">
-                        <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover pointer-events-none">
-                    </div>
-                    <span class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">${userData.cp.partnerName}</span>
-                `;
-                
-                document.getElementById('cp-empty-text').style.display = 'none';
-                let cpText = document.getElementById('cp-level-text');
-                cpText.style.display = 'block';
-                // YAHAN TEXT CHANGE KIYA GAYA HAI TAAKE SIRF LV AAYE
-                cpText.innerText = `LV ${cpLevel}`;
+    // Update UI Images dynamically
+    document.getElementById('fpv-tab-intimacy').style.backgroundImage = `url('./cp_bg${cpLevel}.png')`;
+    document.getElementById('cp-heart-icon').src = `./cp_heart${cpLevel}.png`;
 
-                // Long Press Logic to Remove CP Partner
-                let pressTimer;
-                const partnerDiv = document.getElementById('my-cp-partner');
-                
-                const startPress = () => { 
-                    pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
-                };
-                const cancelPress = () => { clearTimeout(pressTimer); };
-                
-                partnerDiv.addEventListener('touchstart', startPress);
-                partnerDiv.addEventListener('touchend', cancelPress);
-                partnerDiv.addEventListener('touchmove', cancelPress);
-                partnerDiv.addEventListener('mousedown', startPress);
-                partnerDiv.addEventListener('mouseup', cancelPress);
-                partnerDiv.addEventListener('mouseleave', cancelPress);
+    if (userData.cp && userData.cp.partnerUid) {
+        // Partner Found
+        partnerContainer.innerHTML = `
+            <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] cursor-pointer">
+                <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover pointer-events-none">
+            </div>
+            <span class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">${userData.cp.partnerName}</span>
+        `;
+        
+        document.getElementById('cp-empty-text').style.display = 'none';
+        let cpText = document.getElementById('cp-level-text');
+        cpText.style.display = 'block';
+        cpText.innerText = `LV ${cpLevel}`;
 
-            } else {
-                // No Partner
-                document.getElementById('cp-level-text').style.display = 'none';
-                document.getElementById('cp-empty-text').style.display = 'block';
-                partnerContainer.innerHTML = `
-                    <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
-                        <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
-                    </div>
-                    <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
-                `;
+        // Long Press Logic to Remove CP Partner
+        let pressTimer;
+        const partnerDiv = document.getElementById('my-cp-partner');
+        
+        const startPress = () => { 
+            pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
+        };
+        const cancelPress = () => { clearTimeout(pressTimer); };
+        
+        partnerDiv.addEventListener('touchstart', startPress);
+        partnerDiv.addEventListener('touchend', cancelPress);
+        partnerDiv.addEventListener('touchmove', cancelPress);
+        partnerDiv.addEventListener('mousedown', startPress);
+        partnerDiv.addEventListener('mouseup', cancelPress);
+        partnerDiv.addEventListener('mouseleave', cancelPress);
+
+    } else {
+        // No Partner - YEHA PE PLUS BUTTON HAI JO INVITECP() CALL KAREGA
+        document.getElementById('cp-level-text').style.display = 'none';
+        document.getElementById('cp-empty-text').style.display = 'block';
+        partnerContainer.innerHTML = `
+            <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
+            </div>
+            <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
+        `;
+    }
+}
+
+// یہ فنکشن پلس بٹن پر کلک کرنے پر کال ہو گا (NEW)
+window.inviteCP = () => {
+    if (!currentUser) {
+        return Swal.fire({ icon: 'error', title: 'Login Required', text: 'Please login first to send CP request.', background: '#111', color: '#fff' });
+    }
+
+    Swal.fire({
+        title: 'Send CP Request',
+        html: `<input type="text" id="cp-partner-id" class="swal2-input" placeholder="Enter Friend's ID">`,
+        confirmButtonText: 'Send Request',
+        showCancelButton: true,
+        background: '#111',
+        color: '#fff',
+        preConfirm: () => {
+            const partnerId = document.getElementById('cp-partner-id').value.trim();
+            if (!partnerId) {
+                Swal.showValidationMessage('Please enter a valid ID');
+                return false;
             }
+            return partnerId;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const partnerId = result.value;
+            sendCPRequest(partnerId);
+        }
+    });
+}
+
+// یہ فنکشن ID لے کر CP ری quest بھیجتا ہے (NEW)
+async function sendCPRequest(targetId) {
+    if (targetId == document.getElementById('profile-id').innerText) {
+        return Swal.fire({ icon: 'error', title: 'Invalid ID', text: 'You cannot send request to yourself.', background: '#111', color: '#fff' });
+    }
+
+    try {
+        const uidSnap = await get(ref(db, `idToUid/${targetId}`));
+        if (!uidSnap.exists()) {
+            return Swal.fire({ icon: 'error', title: 'Not Found', text: 'User with this ID does not exist.', background: '#111', color: '#fff' });
+        }
+        const targetUid = uidSnap.val();
+
+        const mySnap = await get(ref(db, `users/${currentUser.uid}`));
+        const myData = mySnap.val();
+        if (myData.cp && myData.cp.partnerUid) {
+            return Swal.fire({ icon: 'error', title: 'Already in CP', text: 'You are already in a relationship. Please remove your current partner first.', background: '#111', color: '#fff' });
         }
 
-        // Remove CP Partner Function
-        window.promptRemoveCP = async (partnerUid, partnerName) => {
-            const res = await Swal.fire({
-                title: 'Remove Partner?',
-                text: `Are you sure you want to break CP with ${partnerName}?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#3b82f6',
-                confirmButtonText: 'Yes, Remove',
-                background: '#111',
-                color: '#fff'
-            });
+        const targetSnap = await get(ref(db, `users/${targetUid}`));
+        const targetData = targetSnap.val();
+        if (targetData.cp && targetData.cp.partnerUid) {
+            return Swal.fire({ icon: 'error', title: 'User Already in CP', text: 'This user is already in a relationship.', background: '#111', color: '#fff' });
+        }
 
-            if(res.isConfirmed) {
-                Swal.fire({title: 'Removing...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
-                await update(ref(db, `users/${currentUser.uid}`), { cp: null });
-                await update(ref(db, `users/${partnerUid}`), { cp: null });
-                Swal.fire({icon: 'success', title: 'Removed', text: 'CP Partner removed successfully.', background: '#111', color: '#fff'});
-                openFullProfileView(); // Refresh UI
+        const requestRef = ref(db, `users/${targetUid}/inbox/cpRequests/${currentUser.uid}`);
+        await set(requestRef, {
+            fromName: currentUser.displayName,
+            fromUid: currentUser.uid,
+            fromPic: currentUser.photoURL,
+            type: 'cpRequest',
+            timestamp: Date.now()
+        });
+
+        Swal.fire({ icon: 'success', title: 'Request Sent!', text: `CP request sent to ID: ${targetId}`, background: '#111', color: '#fff', timer: 2000, showConfirmButton: false });
+
+    } catch (error) {
+        console.error("Error sending CP request:", error);
+        Swal.fire({ icon: 'error', title: 'Error', text: error.message, background: '#111', color: '#fff' });
+    }
+}
+
+// CP ری quest قبول کرنے کا فنکشن (NEW - UPDATED)
+window.acceptCP = async (partnerUid, partnerName, partnerPic, notifPath) => {
+    try {
+        await update(ref(db, `users/${currentUser.uid}`), {
+            cp: {
+                partnerUid: partnerUid,
+                partnerName: partnerName,
+                partnerPic: partnerPic,
+                cpGiftAmount: 0
             }
-        };
+        });
+
+        await update(ref(db, `users/${partnerUid}`), {
+            cp: {
+                partnerUid: currentUser.uid,
+                partnerName: currentUser.displayName,
+                partnerPic: currentUser.photoURL,
+                cpGiftAmount: 0
+            }
+        });
+
+        if (notifPath) {
+            await delNotif(notifPath);
+        }
+
+        Swal.fire({ icon: 'success', title: 'CP Partner Added!', text: `You are now connected with ${partnerName}.`, background: '#111', color: '#fff' });
+
+        if (!document.getElementById('full-profile-view').classList.contains('hidden') && viewingProfileUid === currentUser.uid) {
+            openFullProfileView();
+        }
+
+    } catch (error) {
+        console.error("Error accepting CP:", error);
+        Swal.fire({ icon: 'error', title: 'Error', text: error.message, background: '#111', color: '#fff' });
+    }
+}
+
+// CP Partner Remove Karne Ka Function (OLD WALA LEKIN CONFIRM)
+window.promptRemoveCP = async (partnerUid, partnerName) => {
+    const res = await Swal.fire({
+        title: 'Remove Partner?',
+        text: `Are you sure you want to break CP with ${partnerName}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#3b82f6',
+        confirmButtonText: 'Yes, Remove',
+        background: '#111',
+        color: '#fff'
+    });
+
+    if(res.isConfirmed) {
+        Swal.fire({title: 'Removing...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
+        await update(ref(db, `users/${currentUser.uid}`), { cp: null });
+        await update(ref(db, `users/${partnerUid}`), { cp: null });
+        Swal.fire({icon: 'success', title: 'Removed', text: 'CP Partner removed successfully.', background: '#111', color: '#fff'});
+        openFullProfileView();
+    }
+};
         // ================= OTHER PROFILE RENDERERS =================
         function renderFPVFrames(currentEquipped) {
             const list = document.getElementById('fpv-frames-list');
