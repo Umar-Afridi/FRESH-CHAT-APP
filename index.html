@@ -1064,6 +1064,60 @@
                 </div>
             </div>
             <div id="home-content-container">
+                <!-- NEW: CP Star & Family Cards -->
+                <div class="px-4 mt-4 mb-4 flex gap-3 w-full">
+                    <!-- 1. CP Star Card (REAL DATA ENABLED) -->
+                    <div onclick="openCPRankingModal()" class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-pink-200" style="background-image: url('./cp_bg1.png');">
+                        <div class="absolute inset-0 bg-black/50"></div>
+                        
+                        <div class="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
+                            <i class="fa-solid fa-heart text-yellow-300 mr-1"></i> CP Star
+                        </div>
+                        
+                        <!-- Empty State (Shows when no one has gifts) -->
+                        <div id="cp-home-empty" class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
+                            <i class="fa-solid fa-heart-crack text-white/50 text-2xl mb-1"></i>
+                            <span class="text-white/70 font-bold text-[10px]">No Rankings</span>
+                        </div>
+
+                        <!-- Top 1 Couple (Shows ONLY when there is a Top 1) -->
+                        <div id="cp-home-top1" class="absolute inset-0 hidden flex-col items-center justify-center z-10 pt-4 pb-2">
+                            <div class="flex items-center justify-center gap-2 w-full px-2 mt-2">
+                                <!-- User 1 & Name -->
+                                <div class="flex flex-col items-center">
+                                    <img src="" id="cp-banner-main" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
+                                    <span id="cp-banner-main-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name1</span>
+                                </div>
+                                
+                                <!-- Heart -->
+                                <img src="./cp_heart1.png" class="w-6 h-6 object-contain animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,0.8)] -mt-4" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                                
+                                <!-- User 2 & Name -->
+                                <div class="flex flex-col items-center">
+                                    <img src="" id="cp-banner-partner" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
+                                    <span id="cp-banner-partner-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Family Card -->
+                    <div class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-blue-200" style="background-image: url('./family_bg.png');">
+                        <div class="absolute inset-0 bg-black/50"></div>
+                        
+                        <div class="absolute top-2 left-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
+                            <i class="fa-solid fa-users text-yellow-300 mr-1"></i> Family
+                        </div>
+                        
+                        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
+                            <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 mb-2">
+                                <i class="fa-solid fa-shield-heart text-3xl text-white drop-shadow-lg"></i>
+                            </div>
+                            <span class="text-white font-bold text-xs drop-shadow-md">Top Families</span>
+                        </div>
+                    </div>
+                </div>
+
                 <h3 class="text-sm font-extrabold px-4 mt-2 mb-1 text-gray-800 tracking-wider">ROOMS</h3>
                 <div id="home-room-list"></div>
             </div>
@@ -1512,7 +1566,23 @@
             <div class="reward-list-container" id="level-rewards-list"></div>
         </div>
     </div>
+<!-- NEW: CP STAR RANKING MODAL -->
+    <div id="cp-ranking-modal" class="fixed inset-0 bg-[#0f0c29] z-[4000] hidden flex-col overflow-hidden transition-transform transform translate-y-full duration-300">
+        <!-- Header -->
+        <div class="relative w-full h-48 bg-cover bg-center flex-shrink-0" style="background-image: url('./cp_ranking_top.png');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="absolute top-0 w-full flex items-center p-4 pt-10 z-10">
+                <i class="fa-solid fa-chevron-left text-white text-xl cursor-pointer" onclick="closeCPRankingModal()"></i>
+                <h2 class="text-white font-black text-lg mx-auto tracking-wider">CP STAR RANKING</h2>
+                <div class="w-5"></div>
+            </div>
+        </div>
 
+        <!-- Ranking List Area -->
+        <div class="flex-1 bg-gradient-to-b from-[#1a1638] to-[#0f0c29] rounded-t-3xl -mt-6 z-20 overflow-y-auto px-4 pt-6 pb-20 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]" id="cp-ranking-list">
+            <!-- Data will load here via JS -->
+        </div>
+    </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -2352,12 +2422,19 @@
                 let currentCPGiftMe = sData.cp.cpGiftAmount || 0;
                 let currentCPGiftThem = rData.cp ? (rData.cp.cpGiftAmount || 0) : 0;
                 
-                // Add gift cost to both users' CP Data
+                // NEW: WEEKLY LOGIC
+                let myWeekly = (sData.cp.lastCpWeek === weekStr) ? (sData.cp.cpGiftAmount_weekly || 0) : 0;
+                let theirWeekly = (rData.cp && rData.cp.lastCpWeek === weekStr) ? (rData.cp.cpGiftAmount_weekly || 0) : 0;
+
                 await update(ref(db, `users/${currentUser.uid}/cp`), { 
-                    cpGiftAmount: currentCPGiftMe + cost 
+                    cpGiftAmount: currentCPGiftMe + cost,
+                    cpGiftAmount_weekly: myWeekly + cost,
+                    lastCpWeek: weekStr
                 });
                 await update(ref(db, `users/${selectedGiftTargetUid}/cp`), { 
-                    cpGiftAmount: currentCPGiftThem + cost 
+                    cpGiftAmount: currentCPGiftThem + cost,
+                    cpGiftAmount_weekly: theirWeekly + cost,
+                    lastCpWeek: weekStr
                 });
             }
             // =====================================================================
@@ -2622,6 +2699,7 @@ results.forEach(d => {
                 }
             }
             updateHomeTopDPs();
+            loadCPRankingData(); // NEW: App کھلتے ہی CP Star کا کارڈ بھی اپڈیٹ کر دے گا
             
             onValue(ref(db, `users/${currentUser.uid}/friends`), async (snap) => {
                 const chatList = document.getElementById('friends-chat-list');
@@ -4620,18 +4698,164 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             });
         };
 
-        window.toggleNotifSection = (type) => {
-            const officialDiv = document.getElementById('official-notifications');
-            const rocketDiv = document.getElementById('rocket-rewards-list');
-
-            if (type === 'official') {
-                officialDiv.classList.toggle('hidden');
-                rocketDiv.classList.add('hidden');
-            } else {
-                rocketDiv.classList.toggle('hidden');
-                officialDiv.classList.add('hidden');
-            }
+        // ================= NEW: CP STAR RANKING LOGIC =================
+        window.openCPRankingModal = () => {
+            const modal = document.getElementById('cp-ranking-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('translate-y-full'); }, 10);
+            loadCPRankingData();
         };
+
+        window.closeCPRankingModal = () => {
+            const modal = document.getElementById('cp-ranking-modal');
+            modal.classList.add('translate-y-full');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        };
+
+        async function loadCPRankingData() {
+            const listContainer = document.getElementById('cp-ranking-list');
+            if (listContainer) listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse">Loading Real Rankings...</div>';
+
+            try {
+                // 1. موجودہ ہفتہ (Current Week) نکالنے کا فارمولا (پاکستانی وقت کے مطابق)
+                let now = new Date();
+                let pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+                if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
+                let dateStr = pktTime.toISOString().split('T')[0];
+                let currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+
+                const usersSnap = await get(ref(db, 'users'));
+                if(!usersSnap.exists()) return;
+
+                let couplesMap = new Map();
+
+                // 2. Firebase سے وہ یوزرز نکالیں جن کا CP بنا ہوا ہے
+                usersSnap.forEach(snap => {
+                    let u = snap.val();
+                    if(u.cp && u.cp.partnerUid) {
+                        // کپل کی ایک یونیک ID بنائیں تاکہ ایک جوڑا دو بار شو نہ ہو
+                        let pairKey = [u.uid, u.cp.partnerUid].sort().join('_');
+                        
+                        if(!couplesMap.has(pairKey)) {
+                            // WEEKLY CHECK: اگر گفٹ اس ہفتے کا ہے تو شامل ہوں گے ورنہ زیرو
+                            let weeklyGifts = 0;
+                            if (u.cp.lastCpWeek === currentWeekStr) {
+                                weeklyGifts = u.cp.cpGiftAmount_weekly || 0;
+                            }
+                            
+                            // آپ کی شرط: 3000 گفٹ پر 1 پوائنٹ (صرف اس ہفتے کے گفٹس پر)
+                            let points = Math.floor(weeklyGifts / 3000);
+                            
+                            // صرف وہ کپل شو ہوں گے جنہوں نے اس ہفتے گفٹنگ کی ہے (Points > 0)
+                            if (points > 0) {
+                                couplesMap.set(pairKey, {
+                                    u1Name: u.username,
+                                    u1Pic: u.photoURL,
+                                    u2Name: u.cp.partnerName,
+                                    u2Pic: u.cp.partnerPic,
+                                    points: points
+                                });
+                            }
+                        }
+                    }
+                });
+
+                let couplesArr = Array.from(couplesMap.values());
+                // جس کے پوائنٹس زیادہ ہیں وہ ٹاپ پر آئے گا
+                couplesArr.sort((a, b) => b.points - a.points);
+
+                // 3. ہوم سکرین کا کارڈ اپڈیٹ کریں (تصویریں اور نام)
+                const homeEmpty = document.getElementById('cp-home-empty');
+                const homeTop1 = document.getElementById('cp-home-top1');
+                
+                if(couplesArr.length > 0) {
+                    let top1 = couplesArr[0];
+                    if (document.getElementById('cp-banner-main')) document.getElementById('cp-banner-main').src = top1.u1Pic || 'https://ui-avatars.com/api/?name=?';
+                    if (document.getElementById('cp-banner-partner')) document.getElementById('cp-banner-partner').src = top1.u2Pic || 'https://ui-avatars.com/api/?name=?';
+                    
+                    // تصویر کے نیچے نام شو کروانا
+                    if (document.getElementById('cp-banner-main-name')) document.getElementById('cp-banner-main-name').innerText = top1.u1Name;
+                    if (document.getElementById('cp-banner-partner-name')) document.getElementById('cp-banner-partner-name').innerText = top1.u2Name;
+                    
+                    if(homeEmpty) homeEmpty.classList.add('hidden');
+                    if(homeTop1) { homeTop1.classList.remove('hidden'); homeTop1.classList.add('flex'); }
+                } else {
+                    if(homeEmpty) homeEmpty.classList.remove('hidden');
+                    if(homeTop1) { homeTop1.classList.add('hidden'); homeTop1.classList.remove('flex'); }
+                }
+
+                // 4. Modal (Full View) کے اندر لسٹ پرنٹ کریں
+                if (!listContainer) return;
+                listContainer.innerHTML = '';
+
+                if(couplesArr.length === 0) {
+                    listContainer.innerHTML = '<p class="text-center text-gray-400 mt-20">No CP Rankings this week. Start gifting!</p>';
+                    return;
+                }
+
+                couplesArr.forEach((couple, index) => {
+                    let rank = index + 1;
+                    
+                    // TOP 1, 2, 3 کے لیے خوبصورت PNG بیک گراؤنڈز کی سیٹنگ
+                    let bgImage = "";
+                    let borderClass = "border-white/10 bg-white/5 backdrop-blur-sm"; // Normal Ranks (4+)
+                    let rankTextClass = "text-gray-400 text-xl";
+
+                    if (rank === 1) {
+                        bgImage = "url('./cp_top1_bg.png')";
+                        borderClass = "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]";
+                        rankTextClass = "text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,1)]";
+                    } else if (rank === 2) {
+                        bgImage = "url('./cp_top2_bg.png')";
+                        borderClass = "border-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.5)]";
+                        rankTextClass = "text-gray-300 text-2xl drop-shadow-[0_0_8px_rgba(209,213,219,1)]";
+                    } else if (rank === 3) {
+                        bgImage = "url('./cp_top3_bg.png')";
+                        borderClass = "border-orange-400 shadow-[0_0_15px_rgba(251,146,60,0.5)]";
+                        rankTextClass = "text-orange-400 text-2xl drop-shadow-[0_0_8px_rgba(251,146,60,1)]";
+                    }
+
+                    let html = `
+                    <div class="relative p-4 rounded-2xl mb-3 flex items-center shadow-lg border ${borderClass} bg-cover bg-center" style="background-image: ${bgImage};">
+                        
+                        <!-- اگر PNG زیادہ شوخ ہے تو ڈارک اوورلے (صرف Top 1-3 کے لیے) -->
+                        ${rank <= 3 ? '<div class="absolute inset-0 bg-black/40 rounded-2xl z-0"></div>' : ''}
+                        
+                        <div class="relative z-10 flex w-full items-center">
+                            <!-- Rank Number -->
+                            <div class="w-10 font-black italic ${rankTextClass}">${rank}</div>
+                            
+                            <!-- Main User, Heart, Partner -->
+                            <div class="flex-1 flex items-center justify-center gap-2">
+                                <div class="flex flex-col items-center">
+                                    <img src="${couple.u1Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md">
+                                    <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">${couple.u1Name}</span>
+                                </div>
+
+                                <div class="flex flex-col items-center justify-center -mt-3">
+                                    <img src="./cp_heart1.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <img src="${couple.u2Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md">
+                                    <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">${couple.u2Name}</span>
+                                </div>
+                            </div>
+
+                            <!-- Points Display -->
+                            <div class="flex flex-col items-end justify-center w-16">
+                                <span class="text-yellow-300 font-black text-base drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">${couple.points.toLocaleString()}</span>
+                                <span class="text-gray-300 text-[9px] uppercase tracking-widest font-bold">Pts</span>
+                            </div>
+                        </div>
+                    </div>`;
+                    
+                    listContainer.innerHTML += html;
+                });
+            } catch(e) { 
+                console.error(e); 
+            }
+        }
 
     </script>
 </body>
