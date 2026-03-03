@@ -1066,33 +1066,31 @@
             <div id="home-content-container">
                 <!-- NEW: CP Star & Family Cards -->
                 <div class="px-4 mt-4 mb-4 flex gap-3 w-full">
-                    <!-- 1. CP Star Card (REAL DATA ENABLED) -->
-                    <div onclick="openCPRankingModal()" class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-pink-200" style="background-image: url('./cp_bg1.png');">
+                    <!-- 1. CP Star Card -->
+                    <div onclick="openCPRankingModal()" class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-pink-200" style="background-image: url('./cp_star_card_bg.png');">
                         <div class="absolute inset-0 bg-black/50"></div>
                         
                         <div class="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
                             <i class="fa-solid fa-heart text-yellow-300 mr-1"></i> CP Star
                         </div>
                         
-                        <!-- Empty State (Shows when no one has gifts) -->
+                        <!-- Empty State -->
                         <div id="cp-home-empty" class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
                             <i class="fa-solid fa-heart-crack text-white/50 text-2xl mb-1"></i>
                             <span class="text-white/70 font-bold text-[10px]">No Rankings</span>
                         </div>
 
-                        <!-- Top 1 Couple (Shows ONLY when there is a Top 1) -->
+                        <!-- Top 1 Couple -->
                         <div id="cp-home-top1" class="absolute inset-0 hidden flex-col items-center justify-center z-10 pt-4 pb-2">
                             <div class="flex items-center justify-center gap-2 w-full px-2 mt-2">
-                                <!-- User 1 & Name -->
                                 <div class="flex flex-col items-center">
                                     <img src="" id="cp-banner-main" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
                                     <span id="cp-banner-main-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name1</span>
                                 </div>
                                 
-                                <!-- Heart -->
-                                <img src="./cp_heart1.png" class="w-6 h-6 object-contain animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,0.8)] -mt-4" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                                <!-- New Heart Name -->
+                                <img src="./cp_heart_final.png" class="w-6 h-6 object-contain animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,0.8)] -mt-4" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
                                 
-                                <!-- User 2 & Name -->
                                 <div class="flex flex-col items-center">
                                     <img src="" id="cp-banner-partner" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
                                     <span id="cp-banner-partner-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name2</span>
@@ -1101,8 +1099,8 @@
                         </div>
                     </div>
 
-                    <!-- 2. Family Card -->
-                    <div class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-blue-200" style="background-image: url('./family_bg.png');">
+                    <!-- 2. Family Card (New Background Name) -->
+                    <div class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-blue-200" style="background-image: url('./family_star_bg.png');">
                         <div class="absolute inset-0 bg-black/50"></div>
                         
                         <div class="absolute top-2 left-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
@@ -4833,7 +4831,8 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                                 </div>
 
                                 <div class="flex flex-col items-center justify-center -mt-3">
-                                    <img src="./cp_heart1.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                                    <!-- FINAL HEART NAME -->
+                                    <img src="./cp_heart_final.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
                                 </div>
 
                                 <div class="flex flex-col items-center">
