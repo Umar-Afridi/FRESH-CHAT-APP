@@ -22,51 +22,131 @@
             --seat-size: 68px;
             --bottom-bar-height: 45px; 
         }
-        /* Full Profile View - SCROLLING FIX */
+        /* Full Profile View - SECURE SCROLLING & OVERLAP */
+/* ========== فل پروفائل اسکرول فکس (نیا) ========== */
 #full-profile-view {
     transition: transform 0.3s ease-in-out;
     will-change: transform;
+    background-color: #000 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 5000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+/* ٹاپ بلیک حصہ - اونچائی مقرر */
+#full-profile-view .relative.w-full.h-80 {
+    height: 280px !important;
+    flex-shrink: 0 !important;
+}
+
+/* وائٹ بورڈ - اب پوری طرح لچکدار */
+.fpv-white-board {
+    margin-top: -25px !important;
+    border-top-left-radius: 30px !important;
+    border-top-right-radius: 30px !important;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.5) !important;
     background-color: white !important;
+    position: relative !important;
+    z-index: 30 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-height: 0 !important; /* بہت ضروری - flexbox کے لیے */
+    overflow: hidden !important;
 }
 
-#full-profile-view .bg-white.rounded-t-2xl {
-    margin-top: 0 !important;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 320px); /* Top black area height fixed */
-}
-
-#full-profile-view .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
+/* اسکرول ایریا - اب مکمل کام کرے گا */
+.fpv-scroll-area {
+    flex: 1 !important;
     overflow-y: auto !important;
-    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 12px !important;
+    padding-bottom: 40px !important;
+    max-height: none !important;
+    height: auto !important;
 }
 
-/* Ensure content is visible */
-#profile-scrollable-content {
-    min-height: min-content;
+/* فریم گرڈ - 4 کالم */
+#fpv-frames-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 15px !important;
+    padding: 10px 0 !important;
+    width: 100% !important;
 }
 
-/* CP Section Fixes */
-#fpv-tab-intimacy .w-20.h-20 {
-    width: 80px !important;
-    height: 80px !important;
+/* میڈل گرڈ - 4 کالم */
+#fpv-medals-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 15px !important;
+    padding: 10px 0 30px 0 !important;
+    width: 100% !important;
 }
 
-#fpv-tab-intimacy .text-xs {
-    font-size: 12px !important;
+/* فریم آئٹمز */
+#fpv-frames-list > div {
+    width: 100% !important;
+    text-align: center !important;
 }
 
-/* Scrollbar Hide but Functionality Keep */
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
+/* میڈل آئٹمز */
+#fpv-medals-list > div {
+    width: 100% !important;
+    text-align: center !important;
 }
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+
+/* CP ٹیب - بلیک جگہ ختم */
+#fpv-tab-intimacy {
+    min-height: 280px !important;
+    height: auto !important;
+    margin-bottom: 30px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+/* CP ویڈیو */
+#cp-bg-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* خوبصورت اسکرول بار */
+.fpv-scroll-area::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.fpv-scroll-area::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+}
+
+.fpv-scroll-area::-webkit-scrollbar-thumb {
+    background: #c084fc !important;
+    border-radius: 10px !important;
+}
+
+.fpv-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #a855f7 !important;
+}
+
+/* CP والے حصے میں بلیک جگہ نہ ہو */
+#fpv-tab-intimacy .flex.items-center.justify-center.gap-6 {
+    flex-wrap: wrap !important;
 }
 
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; background-color: var(--app-bg) !important; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
@@ -604,9 +684,140 @@
         .fp-dp-wrapper { position: relative; display: inline-block; margin-bottom: 15px; }
         .fp-dp { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #dc2626; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .fp-v-badge { position: absolute; bottom: 0; right: 0; width: 26px; height: 26px; background: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.4); z-index: 10; object-fit: contain; }
+   /* ================= CP STAR FERRIS WHEEL CSS (FIXED 100% UPRIGHT) ================= */
+/* بیک گراؤنڈ کا نام: cp_bg_city.png */
+.cp-ferris-bg { background: url('./cp_bg_city.png') center/cover no-repeat; position: relative; } 
+.cp-ferris-bg::before { content: ''; position: absolute; inset: 0; background: rgba(40, 10, 60, 0.6); }
+
+.ferris-wheel-container { position: relative; width: 300px; height: 300px; margin: 30px auto 20px auto; z-index: 10; display: flex; align-items: center; justify-content: center; }
+.ferris-center-logo { position: absolute; width: 110px; height: 110px; z-index: 20; border-radius: 50%; box-shadow: 0 0 30px #d946ef; border: 3px solid #facc15; background: radial-gradient(circle, #a855f7, #4c1d95); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.ferris-center-logo span { color: #fff; font-weight: 900; font-size: 26px; font-style: italic; text-shadow: 2px 2px 0 #db2777, -1px -1px 0 #db2777; line-height: 1; }
+.ferris-center-logo .cp-text { color: #facc15; font-size: 28px; }
+
+/* Main Wheel Animation */
+.ferris-wheel { position: absolute; width: 260px; height: 260px; border-radius: 50%; border: 4px solid rgba(250, 204, 21, 0.4); box-shadow: inset 0 0 20px rgba(250,204,21,0.2), 0 0 20px rgba(250,204,21,0.2); animation: wheel-spin 15s linear infinite; display: flex; align-items: center; justify-content: center; }
+.ferris-spoke { position: absolute; width: 2px; height: 100%; background: rgba(250, 204, 21, 0.3); }
+
+/* Arms and Cabins - FIXED FOR GRAVITY */
+.ferris-arm { position: absolute; width: 130px; height: 2px; left: 50%; top: 50%; transform-origin: 0 50%; }
+.ferris-counter-offset { position: absolute; right: -30px; top: -25px; width: 60px; height: 50px; }
+.ferris-cabin-wrapper { width: 100%; height: 100%; animation: anti-spin 15s linear infinite; transform-origin: center center; }
+
+/* The Cabin Design */
+.ferris-cabin { width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(253, 224, 71, 0.9), rgba(245, 158, 11, 0.9)); border-radius: 12px; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; gap: 2px; padding: 2px; position: relative; overflow: visible; backdrop-filter: blur(2px); }
+.ferris-cabin img { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #fff; background: rgba(255,255,255,0.4); object-fit: cover; }
+
+/* Rank Hearts on Cabins */
+.cabin-rank { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background: url('./cp_heart_final.png') center/contain no-repeat; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 900; z-index: 10; text-shadow: 1px 1px 1px #000; }
+
+@keyframes wheel-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes anti-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+
+/* Bottom Countdown & Tabs */
+.cp-timer-box { background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; color: white; font-size: 12px; border: 1px solid rgba(255,255,255,0.1); }
+.cp-time-block { background: rgba(255,255,255,0.15); padding: 4px 6px; border-radius: 4px; font-weight: bold; }
+.cp-tabs-row { display: flex; justify-content: center; gap: 10px; padding: 15px; }
+.cp-tab-btn { background: linear-gradient(to bottom, #d946ef, #7e22ce); color: white; border: 1px solid #facc15; padding: 8px 15px; border-radius: 20px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); flex: 1; text-align: center; cursor: pointer; }
+.cp-tab-btn.active { background: linear-gradient(to bottom, #facc15, #d97706); border-color: #fff; text-shadow: 1px 1px 0 #000; }
+   .chair-bg-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    z-index: 5;
+    pointer-events: none;
+}
+<!-- ========== فل پروفائل اسکرول فکس ========== -->
+<style>
+/* فل پروفائل میں اسکرول ٹھیک کرنے کے لیے */
+#full-profile-view {
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+    background-color: #000 !important;
+}
+.fpv-white-board {
+    margin-top: -25px !important;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+    background-color: white;
+    position: relative;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+.fpv-scroll-area {
+    flex: 1;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 30px;
+    max-height: calc(100vh - 250px);
+}
+
+/* فریم اور میڈل گرڈ ٹھیک کرنا */
+#fpv-frames-list,
+#fpv-medals-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+    padding: 5px 0 !important;
+}
+
+/* اسکرول بار چھپانا مگر فنکشنل رکھنا */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}/* مائک کے گرد بلبلے */
+@keyframes rippleWave {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+    }
+}
+
+@keyframes innerPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 0.4;
+    }
+}
+
+/* جب کوئی بول رہا ہو تو مائک کا رنگ بدلیں */
+.seat-occupied .fa-microphone {
+    color: #22c55e !important;
+    animation: micGlow 1s infinite alternate;
+}
+
+@keyframes micGlow {
+    0% { filter: drop-shadow(0 0 5px #22c55e); }
+    100% { filter: drop-shadow(0 0 15px #22c55e); }
+}
+</style>
     </style>
 </head>
 <body>
+<!-- WebRTC آڈیو کنٹینرز (چھپے ہوئے) -->
+<div id="remote-audio-container" style="display: none;"></div>
+<audio id="local-audio-preview" autoplay muted style="display: none;"></audio>
 
     <audio id="rocket-sound" src="./rocket_sound.mp3" preload="auto"></audio>
 
@@ -791,15 +1002,14 @@
             </div>
         </div>
 
-       <!-- ================= FIXED FULL PROFILE VIEW ================= -->
-<!-- ================= FIXED FULL PROFILE VIEW - BLACK LINE REMOVED ================= -->
-<div id="full-profile-view" class="fixed inset-0 bg-white z-[5000] hidden flex-col overflow-hidden transition-transform transform translate-x-full duration-300 ease-in-out">
+    <!-- ================= فل پروفائل ویو (نیا - مکمل فکس) ================= -->
+<div id="full-profile-view" class="fixed inset-0 z-[5000] hidden flex-col overflow-hidden transition-transform transform translate-x-full duration-300 ease-in-out bg-black">
     
-    <!-- Top Background & Info Area - BLACK BACKGROUND ONLY FOR TOP SECTION -->
-    <div class="relative w-full h-80 flex-shrink-0 bg-black overflow-hidden">
+    <!-- ٹاپ بلیک ایریا (فکسڈ اونچائی) -->
+    <div class="relative w-full h-80 flex-shrink-0 bg-black overflow-hidden z-10">
         <!-- Blurred Background -->
         <div id="fpv-cover" class="absolute inset-0 bg-cover bg-center filter blur-xl brightness-50 scale-110"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
         
         <!-- Top Nav -->
         <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-8 text-white z-50">
@@ -811,17 +1021,15 @@
 
         <!-- DP and Name Area -->
         <div class="absolute top-24 left-6 w-full flex items-center gap-4 z-40 pr-6">
-            <!-- DP, Frame & V-Badge -->
             <div class="relative w-[90px] h-[90px] flex-shrink-0 flex items-center justify-center">
                 <img id="fpv-dp" src="" class="w-[85px] h-[85px] rounded-full object-cover border-2 border-white z-10 relative shadow-lg">
-                <img id="fpv-frame" src="" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130px] h-[130px] object-contain pointer-events-none hidden z-20" onerror="this.style.display='none'">
+                <img id="fpv-frame" src="" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] object-contain pointer-events-none hidden z-20" onerror="this.style.display='none'">
                 <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute bottom-1 right-1 w-6 h-6 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
                 <div id="fpv-level-badge-container" class="absolute -bottom-4 z-30 user-level-badge scale-[0.85] origin-center flex items-center justify-center">
                     <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
                 </div>
             </div>
 
-            <!-- Name, Badges, ID, Followers - NOW WITH WHITE TEXT ON BLACK -->
             <div class="flex flex-col justify-center flex-1 relative z-40 mt-2">
                 <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
                     <h2 id="fpv-name" class="text-xl font-extrabold text-white drop-shadow-md">User Name</h2>
@@ -830,7 +1038,6 @@
                         <i class="fa-solid fa-mars"></i> 18
                     </span>
                 </div>
-                
                 <div class="flex items-center gap-3 text-xs font-bold text-gray-200 drop-shadow-md mt-1">
                     <div class="bg-black/60 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
                         ID: <span id="fpv-id" class="text-white">0000</span> <i class="fa-regular fa-copy text-[10px] cursor-pointer hover:text-white" onclick="copyToClipboard(document.getElementById('fpv-id').innerText)"></i>
@@ -843,81 +1050,75 @@
         </div>
     </div>
 
-    <!-- White Content Area (Rounded Top) - NOW ATTACHED PERFECTLY -->
-    <div class="bg-white rounded-t-2xl z-30 relative flex-1 flex flex-col overflow-hidden">
+    <!-- وائٹ بورڈ (اب پوری طرح اسکرول ہو گا) -->
+    <div class="fpv-white-board">
         
-        <!-- Tabs - STICKY AT TOP -->
-        <div class="sticky top-0 bg-white z-10 px-6 pt-4 pb-2 border-b border-gray-100 flex-shrink-0">
+        <!-- Tabs - اوپر چپکے ہوئے -->
+        <div class="bg-white z-40 px-6 pt-5 pb-2 border-b border-gray-100 flex-shrink-0 rounded-t-[30px]">
             <div class="flex">
                 <div id="tab-btn-profile" onclick="switchProfileTab('profile')" class="pb-2 border-b-2 border-purple-600 text-gray-900 font-bold mr-6 text-sm cursor-pointer transition">Profile</div>
                 <div id="tab-btn-intimacy" onclick="switchProfileTab('intimacy')" class="pb-2 border-b-2 border-transparent text-gray-400 font-medium text-sm cursor-pointer transition">Intimacy</div>
             </div>
         </div>
 
-        <!-- SCROLLABLE CONTENT AREA -->
-        <div class="flex-1 overflow-y-auto pb-6 px-5">
+        <!-- اسکرول ہونے والا مواد (اب نیچے تک جائے گا) -->
+        <div class="fpv-scroll-area px-5 pt-3">
             
-            <!-- ================= PROFILE TAB CONTENT ================= -->
+            <!-- پروفائل ٹیب -->
             <div id="fpv-tab-profile" class="block">
-                
                 <!-- Location -->
                 <div class="flex items-center gap-2 text-gray-600 text-sm mb-2 font-medium mt-2">
                     <i class="fa-solid fa-location-dot text-gray-400"></i> <span>Pakistan</span>
                 </div>
                 
-                <!-- Bio Box -->
+                <!-- Bio -->
                 <div class="flex items-start text-sm text-gray-700 relative mt-2">
                     <p id="fpv-bio" class="italic whitespace-pre-line leading-relaxed flex-1">No bio added yet.</p>
                 </div>
 
-                <!-- Vehicles -->
+                <!-- Vehicle -->
                 <div class="mt-6">
-                    <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Vehicles</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
-                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-vehicles-list">
-                        <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Tiger" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">30 days</span><button class="text-[10px] border border-purple-600 text-purple-600 rounded-full px-3 py-0.5 font-bold">✓ Using</button></div>
-                        <div class="flex flex-col items-center min-w-[75px]"><img src="https://placehold.co/100x100/transparent/blue?text=Dragon" class="h-16 object-contain mb-1 drop-shadow-md"><span class="text-[10px] text-gray-500 mb-1">5 days</span><button class="text-[10px] bg-purple-600 text-white rounded-full px-4 py-0.5 font-bold">Use</button></div>
+                    <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900 text-base">Vehicle</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                    <div class="w-full text-center py-2">
+                        <span class="text-xs text-gray-400 font-medium bg-gray-50 px-4 py-2 rounded-lg">No vehicle</span>
                     </div>
                 </div>
 
-                <!-- Frames -->
+                <!-- فریمز (گرڈ میں) -->
                 <div class="mt-6">
-                    <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-gray-900">Frames</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
-                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-frames-list"></div>
+                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-gray-900 text-base">Frames</h3><i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i></div>
+                    <div id="fpv-frames-list" class="w-full"></div>
                 </div>
 
-                <!-- Medals -->
-                <div class="mt-6 mb-4">
-                    <h3 class="font-bold text-gray-900 mb-3">Medal</h3>
-                    <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" id="fpv-medals-list"></div>
+                <!-- میڈلز (گرڈ میں - اب نیچے تک جائیں گے) -->
+                <div class="mt-8 mb-4">
+                    <h3 class="font-bold text-gray-900 text-base mb-4">Medal</h3>
+                    <div id="fpv-medals-list" class="w-full" style="padding-bottom: 50px !important;"></div>
                 </div>
             </div>
 
-           <!-- ================= INTIMACY / CP TAB CONTENT - FIXED SIZES ================= -->
-<div id="fpv-tab-intimacy" class="hidden px-2 py-6 flex-col items-center justify-center min-h-[180px] relative bg-cover bg-center mt-2 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500" style="background-image: url('./cp_bg1.png');">
-    <!-- Semi-transparent overlay -->
-    <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
-    
-    <div class="flex items-center justify-center gap-6 w-full relative z-10">
-        <!-- CP User 1 (Me) - NOW SAME SIZE AS PARTNER -->
-        <div class="flex flex-col items-center z-10">
-            <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
-                <img id="cp-user-img" src="" class="w-full h-full object-cover">
+           <!-- انٹمیسی / سی پی ٹیب (بلیک جگہ ختم) -->
+            <div id="fpv-tab-intimacy" onclick="toggleCPBackground()" class="hidden flex-col items-center justify-center min-h-[280px] relative bg-cover bg-center mt-2 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500 cursor-pointer mb-6" style="background-image: url('./cp_bg1.png'); background-size: cover !important;">
+                <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
+                <video id="cp-bg-video" class="absolute inset-0 w-full h-full object-cover z-0 hidden" loop muted playsinline>
+                    <source src="./cp_background.mp4" type="video/mp4">
+                </video>
+                <div class="flex items-center justify-center gap-6 w-full relative z-10 flex-wrap py-4">
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
+                            <img id="cp-user-img" src="" class="w-full h-full object-cover">
+                        </div>
+                        <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
+                    </div>
+                    <div class="relative flex items-center justify-center z-20">
+                        <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                        <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;">LV 1</span>
+                    </div>
+                    <div class="flex flex-col items-center z-10" id="cp-partner-container"></div>
+                </div>
+                <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
             </div>
-            <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
-        </div>
-
-        <!-- Animated Heart - SLIGHTLY BIGGER -->
-        <div class="relative flex items-center justify-center z-20">
-            <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
-            <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;">LV 1</span>
-        </div>
-
-        <!-- CP User 2 - SAME SIZE AS USER 1 -->
-        <div class="flex flex-col items-center z-10" id="cp-partner-container"></div>
-    </div>
-    
-    <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
-</div>
+            
         </div> <!-- END SCROLLABLE CONTENT -->
     </div> <!-- END WHITE CONTAINER -->
 </div> <!-- END FULL PROFILE VIEW -->
@@ -1003,9 +1204,23 @@
             </div>
         </div>
 
-        <div id="prophouse-modal">
-            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4"><h2 class="text-2xl font-bold text-white tracking-wider">PROP <span class="text-red-600">HOUSE</span></h2><button onclick="closePropHouse()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button></div>
-            <div id="frame-grid" class="frame-grid flex-1"></div>
+        <div id="prophouse-modal" class="fixed inset-0 z-[2000] bg-black/95 flex-col p-4 hidden">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4 pt-10">
+                <h2 class="text-2xl font-bold text-white tracking-wider">PROP <span class="text-red-600">WAREHOUSE</span></h2>
+                <button onclick="closePropHouse()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="frame-grid" class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto pb-20 items-start content-start"></div>
+        </div>
+
+        <div id="store-modal" class="fixed inset-0 z-[2000] bg-black/95 flex-col p-4 hidden">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4 pt-10">
+                <h2 class="text-2xl font-bold text-white tracking-wider">FRAME <span class="text-blue-500">STORE</span></h2>
+                <div class="flex items-center gap-3">
+                    <span class="text-yellow-400 font-bold text-sm bg-gray-800 px-3 py-1 rounded-full"><i class="fa-solid fa-coins mr-1"></i><span id="store-coins-display">0</span></span>
+                    <button onclick="closeStoreModal()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div id="store-grid" class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto pb-20"></div>
         </div>
 
         <div id="view-auth" class="view-section z-50 fixed inset-0">
@@ -1126,13 +1341,13 @@
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Messages</h2>
 
                 <div class="flex gap-6 mb-6">
-                    <div onclick="toggleNotifSection('official')" class="flex flex-col items-center flex-1 cursor-pointer">
+                    <div onclick="switchNotifTab('official')" class="flex flex-col items-center flex-1 cursor-pointer hover:scale-105 transition">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg border-2 border-white">
                             <img src="./yaraan_dp.png" class="w-12 h-12 rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
                         </div>
                         <span class="text-xs font-bold text-gray-700 mt-1">Official</span>
                     </div>
-                    <div onclick="toggleNotifSection('rocket')" class="flex flex-col items-center flex-1 cursor-pointer">
+                    <div onclick="switchNotifTab('rocket')" class="flex flex-col items-center flex-1 cursor-pointer hover:scale-105 transition">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center shadow-lg border-2 border-white">
                             <img src="./rocket1.png" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/100?text=🚀'">
                         </div>
@@ -1174,9 +1389,10 @@
             <div class="bg-white p-6 rounded-2xl w-11/12 max-w-sm border border-gray-200 relative shadow-2xl flex flex-col items-center">
                 <button onclick="closeFriendProfile()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
                 
-                <div class="fp-dp-wrapper mt-2">
-                    <img id="fp-image" src="" class="fp-dp">
-                    <img id="fp-v-badge" src="./v_badge.png" class="fp-v-badge hidden" onerror="this.style.display='none'">
+                <div class="fp-dp-wrapper mt-2 relative flex items-center justify-center">
+                    <img id="fp-image" src="" class="fp-dp relative z-10">
+                    <img id="fp-frame" src="" class="absolute z-20 pointer-events-none hidden" style="width: 140%; height: 140%; object-fit: contain;">
+                    <img id="fp-v-badge" src="./v_badge.png" class="fp-v-badge hidden relative z-30" onerror="this.style.display='none'">
                 </div>
                 
                 <h3 id="fp-name" class="text-2xl font-black text-gray-900 mb-1">User Name</h3>
@@ -1244,7 +1460,7 @@
                     
                     <div class="menu-item" onclick="openCustomerSupport()"><div class="menu-icon-box"><i class="fa-solid fa-headset text-blue-500 text-lg"></i></div><div class="menu-text">Customer Service</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     <div class="menu-item" onclick="showInviteModal()"><div class="menu-icon-box"><i class="fa-solid fa-user-plus text-green-500 text-lg"></i></div><div class="menu-text">Invite friends</div><span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full mr-2">Invite</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
-                    <div class="menu-item" onclick="openPropHouse()"><div class="menu-icon-box"><i class="fa-solid fa-store text-blue-500 text-lg"></i></div><div class="menu-text">Store</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    <div class="menu-item" onclick="openStoreModal()"><div class="menu-icon-box"><i class="fa-solid fa-store text-blue-500 text-lg"></i></div><div class="menu-text">Store</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     <div class="menu-item" onclick="showCharmBoard()"><div class="menu-icon-box"><i class="fa-solid fa-heart text-pink-500 text-lg"></i></div><div class="menu-text">Love House (Charm)</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     <div class="menu-item" onclick="openLevelModal()"><div class="menu-icon-box"><i class="fa-solid fa-crown text-purple-500 text-lg"></i></div><div class="menu-text">Level Center</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     <div class="menu-item" onclick="openPropHouse()"><div class="menu-icon-box"><i class="fa-solid fa-warehouse text-green-600 text-lg"></i></div><div class="menu-text">Prop Warehouse</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
@@ -1344,15 +1560,15 @@
                 <div id="mics-scroll-area">
                     <div class="mics-container-main">
                         <div class="top-mic-row flex justify-center items-center gap-2">
-                            <div class="mic-wrapper" id="wrapper-seat1"><div class="seat-base mic-container-lg" id="cont-seat1" onclick="toggleMicMenu('seat1', 'UMAR', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat1-visual" class="user-dp-visual"></div><div id="menu-seat1" class="action-menu-overlay"></div></div><span id="seat1-name" class="seat-name">UMAR</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat1"><div class="seat-base mic-container-lg" id="cont-seat1" onclick="toggleMicMenu('seat1', 'UMAR', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat1-visual" class="user-dp-visual"></div><div id="menu-seat1" class="action-menu-overlay"></div></div><span id="seat1-name" class="seat-name">UMAR</span></div>
                             <div id="heartbeat-container" class="heartbeat-wrapper"><img src="./left.png" class="line-img left-line" alt="Left Line"><img src="./couple_heart.png" class="hb-img" alt="Heart"><img src="./right.png" class="line-img right-line" alt="Right Line"></div>
-                            <div class="mic-wrapper" id="wrapper-seat2"><div class="seat-base mic-container-lg" id="cont-seat2" onclick="toggleMicMenu('seat2', 'GURIYA', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat2-visual" class="user-dp-visual"></div><div id="menu-seat2" class="action-menu-overlay"></div></div><span id="seat2-name" class="seat-name">GURIYA</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat2"><div class="seat-base mic-container-lg" id="cont-seat2" onclick="toggleMicMenu('seat2', 'GURIYA', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat2-visual" class="user-dp-visual"></div><div id="menu-seat2" class="action-menu-overlay"></div></div><span id="seat2-name" class="seat-name">GURIYA</span></div>
                         </div>
                         <div class="bottom-mic-row flex justify-center gap-3 flex-wrap">
-                            <div class="mic-wrapper" id="wrapper-seat3"><div class="seat-base mic-container-sm" id="cont-seat3" onclick="toggleMicMenu('seat3', '1', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat3-visual" class="user-dp-visual"></div><div id="menu-seat3" class="action-menu-overlay"></div></div><span id="seat3-name" class="seat-name">1</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat4"><div class="seat-base mic-container-sm" id="cont-seat4" onclick="toggleMicMenu('seat4', '2', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat4-visual" class="user-dp-visual"></div><div id="menu-seat4" class="action-menu-overlay"></div></div><span id="seat4-name" class="seat-name">2</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat5"><div class="seat-base mic-container-sm" id="cont-seat5" onclick="toggleMicMenu('seat5', '3', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat5-visual" class="user-dp-visual"></div><div id="menu-seat5" class="action-menu-overlay"></div></div><span id="seat5-name" class="seat-name">3</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat6"><div class="seat-base mic-container-sm" id="cont-seat6" onclick="toggleMicMenu('seat6', '4', event)"><img src="./chair.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat6-visual" class="user-dp-visual"></div><div id="menu-seat6" class="action-menu-overlay"></div></div><span id="seat6-name" class="seat-name">4</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat3"><div class="seat-base mic-container-sm" id="cont-seat3" onclick="toggleMicMenu('seat3', '1', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat3-visual" class="user-dp-visual"></div><div id="menu-seat3" class="action-menu-overlay"></div></div><span id="seat3-name" class="seat-name">1</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat4"><div class="seat-base mic-container-sm" id="cont-seat4" onclick="toggleMicMenu('seat4', '2', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat4-visual" class="user-dp-visual"></div><div id="menu-seat4" class="action-menu-overlay"></div></div><span id="seat4-name" class="seat-name">2</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat5"><div class="seat-base mic-container-sm" id="cont-seat5" onclick="toggleMicMenu('seat5', '3', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat5-visual" class="user-dp-visual"></div><div id="menu-seat5" class="action-menu-overlay"></div></div><span id="seat5-name" class="seat-name">3</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat6"><div class="seat-base mic-container-sm" id="cont-seat6" onclick="toggleMicMenu('seat6', '4', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat6-visual" class="user-dp-visual"></div><div id="menu-seat6" class="action-menu-overlay"></div></div><span id="seat6-name" class="seat-name">4</span></div>
                         </div>
                     </div>
                 </div>
@@ -1564,23 +1780,132 @@
             <div class="reward-list-container" id="level-rewards-list"></div>
         </div>
     </div>
-<!-- NEW: CP STAR RANKING MODAL -->
-    <div id="cp-ranking-modal" class="fixed inset-0 bg-[#0f0c29] z-[4000] hidden flex-col overflow-hidden transition-transform transform translate-y-full duration-300">
-        <!-- Header -->
-        <div class="relative w-full h-48 bg-cover bg-center flex-shrink-0" style="background-image: url('./cp_ranking_top.png');">
-            <div class="absolute inset-0 bg-black/60"></div>
-            <div class="absolute top-0 w-full flex items-center p-4 pt-10 z-10">
-                <i class="fa-solid fa-chevron-left text-white text-xl cursor-pointer" onclick="closeCPRankingModal()"></i>
-                <h2 class="text-white font-black text-lg mx-auto tracking-wider">CP STAR RANKING</h2>
-                <div class="w-5"></div>
+<<!-- ================= CP STAR RANKING MODAL (FULLY SCROLLABLE - FIXED STRUCTURE) ================= -->
+<div id="cp-ranking-modal" class="fixed inset-0 cp-ferris-bg z-[4000] hidden flex-col" style="display: none; overflow: hidden;">
+    
+    <!-- Top Bar (fixed) -->
+    <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-10 z-50">
+        <button onclick="closeCPRankingModal()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm"><i class="fa-solid fa-question"></i></button>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="absolute top-20 bottom-0 left-0 right-0 overflow-y-auto z-20" style="padding-top: 0; padding-bottom: 30px;">
+        
+        <!-- Ferris Wheel Section -->
+        <div class="ferris-wheel-container" style="margin-top: 20px;">
+            <div class="ferris-center-logo">
+                <span class="cp-text">CP</span>
+                <span>Star</span>
+            </div>
+            <div class="ferris-wheel" id="ferris-wheel-main">
+                <!-- Spokes and Cabins (آپ کا موجودہ کوڈ) -->
+                <div class="ferris-spoke" style="transform: rotate(0deg);"></div>
+                <div class="ferris-spoke" style="transform: rotate(72deg);"></div>
+                <div class="ferris-spoke" style="transform: rotate(144deg);"></div>
+                <div class="ferris-spoke" style="transform: rotate(216deg);"></div>
+                <div class="ferris-spoke" style="transform: rotate(288deg);"></div>
+
+                <!-- Cabin 1 (Top 1) -->
+                <div class="ferris-arm" style="transform: rotate(270deg);">
+                    <div class="ferris-counter-offset" style="transform: rotate(-270deg);">
+                        <div class="ferris-cabin-wrapper">
+                            <div class="ferris-cabin">
+                                <img src="" id="fw-c1-u1" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <img src="" id="fw-c1-u2" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <div class="cabin-rank">1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cabin 2 (Top 2) -->
+                <div class="ferris-arm" style="transform: rotate(342deg);">
+                    <div class="ferris-counter-offset" style="transform: rotate(-342deg);">
+                        <div class="ferris-cabin-wrapper">
+                            <div class="ferris-cabin">
+                                <img src="" id="fw-c2-u1" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <img src="" id="fw-c2-u2" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <div class="cabin-rank">2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabin 3 (Top 3) -->
+                <div class="ferris-arm" style="transform: rotate(54deg);">
+                    <div class="ferris-counter-offset" style="transform: rotate(-54deg);">
+                        <div class="ferris-cabin-wrapper">
+                            <div class="ferris-cabin">
+                                <img src="" id="fw-c3-u1" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <img src="" id="fw-c3-u2" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <div class="cabin-rank">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabin 4 (Top 4) -->
+                <div class="ferris-arm" style="transform: rotate(126deg);">
+                    <div class="ferris-counter-offset" style="transform: rotate(-126deg);">
+                        <div class="ferris-cabin-wrapper">
+                            <div class="ferris-cabin">
+                                <img src="" id="fw-c4-u1" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <img src="" id="fw-c4-u2" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <div class="cabin-rank">4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabin 5 (Top 5) -->
+                <div class="ferris-arm" style="transform: rotate(198deg);">
+                    <div class="ferris-counter-offset" style="transform: rotate(-198deg);">
+                        <div class="ferris-cabin-wrapper">
+                            <div class="ferris-cabin">
+                                <img src="" id="fw-c5-u1" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <img src="" id="fw-c5-u2" onerror="this.src='https://placehold.co/100x100?text=+'">
+                                <div class="cabin-rank">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Ranking List Area -->
-        <div class="flex-1 bg-gradient-to-b from-[#1a1638] to-[#0f0c29] rounded-t-3xl -mt-6 z-20 overflow-y-auto px-4 pt-6 pb-20 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]" id="cp-ranking-list">
-            <!-- Data will load here via JS -->
+        <!-- Countdown Timer -->
+        <div class="text-center mt-2 mb-2">
+            <div class="cp-timer-box" style="display: inline-flex;">
+                <span>CountDown</span>
+                <span class="cp-time-block" id="cp-days">00</span> Days
+                <span class="cp-time-block" id="cp-hrs">00</span> :
+                <span class="cp-time-block" id="cp-mins">00</span> :
+                <span class="cp-time-block" id="cp-secs">00</span>
+            </div>
         </div>
-    </div>
+
+        <!-- Buttons Row - NOW PROPERLY CLOSED -->
+        <div class="cp-tabs-row" style="display: flex; justify-content: center; gap: 10px; padding: 15px;">
+            <div class="cp-tab-btn active" id="cp-tab-ranking" onclick="switchCPTab('ranking')">Ranking</div>
+            <div class="cp-tab-btn" id="cp-tab-rewards" onclick="switchCPTab('rewards')">🏆 Rewards</div>
+            <div class="cp-tab-btn" id="cp-tab-weekly" onclick="switchCPTab('weekly')">🎁 Weekly</div>
+        </div> <!-- یہاں بٹنز کا div بند کیا -->
+
+        <!-- List Area - NOW SEPARATE AND PROPER -->
+        <div class="bg-gradient-to-b from-purple-900 to-[#0f0c29] rounded-t-[30px] p-4 min-h-[400px] border-t-2 border-yellow-400" style="margin-bottom: 30px;">
+            <div class="flex items-center justify-center mb-4 mt-2" id="cp-list-header">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135692.png" class="w-6 mr-2">
+                <h3 class="text-white font-bold text-lg" id="cp-list-title">This Week Ranking</h3>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135692.png" class="w-6 ml-2">
+            </div>
+            
+            <div id="cp-ranking-list">
+                <!-- Data will load here via JS -->
+            </div>
+        </div>
+
+    </div> <!-- Scrollable Content End -->
+</div> <!-- Modal End -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -2671,17 +2996,11 @@ results.forEach(d => {
                     if(adminBtn) {
                         adminBtn.classList.remove('hidden');
                         adminBtn.setAttribute('onclick', 'openAdminPanel()');
-                        adminBtn.style.display = 'flex'; // Ensure it's visible
+                        adminBtn.style.display = 'flex'; 
                     }
                     if(vBadgeName) vBadgeName.classList.remove('hidden');
                     if(vBadgeProfile) vBadgeProfile.classList.remove('hidden');
-                    
-                    if(!d.currentFrame) {
-                        update(ref(db, `users/${currentUser.uid}`), { 
-                            currentFrame: './frame_official.png' 
-                        });
-                        d.currentFrame = './frame_official.png'; // Update immediately for UI
-                    }
+                    // Removed forced official frame to fix 'No Img' bug
                 } else {
                     if(adminBtn) {
                         adminBtn.classList.add('hidden');
@@ -2695,6 +3014,39 @@ results.forEach(d => {
                     Swal.fire({icon:'error', title:'Account Banned', text:'Your account has been banned by YARAAN Official.', allowOutsideClick: false, showConfirmButton: false});
                     setTimeout(() => window.logout(), 3000);
                 }
+
+                // === REAL-TIME FRAME LISTENER (فریم کو ہر جگہ لائیو اپڈیٹ کرنے کے لیے) ===
+                onValue(ref(db, `users/${currentUser.uid}/currentFrame`), (snap) => {
+                    const frameUrl = snap.val();
+                    
+                    // 1. مین پروفائل سکرین پر اپڈیٹ
+                    const container = document.getElementById('profile-visual-container');
+                    if(container) {
+                        let html = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img">`;
+                        if(frameUrl) html += `<img src="${frameUrl}" class="visual-frame" onerror="this.style.display='none'">`;
+                        html += `</div>`;
+                        container.innerHTML = html;
+                    }
+
+                    // 2. فل پروفائل ویو (FPV) میں اپڈیٹ
+                    const fpvFrame = document.getElementById('fpv-frame');
+                    if(fpvFrame) {
+                        if(frameUrl) {
+                            fpvFrame.src = frameUrl;
+                            fpvFrame.style.display = 'block';
+                            fpvFrame.classList.remove('hidden');
+                        } else {
+                            fpvFrame.src = "";
+                            fpvFrame.style.display = 'none';
+                            fpvFrame.classList.add('hidden');
+                        }
+                    }
+                    
+                    // نوٹ: تیسرا حصہ (FPV Frames List Update) یہاں سے ہٹا دیا گیا ہے، 
+                    // کیونکہ وہ اب renderFPVFrames فنکشن سے کنٹرول ہو رہا ہے تاکہ تمام ایکٹو فریمز شو ہوں۔
+                });
+                // ==========================================
+
             }
             updateHomeTopDPs();
             loadCPRankingData(); // NEW: App کھلتے ہی CP Star کا کارڈ بھی اپڈیٹ کر دے گا
@@ -2866,168 +3218,318 @@ results.forEach(d => {
         window.playDirectVideo = () => { const input = document.getElementById('direct-yt-link'); const val = input.value.trim(); if(!val) return; let videoId = ''; const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = val.match(ytRegExp); if (match && match[2].length == 11) { videoId = match[2]; } else if(val.includes('shorts/')) { const parts = val.split('shorts/'); if(parts[1]) videoId = parts[1].split('?')[0]; } if(videoId && videoId.length > 5) { playVideoById(videoId); input.value = ""; } else { Swal.fire({toast:true, icon:'error', title:'Invalid YouTube Link', position:'top'}); } };
         function playVideoById(id) { set(ref(db, `rooms/${currentRoomId}/videoId`), {type:'yt', id:id, timestamp: Date.now()}); push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `${currentUser.displayName} started a video.`, type: 'system', timestamp: Date.now() }); }
 
-        window.joinRoom = async (rid) => { 
-            let history = JSON.parse(localStorage.getItem('room_history') || '[]'); history = history.filter(id => id !== rid); history.unshift(rid); if(history.length > 20) history.pop(); localStorage.setItem('room_history', JSON.stringify(history)); localStorage.setItem('lastRoomId', rid);
-            const kickSnap = await get(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`)); if (kickSnap.exists()) { if (Date.now() - kickSnap.val() < 20 * 60 * 1000) { localStorage.removeItem('lastRoomId'); return Swal.fire('Banned', 'Kicked from room.', 'error'); } } 
-            currentRoomId = rid; currentUserJoinTime = Date.now(); 
-            get(ref(db, `rooms/${rid}`)).then(snap => { 
-                currentRoomData = snap.val(); currentRoomOwner = currentRoomData.owner; const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; document.getElementById('room-header-cover').src = rCover; document.getElementById('room-header-name').innerText = currentRoomData.roomName; document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; document.getElementById('guest-touch-blocker').style.display = 'none'; document.getElementById('empty-state-trigger').style.display = 'flex'; 
-                const theme = currentRoomData.theme; const area = document.getElementById('room-lower-half'); const videoBg = document.getElementById('theme-video-bg');
-                if(theme) { if(theme.endsWith('.mp4')) { area.style.backgroundImage = 'none'; videoBg.src = `./${theme}`; videoBg.classList.remove('hidden'); videoBg.play().catch(e => console.log("Auto-play prevented")); } else { videoBg.classList.add('hidden'); videoBg.pause(); area.style.backgroundImage = `url('./${theme}')`; } } else { area.style.backgroundImage = 'none'; videoBg.classList.add('hidden'); videoBg.pause(); }
-                if(rid === currentUser.uid) { update(ref(db, `rooms/${rid}`), { isLive: true }); onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); } 
-            }); 
-            onValue(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`), (s) => { if(s.exists() && currentRoomId === rid) { leaveRoomFull(); Swal.fire('Kicked', 'Removed by host.', 'warning'); } }); 
-            switchTab('view-room'); 
-            initRocketListener(rid);
-            const userRef = ref(db, `rooms/${rid}/activeUsers/${currentUser.uid}`); set(userRef, currentUser.displayName); onDisconnect(userRef).remove();
-            onValue(ref(db, `rooms/${rid}/activeUsers`), (snap) => { const count = snap.exists() ? Object.keys(snap.val()).length : 0; document.getElementById('room-user-count').innerText = count; });
-            
-            push(ref(db, `rooms/${rid}/messages`), { 
-                name: currentUser.displayName, 
-                uid: currentUser.uid,
-                type: 'entry', 
-                userExp: currentUserExp || 0,
-                nameColorClass: currentRoomSeats.nameColorClass || null,
-                timestamp: Date.now() 
-            });
+        // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی کے ساتھ) =================
+window.joinRoom = async (rid) => { 
+    // پرانے کنکشن صاف کریں
+    if (typeof cleanupWebRTC === 'function') {
+        cleanupWebRTC();  // پہلے والے کنکشن بند کریں
+    }
+    
+    let history = JSON.parse(localStorage.getItem('room_history') || '[]'); 
+    history = history.filter(id => id !== rid); 
+    history.unshift(rid); 
+    if(history.length > 20) history.pop(); 
+    localStorage.setItem('room_history', JSON.stringify(history)); 
+    localStorage.setItem('lastRoomId', rid);
+    
+    const kickSnap = await get(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`)); 
+    if (kickSnap.exists()) { 
+        if (Date.now() - kickSnap.val() < 20 * 60 * 1000) { 
+            localStorage.removeItem('lastRoomId'); 
+            return Swal.fire('Banned', 'Kicked from room.', 'error'); 
+        } 
+    } 
+    
+    currentRoomId = rid; 
+    currentUserJoinTime = Date.now(); 
+    
+    get(ref(db, `rooms/${rid}`)).then(snap => { 
+        currentRoomData = snap.val(); 
+        currentRoomOwner = currentRoomData.owner; 
+        const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
+        document.getElementById('room-header-cover').src = rCover; 
+        document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
+        document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
+        document.getElementById('guest-touch-blocker').style.display = 'none'; 
+        document.getElementById('empty-state-trigger').style.display = 'flex'; 
+        
+        const theme = currentRoomData.theme; 
+        const area = document.getElementById('room-lower-half'); 
+        const videoBg = document.getElementById('theme-video-bg');
+        
+        if(theme) { 
+            if(theme.endsWith('.mp4')) { 
+                area.style.backgroundImage = 'none'; 
+                videoBg.src = `./${theme}`; 
+                videoBg.classList.remove('hidden'); 
+                videoBg.play().catch(e => console.log("Auto-play prevented")); 
+            } else { 
+                videoBg.classList.add('hidden'); 
+                videoBg.pause(); 
+                area.style.backgroundImage = `url('./${theme}')`; 
+            } 
+        } else { 
+            area.style.backgroundImage = 'none'; 
+            videoBg.classList.add('hidden'); 
+            videoBg.pause(); 
+        }
+        
+        if(rid === currentUser.uid) { 
+            update(ref(db, `rooms/${rid}`), { isLive: true }); 
+            onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
+        } 
+    }); 
+    
+    onValue(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`), (s) => { 
+        if(s.exists() && currentRoomId === rid) { 
+            leaveRoomFull(); 
+            Swal.fire('Kicked', 'Removed by host.', 'warning'); 
+        } 
+    }); 
+    
+    switchTab('view-room'); 
+    initRocketListener(rid);
+    
+    const userRef = ref(db, `rooms/${rid}/activeUsers/${currentUser.uid}`); 
+    set(userRef, currentUser.displayName); 
+    onDisconnect(userRef).remove();
+    
+    // کالز بھی صاف کریں جب روم چھوڑے
+    onDisconnect(ref(db, `calls/${currentUser.uid}`)).remove();  // نیا
+    
+    onValue(ref(db, `rooms/${rid}/activeUsers`), (snap) => { 
+        const count = snap.exists() ? Object.keys(snap.val()).length : 0; 
+        document.getElementById('room-user-count').innerText = count; 
+    });
+    
+    push(ref(db, `rooms/${rid}/messages`), { 
+        name: currentUser.displayName, 
+        uid: currentUser.uid,
+        type: 'entry', 
+        userExp: currentUserExp || 0,
+        nameColorClass: currentRoomSeats?.nameColorClass || null,
+        timestamp: Date.now() 
+    });
 
-            onValue(ref(db, `rooms/${rid}/theme`), s => { const t = s.val(); const area = document.getElementById('room-lower-half'); const videoBg = document.getElementById('theme-video-bg'); if(t) { if(t.endsWith('.mp4')) { area.style.backgroundImage = 'none'; videoBg.src = `./${t}`; videoBg.classList.remove('hidden'); videoBg.play().catch(e => console.log("Playback error", e)); } else { videoBg.classList.add('hidden'); videoBg.pause(); area.style.backgroundImage = `url('./${t}')`; } } else { area.style.backgroundImage = 'none'; videoBg.classList.add('hidden'); videoBg.pause(); } });
-            const rr = ref(db, `rooms/${rid}`);
-            onValue(child(rr, 'videoId'), s => { const v=s.val(); const iframe=document.getElementById('video-iframe'); const trigger=document.getElementById('empty-state-trigger'); const local=document.getElementById('local-video-player'); local.classList.add('hidden'); if(v) { trigger.style.display = 'none'; iframe.classList.remove('hidden'); if(v.type === 'yt') { const origin = window.location.origin; const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; if(iframe.src !== embedUrl) iframe.src = embedUrl; } } else { trigger.style.display = 'flex'; iframe.classList.add('hidden'); iframe.src=""; } }); 
-            onValue(child(rr, 'seats'), s => { currentRoomSeats = s.val() || {}; updateSeat('seat1', currentRoomSeats.seat1, "UMAR"); updateSeat('seat2', currentRoomSeats.seat2, "GURIYA"); updateSeat('seat3', currentRoomSeats.seat3, "1"); updateSeat('seat4', currentRoomSeats.seat4, "2"); updateSeat('seat5', currentRoomSeats.seat5, "3"); updateSeat('seat6', currentRoomSeats.seat6, "4"); const hc = document.getElementById('heartbeat-container'); const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid; const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid; if(seat1Occupied && seat2Occupied) { hc.classList.add('heartbeat-active'); } else { hc.classList.remove('heartbeat-active'); } document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); }); 
+    onValue(ref(db, `rooms/${rid}/theme`), s => { 
+        const t = s.val(); 
+        const area = document.getElementById('room-lower-half'); 
+        const videoBg = document.getElementById('theme-video-bg'); 
+        if(t) { 
+            if(t.endsWith('.mp4')) { 
+                area.style.backgroundImage = 'none'; 
+                videoBg.src = `./${t}`; 
+                videoBg.classList.remove('hidden'); 
+                videoBg.play().catch(e => console.log("Playback error", e)); 
+            } else { 
+                videoBg.classList.add('hidden'); 
+                videoBg.pause(); 
+                area.style.backgroundImage = `url('./${t}')`; 
+            } 
+        } else { 
+            area.style.backgroundImage = 'none'; 
+            videoBg.classList.add('hidden'); 
+            videoBg.pause(); 
+        } 
+    });
+    
+    const rr = ref(db, `rooms/${rid}`);
+    
+    onValue(child(rr, 'videoId'), s => { 
+        const v = s.val(); 
+        const iframe = document.getElementById('video-iframe'); 
+        const trigger = document.getElementById('empty-state-trigger'); 
+        const local = document.getElementById('local-video-player'); 
+        local.classList.add('hidden'); 
+        if(v) { 
+            trigger.style.display = 'none'; 
+            iframe.classList.remove('hidden'); 
+            if(v.type === 'yt') { 
+                const origin = window.location.origin; 
+                const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; 
+                if(iframe.src !== embedUrl) iframe.src = embedUrl; 
+            } 
+        } else { 
+            trigger.style.display = 'flex'; 
+            iframe.classList.add('hidden'); 
+            iframe.src = ""; 
+        } 
+    }); 
+    
+    // ========== نیا: سیٹ سننے والا ==========
+    onValue(child(rr, 'seats'), s => { 
+        currentRoomSeats = s.val() || {}; 
+        updateSeat('seat1', currentRoomSeats.seat1, "UMAR"); 
+        updateSeat('seat2', currentRoomSeats.seat2, "GURIYA"); 
+        updateSeat('seat3', currentRoomSeats.seat3, "1"); 
+        updateSeat('seat4', currentRoomSeats.seat4, "2"); 
+        updateSeat('seat5', currentRoomSeats.seat5, "3"); 
+        updateSeat('seat6', currentRoomSeats.seat6, "4"); 
+        
+        const hc = document.getElementById('heartbeat-container'); 
+        const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid; 
+        const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid; 
+        if(seat1Occupied && seat2Occupied) { 
+            hc.classList.add('heartbeat-active'); 
+        } else { 
+            hc.classList.remove('heartbeat-active'); 
+        } 
+        
+        document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); 
+        
+        // نیا: سیٹ بدلنے پر کنکشن دوبارہ بنائیں
+        if (typeof setupAllPeerConnections === 'function') {
+            setupAllPeerConnections();
+        }
+    }); 
 
-            const giftVideos = {
-                'Rose': './rose.mp4',
-                'Ring': './ring.mp4',
-                'Car': './car.mp4',
-                'Rocket': './rocket_gift.mp4',
-                'Crown': './crown.mp4',
-                'Castle': './castle.mp4',
-                'Yacht': './yacht.mp4',
-                'Dragon': './dragon.mp4'
-            };
+    const giftVideos = {
+        'Rose': './rose.mp4',
+        'Ring': './ring.mp4',
+        'Car': './car.mp4',
+        'Rocket': './rocket_gift.mp4',
+        'Crown': './crown.mp4',
+        'Castle': './castle.mp4',
+        'Yacht': './yacht.mp4',
+        'Dragon': './dragon.mp4'
+    };
 
-            onValue(child(rr, 'messages'), s => { 
-                const chatArea = document.getElementById('chat-display-area'); 
-                chatArea.innerHTML = ''; 
-                if(s.exists()) { 
-                    Object.values(s.val()).forEach(m => { 
-                        if(m.timestamp > currentUserJoinTime) { 
+    onValue(child(rr, 'messages'), s => { 
+        const chatArea = document.getElementById('chat-display-area'); 
+        chatArea.innerHTML = ''; 
+        if(s.exists()) { 
+            Object.values(s.val()).forEach(m => { 
+                if(m.timestamp > currentUserJoinTime) { 
+                    
+                    let levelBadgeHtml = m.userExp !== undefined ? renderLevelHTML(m.userExp).replace('class="user-level-badge"', 'class="user-level-badge" style="transform: scale(0.85); transform-origin: left center;"') : '';
+                    let colorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
+
+                    if(m.type === 'system') { 
+                        chatArea.innerHTML += `<div class="chat-system-msg">${m.text}</div>`; 
+                    } 
+                    else if (m.type === 'entry') {
+                        let colorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
+                        
+                        let nameHtml = m.uid 
+                            ? `<span onclick="viewFriendProfile('${m.uid}')" class="font-extrabold ${colorClass} cursor-pointer hover:underline">${m.name}</span>`
+                            : `<span class="font-extrabold ${colorClass}">${m.name}</span>`;
+
+                        chatArea.innerHTML += `
+                        <div class="chat-system-msg">
+                            Welcome ${nameHtml}
+                        </div>`;
+                    }
+                    else if (m.type === 'gift') {
+                        let giftColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
+                        chatArea.innerHTML += `<div class="chat-message-bubble">${levelBadgeHtml} <b class="${giftColorClass}">${m.name}:</b> <span class="text-white">${m.text}</span></div>`; 
+                    }
+                    else { 
+                        let msgColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
+                        chatArea.innerHTML += `<div class="chat-message-bubble mb-1 items-center">${levelBadgeHtml}<span class="font-black ${msgColorClass}">${m.name}</span><span class="text-white font-bold mx-0.5">:</span> <span class="text-white">${m.text}</span></div>`; 
+                    }
+
+                    if(m.type === 'gift' && m.giftName && (Date.now() - m.timestamp < 3000)) {
+                        let videoSrc = giftVideos[m.giftName];
+                        if(videoSrc) {
+                            let containerEl = document.getElementById('gift-animation-container');
+                            let vidEl = document.getElementById('gift-animation-player');
+                            let textEl = document.getElementById('gift-animation-text');
                             
-                            let levelBadgeHtml = m.userExp !== undefined ? renderLevelHTML(m.userExp).replace('class="user-level-badge"', 'class="user-level-badge" style="transform: scale(0.85); transform-origin: left center;"') : '';
-                            let colorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-
-                            if(m.type === 'system') { 
-                                chatArea.innerHTML += `<div class="chat-system-msg">${m.text}</div>`; 
-                            } 
-                            else if (m.type === 'entry') {
-                                let colorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
+                            if(containerEl && containerEl.classList.contains('hidden')) {
+                                vidEl.src = videoSrc;
+                                textEl.innerHTML = `${m.name} sent <br><span class="text-yellow-400 text-4xl">${m.giftName}</span>!`;
+                                containerEl.classList.remove('hidden');
+                                containerEl.style.display = 'flex';
+                                vidEl.play().catch(e => console.log("Video auto-play prevented:", e));
                                 
-                                let nameHtml = m.uid 
-                                    ? `<span onclick="viewFriendProfile('${m.uid}')" class="font-extrabold ${colorClass} cursor-pointer hover:underline">${m.name}</span>`
-                                    : `<span class="font-extrabold ${colorClass}">${m.name}</span>`;
-
-                                chatArea.innerHTML += `
-                                <div class="chat-system-msg">
-                                    Welcome ${nameHtml}
-                                </div>`;
+                                setTimeout(() => {
+                                    containerEl.classList.add('hidden');
+                                    containerEl.style.display = 'none';
+                                    vidEl.pause();
+                                    vidEl.currentTime = 0; 
+                                }, 8000);
                             }
-                            else if (m.type === 'gift') {
-                                let giftColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-                                chatArea.innerHTML += `<div class="chat-message-bubble">${levelBadgeHtml} <b class="${giftColorClass}">${m.name}:</b> <span class="text-white">${m.text}</span></div>`; 
-                            }
-                            else { 
-                                let msgColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-                                chatArea.innerHTML += `<div class="chat-message-bubble mb-1 items-center">${levelBadgeHtml}<span class="font-black ${msgColorClass}">${m.name}</span><span class="text-white font-bold mx-0.5">:</span> <span class="text-white">${m.text}</span></div>`; 
-                            }
-
-                            if(m.type === 'gift' && m.giftName && (Date.now() - m.timestamp < 3000)) {
-                                let videoSrc = giftVideos[m.giftName];
-                                if(videoSrc) {
-                                    let containerEl = document.getElementById('gift-animation-container');
-                                    let vidEl = document.getElementById('gift-animation-player');
-                                    let textEl = document.getElementById('gift-animation-text');
-                                    
-                                    if(containerEl && containerEl.classList.contains('hidden')) {
-                                        vidEl.src = videoSrc;
-                                        textEl.innerHTML = `${m.name} sent <br><span class="text-yellow-400 text-4xl">${m.giftName}</span>!`;
-                                        containerEl.classList.remove('hidden');
-                                        containerEl.style.display = 'flex';
-                                        vidEl.play().catch(e => console.log("Video auto-play prevented:", e));
-                                        
-                                        setTimeout(() => {
-                                            containerEl.classList.add('hidden');
-                                            containerEl.style.display = 'none';
-                                            vidEl.pause();
-                                            vidEl.currentTime = 0; 
-                                        }, 8000);
-                                    }
-                                }
-                            }
-                        } 
-                    }); 
-                    setTimeout(forceScrollBottom, 100); 
+                        }
+                    }
                 } 
-            });
-        };
+            }); 
+            setTimeout(forceScrollBottom, 100); 
+        } 
+    });
+    
+    // ========== نیا: سگنل سننا شروع کریں ==========
+    if (typeof listenForSignals === 'function') {
+        listenForSignals();
+    }
+};
 
         window.updateSeat = (seatId, data, defaultName) => { 
-            const visualDiv = document.getElementById(`${seatId}-visual`); 
-            const nameSpan = document.getElementById(`${seatId}-name`); 
-            const container = document.getElementById(`cont-${seatId}`); 
-            if (!visualDiv || !nameSpan || !container) return; 
-            
-            container.classList.remove('seat-occupied', 'seat-locked', 'has-frame'); 
-            const oldBadge = container.querySelector('.seat-mute-badge'); if(oldBadge) oldBadge.remove(); 
-            const oldVBadge = container.querySelector('.v-badge-mic'); if(oldVBadge) oldVBadge.remove();
-            
-            container.style.border = "2px solid #333"; 
-            
-            if (data && data.locked) { 
-                visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; 
-                container.classList.add('seat-locked'); 
-                nameSpan.innerText = "Locked"; 
-                nameSpan.className = "seat-name text-red-500"; 
-            } else if (data && data.uid) { 
-                container.classList.add('seat-occupied'); 
-                let html = `<div class="visual-root">`; 
-                html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
-                if (data.frame) { 
-                    html += `<img src="${data.frame}" class="visual-frame">`; 
-                    container.classList.add('has-frame'); 
-                } else { 
-                    container.style.border = "2px solid #22c55e"; 
-                } 
-                html += `</div>`; 
-                visualDiv.innerHTML = html; 
-                
-                nameSpan.innerText = data.name || defaultName; 
-                
-                if (data.nameColorClass && data.nameColorClass !== "") {
-                    nameSpan.className = `seat-name occupied ${data.nameColorClass}`;
-                } else {
-                    nameSpan.className = "seat-name occupied text-white";
-                }
-                
-                if (data.uid === currentUser?.uid && isMicMuted) { 
-                    const badge = document.createElement('div'); 
-                    badge.className = 'seat-mute-badge'; 
-                    badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; 
-                    container.appendChild(badge); 
-                }
-                if (data.isOfficial) {
-                    const vbadge = document.createElement('img');
-                    vbadge.src = './v_badge.png'; 
-                    vbadge.className = 'v-badge-mic';
-                    vbadge.onerror = function() { this.style.display='none'; };
-                    container.appendChild(vbadge);
-                }
-            } else { 
-                visualDiv.innerHTML = ''; 
-                nameSpan.innerText = defaultName; 
-                nameSpan.className = "seat-name";
-            } 
-        };
+    const visualDiv = document.getElementById(`${seatId}-visual`); 
+    const nameSpan = document.getElementById(`${seatId}-name`); 
+    const container = document.getElementById(`cont-${seatId}`); 
+    if (!visualDiv || !nameSpan || !container) return; 
+    
+    // پرانی کلاسز اور بیجز ہٹائیں
+    container.classList.remove('seat-occupied', 'seat-locked', 'has-frame'); 
+    const oldBadge = container.querySelector('.seat-mute-badge'); if(oldBadge) oldBadge.remove(); 
+    const oldVBadge = container.querySelector('.v-badge-mic'); if(oldVBadge) oldVBadge.remove();
+    
+    // PNG باکس ہمیشہ رہے گا (چاہے کوئی بیٹھا ہو یا نہ ہو)
+    // chair-bg-img پہلے سے HTML میں موجود ہے
+    
+    if (data && data.locked) { 
+        // لاک شدہ سیٹ - لاک آئیکن دکھائیں
+        visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; 
+        container.classList.add('seat-locked'); 
+        nameSpan.innerText = "Locked"; 
+        nameSpan.className = "seat-name text-red-500"; 
+    } 
+    else if (data && data.uid) { 
+        // سیٹ پر کوئی بیٹھا ہوا ہے
+        container.classList.add('seat-occupied'); 
+        
+        let html = `<div class="visual-root">`; 
+        html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
+        if (data.frame) { 
+            html += `<img src="${data.frame}" class="visual-frame">`; 
+            container.classList.add('has-frame'); 
+        } 
+        html += `</div>`; 
+        visualDiv.innerHTML = html; 
+        
+        nameSpan.innerText = data.name || defaultName; 
+        
+        if (data.nameColorClass && data.nameColorClass !== "") {
+            nameSpan.className = `seat-name occupied ${data.nameColorClass}`;
+        } else {
+            nameSpan.className = "seat-name occupied text-white";
+        }
+        
+        if (data.uid === currentUser?.uid && isMicMuted) { 
+            const badge = document.createElement('div'); 
+            badge.className = 'seat-mute-badge'; 
+            badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; 
+            container.appendChild(badge); 
+        }
+        if (data.isOfficial) {
+            const vbadge = document.createElement('img');
+            vbadge.src = './v_badge.png'; 
+            vbadge.className = 'v-badge-mic';
+            vbadge.onerror = function() { this.style.display='none'; };
+            container.appendChild(vbadge);
+        }
+    } 
+    else { 
+        // سیٹ بالکل خالی ہے - صرف PNG باکس اور پلس کا آئیکن
+        visualDiv.innerHTML = `
+            <div class="visual-root">
+                <i class="fa-solid fa-plus absolute text-white text-3xl" style="filter: drop-shadow(0 2px 4px black); z-index: 20;"></i>
+            </div>`;
+        
+        nameSpan.innerText = defaultName; 
+        nameSpan.className = "seat-name text-gray-400"; // خالی سیٹ کا نام ہلکا
+    } 
+};
 
         window.hideAllMicMenus = (e) => { if (!e.target.closest('.mic-container') && !e.target.closest('.mic-container-sm')) { document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); } };
         window.toggleMicMenu = (seatId, defName, event) => { 
@@ -3059,112 +3561,240 @@ results.forEach(d => {
                 menu.innerHTML = html; 
             } 
         };
-        window.leaveSeat = async (sid) => { const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`); onDisconnect(seatRef).cancel(); await remove(seatRef); document.getElementById(`menu-${sid}`).style.display = 'none'; };
-        window.unseatUser = async (sid) => { await remove(ref(db, `rooms/${currentRoomId}/seats/${sid}`)); document.getElementById(`menu-${sid}`).style.display = 'none'; }; 
-        window.kickUserFromRoom = async (sid, targetUid) => { await remove(ref(db, `rooms/${currentRoomId}/seats/${sid}`)); await set(ref(db, `rooms/${currentRoomId}/kicked/${targetUid}`), Date.now()); document.getElementById(`menu-${sid}`).style.display = 'none'; };
-        window.toggleLock = async (sid, state) => { if(state) { await set(ref(db, `rooms/${currentRoomId}/seats/${sid}`), { locked: true }); } else { await remove(ref(db, `rooms/${currentRoomId}/seats/${sid}`)); } document.getElementById(`menu-${sid}`).style.display = 'none'; };
-        window.sitDown = async (sid, def) => { 
-            const sr=ref(db, `rooms/${currentRoomId}/seats`); const s=currentRoomSeats; 
-            if(s[sid] && (s[sid].locked || s[sid].uid)) return; 
-            let unseatUpdates={};['seat1','seat2','seat3','seat4','seat5','seat6'].forEach(k => { if(s[k] && s[k].uid === currentUser.uid) unseatUpdates[k]=null; }); 
-            const userSnap = await get(ref(db, `users/${currentUser.uid}`)); 
-            const userData = userSnap.val(); 
-            const mySeatData = { 
-                uid: currentUser.uid, 
-                name: currentUser.displayName, 
-                pic: currentUser.photoURL, 
-                frame: userData.currentFrame || null,
-                isOfficial: userData.isOfficial || false,
-                nameColorClass: userData.nameColorClass || null
-            };
-            const targetSeatRef = child(sr, sid); 
-            await update(sr, unseatUpdates); 
-            await set(targetSeatRef, mySeatData); 
-            onDisconnect(targetSeatRef).remove(); 
-            document.getElementById(`menu-${sid}`).style.display = 'none'; 
-        };
-       window.openPropHouse = async () => { 
-            const grid = document.getElementById('frame-grid'); 
-            grid.innerHTML = '<div class="text-white text-center w-full mt-10">Loading...</div>'; 
-            
-            const snap = await get(ref(db, `users/${currentUser.uid}`)); 
-            const userData = snap.val() || {};
-            const currentEquipped = userData.currentFrame; 
-            const currentNameClass = userData.nameColorClass || '';
-            
-            // سارا ایچ ٹی ایم ایل اس میں جمع کریں گے تاکہ ایپ ہینگ نہ ہو
-            let htmlContent = ''; 
-            
-            // VIP Names کا کوڈ
-            if (userData.unlockedVIPs) {
-                const vipList =[
-                    { key: 'name-vip-green', title: 'VIP 3 (Green)', color: '#22c55e', img: './vip_green.png' },
-                    { key: 'name-vip-yellow', title: 'VIP 5 (Yellow)', color: '#facc15', img: './vip_yellow.png' },
-                    { key: 'name-vip-pink', title: 'VIP 7 (Pink)', color: '#ec4899', img: './vip_pink.png' },
-                    { key: 'name-vip-colorful', title: 'VIP 9 (Shiny)', color: '#a855f7', img: './vip_colorful.png' }
-                ];
+        // ========== نیا leaveSeat (بلبلوں کے ساتھ) ==========
+window.leaveSeat = async (sid) => {
+    const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
+    
+    if (peerConnections[sid]) {
+        peerConnections[sid].close();
+        delete peerConnections[sid];
+    }
+    
+    // بلبلے بند کریں
+    cleanupRipples();
+    
+    onDisconnect(seatRef).cancel();
+    await remove(seatRef);
+    document.getElementById(`menu-${sid}`).style.display = 'none';
+    
+    if (currentSeatId === sid) {
+        currentSeatId = null;
+    }
+};
+       const STORE_FRAMES =[
+            { id: 'frame_1', name: 'Starter Frame', price: 10000, img: './frame_1.png' },
+            { id: 'frame_2', name: 'Silver Frame', price: 20000, img: './frame_2.png' },
+            { id: 'frame_3', name: 'Gold Frame', price: 30000, img: './frame_3.png' },
+            { id: 'frame_4', name: 'Diamond Frame', price: 40000, img: './frame_4.png' },
+            { id: 'frame_5', name: 'Royal Frame', price: 50000, img: './frame_5.png' },
+            { id: 'frame_6', name: 'Neon Frame', price: 60000, img: './frame_6.png' },
+            { id: 'frame_7', name: 'Fire Frame', price: 70000, img: './frame_7.png' },
+            { id: 'frame_8', name: 'Dragon Frame', price: 100000, img: './frame_8.png' }
+        ];
 
-                vipList.forEach(vip => {
-                    if (userData.unlockedVIPs[vip.key]) {
-                        const isEquipped = (currentNameClass === vip.key); 
-                        const btnText = isEquipped ? "REMOVE" : "USE VIP"; 
-                        const btnClass = isEquipped ? "bg-gray-600 hover:bg-gray-700" : "bg-blue-600 hover:bg-blue-700"; 
-                        const btnAction = isEquipped ? "removeVIPName()" : `applyVIPName('${vip.key}')`; 
-                        
-                        htmlContent += `
-                        <div class="frame-card" style="border: 2px solid ${vip.color}; box-shadow: 0 0 10px ${vip.color}50;">
-                            <div class="frame-preview-box">
-                                <img src="${vip.img}" class="w-14 h-14 object-contain" onerror="this.src='https://placehold.co/100x100?text=VIP'">
-                            </div>
-                            <span class="text-xs font-bold mb-2 ${vip.key}">${vip.title}</span>
-                            <button onclick="${btnAction}" class="w-full ${btnClass} text-white font-bold text-xs py-1 rounded transition">${btnText}</button>
-                        </div>`;
-                    }
-                });
-            }
+        window.openStoreModal = () => {
+            const grid = document.getElementById('store-grid');
+            document.getElementById('store-coins-display').innerText = currentCoins.toLocaleString();
+            grid.innerHTML = '';
 
-            // 50 Frames کا کوڈ
-            for(let i=1; i<=50; i++) { 
-                const fileName = `./frames/frame_${i}.png`; 
-                const frameName = `Frame ${i}`; 
-                const isEquipped = (currentEquipped === fileName); 
-                const btnText = isEquipped ? "REMOVE" : "USE"; 
-                const btnClass = isEquipped ? "bg-gray-600" : "bg-red-600"; 
-                const btnAction = isEquipped ? "removeFrame()" : `applyFrame('${fileName}')`; 
-                
-                // FIXED: this.onerror=null; لگایا ہے تاکہ Infinite Loop نہ بنے اور ایپ ہینگ نہ ہو
-                htmlContent += `<div class="frame-card" style="display:flex">
-                    <div class="frame-preview-box">
-                        <div class="visual-root">
-                            <img src="${currentUser.photoURL}" class="visual-img">
-                            <img src="${fileName}" class="visual-frame" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Missing'; this.style.opacity='0.2';">
-                        </div>
+            STORE_FRAMES.forEach(frame => {
+                grid.innerHTML += `
+                <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col items-center relative shadow-lg">
+                    <div class="w-20 h-20 relative mb-3 flex items-center justify-center">
+                        <img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover">
+                        <img src="${frame.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">
                     </div>
-                    <span class="text-xs font-bold text-white mb-2">${frameName}</span>
-                    <button onclick="${btnAction}" class="w-full ${btnClass} text-white text-xs py-1 rounded transition">${btnText}</button>
-                </div>`; 
-            } 
-            
-            // سارا ڈیٹا ایک ساتھ پرنٹ کروائیں
-            grid.innerHTML = htmlContent;
-            document.getElementById('prophouse-modal').classList.add('open'); 
+                    <span class="text-white font-bold text-xs mb-1 text-center">${frame.name}</span>
+                    <span class="text-yellow-400 font-bold text-xs mb-3 flex items-center"><i class="fa-solid fa-coins mr-1"></i> ${frame.price.toLocaleString()}</span>
+                    <button onclick="buyFrame('${frame.id}', ${frame.price}, '${frame.name}', '${frame.img}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 rounded-lg transition active:scale-95">BUY NOW</button>
+                </div>`;
+            });
+
+            const modal = document.getElementById('store-modal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
         };
 
-        window.applyVIPName = async (vipClass) => {
-            await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: vipClass }); 
-            if(currentRoomId) {
-                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`));
-                if(seatsSnap.exists()) {
-                    const seats = seatsSnap.val();
-                    Object.keys(seats).forEach(async (k) => {
-                        if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { nameColorClass: vipClass }); }
-                    });
-                }
+        window.closeStoreModal = () => {
+            const modal = document.getElementById('store-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        };
+
+        window.buyFrame = async (frameId, price, name, imgPath) => {
+            if (currentCoins < price) {
+                return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'top', showConfirmButton:false, timer:1500});
             }
-            Swal.fire({toast:true, icon:'success', title:'VIP Name Equipped!', position:'top-end', showConfirmButton:false, timer:1500});
-            openPropHouse();
+
+            Swal.fire({
+                title: 'Confirm Purchase',
+                text: `Buy ${name} for ${price.toLocaleString()} coins?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                background: '#111',
+                color: '#fff'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'Purchasing...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
+                    
+                    currentCoins -= price;
+                    
+                    const uniquePurchaseId = frameId + '_' + Date.now();
+                    const frameData = {
+                        name: name,
+                        img: imgPath,
+                        purchasedAt: Date.now(),
+                        activatedAt: null, 
+                        expiry: null,
+                        status: 'unused'
+                    };
+
+                    await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
+                    await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${uniquePurchaseId}`), frameData);
+
+                    document.getElementById('store-coins-display').innerText = currentCoins.toLocaleString();
+                    if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
+                    
+                    Swal.fire({icon: 'success', title: 'Purchased!', text: 'Frame added to your Prop Warehouse.', background: '#111', color: '#fff'});
+                }
+            });
         };
 
+        window.openPropHouse = async () => {
+            const grid = document.getElementById('frame-grid');
+            grid.innerHTML = '<div class="text-white text-center w-full mt-10 col-span-2">Loading Warehouse...</div>';
+            
+            const snap = await get(ref(db, `users/${currentUser.uid}`));
+            const userData = snap.val() || {};
+            const currentEquipped = userData.currentFrame;
+            const unlockedFrames = userData.unlockedFrames || {};
+            
+            let htmlContent = '';
+            let hasFrames = false;
+
+            for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                hasFrames = true;
+                let isEquipped = (currentEquipped === frameData.img);
+                let btnText, btnClass, btnAction, statusText;
+
+                if (frameData.status === 'unused') {
+                    btnText = "USE (Starts 7 Days)";
+                    btnClass = "bg-green-600";
+                    btnAction = `applyFrame('${purchaseId}', '${frameData.img}')`;
+                    statusText = `<span class="text-green-400 text-[9px] font-bold">UNUSED</span>`;
+                } else if (frameData.expiry > Date.now()) {
+                    let daysLeft = Math.max(1, Math.ceil((frameData.expiry - Date.now()) / (1000 * 60 * 60 * 24)));
+                    statusText = `<span class="text-yellow-400 text-[9px] font-bold">${daysLeft} Days Left</span>`;
+                    
+                    if (isEquipped) {
+                        btnText = "UNEQUIP (Remove)";
+                        btnClass = "bg-red-600";
+                        btnAction = "unequipFrame()";
+                    } else {
+                        btnText = "EQUIP";
+                        btnClass = "bg-blue-600";
+                        btnAction = `equipActiveFrame('${frameData.img}')`;
+                    }
+                } else {
+                    // Expired
+                    statusText = `<span class="text-red-500 text-[9px] font-bold">EXPIRED</span>`;
+                    btnText = "DELETE";
+                    btnClass = "bg-gray-600";
+                    btnAction = `deleteExpiredFrame('${purchaseId}', ${isEquipped})`;
+                }
+
+                htmlContent += `
+                <div class="bg-gray-900 border ${isEquipped ? 'border-green-500' : 'border-gray-700'} rounded-xl p-4 flex flex-col items-center relative shadow-lg">
+                    ${isEquipped ? '<div class="absolute top-2 left-2 w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></div>' : ''}
+                    <div class="w-20 h-20 relative mb-2 flex items-center justify-center">
+                        <img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover">
+                        <img src="${frameData.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">
+                    </div>
+                    <span class="text-white font-bold text-xs text-center truncate w-full">${frameData.name}</span>
+                    <div class="mb-3 mt-1">${statusText}</div>
+                    <button onclick="${btnAction}" class="w-full ${btnClass} text-white font-bold text-[10px] py-2 rounded-lg transition active:scale-95 uppercase">${btnText}</button>
+                </div>`;
+            }
+
+            if (!hasFrames) {
+                grid.innerHTML = '<div class="text-gray-500 text-center w-full mt-10 col-span-2 text-sm">Your warehouse is empty.<br>Go to Store to buy frames.</div>';
+            } else {
+                grid.innerHTML = htmlContent;
+            }
+            
+            const modal = document.getElementById('prophouse-modal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+        };
+
+        window.closePropHouse = () => {
+            const modal = document.getElementById('prophouse-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        };
+
+        // جب فریم پہلی بار استعمال ہو (7 دن کا ٹائم شروع)
+        window.applyFrame = async (purchaseId, imgPath) => {
+            const expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 Days
+            
+            await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
+                activatedAt: Date.now(),
+                expiry: expiryTime,
+                status: 'active'
+            });
+
+            await equipActiveFrame(imgPath);
+            Swal.fire({toast:true, icon:'success', title:'7-Day Timer Started!', position:'top-end', showConfirmButton:false, timer:2000});
+        };
+
+        // ٹائم شروع ہونے کے بعد صرف پہننے (Equip) کے لیے
+        // فریم پہننے (USE) کے لیے
+        window.equipActiveFrame = async (imgPath) => {
+            await update(ref(db, `users/${currentUser.uid}`), { currentFrame: imgPath }); 
+            
+            if(currentRoomId) { 
+                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); 
+                if(seatsSnap.exists()) { 
+                    const seats = seatsSnap.val(); 
+                    Object.keys(seats).forEach(async (k) => { 
+                        if(seats[k].uid === currentUser.uid) { 
+                            await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: imgPath }); 
+                        } 
+                    }); 
+                } 
+            } 
+            window.openPropHouse(); // پیج ریفریش کرے گا
+            Swal.fire({toast:true, icon:'success', title:'Frame Equipped!', position:'top', showConfirmButton:false, timer:1500});
+        };
+
+        // فریم ہٹانے (UNEQUIP / UNUSE) کے لیے
+        window.unequipFrame = async () => { 
+            await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null }); 
+            if(currentRoomId) { 
+                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); 
+                if(seatsSnap.exists()) { 
+                    const seats = seatsSnap.val(); 
+                    Object.keys(seats).forEach(async (k) => { 
+                        if(seats[k].uid === currentUser.uid) { 
+                            await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: null }); 
+                        } 
+                    }); 
+                } 
+            } 
+            window.openPropHouse(); // پیج ریفریش کرے گا
+            Swal.fire({toast:true, icon:'info', title:'Frame Removed', position:'top', showConfirmButton:false, timer:1500}); 
+        };
+
+        // Expire ہونے کے بعد ڈیلیٹ کرنے کے لیے
+        window.deleteExpiredFrame = async (purchaseId, wasEquipped) => {
+            if (wasEquipped) {
+                await unequipFrame();
+            }
+            await remove(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`));
+            window.openPropHouse();
+        };
+        // ================= END NEW STORE & WAREHOUSE SYSTEM =================
         window.removeVIPName = async () => {
             await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: null });
             if(currentRoomId) {
@@ -3180,9 +3810,16 @@ results.forEach(d => {
             openPropHouse();
         };
 
-        window.closePropHouse = () => document.getElementById('prophouse-modal').classList.remove('open');
-        window.applyFrame = async (furl) => { await update(ref(db, `users/${currentUser.uid}`), { currentFrame: furl }); if(currentRoomId) { const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); if(seatsSnap.exists()) { const seats = seatsSnap.val(); Object.keys(seats).forEach(async (k) => { if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: furl }); } }); } } window.openPropHouse(); loadData(); Swal.fire({toast:true, icon:'success', title:'Frame Applied!', position:'top-end', showConfirmButton:false, timer:1500}); };
-        window.removeFrame = async () => { await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null }); if(currentRoomId) { const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); if(seatsSnap.exists()) { const seats = seatsSnap.val(); Object.keys(seats).forEach(async (k) => { if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: null }); } }); } } window.openPropHouse(); loadData(); Swal.fire({toast:true, icon:'info', title:'Frame Removed', position:'top-end', showConfirmButton:false, timer:1500}); };
+        window.closePropHouse = () => {
+    const modal = document.getElementById('prophouse-modal');
+    if(modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+    }
+};
+        
+        
 
     // ================= گیلری سے تصویر اپلوڈ کرنے کا لاجک =================
         window.triggerImageUpload = () => {
@@ -3238,13 +3875,15 @@ results.forEach(d => {
             document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
             
             // FRAME FIX: Reset display properties safely
+         // FPV TOP DP FRAME FIX
             const frameImg = document.getElementById('fpv-frame');
-            if(d.currentFrame && d.currentFrame !== "") {
+            if(d.currentFrame && d.currentFrame.trim() !== "") {
                 frameImg.src = d.currentFrame;
-                frameImg.style.display = 'block'; // Make sure it shows if onerror hid it before
                 frameImg.classList.remove('hidden');
+                frameImg.style.display = 'block';
             } else {
                 frameImg.classList.add('hidden');
+                frameImg.style.display = 'none';
                 frameImg.src = "";
             }
 
@@ -3299,7 +3938,7 @@ results.forEach(d => {
             document.getElementById('fpv-followers').innerText = followersCount;
 
             // Render Grids
-            renderFPVFrames(d.currentFrame);
+            renderFPVFrames(d.currentFrame, d.unlockedFrames);
             renderFPVMedals(lvl);
             
             // Intimacy / CP Setup
@@ -3546,40 +4185,73 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
     }
 };
         // ================= OTHER PROFILE RENDERERS =================
-        function renderFPVFrames(currentEquipped) {
+        // نیا Frames فنکشن (Grid اور Use بٹن کے ساتھ)
+        // ================= NEW GRID RENDERERS =================
+        function renderFPVFrames(currentEquipped, unlockedFrames) {
             const list = document.getElementById('fpv-frames-list');
             list.innerHTML = '';
-            for(let i=1; i<=4; i++) {
-                let framePath = `./frames/frame_${i}.png`;
-                let isUsing = currentEquipped && currentEquipped.includes(framePath);
-                
-                let btnClass = isUsing ? 'bg-gray-600 text-white border border-transparent' : 'bg-purple-600 text-white border border-transparent';
-                let btnText = isUsing ? '✓ Remove' : 'Use';
-                let btnAction = isUsing ? `removeFrame()` : `applyFrame('${framePath}')`;
-                
-                list.innerHTML += `<div class="flex flex-col items-center min-w-[75px]">
-                    <img src="${framePath}" class="h-16 object-contain mb-1 drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Frame'">
-                    <button class="text-[10px] rounded-full px-4 py-0.5 font-bold transition mt-2 ${btnClass}" onclick="${btnAction}">${btnText}</button>
-                </div>`;
+            
+            let hasActiveFrames = false;
+            let htmlContent = '';
+
+            if (unlockedFrames) {
+                let now = Date.now();
+                for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                    // Show only Active frames (timer started) that are not expired
+                    if (frameData.status === 'active' && frameData.expiry > now) {
+                        hasActiveFrames = true;
+                        let isEquipped = (currentEquipped === frameData.img);
+                        let daysLeft = Math.max(1, Math.ceil((frameData.expiry - now) / (1000 * 60 * 60 * 24)));
+                        
+                        let btnHtml = isEquipped 
+                            ? `<button class="w-[70px] text-[9px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-md tracking-widest uppercase">EQUIPPED</button>`
+                            : `<button class="w-[60px] text-[10px] bg-[#7c3aed] text-white py-1 rounded-full font-bold shadow-md hover:bg-purple-700 transition" onclick="equipActiveFrame('${frameData.img}')">Use</button>`;
+
+                        htmlContent += `
+                        <div class="flex flex-col items-center justify-start mb-2">
+                            <div class="w-[70px] h-[70px] relative flex items-center justify-center mb-1">
+                                <img src="${frameData.img}" class="w-full h-full object-contain drop-shadow-md" onerror="this.style.display='none'">
+                            </div>
+                            <span class="text-[10px] text-gray-500 font-medium mb-1.5">${daysLeft} days</span>
+                            ${btnHtml}
+                        </div>`;
+                    }
+                }
+            }
+
+            if (hasActiveFrames) {
+                list.className = "grid grid-cols-4 gap-y-5 gap-x-2 w-full"; // Grid Layout Apply
+                list.innerHTML = htmlContent;
+            } else {
+                list.className = "w-full flex justify-center py-2";
+                list.innerHTML = `<span class="text-xs text-gray-400 font-medium bg-gray-50 px-4 py-2 rounded-lg">No active frames</span>`;
             }
         }
 
         function renderFPVMedals(currentLvl) {
             const list = document.getElementById('fpv-medals-list');
+            list.className = "grid grid-cols-4 gap-y-5 gap-x-2 w-full"; // Grid Layout Apply
             list.innerHTML = '';
-            let milestones =[10, 20, 30, 40];
+            
+            let milestones =[10, 20, 30, 40, 50, 60, 70, 80]; 
+            let htmlContent = '';
+            
             milestones.forEach(m => {
                 let medalImg = getMedalImage(m);
                 let title = `Lv.${m} Title`;
                 let opacity = currentLvl >= m ? 'opacity-100' : 'opacity-40 grayscale';
                 
-                list.innerHTML += `<div class="flex flex-col items-center min-w-[75px] ${opacity}">
-                    <img src="${medalImg}" class="h-16 object-contain mb-1 drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Medal'">
-                    <span class="text-[10px] text-gray-700 font-bold text-center w-full truncate">${title}</span>
+                htmlContent += `
+                <div class="flex flex-col items-center ${opacity}">
+                    <div class="w-[65px] h-[65px] rounded-[16px] flex items-center justify-center mb-1.5 shadow-sm border border-gray-100" style="background: radial-gradient(circle, #ffffff 0%, #f3f4f6 100%);">
+                        <img src="${medalImg}" class="w-12 h-12 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Medal'">
+                    </div>
+                    <span class="text-[9px] text-gray-600 font-bold text-center w-full truncate">${title}</span>
                 </div>`;
             });
+            
+            list.innerHTML = htmlContent;
         }
-
         // ================= EDIT PROFILE SCREEN LOGIC =================
         window.openEditProfileScreen = async () => {
             const view = document.getElementById('edit-profile-view');
@@ -3676,7 +4348,50 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
         window.minimizeRoom = () => { closeExitMenu(); document.getElementById('floating-room-btn').style.display = 'flex'; document.getElementById('view-room').style.display = 'none'; document.getElementById('view-room').classList.remove('view-active'); document.getElementById('view-home').style.display = 'flex'; document.getElementById('view-home').classList.add('view-active'); document.getElementById('app-header').style.display = 'flex'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('bottom-nav').classList.add('flex'); if(currentRoomId) { if(currentRoomData && currentRoomData.roomCover) { document.getElementById('float-btn-img').src = currentRoomData.roomCover; } else { document.getElementById('float-btn-img').src = `https://ui-avatars.com/api/?name=${currentRoomData?.roomName || 'Room'}`; } } }
         window.restoreRoom = () => { document.getElementById('floating-room-btn').style.display='none'; switchTab('view-room'); };
         
-        window.leaveRoomFull = () => { closeExitMenu(); document.getElementById('rocket-details-modal').style.display='none'; document.getElementById('rocket-fly-layer').style.display='none'; currentRoomExp = 0; lastRocketLevel = 0; document.getElementById('floating-room-btn').style.display = 'none'; document.getElementById('view-room').style.display = 'none'; document.getElementById('view-room').classList.remove('view-active'); switchTab('view-home', document.querySelector('#btn-home')); localStorage.removeItem('lastRoomId'); if(currentRoomId) { const userRef = ref(db, `rooms/${currentRoomId}/activeUsers/${currentUser.uid}`); onDisconnect(userRef).cancel(); remove(userRef); if(currentRoomSeats) { Object.entries(currentRoomSeats).forEach(([key, val]) => { if(val && val.uid === currentUser.uid) { const sRef = ref(db, `rooms/${currentRoomId}/seats/${key}`); onDisconnect(sRef).cancel(); remove(sRef); } }); } if(currentRoomId === currentUser.uid) { update(ref(db, `rooms/${currentRoomId}`), {isLive:false}); } } currentRoomId = null; currentRoomData = null; document.getElementById('video-iframe').src = ""; document.getElementById('local-video-player').classList.add('hidden'); }
+        // ================= اپڈیٹڈ لیو روم فنکشن =================
+window.leaveRoomFull = () => { 
+    closeExitMenu(); 
+    document.getElementById('rocket-details-modal').style.display='none'; 
+    document.getElementById('rocket-fly-layer').style.display='none'; 
+    currentRoomExp = 0; 
+    lastRocketLevel = 0; 
+    document.getElementById('floating-room-btn').style.display = 'none'; 
+    document.getElementById('view-room').style.display = 'none'; 
+    document.getElementById('view-room').classList.remove('view-active'); 
+    switchTab('view-home', document.querySelector('#btn-home')); 
+    localStorage.removeItem('lastRoomId'); 
+    
+    // ========== نیا: ویب آرٹی سی صاف کریں ==========
+    if (typeof cleanupWebRTC === 'function') {
+        cleanupWebRTC();
+    }
+    
+    if(currentRoomId) { 
+        const userRef = ref(db, `rooms/${currentRoomId}/activeUsers/${currentUser.uid}`); 
+        onDisconnect(userRef).cancel(); 
+        remove(userRef); 
+        
+        // کالز بھی صاف کریں
+        remove(ref(db, `calls/${currentUser.uid}`));
+        
+        if(currentRoomSeats) { 
+            Object.entries(currentRoomSeats).forEach(([key, val]) => { 
+                if(val && val.uid === currentUser.uid) { 
+                    const sRef = ref(db, `rooms/${currentRoomId}/seats/${key}`); 
+                    onDisconnect(sRef).cancel(); 
+                    remove(sRef); 
+                } 
+            }); 
+        } 
+        if(currentRoomId === currentUser.uid) { 
+            update(ref(db, `rooms/${currentRoomId}`), {isLive:false}); 
+        } 
+    } 
+    currentRoomId = null; 
+    currentRoomData = null; 
+    document.getElementById('video-iframe').src = ""; 
+    document.getElementById('local-video-player').classList.add('hidden'); 
+}
 
         window.switchTab = (vid, el) => { const views = document.querySelectorAll('.view-section'); views.forEach(v => { v.style.display = 'none'; v.classList.remove('view-active'); }); if(vid !== 'view-room' && currentRoomId) { document.getElementById('floating-room-btn').style.display='flex'; } else { document.getElementById('floating-room-btn').style.display='none'; } const targetView = document.getElementById(vid); if (targetView) { targetView.style.display = 'flex'; targetView.classList.add('view-active'); } if (vid === 'view-room') { document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden'); } else { document.getElementById('app-header').style.display = 'flex'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('header-home-content').classList.add('hidden'); document.getElementById('header-inbox-content').classList.add('hidden'); document.getElementById('header-profile-content').classList.add('hidden'); if (vid === 'view-home') { document.getElementById('header-home-content').classList.remove('hidden'); } else if (vid === 'view-inbox') { document.getElementById('header-inbox-content').classList.remove('hidden'); } else if (vid === 'view-profile') { document.getElementById('header-profile-content').classList.remove('hidden'); } } if(el){ document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); el.classList.add('active'); } };
 
@@ -3779,6 +4494,19 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             
             const d = snap.val(); 
             document.getElementById('fp-image').src = d.photoURL || 'https://placehold.co/100'; 
+            
+            // FPV FRAME LOGIC
+            const fpFrame = document.getElementById('fp-frame');
+            if (d.currentFrame) {
+                fpFrame.src = d.currentFrame;
+                fpFrame.classList.remove('hidden');
+                fpFrame.style.display = 'block';
+            } else {
+                fpFrame.src = "";
+                fpFrame.classList.add('hidden');
+                fpFrame.style.display = 'none';
+            }
+            
             document.getElementById('fp-name').innerText = d.username; 
             document.getElementById('fp-id').innerText = d.customId; 
             document.getElementById('fp-bio').innerText = d.bio || "No bio available."; 
@@ -4695,167 +5423,1444 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                 padding: '20px'
             });
         };
+         // ================= CP STAR RANKING FUNCTIONS (COMPLETE FIXED VERSION) =================
+        let currentCPTab = 'ranking';
 
-        // ================= NEW: CP STAR RANKING LOGIC =================
-        window.openCPRankingModal = () => {
-            const modal = document.getElementById('cp-ranking-modal');
+        // CP Modal Open/Close Functions
+        window.openCPRankingModal = function() {
+            console.log("Opening CP Ranking Modal...");
+            var modal = document.getElementById('cp-ranking-modal');
+            if (!modal) {
+                console.error("Modal not found!");
+                return;
+            }
+            
             modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('translate-y-full'); }, 10);
+            modal.style.display = 'flex';
+            
+            setTimeout(function() { 
+                modal.classList.remove('translate-y-full'); 
+            }, 10);
+            startCPCountdown();
+            // Reset to ranking tab
+            currentCPTab = 'ranking';
+            
+            var tabRanking = document.getElementById('cp-tab-ranking');
+            var tabRewards = document.getElementById('cp-tab-rewards');
+            var tabWeekly = document.getElementById('cp-tab-weekly');
+            
+            if (tabRanking) tabRanking.classList.add('active');
+            if (tabRewards) tabRewards.classList.remove('active');
+            if (tabWeekly) tabWeekly.classList.remove('active');
+            
+            var titleEl = document.getElementById('cp-list-title');
+            if (titleEl) titleEl.innerText = 'This Week Ranking';
+            
             loadCPRankingData();
         };
 
-        window.closeCPRankingModal = () => {
-            const modal = document.getElementById('cp-ranking-modal');
+        window.closeCPRankingModal = function() {
+            console.log("Closing CP Ranking Modal...");
+            var modal = document.getElementById('cp-ranking-modal');
+            if (!modal) return;
+            
             modal.classList.add('translate-y-full');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            setTimeout(function() { 
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }, 300);
         };
 
-        async function loadCPRankingData() {
-            const listContainer = document.getElementById('cp-ranking-list');
-            if (listContainer) listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse">Loading Real Rankings...</div>';
+ // Tab Switching Function
+window.switchCPTab = function(tab) {
+    currentCPTab = tab;
+    
+    document.getElementById('cp-tab-ranking').classList.remove('active');
+    document.getElementById('cp-tab-rewards').classList.remove('active');
+    document.getElementById('cp-tab-weekly').classList.remove('active');
+    
+    document.getElementById('cp-tab-' + tab).classList.add('active');
+    
+    var titleMap = {
+        'ranking': 'This Week Ranking',
+        'rewards': '🏆 Ranking Rewards',
+        'weekly': '🎁 Weekly Reward'
+    };
+    document.getElementById('cp-list-title').innerText = titleMap[tab];
+    
+    if (tab === 'ranking') {
+        loadCPRankingData();
+    } else if (tab === 'rewards') {
+        loadCPRewardsData();           // یہ اب موجود ہے
+    } else if (tab === 'weekly') {
+        loadCPWeeklyComingSoon();      // یہ درست ہے
+    }
+};
+        
+// ================= RANKING REWARDS - EXACTLY LIKE YOUR SCREENSHOT =================
+window.loadCPRewardsData = function() {
+    console.log("Loading Ranking Rewards Cards...");
+    var listContainer = document.getElementById('cp-ranking-list');
+    if (!listContainer) return;
 
-            try {
-                // 1. موجودہ ہفتہ (Current Week) نکالنے کا فارمولا (پاکستانی وقت کے مطابق)
-                let now = new Date();
-                let pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
-                if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
-                let dateStr = pktTime.toISOString().split('T')[0];
-                let currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
-
-                const usersSnap = await get(ref(db, 'users'));
-                if(!usersSnap.exists()) return;
-
-                let couplesMap = new Map();
-
-                // 2. Firebase سے وہ یوزرز نکالیں جن کا CP بنا ہوا ہے
-                usersSnap.forEach(snap => {
-                    let u = snap.val();
-                    if(u.cp && u.cp.partnerUid) {
-                        // کپل کی ایک یونیک ID بنائیں تاکہ ایک جوڑا دو بار شو نہ ہو
-                        let pairKey = [u.uid, u.cp.partnerUid].sort().join('_');
-                        
-                        if(!couplesMap.has(pairKey)) {
-                            // WEEKLY CHECK: اگر گفٹ اس ہفتے کا ہے تو شامل ہوں گے ورنہ زیرو
-                            let weeklyGifts = 0;
-                            if (u.cp.lastCpWeek === currentWeekStr) {
-                                weeklyGifts = u.cp.cpGiftAmount_weekly || 0;
-                            }
-                            
-                            // آپ کی شرط: 3000 گفٹ پر 1 پوائنٹ (صرف اس ہفتے کے گفٹس پر)
-                            let points = Math.floor(weeklyGifts / 3000);
-                            
-                            // صرف وہ کپل شو ہوں گے جنہوں نے اس ہفتے گفٹنگ کی ہے (Points > 0)
-                            if (points > 0) {
-                                couplesMap.set(pairKey, {
-                                    u1Name: u.username,
-                                    u1Pic: u.photoURL,
-                                    u2Name: u.cp.partnerName,
-                                    u2Pic: u.cp.partnerPic,
-                                    points: points
-                                });
-                            }
-                        }
-                    }
-                });
-
-                let couplesArr = Array.from(couplesMap.values());
-                // جس کے پوائنٹس زیادہ ہیں وہ ٹاپ پر آئے گا
-                couplesArr.sort((a, b) => b.points - a.points);
-
-                // 3. ہوم سکرین کا کارڈ اپڈیٹ کریں (تصویریں اور نام)
-                const homeEmpty = document.getElementById('cp-home-empty');
-                const homeTop1 = document.getElementById('cp-home-top1');
+    var html = `
+        <!-- ===== TOP 1 REWARD CARD ===== -->
+        <div class="relative p-5 rounded-2xl mb-4 shadow-lg border-2 border-yellow-400 overflow-hidden" style="background: linear-gradient(145deg, #2a1b3c, #1a0f2a);">
+            <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-yellow-600 px-6 py-1 rounded-full border-2 border-white shadow-lg z-20">
+                <span class="text-black font-black text-sm tracking-wider">🏆 TOP 1</span>
+            </div>
+            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-yellow-400/50 z-20">
+                <span class="text-yellow-400 text-[10px] font-bold"><i class="fa-regular fa-calendar-check mr-1"></i>x7 days</span>
+            </div>
+            
+            <div class="flex items-center justify-between mt-6">
+                <!-- Coins Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="w-16 h-16 rounded-full bg-[#1f1a2a] flex items-center justify-center shadow-lg border border-yellow-400/30 mb-2">
+                        <img src="./coin_icon.png" class="w-10 h-10 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/50?text=Coin'">
+                    </div>
+                    <span class="text-yellow-400 font-black text-lg">100,000</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Coins</span>
+                </div>
                 
-                if(couplesArr.length > 0) {
-                    let top1 = couplesArr[0];
-                    if (document.getElementById('cp-banner-main')) document.getElementById('cp-banner-main').src = top1.u1Pic || 'https://ui-avatars.com/api/?name=?';
-                    if (document.getElementById('cp-banner-partner')) document.getElementById('cp-banner-partner').src = top1.u2Pic || 'https://ui-avatars.com/api/?name=?';
-                    
-                    // تصویر کے نیچے نام شو کروانا
-                    if (document.getElementById('cp-banner-main-name')) document.getElementById('cp-banner-main-name').innerText = top1.u1Name;
-                    if (document.getElementById('cp-banner-partner-name')) document.getElementById('cp-banner-partner-name').innerText = top1.u2Name;
-                    
-                    if(homeEmpty) homeEmpty.classList.add('hidden');
-                    if(homeTop1) { homeTop1.classList.remove('hidden'); homeTop1.classList.add('flex'); }
-                } else {
-                    if(homeEmpty) homeEmpty.classList.remove('hidden');
-                    if(homeTop1) { homeTop1.classList.add('hidden'); homeTop1.classList.remove('flex'); }
-                }
-
-                // 4. Modal (Full View) کے اندر لسٹ پرنٹ کریں
-                if (!listContainer) return;
-                listContainer.innerHTML = '';
-
-                if(couplesArr.length === 0) {
-                    listContainer.innerHTML = '<p class="text-center text-gray-400 mt-20">No CP Rankings this week. Start gifting!</p>';
-                    return;
-                }
-
-                couplesArr.forEach((couple, index) => {
-                    let rank = index + 1;
-                    
-                    // TOP 1, 2, 3 کے لیے خوبصورت PNG بیک گراؤنڈز کی سیٹنگ
-                    let bgImage = "";
-                    let borderClass = "border-white/10 bg-white/5 backdrop-blur-sm"; // Normal Ranks (4+)
-                    let rankTextClass = "text-gray-400 text-xl";
-
-                    if (rank === 1) {
-                        bgImage = "url('./cp_top1_bg.png')";
-                        borderClass = "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]";
-                        rankTextClass = "text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,1)]";
-                    } else if (rank === 2) {
-                        bgImage = "url('./cp_top2_bg.png')";
-                        borderClass = "border-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.5)]";
-                        rankTextClass = "text-gray-300 text-2xl drop-shadow-[0_0_8px_rgba(209,213,219,1)]";
-                    } else if (rank === 3) {
-                        bgImage = "url('./cp_top3_bg.png')";
-                        borderClass = "border-orange-400 shadow-[0_0_15px_rgba(251,146,60,0.5)]";
-                        rankTextClass = "text-orange-400 text-2xl drop-shadow-[0_0_8px_rgba(251,146,60,1)]";
-                    }
-
-                    let html = `
-                    <div class="relative p-4 rounded-2xl mb-3 flex items-center shadow-lg border ${borderClass} bg-cover bg-center" style="background-image: ${bgImage};">
-                        
-                        <!-- اگر PNG زیادہ شوخ ہے تو ڈارک اوورلے (صرف Top 1-3 کے لیے) -->
-                        ${rank <= 3 ? '<div class="absolute inset-0 bg-black/40 rounded-2xl z-0"></div>' : ''}
-                        
-                        <div class="relative z-10 flex w-full items-center">
-                            <!-- Rank Number -->
-                            <div class="w-10 font-black italic ${rankTextClass}">${rank}</div>
-                            
-                            <!-- Main User, Heart, Partner -->
-                            <div class="flex-1 flex items-center justify-center gap-2">
-                                <div class="flex flex-col items-center">
-                                    <img src="${couple.u1Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md">
-                                    <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">${couple.u1Name}</span>
-                                </div>
-
-                                <div class="flex flex-col items-center justify-center -mt-3">
-                                    <!-- FINAL HEART NAME -->
-                                    <img src="./cp_heart_final.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
-                                </div>
-
-                                <div class="flex flex-col items-center">
-                                    <img src="${couple.u2Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md">
-                                    <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">${couple.u2Name}</span>
-                                </div>
-                            </div>
-
-                            <!-- Points Display -->
-                            <div class="flex flex-col items-end justify-center w-16">
-                                <span class="text-yellow-300 font-black text-base drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">${couple.points.toLocaleString()}</span>
-                                <span class="text-gray-300 text-[9px] uppercase tracking-widest font-bold">Pts</span>
-                            </div>
+                <div class="flex items-center justify-center px-2">
+                    <i class="fa-solid fa-plus text-3xl text-white/60 drop-shadow-lg"></i>
+                </div>
+                
+                <!-- Frame Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="relative w-16 h-16 mb-2">
+                        <div class="w-16 h-16 rounded-full border border-yellow-400/50 overflow-hidden bg-[#1f1a2a] shadow-lg flex items-center justify-center">
+                            <img src="./frame_gold.png" class="w-14 h-14 object-contain z-10 drop-shadow-lg" onerror="this.src='https://placehold.co/50?text=Gold'">
                         </div>
-                    </div>`;
-                    
-                    listContainer.innerHTML += html;
+                    </div>
+                    <span class="text-white font-bold text-xs text-center">Gold CP</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Frame</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== TOP 2 REWARD CARD ===== -->
+        <div class="relative p-5 rounded-2xl mb-4 shadow-lg border-2 border-gray-400 overflow-hidden" style="background: linear-gradient(145deg, #252525, #151515);">
+            <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-400 to-gray-600 px-6 py-1 rounded-full border-2 border-white shadow-lg z-20">
+                <span class="text-white font-black text-sm tracking-wider">🥈 TOP 2</span>
+            </div>
+            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-400/50 z-20">
+                <span class="text-gray-300 text-[10px] font-bold"><i class="fa-regular fa-calendar-check mr-1"></i>x7 days</span>
+            </div>
+            
+            <div class="flex items-center justify-between mt-6">
+                <!-- Coins Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="w-16 h-16 rounded-full bg-[#1a1a1a] flex items-center justify-center shadow-lg border border-gray-400/30 mb-2">
+                        <img src="./coin_icon.png" class="w-10 h-10 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/50?text=Coin'">
+                    </div>
+                    <span class="text-gray-300 font-black text-lg">50,000</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Coins</span>
+                </div>
+                
+                <div class="flex items-center justify-center px-2">
+                    <i class="fa-solid fa-plus text-3xl text-white/60 drop-shadow-lg"></i>
+                </div>
+                
+                <!-- Frame Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="relative w-16 h-16 mb-2">
+                        <div class="w-16 h-16 rounded-full border border-gray-400/50 overflow-hidden bg-[#1a1a1a] shadow-lg flex items-center justify-center">
+                            <img src="./frame_silver.png" class="w-14 h-14 object-contain z-10 drop-shadow-lg" onerror="this.src='https://placehold.co/50?text=Silver'">
+                        </div>
+                    </div>
+                    <span class="text-white font-bold text-xs text-center">Silver CP</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Frame</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== TOP 3 REWARD CARD ===== -->
+        <div class="relative p-5 rounded-2xl mb-4 shadow-lg border-2 border-orange-400 overflow-hidden" style="background: linear-gradient(145deg, #2a1f1a, #1a120e);">
+            <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-400 to-orange-600 px-6 py-1 rounded-full border-2 border-white shadow-lg z-20">
+                <span class="text-white font-black text-sm tracking-wider">🥉 TOP 3</span>
+            </div>
+            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-orange-400/50 z-20">
+                <span class="text-orange-300 text-[10px] font-bold"><i class="fa-regular fa-calendar-check mr-1"></i>x7 days</span>
+            </div>
+            
+            <div class="flex items-center justify-between mt-6">
+                <!-- Coins Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="w-16 h-16 rounded-full bg-[#1f1510] flex items-center justify-center shadow-lg border border-orange-400/30 mb-2">
+                        <img src="./coin_icon.png" class="w-10 h-10 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/50?text=Coin'">
+                    </div>
+                    <span class="text-orange-300 font-black text-lg">25,000</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Coins</span>
+                </div>
+                
+                <div class="flex items-center justify-center px-2">
+                    <i class="fa-solid fa-plus text-3xl text-white/60 drop-shadow-lg"></i>
+                </div>
+                
+                <!-- Frame Section -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="relative w-16 h-16 mb-2">
+                        <div class="w-16 h-16 rounded-full border border-orange-400/50 overflow-hidden bg-[#1f1510] shadow-lg flex items-center justify-center">
+                            <img src="./frame_bronze.png" class="w-14 h-14 object-contain z-10 drop-shadow-lg" onerror="this.src='https://placehold.co/50?text=Bronze'">
+                        </div>
+                    </div>
+                    <span class="text-white font-bold text-xs text-center">Bronze CP</span>
+                    <span class="text-white/60 text-[8px] uppercase tracking-wider">Frame</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== TOP 4-10 REWARD CARD ===== -->
+        <div class="relative p-5 rounded-2xl mb-4 shadow-lg border-2 border-purple-400/50 overflow-hidden" style="background: linear-gradient(145deg, #1f1a2a, #120e1a);">
+            <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-purple-800 px-5 py-1 rounded-full border border-purple-300 shadow-lg z-20">
+                <span class="text-white text-[10px] font-black tracking-wider">TOP 4 - 10</span>
+            </div>
+            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-purple-400/50 z-20">
+                <span class="text-purple-300 text-[10px] font-bold"><i class="fa-regular fa-calendar-check mr-1"></i>x7 days</span>
+            </div>
+            
+            <div class="flex items-center justify-center mt-6">
+                <!-- Frame Only (No Coins) -->
+                <div class="flex flex-col items-center">
+                    <div class="relative w-16 h-16 mb-2">
+                        <div class="w-16 h-16 rounded-full border border-purple-400/50 overflow-hidden bg-[#1a0f2a] shadow-lg flex items-center justify-center">
+                            <img src="./frame_purple.png" class="w-14 h-14 object-contain z-10 drop-shadow-lg" onerror="this.src='https://placehold.co/50?text=Purple'">
+                        </div>
+                    </div>
+                    <span class="text-white font-bold text-xs text-center">Purple Frame</span>
+                    <span class="text-purple-300 text-[8px] uppercase tracking-wider">(No Coins)</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    listContainer.innerHTML = html;
+};
+
+   
+    // ================= AUTO-REMOVE EXPIRED STORE FRAMES =================
+async function checkAndRemoveExpiredFrames() {
+    if (!currentUser) return;
+    
+    var userRef = ref(db, `users/${currentUser.uid}`);
+    var snap = await get(userRef);
+    var userData = snap.val() || {};
+    
+    if (userData.unlockedFrames) {
+        let now = Date.now();
+        let needsUpdate = false;
+        let isCurrentFrameExpired = false;
+
+        for (let[purchaseId, frame] of Object.entries(userData.unlockedFrames)) {
+            if (frame.status === 'active' && frame.expiry && now > frame.expiry) {
+                // Mark as expired in DB
+                await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
+                    status: 'expired'
                 });
-            } catch(e) { 
-                console.error(e); 
+                needsUpdate = true;
+
+                // If this specific frame is currently equipped, remove it from profile
+                if (userData.currentFrame === frame.img) {
+                    isCurrentFrameExpired = true;
+                }
             }
         }
 
+        if (isCurrentFrameExpired) {
+            await update(userRef, { currentFrame: null });
+            
+            // Remove from seat if sitting
+            if (currentRoomId) {
+                var seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`));
+                if (seatsSnap.exists()) {
+                    var seats = seatsSnap.val();
+                    for (var seat in seats) {
+                        if (seats[seat].uid === currentUser.uid) {
+                            await update(ref(db, `rooms/${currentRoomId}/seats/${seat}`), { frame: null });
+                            break;
+                        }
+                    }
+                }
+            }
+            console.log("An equipped frame expired and was automatically removed.");
+        }
+    }
+}
+
+// Check every hour
+setInterval(checkAndRemoveExpiredFrames, 60 * 60 * 1000);
+
+
+// ================= GIVE WEEKLY REWARDS TO TOP 10 COUPLES =================
+async function giveWeeklyRewardsToTop10() {
+    if (!currentUser) return;
+    
+    try {
+        // Get current week
+        var now = new Date();
+        var pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+        var dateStr = pktTime.toISOString().split('T')[0];
+        var currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+        
+        var usersSnap = await get(ref(db, 'users'));
+        var couples = [];
+        
+        // Collect all couples with their weekly gift points
+        usersSnap.forEach(function(snap) {
+            var u = snap.val();
+            if (u.cp && u.cp.partnerUid) {
+                var weeklyGifts = (u.cp.lastCpWeek === currentWeekStr) ? (u.cp.cpGiftAmount_weekly || 0) : 0;
+                if (weeklyGifts > 0) {
+                    couples.push({
+                        uid: u.uid,
+                        partnerUid: u.cp.partnerUid,
+                        points: Math.floor(weeklyGifts / 3000)
+                    });
+                }
+            }
+        });
+        
+        // Sort by points (highest first)
+        couples.sort(function(a, b) { return b.points - a.points; });
+        
+        // Give rewards to top 10 couples
+        for (var i = 0; i < Math.min(10, couples.length); i++) {
+            var rank = i + 1;
+            var couple = couples[i];
+            
+            // Give reward to both users in the couple
+            await giveFrameToUser(couple.uid, rank);
+            await giveFrameToUser(couple.partnerUid, rank);
+        }
+        
+        console.log("Weekly rewards given to top 10 couples!");
+        
+    } catch (error) {
+        console.error("Error giving weekly rewards:", error);
+    }
+}
+
+// Give frame to a single user based on rank (With Notification)
+async function giveFrameToUser(uid, rank) {
+    var userRef = ref(db, `users/${uid}`);
+    var userSnap = await get(userRef);
+    var userData = userSnap.val() || {};
+    
+    var coins = 0;
+    var frameFile = "";
+    var frameDisplayIcon = "";
+    
+    // ہم نے کسٹم نام جو اوپر دیے تھے وہی یہاں لگائے ہیں
+    if (rank === 1) {
+        coins = 100000;
+        frameFile = "./frame_gold.png";
+        frameDisplayIcon = "./frame_gold.png";
+    } else if (rank === 2) {
+        coins = 50000;
+        frameFile = "./frame_silver.png";
+        frameDisplayIcon = "./frame_silver.png";
+    } else if (rank === 3) {
+        coins = 25000;
+        frameFile = "./frame_bronze.png";
+        frameDisplayIcon = "./frame_bronze.png";
+    } else if (rank >= 4 && rank <= 10) {
+        coins = 0;
+        frameFile = "./frame_purple.png";
+        frameDisplayIcon = "./frame_purple.png";
+    }
+    
+    // Add coins
+    if (coins > 0) {
+        var currentCoins = userData.coins || 0;
+        await update(userRef, { coins: currentCoins + coins });
+    }
+    
+    // Add frame to Prop House (unlockedFrames) with 7 Days expiry
+    if (frameFile) {
+        var expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
+        
+        var unlockedFrames = userData.unlockedFrames || {};
+        unlockedFrames[frameFile] = {
+            img: frameFile,
+            expiry: expiryTime,
+            status: 'active', // Direct Prop House mein activate ho jayega 7 din ke liye
+            name: getFrameName(rank)
+        };
+        await update(userRef, { unlockedFrames: unlockedFrames });
+    }
+
+    // Official Inbox System Notification bhejna jisme HTML aur Icons shamil hain
+    let notifMessage = `<div style="text-align:center;">
+        <h3 style="color:#facc15; font-size:18px; font-weight:bold; margin-bottom:10px;">Congratulations!</h3>
+        <p style="color:#d1d5db; font-size:14px; margin-bottom:15px;">You ranked <b>TOP ${rank}</b> in CP Star this week.</p>`;
+    
+    if(coins > 0) {
+        notifMessage += `<div style="display:flex; align-items:center; justify-content:center; gap:8px; background:#1f2937; padding:8px; border-radius:8px; margin-bottom:10px; border:1px solid #facc15;">
+            <img src="./coin_icon.png" style="width:25px; height:25px; object-fit:contain;" onerror="this.src='https://placehold.co/25?text=C'"> 
+            <span style="font-size:16px; font-weight:bold; color:#facc15;">${coins.toLocaleString()} Coins</span>
+        </div>`;
+    }
+
+    notifMessage += `<div style="display:flex; align-items:center; justify-content:center; gap:8px; background:#1f2937; padding:8px; border-radius:8px; border:1px solid #c084fc;">
+        <img src="${frameDisplayIcon}" style="width:35px; height:35px; object-fit:contain;" onerror="this.src='https://placehold.co/35?text=F'"> 
+        <span style="font-size:14px; font-weight:bold; color:#e9d5ff;">${getFrameName(rank)} (7 Days)</span>
+    </div>
+    <p style="color:#9ca3af; font-size:12px; margin-top:15px;">Rewards have been added to your Wallet & Prop House.</p>
+    </div>`;
+
+    await set(ref(db, `users/${uid}/inbox/system/${Date.now()}`), {
+        fromName: 'YARAAN Official',
+        icon: './yaraan_dp.png',
+        message: notifMessage,
+        type: 'sys',
+        timestamp: Date.now()
+    });
+}
+
+// Get frame name based on rank
+function getFrameName(rank) {
+    if (rank === 1) return "Gold CP Frame";
+    if (rank === 2) return "Silver CP Frame";
+    if (rank === 3) return "Bronze CP Frame";
+    return "Purple CP Frame";
+}
+
+
+
+     // CP Ranking Data Loader - WITH VIP NAME COLORS FIXED
+async function loadCPRankingData() {
+    console.log("Loading CP Ranking Data...");
+    var listContainer = document.getElementById('cp-ranking-list');
+    if (!listContainer) {
+        console.error("cp-ranking-list not found!");
+        return;
+    }
+    
+    listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse">Loading Real Rankings...</div>';
+
+    try {
+        var now = new Date();
+        var pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+        if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
+        var dateStr = pktTime.toISOString().split('T')[0];
+        var currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+
+        console.log("Current Week:", currentWeekStr);
+        
+        var usersSnap = await get(ref(db, 'users'));
+        if(!usersSnap.exists()) {
+            listContainer.innerHTML = '<p class="text-center text-gray-400 mt-10">No users found.</p>';
+            return;
+        }
+
+        // پہلے تمام users کا ایک Map بنا لیں تاکہ partner data جلدی مل سکے
+        var allUsersMap = new Map();
+        usersSnap.forEach(function(snap) {
+            allUsersMap.set(snap.key, snap.val());
+        });
+
+        var couplesMap = new Map();
+        var couplesCount = 0;
+
+        usersSnap.forEach(function(snap) {
+            var u = snap.val();
+            u.uid = snap.key;
+            
+            if(u.cp && u.cp.partnerUid) {
+                var pairKey = [u.uid, u.cp.partnerUid].sort().join('_');
+                
+                if(!couplesMap.has(pairKey)) {
+                    var weeklyGifts = 0;
+                    if (u.cp.lastCpWeek === currentWeekStr) {
+                        weeklyGifts = u.cp.cpGiftAmount_weekly || 0;
+                    }
+                    
+                    var partnerName = u.cp.partnerName || 'Partner';
+                    var partnerPic = u.cp.partnerPic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(partnerName);
+                    
+                    // Partner data حاصل کریں
+                    var partnerData = allUsersMap.get(u.cp.partnerUid) || {};
+                    
+                    var points = Math.floor(weeklyGifts / 3000);
+                    
+                    console.log("Couple found: " + u.username + " & " + partnerName + ", Points: " + points);
+                    
+                    couplesMap.set(pairKey, {
+                        u1Uid: u.uid,
+                        u1Name: u.username || 'User',
+                        u1NameColor: u.nameColorClass || '',  // <-- یہ اہم ہے
+                        u1Pic: u.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username || 'User'),
+                        u2Uid: u.cp.partnerUid,
+                        u2Name: partnerName,
+                        u2NameColor: partnerData.nameColorClass || '',  // <-- یہ اہم ہے
+                        u2Pic: partnerPic,
+                        points: points
+                    });
+                    couplesCount++;
+                }
+            }
+        });
+
+        console.log("Total couples found: " + couplesCount);
+        
+        var couplesArr = Array.from(couplesMap.values());
+        couplesArr.sort(function(a, b) { return b.points - a.points; });
+
+        // Update home card
+        var homeEmpty = document.getElementById('cp-home-empty');
+        var homeTop1 = document.getElementById('cp-home-top1');
+        
+        if(couplesArr.length > 0) {
+            var top1 = couplesArr[0];
+            
+            var mainImg = document.getElementById('cp-banner-main');
+            var partnerImg = document.getElementById('cp-banner-partner');
+            var mainName = document.getElementById('cp-banner-main-name');
+            var partnerName = document.getElementById('cp-banner-partner-name');
+            
+            if(mainImg) mainImg.src = top1.u1Pic;
+            if(partnerImg) partnerImg.src = top1.u2Pic;
+            if(mainName) {
+                mainName.innerText = top1.u1Name;
+                // VIP color class لگائیں
+                if(top1.u1NameColor) {
+                    mainName.className = `text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md ${top1.u1NameColor}`;
+                } else {
+                    mainName.className = "text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md";
+                }
+            }
+            if(partnerName) {
+                partnerName.innerText = top1.u2Name;
+                // VIP color class لگائیں
+                if(top1.u2NameColor) {
+                    partnerName.className = `text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md ${top1.u2NameColor}`;
+                } else {
+                    partnerName.className = "text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md";
+                }
+            }
+            
+            if(homeEmpty) homeEmpty.classList.add('hidden');
+            if(homeTop1) { 
+                homeTop1.classList.remove('hidden'); 
+                homeTop1.classList.add('flex'); 
+            }
+        } else {
+            if(homeEmpty) homeEmpty.classList.remove('hidden');
+            if(homeTop1) { 
+                homeTop1.classList.add('hidden'); 
+                homeTop1.classList.remove('flex'); 
+            }
+        }
+
+        // Update Ferris wheel
+        for(var i = 1; i <= 5; i++) {
+            var u1Img = document.getElementById('fw-c' + i + '-u1');
+            var u2Img = document.getElementById('fw-c' + i + '-u2');
+            
+            if(u1Img && u2Img) {
+                if(couplesArr[i-1]) {
+                    var couple = couplesArr[i-1];
+                    u1Img.src = couple.u1Pic;
+                    u2Img.src = couple.u2Pic;
+                } else {
+                    u1Img.src = 'https://placehold.co/100x100?text=+';
+                    u2Img.src = 'https://placehold.co/100x100?text=+';
+                }
+            }
+        }
+
+        // Update ranking list
+        listContainer.innerHTML = '';
+
+        if(couplesArr.length === 0) {
+            listContainer.innerHTML = '<p class="text-center text-gray-400 mt-10">No CP Rankings this week. Start gifting!</p>';
+            return;
+        }
+
+        couplesArr.forEach(function(couple, index) {
+            var rank = index + 1;
+            
+            var bgImage = "";
+            var borderClass = "border-white/10 bg-white/5 backdrop-blur-sm"; 
+            var rankTextClass = "text-gray-400 text-xl";
+
+            if (rank === 1) {
+                bgImage = "url('./cp_top1_bg.png')";
+                borderClass = "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]";
+                rankTextClass = "text-yellow-400 text-3xl";
+            } else if (rank === 2) {
+                bgImage = "url('./cp_top2_bg.png')";
+                borderClass = "border-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.5)]";
+                rankTextClass = "text-gray-300 text-2xl";
+            } else if (rank === 3) {
+                bgImage = "url('./cp_top3_bg.png')";
+                borderClass = "border-orange-400 shadow-[0_0_15px_rgba(251,146,60,0.5)]";
+                rankTextClass = "text-orange-400 text-2xl";
+            }
+
+            // VIP color classes کے ساتھ HTML
+            var u1ColorClass = couple.u1NameColor ? couple.u1NameColor : '';
+            var u2ColorClass = couple.u2NameColor ? couple.u2NameColor : '';
+            
+            var html = `
+            <div class="relative p-4 rounded-2xl mb-3 flex items-center shadow-lg border ${borderClass} bg-cover bg-center" style="background-image: ${bgImage};">
+                
+                ${rank <= 3 ? '<div class="absolute inset-0 bg-black/40 rounded-2xl z-0"></div>' : ''}
+                
+                <div class="relative z-10 flex w-full items-center">
+                    <div class="w-10 font-black italic ${rankTextClass}">${rank}</div>
+                    
+                    <div class="flex-1 flex items-center justify-center gap-2">
+                        <div class="flex flex-col items-center">
+                            <img src="${couple.u1Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(couple.u1Name)}'">
+                            <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate ${u1ColorClass}">${couple.u1Name}</span>
+                        </div>
+
+                        <div class="flex flex-col items-center justify-center -mt-3">
+                            <img src="./cp_heart_final.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                            <img src="${couple.u2Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(couple.u2Name)}'">
+                            <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate ${u2ColorClass}">${couple.u2Name}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end justify-center w-16">
+                        <span class="text-yellow-300 font-black text-base">${couple.points.toLocaleString()}</span>
+                        <span class="text-gray-300 text-[9px] uppercase">Pts</span>
+                    </div>
+                </div>
+            </div>`;
+            
+            listContainer.innerHTML += html;
+        });
+        
+    } catch(e) { 
+        console.error("Error loading CP rankings:", e); 
+        listContainer.innerHTML = '<p class="text-center text-red-400 mt-10">Error loading rankings</p>';
+    }
+}
+// CP کاؤنٹ ڈاؤن ٹائمر شروع کرنے کا فنکشن
+// CP کاؤنٹ ڈاؤن ٹائمر شروع کرنے کا فنکشن (WITH WEEKLY REWARDS)
+function startCPCountdown() {
+    // اتوار صبح 5 بجے کا ٹارگٹ
+    function getNextSunday5AM() {
+        let now = new Date();
+        let pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+        
+        let day = pktTime.getDay(); // 0 = Sunday
+        let daysUntilSunday = (7 - day) % 7;
+        
+        let nextSunday = new Date(pktTime);
+        nextSunday.setDate(pktTime.getDate() + daysUntilSunday);
+        nextSunday.setHours(5, 0, 0, 0); // 5 AM
+        
+        if (day === 0 && pktTime.getHours() >= 5) {
+            nextSunday.setDate(nextSunday.getDate() + 7);
+        }
+        
+        return nextSunday;
+    }
+    
+    let targetDate = getNextSunday5AM();
+    
+    setInterval(function() {
+        let now = new Date();
+        let pktNow = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
+        
+        let diff = targetDate - pktNow;
+        
+        // ===== نیا حصہ - ہفتہ ختم ہونے پر ریوارڈ =====
+        if (diff <= 0) {
+            console.log("🎁 Week ended - Giving weekly rewards to top 10 couples!");
+            
+            // Give rewards to top 10 couples
+            if (typeof giveWeeklyRewardsToTop10 === 'function') {
+                giveWeeklyRewardsToTop10();
+            }
+            
+            // Reset for next week
+            targetDate = getNextSunday5AM();
+            diff = targetDate - pktNow;
+        }
+        // ============================================
+        
+        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('cp-days').innerText = days.toString().padStart(2, '0');
+        document.getElementById('cp-hrs').innerText = hours.toString().padStart(2, '0');
+        document.getElementById('cp-mins').innerText = minutes.toString().padStart(2, '0');
+        document.getElementById('cp-secs').innerText = seconds.toString().padStart(2, '0');
+        
+        if (document.getElementById('cp-days-weekly')) {
+            document.getElementById('cp-days-weekly').innerText = days.toString().padStart(2, '0');
+            document.getElementById('cp-hours-weekly').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('cp-mins-weekly').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('cp-secs-weekly').innerText = seconds.toString().padStart(2, '0');
+        }
+    }, 1000);
+}
+// CP Modal کھلتے ہی کاؤنٹ ڈاؤن شروع کر دیں
+window.openCPRankingModal = function() {
+    console.log("Opening CP Ranking Modal...");
+    var modal = document.getElementById('cp-ranking-modal');
+    if (!modal) {
+        console.error("Modal not found!");
+        return;
+    }
+    
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    
+    setTimeout(function() { 
+        modal.classList.remove('translate-y-full'); 
+    }, 10);
+    
+    // کاؤنٹ ڈاؤن شروع کریں
+    startCPCountdown();  // <-- یہ لائن شامل کریں
+    
+    currentCPTab = 'ranking';
+    
+    var tabRanking = document.getElementById('cp-tab-ranking');
+    var tabRewards = document.getElementById('cp-tab-rewards');
+    var tabWeekly = document.getElementById('cp-tab-weekly');
+    
+    if (tabRanking) tabRanking.classList.add('active');
+    if (tabRewards) tabRewards.classList.remove('active');
+    if (tabWeekly) tabWeekly.classList.remove('active');
+    
+    var titleEl = document.getElementById('cp-list-title');
+    if (titleEl) titleEl.innerText = 'This Week Ranking';
+    
+    loadCPRankingData();
+};
+
+let isCPVideoPlaying = false;
+
+window.toggleCPBackground = function() {
+    var bgDiv = document.getElementById('fpv-tab-intimacy');
+    var videoEl = document.getElementById('cp-bg-video');
+    var overlay = document.getElementById('cp-bg-overlay');
+    
+    if (!bgDiv || !videoEl) return;
+    
+    if (!isCPVideoPlaying) {
+        bgDiv.style.backgroundImage = 'none';
+        videoEl.classList.remove('hidden');
+        overlay.classList.add('hidden');
+        
+        videoEl.play().catch(e => {
+            console.log("Video play error:", e);
+            bgDiv.style.backgroundImage = "url('./cp_bg1.png')";
+            videoEl.classList.add('hidden');
+            overlay.classList.remove('hidden');
+        });
+        
+        isCPVideoPlaying = true;
+    } else {
+        videoEl.pause();
+        videoEl.classList.add('hidden');
+        bgDiv.style.backgroundImage = "url('./cp_bg1.png')";
+        overlay.classList.remove('hidden');
+        isCPVideoPlaying = false;
+    }
+};
+
+document.getElementById('cp-bg-video')?.addEventListener('ended', function() {
+    var bgDiv = document.getElementById('fpv-tab-intimacy');
+    var videoEl = document.getElementById('cp-bg-video');
+    var overlay = document.getElementById('cp-bg-overlay');
+    
+    videoEl.classList.add('hidden');
+    bgDiv.style.backgroundImage = "url('./cp_bg1.png')";
+    overlay.classList.remove('hidden');
+    isCPVideoPlaying = false;
+});
+// ================= WEEKLY REWARD - COMING SOON =================
+window.loadCPWeeklyComingSoon = function() {
+    var listContainer = document.getElementById('cp-ranking-list');
+    if (!listContainer) return;
+    
+    var html = `
+        <div class="flex flex-col items-center justify-center min-h-[400px] text-center px-6">
+            <!-- انیمیشن والا آئیکن - Rocket -->
+            <div class="relative mb-8">
+                <div class="w-28 h-28 rounded-full bg-gradient-to-br from-purple-700 to-pink-700 flex items-center justify-center animate-pulse shadow-[0_0_40px_rgba(236,72,153,0.6)]">
+                    <i class="fa-solid fa-rocket text-6xl text-white drop-shadow-2xl transform -rotate-12"></i>
+                </div>
+                <div class="absolute -top-3 -right-3 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center animate-bounce shadow-xl border-2 border-white">
+                    <i class="fa-regular fa-star text-purple-900 text-xl"></i>
+                </div>
+                <div class="absolute -bottom-2 -left-2 w-8 h-8 bg-pink-400 rounded-full flex items-center justify-center animate-ping">
+                    <i class="fa-solid fa-sparkles text-white text-xs"></i>
+                </div>
+            </div>
+            
+            <!-- بڑا ٹیکسٹ -->
+            <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-400 mb-4 tracking-wider drop-shadow-lg">
+                COMING SOON
+            </h3>
+            
+            <!-- لائن -->
+            <div class="w-32 h-1.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full mb-5"></div>
+            
+            <!-- تفصیل -->
+            <p class="text-gray-300 text-base font-medium max-w-[280px] leading-relaxed">
+                Weekly rewards are being prepared.
+                <span class="text-yellow-400 font-black block mt-2">Stay tuned!</span>
+            </p>
+            
+            <!-- چھوٹے decorative elements -->
+            <div class="flex gap-4 mt-8">
+                <div class="w-3 h-3 rounded-full bg-purple-500 animate-ping"></div>
+                <div class="w-3 h-3 rounded-full bg-pink-500 animate-ping" style="animation-delay: 0.2s"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500 animate-ping" style="animation-delay: 0.4s"></div>
+                <div class="w-3 h-3 rounded-full bg-blue-500 animate-ping" style="animation-delay: 0.6s"></div>
+            </div>
+            
+            <!-- نوٹ -->
+            <div class="mt-10 bg-black/30 backdrop-blur-sm px-5 py-2 rounded-full border border-purple-500/30">
+                <p class="text-[10px] text-purple-300 font-medium">
+                    <i class="fa-regular fa-clock mr-1"></i>
+                    Check back next week
+                </p>
+            </div>
+        </div>
+    `;
+    
+    listContainer.innerHTML = html;
+};
+// ================= ویب آر ٹی سی (آواز) کا سسٹم =================
+// یہ سسٹم 10-20 یوزرز کے لیے مکمل مفت ہے
+
+let peerConnections = {};        // تمام کنکشنز
+let localAudioStream = null;     // اپنی آواز
+let currentSeatId = null;        // موجودہ سیٹ
+let pendingCandidates = {};      // ICE کینڈیڈیٹس
+
+// STUN سرور (مکمل مفت)
+const iceServers = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
+    ]
+};
+
+// ========== مائک تک رسائی ==========
+// ================= خوبصورت انگلش مائک پرامپٹ =================
+// ================= چھوٹا اور سادہ مائک پرامپٹ =================
+async function initLocalAudio() {
+    try {
+        if (localAudioStream) return localAudioStream;
+        
+        // براؤزر چیک
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Browser Not Supported',
+                text: 'Please use Chrome, Firefox, or Safari.',
+                background: '#111',
+                color: '#fff',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return null;
+        }
+        
+        // چھوٹا سا پرامپٹ
+        const result = await Swal.fire({
+            title: '🎤 Microphone Access',
+            text: 'YARAAN wants to access your microphone',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Allow',
+            cancelButtonText: 'Deny',
+            background: '#111',
+            color: '#fff',
+            width: '350px'
+        });
+
+        if (!result.isConfirmed) {
+            return null;
+        }
+        
+        // مائک تک رسائی
+        localAudioStream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            } 
+        });
+        
+        // چھوٹا سا ٹوسٹ
+        Swal.fire({
+            title: 'Microphone Ready',
+            icon: 'success',
+            background: '#111',
+            color: '#fff',
+            showConfirmButton: false,
+            timer: 1000,
+            toast: true,
+            position: 'top'
+        });
+        
+        const audioPreview = document.getElementById('local-audio-preview');
+        if (audioPreview) {
+            audioPreview.srcObject = localAudioStream;
+        }
+        
+        return localAudioStream;
+        
+    } catch (err) {
+        console.error("❌ مائک ایرر:", err);
+        
+        let msg = 'Could not access microphone.';
+        if (err.name === 'NotAllowedError') msg = 'Microphone access denied.';
+        else if (err.name === 'NotFoundError') msg = 'No microphone found.';
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Microphone Error',
+            text: msg,
+            background: '#111',
+            color: '#fff',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return null;
+    }
+}
+
+// ========== نیا سادہ sitDown (چھوٹا) ==========
+// ========== نیا sitDown (بلبلوں کے ساتھ) ==========
+window.sitDown = async (sid, def) => {
+    const sr = ref(db, `rooms/${currentRoomId}/seats`);
+    const s = currentRoomSeats;
+    
+    if (s[sid] && (s[sid].locked || s[sid].uid)) return;
+    
+    let unseatUpdates = {};
+    ['seat1','seat2','seat3','seat4','seat5','seat6'].forEach(k => {
+        if (s[k] && s[k].uid === currentUser.uid) {
+            unseatUpdates[k] = null;
+            if (peerConnections[k]) {
+                peerConnections[k].close();
+                delete peerConnections[k];
+            }
+        }
+    });
+    
+    const userSnap = await get(ref(db, `users/${currentUser.uid}`));
+    const userData = userSnap.val();
+    
+    const stream = await initLocalAudio();
+    if (stream) {
+        // بلبلے شروع کریں
+        setupAudioRipple();
+    }
+    
+    const mySeatData = {
+        uid: currentUser.uid,
+        name: currentUser.displayName,
+        pic: currentUser.photoURL,
+        frame: userData.currentFrame || null,
+        isOfficial: userData.isOfficial || false,
+        nameColorClass: userData.nameColorClass || null
+    };
+    
+    const targetSeatRef = child(sr, sid);
+    await update(sr, unseatUpdates);
+    await set(targetSeatRef, mySeatData);
+    onDisconnect(targetSeatRef).remove();
+    
+    currentSeatId = sid;
+    
+    document.getElementById(`menu-${sid}`).style.display = 'none';
+    
+    setupAllPeerConnections();
+};
+// ========== سیٹ چھوڑنے کا اپڈیٹڈ فنکشن ==========
+window.leaveSeat = async (sid) => {
+    const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
+    
+    // کنکشن بند کریں
+    if (peerConnections[sid]) {
+        peerConnections[sid].close();
+        delete peerConnections[sid];
+    }
+    
+    // Firebase سے ہٹائیں
+    onDisconnect(seatRef).cancel();
+    await remove(seatRef);
+    document.getElementById(`menu-${sid}`).style.display = 'none';
+    
+    if (currentSeatId === sid) {
+        currentSeatId = null;
+    }
+};
+
+// ========== تمام سیٹس پر کنکشن بنانا ==========
+function setupAllPeerConnections() {
+    if (!currentRoomSeats || !currentUser) return;
+    
+    Object.keys(currentRoomSeats).forEach(seatId => {
+        const seatData = currentRoomSeats[seatId];
+        
+        // اگر یہ میری سیٹ ہے تو نظر انداز کریں
+        if (seatData && seatData.uid === currentUser.uid) {
+            return;
+        }
+        
+        // اگر سیٹ خالی ہے تو نظر انداز کریں
+        if (!seatData || !seatData.uid) {
+            return;
+        }
+        
+        // اگر پہلے سے کنکشن ہے تو نظر انداز کریں
+        if (peerConnections[seatId]) {
+            return;
+        }
+        
+        // نیا کنکشن بنائیں
+        createPeerConnection(seatId, seatData.uid);
+    });
+}
+
+// ========== نیا کنکشن بنانا ==========
+function createPeerConnection(targetSeatId, targetUid) {
+    console.log(`🔌 کنکشن بنا رہے ہیں: ${targetSeatId} -> ${targetUid}`);
+    
+    const pc = new RTCPeerConnection(iceServers);
+    peerConnections[targetSeatId] = pc;
+    
+    // اپنی آواز شامل کریں
+    if (localAudioStream) {
+        localAudioStream.getTracks().forEach(track => {
+            pc.addTrack(track, localAudioStream);
+        });
+    }
+    
+    // دوسرے کی آواز سننے کے لیے
+    pc.ontrack = (event) => {
+        console.log(`🔊 آواز آ رہی ہے: ${targetSeatId}`);
+        
+        // آڈیو عنصر بنائیں
+        const audio = document.createElement('audio');
+        audio.srcObject = event.streams[0];
+        audio.autoplay = true;
+        audio.id = `audio-${targetSeatId}`;
+        document.getElementById('remote-audio-container').appendChild(audio);
+    };
+    
+    // ICE کینڈیڈیٹس کا تبادلہ
+    pc.onicecandidate = (event) => {
+        if (event.candidate) {
+            // Firebase پر بھیجیں
+            const candidateRef = ref(db, `calls/${targetUid}/candidates/${currentUser.uid}`);
+            set(candidateRef, {
+                candidate: event.candidate,
+                seatId: currentSeatId,
+                timestamp: Date.now()
+            });
+        }
+    };
+    
+    // کنکشن کی حالت
+    pc.onconnectionstatechange = () => {
+        console.log(`📡 کنکشن حالت (${targetSeatId}):`, pc.connectionState);
+        if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+            // کنکشن ختم ہو گیا
+            const audioEl = document.getElementById(`audio-${targetSeatId}`);
+            if (audioEl) audioEl.remove();
+            delete peerConnections[targetSeatId];
+        }
+    };
+    
+    // Offer بھیجیں
+    pc.createOffer()
+        .then(offer => pc.setLocalDescription(offer))
+        .then(() => {
+            const offerRef = ref(db, `calls/${targetUid}/offers/${currentUser.uid}`);
+            set(offerRef, {
+                offer: pc.localDescription,
+                seatId: currentSeatId,
+                timestamp: Date.now()
+            });
+        });
+    
+    return pc;
+}
+
+// ========== Firebase پر سگنلنگ سننا ==========
+function listenForSignals() {
+    if (!currentUser) return;
+    
+    const uid = currentUser.uid;
+    
+    // Offers سنیں
+    const offersRef = ref(db, `calls/${uid}/offers`);
+    onValue(offersRef, (snap) => {
+        if (!snap.exists()) return;
+        
+        snap.forEach(childSnap => {
+            const data = childSnap.val();
+            const fromUid = childSnap.key;
+            
+            // پہلے سے کنکشن ہے؟
+            let targetSeatId = null;
+            Object.keys(currentRoomSeats).forEach(seatId => {
+                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
+                    targetSeatId = seatId;
+                }
+            });
+            
+            if (!targetSeatId) return;
+            
+            // اگر پہلے سے کنکشن ہے تو چھوڑ دیں
+            if (peerConnections[targetSeatId]) return;
+            
+            // نیا کنکشن بنائیں
+            const pc = new RTCPeerConnection(iceServers);
+            peerConnections[targetSeatId] = pc;
+            
+            // اپنی آواز شامل کریں
+            if (localAudioStream) {
+                localAudioStream.getTracks().forEach(track => {
+                    pc.addTrack(track, localAudioStream);
+                });
+            }
+            
+            // دوسرے کی آواز
+            pc.ontrack = (event) => {
+                const audio = document.createElement('audio');
+                audio.srcObject = event.streams[0];
+                audio.autoplay = true;
+                audio.id = `audio-${targetSeatId}`;
+                document.getElementById('remote-audio-container').appendChild(audio);
+            };
+            
+            // ICE کینڈیڈیٹس
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    const candidateRef = ref(db, `calls/${fromUid}/candidates/${uid}`);
+                    set(candidateRef, {
+                        candidate: event.candidate,
+                        seatId: currentSeatId,
+                        timestamp: Date.now()
+                    });
+                }
+            };
+            
+            // Offer سیٹ کریں
+            pc.setRemoteDescription(data.offer)
+                .then(() => pc.createAnswer())
+                .then(answer => pc.setLocalDescription(answer))
+                .then(() => {
+                    const answerRef = ref(db, `calls/${fromUid}/answers/${uid}`);
+                    set(answerRef, {
+                        answer: pc.localDescription,
+                        seatId: currentSeatId,
+                        timestamp: Date.now()
+                    });
+                });
+            
+            // اس Offer کو ڈیلیٹ کریں
+            remove(childSnap.ref);
+        });
+    });
+    
+    // Answers سنیں
+    const answersRef = ref(db, `calls/${uid}/answers`);
+    onValue(answersRef, (snap) => {
+        if (!snap.exists()) return;
+        
+        snap.forEach(childSnap => {
+            const data = childSnap.val();
+            const fromUid = childSnap.key;
+            
+            let targetSeatId = null;
+            Object.keys(currentRoomSeats).forEach(seatId => {
+                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
+                    targetSeatId = seatId;
+                }
+            });
+            
+            if (targetSeatId && peerConnections[targetSeatId]) {
+                peerConnections[targetSeatId].setRemoteDescription(data.answer);
+            }
+            
+            remove(childSnap.ref);
+        });
+    });
+    
+    // Candidates سنیں
+    const candidatesRef = ref(db, `calls/${uid}/candidates`);
+    onValue(candidatesRef, (snap) => {
+        if (!snap.exists()) return;
+        
+        snap.forEach(childSnap => {
+            const data = childSnap.val();
+            const fromUid = childSnap.key;
+            
+            let targetSeatId = null;
+            Object.keys(currentRoomSeats).forEach(seatId => {
+                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
+                    targetSeatId = seatId;
+                }
+            });
+            
+            if (targetSeatId && peerConnections[targetSeatId]) {
+                peerConnections[targetSeatId].addIceCandidate(data.candidate);
+            }
+            
+            remove(childSnap.ref);
+        });
+    });
+}
+
+// ========== سیٹس کی تبدیلی سننا ==========
+function setupSeatListener() {
+    if (!currentRoomId) return;
+    
+    const seatsRef = ref(db, `rooms/${currentRoomId}/seats`);
+    onValue(seatsRef, (snap) => {
+        const oldSeats = currentRoomSeats;
+        currentRoomSeats = snap.val() || {};
+        
+        // پرانے کنکشنز کو بند کریں اگر کوئی سیٹ خالی ہو گئی
+        Object.keys(oldSeats).forEach(seatId => {
+            if (!currentRoomSeats[seatId] || !currentRoomSeats[seatId].uid) {
+                if (peerConnections[seatId]) {
+                    peerConnections[seatId].close();
+                    delete peerConnections[seatId];
+                    
+                    const audioEl = document.getElementById(`audio-${seatId}`);
+                    if (audioEl) audioEl.remove();
+                }
+            }
+        });
+        
+        // نئے کنکشنز بنائیں
+        setupAllPeerConnections();
+        
+        // UI اپڈیٹ کریں
+        updateSeat('seat1', currentRoomSeats.seat1, "UMAR");
+        updateSeat('seat2', currentRoomSeats.seat2, "GURIYA");
+        updateSeat('seat3', currentRoomSeats.seat3, "1");
+        updateSeat('seat4', currentRoomSeats.seat4, "2");
+        updateSeat('seat5', currentRoomSeats.seat5, "3");
+        updateSeat('seat6', currentRoomSeats.seat6, "4");
+        
+        const hc = document.getElementById('heartbeat-container');
+        const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid;
+        const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid;
+        if(seat1Occupied && seat2Occupied) {
+            hc.classList.add('heartbeat-active');
+        } else {
+            hc.classList.remove('heartbeat-active');
+        }
+    });
+}
+
+// ========== نیا cleanupWebRTC (بلبلوں کے ساتھ) ==========
+function cleanupWebRTC() {
+    cleanupRipples();  // بلبلے بند کریں
+    
+    Object.keys(peerConnections).forEach(seatId => {
+        peerConnections[seatId].close();
+        delete peerConnections[seatId];
+    });
+    
+    if (localAudioStream) {
+        localAudioStream.getTracks().forEach(track => track.stop());
+        localAudioStream = null;
+    }
+    
+    document.getElementById('remote-audio-container').innerHTML = '';
+}
+
+// ========== جوائن روم میں اضافہ ==========
+// (اصل joinRoom فنکشن میں یہ لائن شامل کریں)
+// cleanupWebRTC();  // پہلے صفائی
+// setupSeatListener();  // سیٹ سننے والا
+// listenForSignals();  // سگنل سننے والا
+
+// ========== مائک میوٹ/انمیوٹ (بلبلوں کے ساتھ) ==========
+window.toggleMic = () => {
+    const btn = document.getElementById('btn-mic');
+    isMicMuted = !isMicMuted;
+    
+    if(localAudioStream) {
+        localAudioStream.getAudioTracks().forEach(track => {
+            track.enabled = !isMicMuted;
+        });
+    }
+    
+    if(isMicMuted) {
+        btn.className = 'fa-solid fa-microphone-slash room-icon-btn text-gray-500';
+        // بلبلے ہٹائیں
+        document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
+    } else {
+        btn.className = 'fa-solid fa-microphone room-icon-btn text-white';
+    }
+    
+    if(currentRoomId) updateSeatMuteStatus();
+};
+
+// ========== اسپیکر میوٹ ==========
+window.toggleSpeaker = () => {
+    const btn = document.getElementById('btn-speaker');
+    isSpeakerMuted = !isSpeakerMuted;
+    
+    // تمام ریموٹ آڈیو کو میوٹ/انمیوٹ کریں
+    const audioElements = document.querySelectorAll('#remote-audio-container audio');
+    audioElements.forEach(audio => {
+        audio.muted = isSpeakerMuted;
+    });
+    
+    if(isSpeakerMuted) {
+        btn.className = 'fa-solid fa-volume-xmark room-icon-btn text-gray-500';
+    } else {
+        btn.className = 'fa-solid fa-volume-high room-icon-btn text-white';
+    }
+};
+// ========== مائک پر بلبلے (Ripple Effect) - نیا ==========
+
+// آواز کی شدت ناپنے کے لیے
+let audioAnalyser = null;
+let audioDataArray = null;
+let audioSource = null;
+let audioContext = null;
+let rippleInterval = null;
+
+function setupAudioRipple() {
+    if (!localAudioStream) return;
+    
+    // پرانا انٹرول بند کریں
+    if (rippleInterval) clearInterval(rippleInterval);
+    
+    try {
+        // آڈیو سیٹ اپ
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioSource = audioContext.createMediaStreamSource(localAudioStream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.3;
+        
+        audioSource.connect(analyser);
+        audioAnalyser = analyser;
+        audioDataArray = new Uint8Array(analyser.frequencyBinCount);
+        
+        // ہر 100ms بعد آواز چیک کریں
+        rippleInterval = setInterval(checkAudioLevel, 100);
+        
+        console.log("✅ بلبلے تیار");
+    } catch (e) {
+        console.log("❌ بلبلے میں مسئلہ:", e);
+    }
+}
+
+function checkAudioLevel() {
+    // اگر میوٹ ہے تو کچھ نہ کریں
+    if (isMicMuted || !audioAnalyser || !currentSeatId) {
+        removeAllRipples();
+        return;
+    }
+    
+    audioAnalyser.getByteFrequencyData(audioDataArray);
+    
+    // آواز کی شدت (0-255)
+    let sum = 0;
+    for (let i = 0; i < audioDataArray.length; i++) {
+        sum += audioDataArray[i];
+    }
+    let average = sum / audioDataArray.length;
+    
+    // اگر آواز ہے تو بلبلے دکھائیں
+    if (average > 15) { // 15 سے اوپر = آواز
+        showRipple(currentSeatId, average);
+    } else {
+        removeAllRipples();
+    }
+}
+
+function showRipple(seatId, intensity) {
+    // پہلے والے بلبلے ہٹائیں
+    removeAllRipples();
+    
+    const seatContainer = document.getElementById(`cont-${seatId}`);
+    if (!seatContainer) return;
+    
+    // شدت کے حساب سے بلبلے کا سائز (50px سے 100px)
+    let size = 50 + (intensity / 5);
+    if (size > 100) size = 100;
+    
+    // بلبلہ بنائیں
+    const ripple = document.createElement('div');
+    ripple.className = 'mic-ripple';
+    ripple.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        background: rgba(34, 197, 94, 0.3);
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+        animation: rippleWave 0.8s ease-out infinite;
+        z-index: 25;
+        pointer-events: none;
+    `;
+    
+    seatContainer.style.position = 'relative';
+    seatContainer.appendChild(ripple);
+    
+    // دوسرا بلبلہ (اندرونی)
+    setTimeout(() => {
+        if (document.querySelector('.mic-ripple')) {
+            const innerRipple = document.createElement('div');
+            innerRipple.className = 'mic-ripple-inner';
+            innerRipple.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: ${size - 20}px;
+                height: ${size - 20}px;
+                border-radius: 50%;
+                background: rgba(34, 197, 94, 0.5);
+                box-shadow: 0 0 30px #22c55e;
+                animation: innerPulse 0.5s ease-out infinite alternate;
+                z-index: 26;
+                pointer-events: none;
+            `;
+            seatContainer.appendChild(innerRipple);
+        }
+    }, 100);
+}
+
+function removeAllRipples() {
+    document.querySelectorAll('.mic-ripple, .mic-ripple-inner').forEach(el => el.remove());
+}
+
+// صفائی
+function cleanupRipples() {
+    if (rippleInterval) clearInterval(rippleInterval);
+    if (audioSource) audioSource.disconnect();
+    if (audioContext) audioContext.close();
+    removeAllRipples();
+}
     </script>
 </body>
 </html>
