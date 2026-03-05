@@ -232,6 +232,44 @@
         .nav-item i { font-size: 22px; margin-bottom: 3px; }
         .nav-item.active { color: #dc2626; font-weight: bold; }
 
+       /* ====== NEW ROOM SETTINGS & THEME UI ====== */
+.bottom-sheet-modal {
+    position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.6);
+    display: none; flex-direction: column; justify-content: flex-end;
+}
+.bottom-sheet-content {
+    background: #ffffff; width: 100%; border-radius: 24px 24px 0 0;
+    padding: 20px; animation: slideUp 0.3s ease-out; max-height: 90vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.settings-menu-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer;
+}
+.settings-icon-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; transition: 0.2s;
+}
+.settings-icon-btn .icon-circle {
+    width: 50px; height: 50px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 20px;
+}
+.settings-icon-btn span { font-size: 11px; color: #374151; font-weight: 600; }
+.settings-icon-btn:active { transform: scale(0.95); }
+
+/* Theme Grid */
+.theme-grid-new { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+.theme-card-new {
+    border-radius: 12px; overflow: hidden; position: relative; aspect-ratio: 3/4;
+    border: 2px solid transparent; cursor: pointer; background: #f3f4f6;
+}
+.theme-card-new.active { border-color: #8b5cf6; }
+.theme-card-new img { width: 100%; height: 100%; object-fit: cover; }
+.theme-custom-add {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; color: #8b5cf6; background: #f5f3ff;
+}
         /* ROOM VIEW */
         #view-room { display: none; flex-direction: column; height: 100dvh; width: 100%; padding-bottom: 0 !important; background: #000 !important; position: fixed; inset: 0; z-index: 60; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); overflow: hidden; }
         #room-top-content { flex-shrink: 0; }
@@ -260,8 +298,9 @@
         .btn-action { font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 4px; color: white; cursor: pointer; text-transform: uppercase; width: 90%; text-align: center; }
         .btn-green { background: #22c55e; } .btn-red { background: #ef4444; } .btn-yellow { background: #eab308; color: black; } .btn-blue { background: #3b82f6; }
         
-        /* CHAT AREA */
-        #chat-display-area { flex: 1; width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: 10px 15px; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end; position: relative; background: transparent !important; color: white !important; text-shadow: 0 1px 2px black; padding-bottom: 10px; margin-bottom: 0; mask-image: linear-gradient(to bottom, transparent 0%, black 15%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%); }
+        /* CHAT AREA - SCROLL FIXED */
+        #chat-display-area { flex: 1; width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: 10px 15px; z-index: 20; display: flex; flex-direction: column; position: relative; background: transparent !important; color: white !important; text-shadow: 0 1px 2px black; padding-bottom: 10px; margin-bottom: 0; mask-image: linear-gradient(to bottom, transparent 0%, black 15%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%); }
+        #chat-display-area > div:first-child { margin-top: auto; }
         .chat-message-bubble { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(3px); padding: 6px 12px; border-radius: 15px; margin-bottom: 6px; border: 1px solid rgba(255, 255, 255, 0.15); color: white !important; font-size: 12px; max-width: 85%; width: fit-content; word-wrap: break-word; animation: slideInUp 0.2s ease-out; text-shadow: 0 1px 1px black; flex-shrink: 0; }
         .chat-message-bubble b { color: #facc15; margin-right: 5px; }
         .chat-system-msg { align-self: center; background: rgba(255, 255, 255, 0.2); color: #eee; font-size: 10px; font-style: italic; padding: 4px 10px; border-radius: 20px; margin: 5px 0; text-align: center; border: none; width: auto; max-width: 90%; flex-shrink: 0; text-shadow: 0 1px 2px black; }
@@ -774,34 +813,31 @@
 .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-}/* مائک کے گرد بلبلے */
-@keyframes rippleWave {
-    0% {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 1;
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0.7;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 1;
-    }
+}/* مائک کے گرد بلبلے (درست اور صاف انیمیشن) */
+.visual-root {
+    position: relative !important;
+    overflow: visible !important;
 }
 
-@keyframes innerPulse {
-    0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.8;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.3);
-        opacity: 0.4;
-    }
+.visual-root .mic-ripple {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    border-radius: 50% !important;
+    border: 2px solid #22c55e !important;
+    box-shadow: 0 0 15px #22c55e, inset 0 0 10px #22c55e !important;
+    animation: pulseRing 1.2s ease-out infinite !important;
+    z-index: 5 !important; /* یہ DP کے پیچھے رہے گا تاکہ DP صاف نظر آئے */
+    pointer-events: none !important;
+    background: transparent !important;
 }
 
-/* جب کوئی بول رہا ہو تو مائک کا رنگ بدلیں */
+@keyframes pulseRing {
+    0% { width: 100%; height: 100%; opacity: 1; border-width: 3px; }
+    100% { width: 140%; height: 140%; opacity: 0; border-width: 1px; }
+}
+
 .seat-occupied .fa-microphone {
     color: #22c55e !important;
     animation: micGlow 1s infinite alternate;
@@ -811,7 +847,6 @@
     0% { filter: drop-shadow(0 0 5px #22c55e); }
     100% { filter: drop-shadow(0 0 15px #22c55e); }
 }
-</style>
     </style>
 </head>
 <body>
@@ -827,6 +862,8 @@
     
     <input type="file" id="image-upload" accept="image/*" style="display: none;">
     <input type="file" id="video-upload" accept="video/*" style="display: none;">
+<input type="file" id="music-upload" accept="audio/*" style="display: none;">
+<audio id="room-bg-music" loop style="display: none;"></audio>
     
     <div id="app-container">
         
@@ -873,38 +910,106 @@
             </div>
         </div>
 
-        <div id="room-settings-modal">
-            <div class="bg-white p-6 rounded-xl w-11/12 max-w-sm border border-gray-300 relative shadow-2xl">
-                <button onclick="closeRoomSettings()" class="absolute top-3 right-3 text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h3 class="text-gray-900 font-bold mb-4 text-center">Room Settings</h3>
-                <div class="space-y-3">
-                    <div><label class="text-xs text-gray-500">Room Name</label><input type="text" id="rs-name" class="w-full bg-gray-100 border border-gray-300 rounded p-2 text-gray-900 focus:border-red-600 outline-none" placeholder="Room Name"></div>
-                    <div><label class="text-xs text-gray-500">Cover URL</label><input type="text" id="rs-cover" class="w-full bg-gray-100 border border-gray-300 rounded p-2 text-gray-900 focus:border-red-600 outline-none text-xs" placeholder="Image URL"></div>
-                    <div class="flex items-center justify-between bg-gray-100 p-2 rounded border border-gray-200 mt-2">
-                        <span class="text-sm font-bold text-gray-700">Lock Room (Private)</span>
-                        <input type="checkbox" id="rs-lock" class="w-5 h-5 accent-red-600">
-                    </div>
-                    <div onclick="openThemeModal()" class="flex items-center justify-between bg-gray-800 text-white p-3 rounded cursor-pointer mt-2">
-                        <span class="font-bold">Room Themes</span>
-                        <i class="fa-solid fa-chevron-right"></i>
+        <!-- NEW ROOM SETTINGS MODAL -->
+        <div id="room-settings-modal" class="bottom-sheet-modal" onclick="closeRoomSettings()">
+            <div class="bottom-sheet-content text-gray-900" onclick="event.stopPropagation()">
+                <div class="flex justify-center mb-4">
+                    <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                <h2 class="text-center font-bold text-lg mb-6">Room Setting</h2>
+                
+                <div class="flex justify-center mb-6 relative">
+                    <div class="relative cursor-pointer" onclick="triggerRoomCoverUpload()">
+                        <img id="rs-cover-img" src="https://placehold.co/100" class="w-20 h-20 rounded-2xl object-cover shadow-md">
+                        <div class="absolute -bottom-2 -right-2 bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center text-white border-2 border-white"><i class="fa-solid fa-camera"></i></div>
                     </div>
                 </div>
-                <button onclick="saveRoomSettings()" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded mt-6 shadow-md">SAVE SETTINGS</button>
+
+                <div class="mb-4">
+                    <label class="text-xs font-bold text-gray-500 ml-1">Room Name</label>
+                    <input type="text" id="rs-name" class="w-full bg-gray-50 border border-gray-200 rounded-full p-3 mt-1 text-sm outline-none focus:border-purple-400 font-bold text-center">
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-xs font-bold text-gray-500 ml-1">Room Notice</label>
+                    <textarea id="rs-notice" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 mt-1 text-sm outline-none focus:border-purple-400 text-center resize-none" placeholder="Write room notice here..."></textarea>
+                </div>
+
+                <div class="settings-menu-item" onclick="toggleRoomType()">
+                    <span class="text-sm font-medium">Room Type <span class="text-xs text-gray-400 ml-1">(Click to switch)</span></span>
+                    <div class="flex items-center gap-2">
+                        <span id="rs-room-type-text" class="text-sm text-gray-400">Chat Room</span>
+                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                    </div>
+                </div>
+
+                <div class="settings-menu-item" onclick="toggleSuperMicSetting()">
+                    <span class="text-sm font-medium">Super Mic</span>
+                    <div class="flex items-center gap-2">
+                        <span id="rs-super-mic-text" class="text-sm text-gray-400">ON</span>
+                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                    </div>
+                </div>
+                
+                <div class="settings-menu-item">
+                    <span class="text-sm font-medium">Wheat mode (Mics)</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-400">10 people</span>
+                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-8 px-2 pb-6">
+                    <div class="settings-icon-btn" onclick="openThemeModal()">
+                        <div class="icon-circle bg-purple-100 text-purple-600"><i class="fa-solid fa-image"></i></div>
+                        <span>Theme</span>
+                    </div>
+                    <div class="settings-icon-btn" onclick="document.getElementById('music-upload').click()">
+                        <div class="icon-circle bg-indigo-100 text-indigo-600"><i class="fa-solid fa-music"></i></div>
+                        <span>Music</span>
+                    </div>
+                    <div class="settings-icon-btn" onclick="handleRoomLock()">
+                        <div class="icon-circle bg-pink-100 text-pink-600"><i class="fa-solid fa-lock" id="rs-lock-icon"></i></div>
+                        <span id="rs-lock-text">Lock</span>
+                    </div>
+                    <div class="settings-icon-btn" onclick="openAdminSettings()">
+                        <div class="icon-circle bg-blue-100 text-blue-600"><i class="fa-solid fa-user-shield"></i></div>
+                        <span>Administrator</span>
+                    </div>
+                </div>
+                
+                <button onclick="saveRoomSettings()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold py-3 rounded-full mb-4 shadow-lg">Save & Close</button>
             </div>
         </div>
-        
-        <div id="theme-modal">
-            <div class="bg-zinc-900 p-6 rounded-xl w-11/12 max-w-sm border border-zinc-700 relative shadow-2xl overflow-y-auto max-h-[80vh]">
-                <button onclick="closeThemeModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h3 class="text-white font-bold mb-4 text-center">Select Room Theme</h3>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="bg-black border border-gray-700 p-2 rounded flex flex-col items-center">
-                        <img src="./theme1.png" class="w-full h-20 object-cover rounded mb-2" onerror="this.src='https://placehold.co/100x100?text=Theme+1'">
-                        <div class="flex gap-1 w-full"><button onclick="applyTheme('theme1.png')" class="bg-green-600 text-white text-[10px] px-2 py-1 rounded flex-1 font-bold">USE</button><button onclick="removeTheme()" class="bg-red-600 text-white text-[10px] px-2 py-1 rounded flex-1 font-bold">REMOVE</button></div>
+
+        <!-- NEW THEME MODAL -->
+        <div id="theme-modal" class="bottom-sheet-modal" onclick="closeThemeModal()">
+            <div class="bottom-sheet-content" onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex gap-4 border-b-2 border-transparent">
+                        <span class="font-bold text-gray-900 border-b-2 border-purple-500 pb-2">Room theme</span>
+                        <span class="font-bold text-gray-400 pb-2">Room Decoration</span>
                     </div>
-                    <div class="bg-black border border-gray-700 p-2 rounded flex flex-col items-center">
-                        <img src="./theme2.png" class="w-full h-20 object-cover rounded mb-2" onerror="this.src='https://placehold.co/100x100?text=Theme+2'">
-                        <div class="flex gap-1 w-full"><button onclick="applyTheme('theme2.png')" class="bg-green-600 text-white text-[10px] px-2 py-1 rounded flex-1 font-bold">USE</button><button onclick="removeTheme()" class="bg-red-600 text-white text-[10px] px-2 py-1 rounded flex-1 font-bold">REMOVE</button></div>
+                    <i class="fa-solid fa-xmark text-gray-400 text-xl cursor-pointer" onclick="closeThemeModal()"></i>
+                </div>
+
+                <div class="theme-grid-new" id="theme-list-container">
+                    <!-- Upload Box -->
+                    <div class="theme-card-new theme-custom-add" onclick="triggerCustomThemeUpload()">
+                        <i class="fa-solid fa-plus"></i>
+                        <input type="file" id="custom-theme-upload" accept="image/*" class="hidden" onchange="uploadCustomTheme(event)">
+                    </div>
+                    
+                    <!-- Themes (Handled by JS toggle) -->
+                    <div class="theme-card-new cursor-pointer" onclick="toggleThemeStatus('theme1.png', this)">
+                        <img src="./theme1.png" onerror="this.src='https://placehold.co/200x300?text=Theme+1'">
+                        <div class="theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition">Use</div>
+                    </div>
+                    
+                    <div class="theme-card-new cursor-pointer" onclick="toggleThemeStatus('theme2.png', this)">
+                        <img src="./theme2.png" onerror="this.src='https://placehold.co/200x300?text=Theme+2'">
+                        <div class="theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition">Use</div>
                     </div>
                 </div>
             </div>
@@ -1499,7 +1604,8 @@
                     </div>
                 </div>
 
-                <div class="w-full flex-shrink-0" onclick="hideAllMicMenus(event)">
+                <!-- VIDEO AREA WRAPPER (Can be hidden for Chat Room) -->
+                <div id="video-area-wrapper" class="w-full flex-shrink-0 hidden" onclick="hideAllMicMenus(event)">
                     <div class="cinema-frame relative group">
                         <div id="guest-touch-blocker" onclick="handleGuestTap()"></div>
                         <div id="empty-state-trigger"><i class="fa-solid fa-video empty-icon"></i><span class="empty-text">Play Video</span></div>
@@ -1557,20 +1663,40 @@
                 </div>
                 <div id="rocket-fly-layer"></div>
 
+                <!-- 10 MICS LAYOUT (SUPER MIC + 8 NORMAL) -->
                 <div id="mics-scroll-area">
-                    <div class="mics-container-main">
-                        <div class="top-mic-row flex justify-center items-center gap-2">
-                            <div class="mic-wrapper" id="wrapper-seat1"><div class="seat-base mic-container-lg" id="cont-seat1" onclick="toggleMicMenu('seat1', 'UMAR', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat1-visual" class="user-dp-visual"></div><div id="menu-seat1" class="action-menu-overlay"></div></div><span id="seat1-name" class="seat-name">UMAR</span></div>
-                            <div id="heartbeat-container" class="heartbeat-wrapper"><img src="./left.png" class="line-img left-line" alt="Left Line"><img src="./couple_heart.png" class="hb-img" alt="Heart"><img src="./right.png" class="line-img right-line" alt="Right Line"></div>
-                            <div class="mic-wrapper" id="wrapper-seat2"><div class="seat-base mic-container-lg" id="cont-seat2" onclick="toggleMicMenu('seat2', 'GURIYA', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat2-visual" class="user-dp-visual"></div><div id="menu-seat2" class="action-menu-overlay"></div></div><span id="seat2-name" class="seat-name">GURIYA</span></div>
+                    <div class="mics-container-main" style="gap: 15px;">
+                        
+                        <!-- Top Row: UMAR (1) & GURIYA (2)[Super Mics] -->
+                        <div class="top-mic-row flex justify-center items-center gap-6 w-full relative" id="super-mics-row">
+                            <div class="mic-wrapper" id="wrapper-seat1"><div class="seat-base mic-container-lg" id="cont-seat1" onclick="toggleMicMenu('seat1', 'UMAR', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat1-visual" class="user-dp-visual"></div><div id="menu-seat1" class="action-menu-overlay"></div></div><span id="seat1-name" class="seat-name font-bold mt-1 text-sm text-pink-400 drop-shadow-md">UMAR</span></div>
+                            
+                            <div id="heartbeat-container" class="heartbeat-wrapper absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"><img src="./couple_heart.png" class="hb-img w-8 h-8 drop-shadow-[0_0_10px_pink]" alt="Heart"></div>
+                            
+                            <div class="mic-wrapper" id="wrapper-seat2"><div class="seat-base mic-container-lg" id="cont-seat2" onclick="toggleMicMenu('seat2', 'GURIYA', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat2-visual" class="user-dp-visual"></div><div id="menu-seat2" class="action-menu-overlay"></div></div><span id="seat2-name" class="seat-name font-bold mt-1 text-sm text-pink-400 drop-shadow-md">GURIYA</span></div>
                         </div>
-                        <div class="bottom-mic-row flex justify-center gap-3 flex-wrap">
-                            <div class="mic-wrapper" id="wrapper-seat3"><div class="seat-base mic-container-sm" id="cont-seat3" onclick="toggleMicMenu('seat3', '1', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat3-visual" class="user-dp-visual"></div><div id="menu-seat3" class="action-menu-overlay"></div></div><span id="seat3-name" class="seat-name">1</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat4"><div class="seat-base mic-container-sm" id="cont-seat4" onclick="toggleMicMenu('seat4', '2', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat4-visual" class="user-dp-visual"></div><div id="menu-seat4" class="action-menu-overlay"></div></div><span id="seat4-name" class="seat-name">2</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat5"><div class="seat-base mic-container-sm" id="cont-seat5" onclick="toggleMicMenu('seat5', '3', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat5-visual" class="user-dp-visual"></div><div id="menu-seat5" class="action-menu-overlay"></div></div><span id="seat5-name" class="seat-name">3</span></div>
-                            <div class="mic-wrapper" id="wrapper-seat6"><div class="seat-base mic-container-sm" id="cont-seat6" onclick="toggleMicMenu('seat6', '4', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat6-visual" class="user-dp-visual"></div><div id="menu-seat6" class="action-menu-overlay"></div></div><span id="seat6-name" class="seat-name">4</span></div>
+                        
+                        <!-- Middle Row: 3, 4, 5, 6 -->
+                        <div class="bottom-mic-row grid grid-cols-4 gap-4 w-full px-4">
+                            <div class="mic-wrapper" id="wrapper-seat3"><div class="seat-base mic-container-sm mx-auto" id="cont-seat3" onclick="toggleMicMenu('seat3', '1', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat3-visual" class="user-dp-visual"></div><div id="menu-seat3" class="action-menu-overlay"></div></div><span id="seat3-name" class="seat-name mt-1">1</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat4"><div class="seat-base mic-container-sm mx-auto" id="cont-seat4" onclick="toggleMicMenu('seat4', '2', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat4-visual" class="user-dp-visual"></div><div id="menu-seat4" class="action-menu-overlay"></div></div><span id="seat4-name" class="seat-name mt-1">2</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat5"><div class="seat-base mic-container-sm mx-auto" id="cont-seat5" onclick="toggleMicMenu('seat5', '3', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat5-visual" class="user-dp-visual"></div><div id="menu-seat5" class="action-menu-overlay"></div></div><span id="seat5-name" class="seat-name mt-1">3</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat6"><div class="seat-base mic-container-sm mx-auto" id="cont-seat6" onclick="toggleMicMenu('seat6', '4', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat6-visual" class="user-dp-visual"></div><div id="menu-seat6" class="action-menu-overlay"></div></div><span id="seat6-name" class="seat-name mt-1">4</span></div>
+                        </div>
+
+                        <!-- Bottom Row: 7, 8, 9, 10 -->
+                            <div id="bottom-4-mics-row" class="bottom-mic-row grid grid-cols-4 gap-4 w-full px-4 mt-2 transition-all duration-300">                           <div class="mic-wrapper" id="wrapper-seat7"><div class="seat-base mic-container-sm mx-auto" id="cont-seat7" onclick="toggleMicMenu('seat7', '5', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat7-visual" class="user-dp-visual"></div><div id="menu-seat7" class="action-menu-overlay"></div></div><span id="seat7-name" class="seat-name mt-1">5</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat8"><div class="seat-base mic-container-sm mx-auto" id="cont-seat8" onclick="toggleMicMenu('seat8', '6', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat8-visual" class="user-dp-visual"></div><div id="menu-seat8" class="action-menu-overlay"></div></div><span id="seat8-name" class="seat-name mt-1">6</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat9"><div class="seat-base mic-container-sm mx-auto" id="cont-seat9" onclick="toggleMicMenu('seat9', '7', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat9-visual" class="user-dp-visual"></div><div id="menu-seat9" class="action-menu-overlay"></div></div><span id="seat9-name" class="seat-name mt-1">7</span></div>
+                            <div class="mic-wrapper" id="wrapper-seat10"><div class="seat-base mic-container-sm mx-auto" id="cont-seat10" onclick="toggleMicMenu('seat10', '8', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat10-visual" class="user-dp-visual"></div><div id="menu-seat10" class="action-menu-overlay"></div></div><span id="seat10-name" class="seat-name mt-1">8</span></div>
                         </div>
                     </div>
+                </div>
+
+                <!-- ROOM NOTICE MARQUEE BANNER -->
+                <div id="room-notice-display" class="hidden mx-4 mt-1 mb-2 px-4 py-2 bg-black/40 backdrop-blur-sm rounded-xl border border-white/10 flex items-center gap-3 shadow-lg z-20">
+                    <i class="fa-solid fa-bullhorn text-yellow-400 text-sm animate-pulse"></i>
+                    <marquee id="room-notice-text" class="text-white text-xs font-bold tracking-wide" scrollamount="4"></marquee>
                 </div>
 
                 <div id="chat-display-area"></div>
@@ -1906,8 +2032,58 @@
 
     </div> <!-- Scrollable Content End -->
 </div> <!-- Modal End -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    <!-- ================= ماڈرن مائک مینو (Bottom Sheet) ================= -->
+    <div id="mic-action-sheet" class="fixed inset-0 bg-black/60 z-[6000] hidden flex-col justify-end transition-opacity duration-300 opacity-0" onclick="closeMicSheet(event)">
+        <div id="mic-sheet-content" class="bg-white w-full rounded-t-3xl flex flex-col overflow-hidden transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
+            <!-- بٹنز جاوا سکرپٹ سے یہاں آئیں گے -->
+        </div>
+    </div>
+
+    <!-- ================= ہاف پروفائل مینو (Bottom Sheet) ================= -->
+    <div id="half-profile-sheet" class="fixed inset-0 bg-black/60 z-[6000] hidden flex-col justify-end transition-opacity duration-300 opacity-0" onclick="closeHalfProfile(event)">
+        <div id="half-profile-content" class="bg-white w-full rounded-t-3xl pt-10 pb-6 px-6 flex flex-col items-center relative transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
+            
+            <!-- ڈی پی (DP) جو آدھی باہر نکلی ہوگی -->
+            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2">
+                <div class="relative w-24 h-24 rounded-full border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
+                    <img id="hp-dp" src="" class="w-full h-full rounded-full object-cover">
+                    <img id="hp-frame" src="" class="absolute inset-0 w-[140%] h-[140%] max-w-none max-h-none transform -translate-x-[15%] -translate-y-[15%] object-contain pointer-events-none hidden">
+                </div>
+            </div>
+
+            <div class="mt-2 text-center w-full">
+                <h2 id="hp-name" class="text-xl font-black text-gray-900 flex justify-center items-center gap-1">User Name <img id="hp-gender" src="./male.png" class="w-4 h-4 ml-1"></h2>
+                <p class="text-xs text-gray-500 font-bold tracking-widest mt-1">ID: <span id="hp-id" class="text-gray-800">000000</span> <span class="mx-1">|</span> <span id="hp-followers">0</span> followers</p>
+                
+                <!-- لیول اور میڈلز -->
+                <div class="flex flex-col items-center gap-2 mt-4 mb-5">
+                    <div id="hp-level-badge" class="user-level-badge scale-110 shadow-md">
+                        <img id="hp-medal-img" src="" class="level-medal-img"> <span id="hp-level-text">Lv.1</span>
+                    </div>
+                    <!-- 5 میڈلز یہاں شو ہوں گے -->
+                    <div id="hp-medals-list" class="flex justify-center gap-2 mt-1"></div>
+                </div>
+
+                <!-- مین بٹنز (Chat, Gift, Follow) -->
+                <div class="flex items-center gap-3 w-full">
+                    <button onclick="openDirectChatFromHP()" class="flex-1 bg-white border border-gray-300 text-gray-800 font-bold py-3 rounded-full shadow-sm flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-regular fa-comment-dots text-lg"></i> Chat</button>
+                    
+                    <button onclick="openGiftFromHP()" class="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 rounded-full shadow-lg flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-gift text-lg"></i> Send Gift</button>
+                    
+                    <button id="hp-follow-btn" class="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition"><i class="fa-solid fa-plus text-xl"></i></button>
+                </div>
+
+                <!-- Kick Out اور Invite بٹنز (صرف روم اونر کے لیے) -->
+                <div id="hp-owner-actions" class="flex gap-3 w-full mt-4 hidden">
+                    <button id="hp-invite-btn" class="flex-1 bg-gray-100 text-gray-800 font-bold py-3 rounded-full active:scale-95 transition">Invite</button>
+                    <button id="hp-kick-btn" class="flex-1 bg-red-50 text-red-600 font-bold py-3 rounded-full active:scale-95 transition">Kick Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">    
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getDatabase, ref, set, get, push, onValue, update, remove, child, onDisconnect, runTransaction, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
@@ -2080,12 +2256,32 @@
                     await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins }); 
                 } 
                 else if (type === 'vip') { 
-                    await update(ref(db, `users/${currentUser.uid}/unlockedVIPs`), { [val]: true }); 
+                    let days = 7; 
+                    let iconPath = './green_vip.png';
+                    let vipName = 'VIP Green'; // خوبصورت نام
+
+                    if (lvl === 20) { days = 7; iconPath = './green_vip.png'; vipName = 'VIP Green'; }
+                    else if (lvl === 30) { days = 30; iconPath = './yellow_vip.png'; vipName = 'VIP Yellow'; } 
+                    else if (lvl === 50) { days = 14; iconPath = './pink_vip.png'; vipName = 'VIP Pink'; }
+                    else if (lvl === 70 || lvl === 100) { days = 30; iconPath = './colorful_vip.png'; vipName = 'VIP Colorful'; }
+                    
+                    let expiryTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+                    let uniqueId = 'vip_' + lvl + '_' + Date.now();
+                    
+                    await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${uniqueId}`), {
+                        name: vipName, // صرف نام سیو ہو گا
+                        img: val, 
+                        icon: iconPath, 
+                        isVipName: true,
+                        purchasedAt: Date.now(),
+                        expiry: expiryTime,
+                        status: 'unused'
+                    }); 
                 }
                 
-                await update(ref(db, `users/${currentUser.uid}/claimedLevelRewards`), { [lvl]: true });
+                await update(ref(db, `users/${currentUser.uid}/claimedLevelRewards`), {[lvl]: true });
                 
-                Swal.fire({icon: 'success', title: 'Reward Claimed!', text: 'Check your Wallet or Prop House.', background: '#111', color: '#fff'});
+                Swal.fire({icon: 'success', title: 'Reward Claimed!', text: 'Reward added to your Prop House.', background: '#111', color: '#fff'});
                 
                 openLevelModal(); 
                 
@@ -3206,19 +3402,280 @@ results.forEach(d => {
         window.triggerCreateRoom = async () => { const roomSnap = await get(ref(db, `rooms/${currentUser.uid}`)); if(roomSnap.exists()) { joinRoom(currentUser.uid); } else { document.getElementById('cr-name').value = ""; document.getElementById('cr-cover').value = ""; document.getElementById('cr-preview').src = 'https://placehold.co/200x200?text=Cover'; document.getElementById('create-room-view').classList.add('open'); } };
         window.closeCreateRoom = () => { document.getElementById('create-room-view').classList.remove('open'); }
         window.finalizeCreateRoom = async () => { const rName = document.getElementById('cr-name').value; const rCover = document.getElementById('cr-cover').value; if(!rName) return Swal.fire('Error', 'Room Name is required', 'error'); const myId = document.getElementById('profile-id').innerText; await update(ref(db, `rooms/${currentUser.uid}`), { owner: currentUser.uid, ownerName: currentUser.displayName, ownerCustomId: myId, active: true, isLive: true, roomName: rName, roomCover: rCover || null }); closeCreateRoom(); joinRoom(currentUser.uid); }
-        window.openRoomSettings = async () => { if(!currentRoomId || currentRoomId !== currentUser.uid) { return Swal.fire('Access Denied', 'Only owner can change settings', 'warning'); } const snap = await get(ref(db, `rooms/${currentRoomId}`)); const d = snap.val(); document.getElementById('rs-name').value = d.roomName || ''; document.getElementById('rs-cover').value = d.roomCover || ''; document.getElementById('rs-lock').checked = d.isLocked || false; document.getElementById('room-settings-modal').classList.add('open'); }
-        window.closeRoomSettings = () => document.getElementById('room-settings-modal').classList.remove('open');
-        window.saveRoomSettings = async () => { const n = document.getElementById('rs-name').value; const c = document.getElementById('rs-cover').value; const l = document.getElementById('rs-lock').checked; await update(ref(db, `rooms/${currentRoomId}`), { roomName: n, roomCover: c, isLocked: l }); document.getElementById('room-header-name').innerText = n; if(c) document.getElementById('room-header-cover').src = c; closeRoomSettings(); }
-        window.openThemeModal = () => { closeRoomSettings(); document.getElementById('theme-modal').classList.add('open'); }
-        window.closeThemeModal = () => document.getElementById('theme-modal').classList.remove('open');
-        window.applyTheme = async (themeName) => { if(!currentRoomId || currentRoomId !== currentUser.uid) return; await update(ref(db, `rooms/${currentRoomId}`), { theme: themeName }); Swal.fire({toast:true, icon:'success', title:'Theme Applied', position:'top', timer:1500, showConfirmButton:false}); closeThemeModal(); }
-        window.removeTheme = async () => { if(!currentRoomId || currentRoomId !== currentUser.uid) return; await update(ref(db, `rooms/${currentRoomId}`), { theme: null }); Swal.fire({toast:true, icon:'info', title:'Theme Removed', position:'top', timer:1500, showConfirmButton:false}); closeThemeModal(); }
+        // ================= NEW ROOM SETTINGS & FEATURES LOGIC =================
+        
+        let customThemeBase64 = null;
 
+        window.openRoomSettings = async () => { 
+            if(!currentRoomId || currentRoomId !== currentUser.uid) { 
+                return Swal.fire('Access Denied', 'Only owner can access room settings', 'warning'); 
+            } 
+            const snap = await get(ref(db, `rooms/${currentRoomId}`)); 
+            const d = snap.val(); 
+            
+            document.getElementById('rs-name').value = d.roomName || ''; 
+            document.getElementById('rs-notice').value = d.roomNotice || ''; 
+            document.getElementById('rs-cover-img').src = d.roomCover || 'https://placehold.co/100'; 
+            
+            // Room Type & Super Mic UI Status
+            document.getElementById('rs-room-type-text').innerText = d.roomType === 'video' ? 'Video Room' : 'Chat Room';
+            document.getElementById('rs-super-mic-text').innerText = d.superMic === false ? 'OFF' : 'ON';
+
+            // Lock UI Status
+            if(d.isLocked && d.password) {
+                document.getElementById('rs-lock-text').innerText = "Unlock/Change";
+                document.getElementById('rs-lock-icon').className = "fa-solid fa-lock text-red-600";
+            } else {
+                document.getElementById('rs-lock-text').innerText = "Lock Room";
+                document.getElementById('rs-lock-icon').className = "fa-solid fa-unlock text-green-600";
+            }
+
+            const modal = document.getElementById('room-settings-modal');
+            modal.style.display = 'flex';
+        };
+
+        window.closeRoomSettings = () => {
+            const modal = document.getElementById('room-settings-modal');
+            modal.style.display = 'none';
+        };
+
+        window.saveRoomSettings = async () => { 
+            const n = document.getElementById('rs-name').value; 
+            const notice = document.getElementById('rs-notice').value; 
+            const cover = document.getElementById('rs-cover-img').src; 
+
+            await update(ref(db, `rooms/${currentRoomId}`), { 
+                roomName: n, 
+                roomNotice: notice,
+                roomCover: cover 
+            }); 
+            
+            document.getElementById('room-header-name').innerText = n; 
+            document.getElementById('room-header-cover').src = cover; 
+            closeRoomSettings(); 
+            Swal.fire({toast:true, icon:'success', title:'Settings Saved', position:'top', timer:1500, showConfirmButton:false});
+        };
+
+        // Room Cover Upload
+        window.triggerRoomCoverUpload = () => { document.getElementById('image-upload').click(); };
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    document.getElementById('rs-cover-img').src = base64String;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Chat Room / Video Room Toggle
+        window.toggleRoomType = async () => {
+            const snap = await get(ref(db, `rooms/${currentRoomId}`));
+            const currentType = snap.val().roomType || 'chat';
+            const newType = currentType === 'chat' ? 'video' : 'chat';
+            
+            await update(ref(db, `rooms/${currentRoomId}`), { roomType: newType });
+            document.getElementById('rs-room-type-text').innerText = newType === 'video' ? 'Video Room' : 'Chat Room';
+        };
+
+        // Super Mic Toggle
+        window.toggleSuperMicSetting = async () => {
+            const snap = await get(ref(db, `rooms/${currentRoomId}`));
+            const currentSuper = snap.val().superMic !== false; // Default is true
+            const newSuper = !currentSuper;
+            
+            await update(ref(db, `rooms/${currentRoomId}`), { superMic: newSuper });
+            document.getElementById('rs-super-mic-text').innerText = newSuper ? 'ON' : 'OFF';
+        };
+
+        // Password Lock System
+        window.handleRoomLock = async () => {
+            const snap = await get(ref(db, `rooms/${currentRoomId}`));
+            const data = snap.val();
+            
+            if (data.isLocked && data.password) {
+                // Already locked
+                Swal.fire({
+                    title: 'Room is Locked',
+                    text: 'What do you want to do?',
+                    icon: 'warning',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Unlock Room',
+                    denyButtonText: 'Change Password',
+                    background: '#111', color: '#fff'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await update(ref(db, `rooms/${currentRoomId}`), { isLocked: false, password: null });
+                        document.getElementById('rs-lock-text').innerText = "Lock Room";
+                        document.getElementById('rs-lock-icon').className = "fa-solid fa-unlock text-green-600";
+                        Swal.fire({toast:true, icon:'success', title:'Room Unlocked', position:'top', timer:1500, showConfirmButton:false});
+                    } else if (result.isDenied) {
+                        promptNewPassword();
+                    }
+                });
+            } else {
+                promptNewPassword();
+            }
+        };
+
+        function promptNewPassword() {
+            Swal.fire({
+                title: 'Set 4-Digit Password',
+                input: 'password',
+                inputAttributes: { maxlength: 4, pattern: '[0-9]*', inputmode: 'numeric' },
+                showCancelButton: true,
+                confirmButtonText: 'Lock Room',
+                background: '#111', color: '#fff'
+            }).then(async (result) => {
+                if (result.isConfirmed && result.value.length === 4) {
+                    await update(ref(db, `rooms/${currentRoomId}`), { isLocked: true, password: result.value });
+                    document.getElementById('rs-lock-text').innerText = "Unlock/Change";
+                    document.getElementById('rs-lock-icon').className = "fa-solid fa-lock text-red-600";
+                    Swal.fire({toast:true, icon:'success', title:'Room Locked', position:'top', timer:1500, showConfirmButton:false});
+                } else if(result.isConfirmed) {
+                    Swal.fire('Error', 'Password must be exactly 4 digits', 'error');
+                }
+            });
+        }
+
+        // Room Password Entry on Join
+        window.checkRoomPassword = async (rid, actualPassword) => {
+            if(rid === currentUser.uid) return true; // Owner bypass
+            const { value: pass } = await Swal.fire({
+                title: 'Private Room',
+                text: 'Enter 4-digit password',
+                input: 'password',
+                inputAttributes: { maxlength: 4, inputmode: 'numeric' },
+                showCancelButton: true,
+                background: '#111', color: '#fff'
+            });
+            if (pass === actualPassword) return true;
+            Swal.fire('Error', 'Incorrect Password', 'error');
+            return false;
+        };
+
+        // Administrator Logic (Placeholder for future)
+        window.openAdminSettings = () => {
+            Swal.fire({
+                title: 'Add Administrator',
+                input: 'number',
+                inputPlaceholder: 'Enter User ID',
+                showCancelButton: true,
+                confirmButtonText: 'Add Admin',
+                background: '#111', color: '#fff'
+            }).then(async (result) => {
+                if (result.isConfirmed && result.value) {
+                    const uidSnap = await get(ref(db, `idToUid/${result.value}`));
+                    if(uidSnap.exists()) {
+                        await set(ref(db, `rooms/${currentRoomId}/admins/${uidSnap.val()}`), true);
+                        Swal.fire('Success', 'Admin added successfully', 'success');
+                    } else {
+                        Swal.fire('Error', 'User ID not found', 'error');
+                    }
+                }
+            });
+        };
+
+        // Music Upload Logic
+        document.getElementById('music-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const audioPlayer = document.getElementById('room-bg-music');
+                audioPlayer.src = url;
+                audioPlayer.play();
+                
+                // Alerting others in the room is complex via simple DB, 
+                // normally you stream it via WebRTC AudioContext mixing.
+                // For now, it plays locally for the host to broadcast via mic.
+                Swal.fire({toast:true, icon:'success', title:'Music Playing', position:'top', timer:2000, showConfirmButton:false});
+                
+                push(ref(db, `rooms/${currentRoomId}/messages`), { 
+                    name: "System", text: `Host started playing music.`, type: 'system', timestamp: Date.now() 
+                });
+            }
+        });
+
+        // Theme Modal Logic
+        window.openThemeModal = async () => { 
+            closeRoomSettings(); 
+            document.getElementById('theme-modal').style.display = 'flex'; 
+            
+            // تھیم کا موجودہ اسٹیٹس چیک کریں
+            const snap = await get(ref(db, `rooms/${currentRoomId}`));
+            const currentTheme = snap.val().theme;
+            
+            document.querySelectorAll('.theme-card-new').forEach(card => {
+                const btn = card.querySelector('.theme-btn');
+                if(btn) {
+                    const onclickAttr = card.getAttribute('onclick');
+                    if(onclickAttr && currentTheme && onclickAttr.includes(currentTheme)) {
+                        btn.innerText = "Using";
+                        btn.className = "theme-btn absolute bottom-0 w-full bg-green-500 text-white text-center text-xs py-1.5 font-bold transition";
+                    } else {
+                        btn.innerText = "Use";
+                        btn.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
+                    }
+                }
+            });
+        };
+        
+        window.closeThemeModal = () => document.getElementById('theme-modal').style.display = 'none';
+
+        // نیا فنکشن جو Use اور Using کو ٹوگل کرے گا
+        window.toggleThemeStatus = async (themeData, element) => {
+            const btn = element.querySelector('.theme-btn');
+            
+            if(btn.innerText === "Using") {
+                await removeTheme(); // تھیم ہٹا دے گا (ڈیفالٹ بلیک)
+                btn.innerText = "Use";
+                btn.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
+            } else {
+                // سب کو واپس Use کر دو
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.innerText = "Use";
+                    b.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
+                });
+                await applyTheme(themeData); // نئی تھیم اپلائی کرے گا
+                btn.innerText = "Using";
+                btn.className = "theme-btn absolute bottom-0 w-full bg-green-500 text-white text-center text-xs py-1.5 font-bold transition";
+            }
+        };
+        
+        window.triggerCustomThemeUpload = () => document.getElementById('custom-theme-upload').click();
+        window.uploadCustomTheme = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    customThemeBase64 = event.target.result;
+                    applyTheme(customThemeBase64);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.applyTheme = async (themeData) => { 
+            if(!currentRoomId || currentRoomId !== currentUser.uid) return; 
+            await update(ref(db, `rooms/${currentRoomId}`), { theme: themeData }); 
+            Swal.fire({toast:true, icon:'success', title:'Theme Applied', position:'top', timer:1500, showConfirmButton:false}); 
+            closeThemeModal(); 
+        }
+        window.removeTheme = async () => { 
+            if(!currentRoomId || currentRoomId !== currentUser.uid) return; 
+            await update(ref(db, `rooms/${currentRoomId}`), { theme: null }); 
+            Swal.fire({toast:true, icon:'info', title:'Theme Removed', position:'top', timer:1500, showConfirmButton:false}); 
+            closeThemeModal(); 
+        }
         window.handleGuestTap = () => { };
         window.playDirectVideo = () => { const input = document.getElementById('direct-yt-link'); const val = input.value.trim(); if(!val) return; let videoId = ''; const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = val.match(ytRegExp); if (match && match[2].length == 11) { videoId = match[2]; } else if(val.includes('shorts/')) { const parts = val.split('shorts/'); if(parts[1]) videoId = parts[1].split('?')[0]; } if(videoId && videoId.length > 5) { playVideoById(videoId); input.value = ""; } else { Swal.fire({toast:true, icon:'error', title:'Invalid YouTube Link', position:'top'}); } };
         function playVideoById(id) { set(ref(db, `rooms/${currentRoomId}/videoId`), {type:'yt', id:id, timestamp: Date.now()}); push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `${currentUser.displayName} started a video.`, type: 'system', timestamp: Date.now() }); }
 
         // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی کے ساتھ) =================
+// ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی، 10 سیٹس، اور پاسورڈ کے ساتھ) =================
 window.joinRoom = async (rid) => { 
     // پرانے کنکشن صاف کریں
     if (typeof cleanupWebRTC === 'function') {
@@ -3240,6 +3697,16 @@ window.joinRoom = async (rid) => {
         } 
     } 
     
+    // --- NEW PASSWORD LOGIC ADDED HERE ---
+    const roomSnap = await get(ref(db, `rooms/${rid}`));
+    const roomDataTemp = roomSnap.val();
+    
+    if (roomDataTemp && roomDataTemp.isLocked && roomDataTemp.password) {
+        const isAuthorized = await window.checkRoomPassword(rid, roomDataTemp.password);
+        if (!isAuthorized) return; // اگر پاسورڈ غلط ہے تو واپس چلے جاؤ
+    }
+    // -------------------------------------
+
     currentRoomId = rid; 
     currentUserJoinTime = Date.now(); 
     
@@ -3278,7 +3745,133 @@ window.joinRoom = async (rid) => {
             update(ref(db, `rooms/${rid}`), { isLive: true }); 
             onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
         } 
-    }); 
+    });
+    
+    get(ref(db, `rooms/${rid}`)).then(snap => { 
+        currentRoomData = snap.val(); 
+        currentRoomOwner = currentRoomData.owner; 
+        const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
+        document.getElementById('room-header-cover').src = rCover; 
+        document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
+        document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
+        document.getElementById('guest-touch-blocker').style.display = 'none'; 
+        document.getElementById('empty-state-trigger').style.display = 'flex'; 
+        
+        const theme = currentRoomData.theme; 
+        const area = document.getElementById('room-lower-half'); 
+        const videoBg = document.getElementById('theme-video-bg');
+        
+        if(theme) { 
+            if(theme.endsWith('.mp4')) { 
+                area.style.backgroundImage = 'none'; 
+                videoBg.src = `./${theme}`; 
+                videoBg.classList.remove('hidden'); 
+                videoBg.play().catch(e => console.log("Auto-play prevented")); 
+            } else { 
+                videoBg.classList.add('hidden'); 
+                videoBg.pause(); 
+                area.style.backgroundImage = `url('./${theme}')`; 
+            } 
+        } else { 
+            area.style.backgroundImage = 'none'; 
+            videoBg.classList.add('hidden'); 
+            videoBg.pause(); 
+        }
+        
+        if(rid === currentUser.uid) { 
+            update(ref(db, `rooms/${rid}`), { isLive: true }); 
+            onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
+        } 
+    });
+    
+    // --- NEW ROOM DATA LOGIC ---
+    currentRoomData = roomDataTemp; 
+    currentRoomOwner = currentRoomData.owner; 
+    const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
+    document.getElementById('room-header-cover').src = rCover; 
+    document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
+    document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
+    document.getElementById('guest-touch-blocker').style.display = 'none'; 
+    document.getElementById('empty-state-trigger').style.display = 'flex'; 
+
+    // REALTIME LISTENER FOR ROOM SETTINGS (Type & Super Mic)
+    onValue(ref(db, `rooms/${rid}`), (s) => {
+        const rtData = s.val();
+        if(!rtData) return;
+        
+        // Chat vs Video Room Switcher
+        const videoWrapper = document.getElementById('video-area-wrapper');
+        const bottomMicsRow = document.getElementById('bottom-4-mics-row'); // نئی لائن
+        
+        if(videoWrapper) {
+            if (rtData.roomType === 'video') {
+                videoWrapper.classList.remove('hidden');
+                if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // ویڈیو روم میں نیچے کے 4 مائیک غائب
+            } else {
+                videoWrapper.classList.add('hidden');
+                if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں تمام مائیک شو
+            }
+        }
+
+        // Super Mic Logic (UMAR Centered vs GURIYA side-by-side)
+        const superMicsRow = document.getElementById('super-mics-row');
+        const seat2Wrapper = document.getElementById('wrapper-seat2');
+        const heartWrapper = document.getElementById('heartbeat-container');
+        const seat1Wrapper = document.getElementById('wrapper-seat1');
+
+        if(superMicsRow && seat2Wrapper && heartWrapper && seat1Wrapper) {
+            if (rtData.superMic === false) {
+                seat2Wrapper.classList.add('hidden');
+                heartWrapper.classList.add('hidden');
+                // Center UMAR
+                superMicsRow.classList.remove('gap-6');
+                seat1Wrapper.classList.add('mx-auto');
+            } else {
+                seat2Wrapper.classList.remove('hidden');
+                heartWrapper.classList.remove('hidden');
+                // Side by Side
+                superMicsRow.classList.add('gap-6');
+                seat1Wrapper.classList.remove('mx-auto');
+            }
+        }
+
+        const theme = rtData.theme; 
+        const area = document.getElementById('room-lower-half'); 
+        const videoBg = document.getElementById('theme-video-bg');
+        
+        if(theme) { 
+            if(theme.endsWith('.mp4')) { 
+                area.style.backgroundImage = 'none'; 
+                if(videoBg) {
+                    videoBg.src = `./${theme}`; 
+                    videoBg.classList.remove('hidden'); 
+                    videoBg.play().catch(e => console.log("Auto-play prevented")); 
+                }
+            } else { 
+                if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
+                area.style.backgroundImage = `url('./${theme}')`; 
+            } 
+        } else { 
+            area.style.backgroundImage = 'none'; 
+            if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
+        }
+
+        // NEW: Update Room Notice in UI
+        const noticeDisplay = document.getElementById('room-notice-display');
+        const noticeText = document.getElementById('room-notice-text');
+        if(rtData.roomNotice && rtData.roomNotice.trim() !== '') {
+            if(noticeDisplay) noticeDisplay.classList.remove('hidden');
+            if(noticeText) noticeText.innerText = rtData.roomNotice;
+        } else {
+            if(noticeDisplay) noticeDisplay.classList.add('hidden');
+        }
+    });
+    
+    if(rid === currentUser.uid) { 
+        update(ref(db, `rooms/${rid}`), { isLive: true }); 
+        onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
+    } 
+    
     
     onValue(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`), (s) => { 
         if(s.exists() && currentRoomId === rid) { 
@@ -3295,11 +3888,12 @@ window.joinRoom = async (rid) => {
     onDisconnect(userRef).remove();
     
     // کالز بھی صاف کریں جب روم چھوڑے
-    onDisconnect(ref(db, `calls/${currentUser.uid}`)).remove();  // نیا
+    onDisconnect(ref(db, `calls/${currentUser.uid}`)).remove(); 
     
     onValue(ref(db, `rooms/${rid}/activeUsers`), (snap) => { 
         const count = snap.exists() ? Object.keys(snap.val()).length : 0; 
-        document.getElementById('room-user-count').innerText = count; 
+        const countEl = document.getElementById('room-user-count');
+        if(countEl) countEl.innerText = count; 
     });
     
     push(ref(db, `rooms/${rid}/messages`), { 
@@ -3310,28 +3904,6 @@ window.joinRoom = async (rid) => {
         nameColorClass: currentRoomSeats?.nameColorClass || null,
         timestamp: Date.now() 
     });
-
-    onValue(ref(db, `rooms/${rid}/theme`), s => { 
-        const t = s.val(); 
-        const area = document.getElementById('room-lower-half'); 
-        const videoBg = document.getElementById('theme-video-bg'); 
-        if(t) { 
-            if(t.endsWith('.mp4')) { 
-                area.style.backgroundImage = 'none'; 
-                videoBg.src = `./${t}`; 
-                videoBg.classList.remove('hidden'); 
-                videoBg.play().catch(e => console.log("Playback error", e)); 
-            } else { 
-                videoBg.classList.add('hidden'); 
-                videoBg.pause(); 
-                area.style.backgroundImage = `url('./${t}')`; 
-            } 
-        } else { 
-            area.style.backgroundImage = 'none'; 
-            videoBg.classList.add('hidden'); 
-            videoBg.pause(); 
-        } 
-    });
     
     const rr = ref(db, `rooms/${rid}`);
     
@@ -3340,23 +3912,27 @@ window.joinRoom = async (rid) => {
         const iframe = document.getElementById('video-iframe'); 
         const trigger = document.getElementById('empty-state-trigger'); 
         const local = document.getElementById('local-video-player'); 
-        local.classList.add('hidden'); 
+        if(local) local.classList.add('hidden'); 
         if(v) { 
-            trigger.style.display = 'none'; 
-            iframe.classList.remove('hidden'); 
-            if(v.type === 'yt') { 
-                const origin = window.location.origin; 
-                const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; 
-                if(iframe.src !== embedUrl) iframe.src = embedUrl; 
-            } 
+            if(trigger) trigger.style.display = 'none'; 
+            if(iframe) {
+                iframe.classList.remove('hidden'); 
+                if(v.type === 'yt') { 
+                    const origin = window.location.origin; 
+                    const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; 
+                    if(iframe.src !== embedUrl) iframe.src = embedUrl; 
+                } 
+            }
         } else { 
-            trigger.style.display = 'flex'; 
-            iframe.classList.add('hidden'); 
-            iframe.src = ""; 
+            if(trigger) trigger.style.display = 'flex'; 
+            if(iframe) {
+                iframe.classList.add('hidden'); 
+                iframe.src = ""; 
+            }
         } 
     }); 
     
-    // ========== نیا: سیٹ سننے والا ==========
+    // ========== 10 SEATS LISTENER (UPDATED) ==========
     onValue(child(rr, 'seats'), s => { 
         currentRoomSeats = s.val() || {}; 
         updateSeat('seat1', currentRoomSeats.seat1, "UMAR"); 
@@ -3365,15 +3941,21 @@ window.joinRoom = async (rid) => {
         updateSeat('seat4', currentRoomSeats.seat4, "2"); 
         updateSeat('seat5', currentRoomSeats.seat5, "3"); 
         updateSeat('seat6', currentRoomSeats.seat6, "4"); 
+        updateSeat('seat7', currentRoomSeats.seat7, "5"); 
+        updateSeat('seat8', currentRoomSeats.seat8, "6"); 
+        updateSeat('seat9', currentRoomSeats.seat9, "7"); 
+        updateSeat('seat10', currentRoomSeats.seat10, "8"); 
         
         const hc = document.getElementById('heartbeat-container'); 
         const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid; 
         const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid; 
-        if(seat1Occupied && seat2Occupied) { 
-            hc.classList.add('heartbeat-active'); 
-        } else { 
-            hc.classList.remove('heartbeat-active'); 
-        } 
+        if(hc) {
+            if(seat1Occupied && seat2Occupied) { 
+                hc.classList.add('heartbeat-active'); 
+            } else { 
+                hc.classList.remove('heartbeat-active'); 
+            } 
+        }
         
         document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); 
         
@@ -3396,6 +3978,7 @@ window.joinRoom = async (rid) => {
 
     onValue(child(rr, 'messages'), s => { 
         const chatArea = document.getElementById('chat-display-area'); 
+        if(!chatArea) return;
         chatArea.innerHTML = ''; 
         if(s.exists()) { 
             Object.values(s.val()).forEach(m => { 
@@ -3408,8 +3991,6 @@ window.joinRoom = async (rid) => {
                         chatArea.innerHTML += `<div class="chat-system-msg">${m.text}</div>`; 
                     } 
                     else if (m.type === 'entry') {
-                        let colorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-                        
                         let nameHtml = m.uid 
                             ? `<span onclick="viewFriendProfile('${m.uid}')" class="font-extrabold ${colorClass} cursor-pointer hover:underline">${m.name}</span>`
                             : `<span class="font-extrabold ${colorClass}">${m.name}</span>`;
@@ -3420,12 +4001,10 @@ window.joinRoom = async (rid) => {
                         </div>`;
                     }
                     else if (m.type === 'gift') {
-                        let giftColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-                        chatArea.innerHTML += `<div class="chat-message-bubble">${levelBadgeHtml} <b class="${giftColorClass}">${m.name}:</b> <span class="text-white">${m.text}</span></div>`; 
+                        chatArea.innerHTML += `<div class="chat-message-bubble">${levelBadgeHtml} <b class="${colorClass}">${m.name}:</b> <span class="text-white">${m.text}</span></div>`; 
                     }
                     else { 
-                        let msgColorClass = (m.nameColorClass && m.nameColorClass !== "") ? m.nameColorClass : 'text-yellow-400';
-                        chatArea.innerHTML += `<div class="chat-message-bubble mb-1 items-center">${levelBadgeHtml}<span class="font-black ${msgColorClass}">${m.name}</span><span class="text-white font-bold mx-0.5">:</span> <span class="text-white">${m.text}</span></div>`; 
+                        chatArea.innerHTML += `<div class="chat-message-bubble mb-1 items-center">${levelBadgeHtml}<span class="font-black ${colorClass}">${m.name}</span><span class="text-white font-bold mx-0.5">:</span> <span class="text-white">${m.text}</span></div>`; 
                     }
 
                     if(m.type === 'gift' && m.giftName && (Date.now() - m.timestamp < 3000)) {
@@ -3463,103 +4042,281 @@ window.joinRoom = async (rid) => {
     }
 };
 
-        window.updateSeat = (seatId, data, defaultName) => { 
-    const visualDiv = document.getElementById(`${seatId}-visual`); 
-    const nameSpan = document.getElementById(`${seatId}-name`); 
-    const container = document.getElementById(`cont-${seatId}`); 
-    if (!visualDiv || !nameSpan || !container) return; 
-    
-    // پرانی کلاسز اور بیجز ہٹائیں
-    container.classList.remove('seat-occupied', 'seat-locked', 'has-frame'); 
-    const oldBadge = container.querySelector('.seat-mute-badge'); if(oldBadge) oldBadge.remove(); 
-    const oldVBadge = container.querySelector('.v-badge-mic'); if(oldVBadge) oldVBadge.remove();
-    
-    // PNG باکس ہمیشہ رہے گا (چاہے کوئی بیٹھا ہو یا نہ ہو)
-    // chair-bg-img پہلے سے HTML میں موجود ہے
-    
-    if (data && data.locked) { 
-        // لاک شدہ سیٹ - لاک آئیکن دکھائیں
-        visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; 
-        container.classList.add('seat-locked'); 
-        nameSpan.innerText = "Locked"; 
-        nameSpan.className = "seat-name text-red-500"; 
-    } 
-    else if (data && data.uid) { 
-        // سیٹ پر کوئی بیٹھا ہوا ہے
-        container.classList.add('seat-occupied'); 
-        
-        let html = `<div class="visual-root">`; 
-        html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
-        if (data.frame) { 
-            html += `<img src="${data.frame}" class="visual-frame">`; 
-            container.classList.add('has-frame'); 
-        } 
-        html += `</div>`; 
-        visualDiv.innerHTML = html; 
-        
-        nameSpan.innerText = data.name || defaultName; 
-        
-        if (data.nameColorClass && data.nameColorClass !== "") {
-            nameSpan.className = `seat-name occupied ${data.nameColorClass}`;
-        } else {
-            nameSpan.className = "seat-name occupied text-white";
-        }
-        
-        if (data.uid === currentUser?.uid && isMicMuted) { 
-            const badge = document.createElement('div'); 
-            badge.className = 'seat-mute-badge'; 
-            badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; 
-            container.appendChild(badge); 
-        }
-        if (data.isOfficial) {
-            const vbadge = document.createElement('img');
-            vbadge.src = './v_badge.png'; 
-            vbadge.className = 'v-badge-mic';
-            vbadge.onerror = function() { this.style.display='none'; };
-            container.appendChild(vbadge);
-        }
-    } 
-    else { 
-        // سیٹ بالکل خالی ہے - صرف PNG باکس اور پلس کا آئیکن
-        visualDiv.innerHTML = `
-            <div class="visual-root">
-                <i class="fa-solid fa-plus absolute text-white text-3xl" style="filter: drop-shadow(0 2px 4px black); z-index: 20;"></i>
-            </div>`;
-        
-        nameSpan.innerText = defaultName; 
-        nameSpan.className = "seat-name text-gray-400"; // خالی سیٹ کا نام ہلکا
-    } 
-};
+        // ================= NEW SEAT CLICK LOGIC (Single & Double Click) =================
+        let seatClickTimers = {};
 
-        window.hideAllMicMenus = (e) => { if (!e.target.closest('.mic-container') && !e.target.closest('.mic-container-sm')) { document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); } };
-        window.toggleMicMenu = (seatId, defName, event) => { 
-            event.stopPropagation(); 
-            document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); 
-            const menu = document.getElementById(`menu-${seatId}`); 
+        window.updateSeat = (seatId, data, defaultName) => { 
+            const visualDiv = document.getElementById(`${seatId}-visual`); 
+            const nameSpan = document.getElementById(`${seatId}-name`); 
+            const container = document.getElementById(`cont-${seatId}`); 
+            if (!visualDiv || !nameSpan || !container) return; 
+            
+            container.classList.remove('seat-occupied', 'seat-locked', 'has-frame'); 
+            const oldBadge = container.querySelector('.seat-mute-badge'); if(oldBadge) oldBadge.remove(); 
+            const oldVBadge = container.querySelector('.v-badge-mic'); if(oldVBadge) oldVBadge.remove();
+            
+            // پرانا onclick ہٹا کر نیا handleSeatTap لگا رہے ہیں
+            container.setAttribute('onclick', `handleSeatTap('${seatId}', '${defaultName}', event)`);
+            
+            if (data && data.locked) { 
+                visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; 
+                container.classList.add('seat-locked'); 
+                nameSpan.innerText = "Locked"; 
+                nameSpan.className = "seat-name text-red-500"; 
+            } 
+            else if (data && data.uid) { 
+                container.classList.add('seat-occupied'); 
+                let html = `<div class="visual-root">`; 
+                html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
+                if (data.frame) { 
+                    html += `<img src="${data.frame}" class="visual-frame">`; 
+                    container.classList.add('has-frame'); 
+                } 
+                html += `</div>`; 
+                visualDiv.innerHTML = html; 
+                
+                nameSpan.innerText = data.name || defaultName; 
+                nameSpan.className = (data.nameColorClass && data.nameColorClass !== "") ? `seat-name occupied ${data.nameColorClass}` : "seat-name occupied text-white";
+                
+                if (data.uid === currentUser?.uid && isMicMuted) { 
+                    const badge = document.createElement('div'); 
+                    badge.className = 'seat-mute-badge'; 
+                    badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; 
+                    container.appendChild(badge); 
+                }
+                if (data.isOfficial) {
+                    const vbadge = document.createElement('img');
+                    vbadge.src = './v_badge.png'; 
+                    vbadge.className = 'v-badge-mic';
+                    vbadge.onerror = function() { this.style.display='none'; };
+                    container.appendChild(vbadge);
+                }
+            } 
+            else { 
+                // پلس کی جگہ ایک خوبصورت گول شیڈو والا مائیک آئیکن لگا دیا گیا ہے
+                visualDiv.innerHTML = `
+                <div class="visual-root">
+                    <div class="absolute w-[42px] h-[42px] rounded-full bg-black/40 border border-white/20 flex items-center justify-center z-20 backdrop-blur-sm" style="box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+                        <i class="fa-solid fa-microphone text-white/70 text-lg" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8));"></i>
+                    </div>
+                </div>`;
+                nameSpan.innerText = defaultName; 
+                nameSpan.className = "seat-name text-gray-400"; 
+            } 
+        };
+
+        window.handleSeatTap = (seatId, defName, event) => {
+            event.stopPropagation();
+            const seatData = currentRoomSeats[seatId];
+            const uid = (seatData && seatData.uid) ? seatData.uid : null;
+
+            if (seatClickTimers[seatId]) {
+                // ڈبل کلک (فل پروفائل اوپن کرے گا)
+                clearTimeout(seatClickTimers[seatId]);
+                delete seatClickTimers[seatId];
+                if(uid) {
+                    closeHalfProfile(event);
+                    openFullProfileView(uid);
+                }
+            } else {
+                // سنگل کلک ٹائمر
+                seatClickTimers[seatId] = setTimeout(() => {
+                    delete seatClickTimers[seatId];
+                    if (uid && uid !== currentUser.uid) {
+                        openHalfProfile(uid, seatId); // ہاف پروفائل کھولیں
+                    } else {
+                        openMicMenuSheet(seatId, defName); // وائٹ مینو کھولیں
+                    }
+                }, 300); // 300ms کے اندر دوسرا کلک آیا تو ڈبل کلک مانا جائے گا
+            }
+        };
+
+        // ================= NEW MODERN MIC MENU (White Bottom Sheet) =================
+        window.openMicMenuSheet = (seatId, defName) => {
+            const sheet = document.getElementById('mic-action-sheet');
+            const content = document.getElementById('mic-sheet-content');
             const seatData = currentRoomSeats[seatId]; 
             const amIOwner = currentUser.uid === currentRoomOwner; 
             const amISitting = seatData && seatData.uid === currentUser.uid; 
-            menu.innerHTML = ''; menu.style.display = 'flex'; 
             
-            if (amISitting) { menu.innerHTML = `<div class="btn-action btn-red" onclick="leaveSeat('${seatId}')">LEAVE</div>`; return; } 
-            if (seatData && seatData.locked) { 
-                if (amIOwner) { menu.innerHTML = `<div class="btn-action btn-yellow" onclick="toggleLock('${seatId}', false)">UNLOCK</div>`; } 
-                else { menu.innerHTML = `<div class="text-white text-xs p-2">LOCKED</div>`; } 
-                return; 
+            let html = '';
+
+            if (amISitting) { 
+                html += `<div class="p-4 text-center text-red-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="leaveSeat('${seatId}'); closeMicSheet(event);">Leave Seat</div>`; 
             } 
-            if (seatData && seatData.uid) { 
-                let html = `<div class="btn-action btn-blue" onclick="viewFriendProfile('${seatData.uid}')">PROFILE</div>`;
+            else if (seatData && seatData.locked) { 
                 if (amIOwner) { 
-                    html += `<div class="btn-action btn-yellow" onclick="unseatUser('${seatId}')">UNSEAT</div><div class="btn-action btn-red" onclick="kickUserFromRoom('${seatId}', '${seatData.uid}')">KICK</div>`; 
+                    html += `<div class="p-4 text-center text-blue-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="toggleLock('${seatId}', false); closeMicSheet(event);">Unlock Seat</div>`; 
+                } else { 
+                    html += `<div class="p-4 text-center text-gray-400 font-bold text-lg border-b border-gray-100">Seat is Locked</div>`; 
                 } 
-                menu.innerHTML = html;
-                return; 
             } 
-            if (!seatData || !seatData.uid) { 
-                let html = `<div class="btn-action btn-green" onclick="sitDown('${seatId}', '${defName}')">SIT</div>`; 
-                if (amIOwner) { html += `<div class="btn-action btn-blue" onclick="toggleLock('${seatId}', true)">LOCK</div>`; } 
-                menu.innerHTML = html; 
+            else if (!seatData || !seatData.uid) { 
+                html += `<div class="p-4 text-center text-green-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="sitDown('${seatId}', '${defName}'); closeMicSheet(event);">open</div>`; 
+                html += `<div class="p-4 text-center text-gray-800 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="window.showInviteModal(); closeMicSheet(event);">Invite</div>`; 
+                if (amIOwner) { 
+                    html += `<div class="p-4 text-center text-blue-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="toggleLock('${seatId}', true); closeMicSheet(event);">Lock</div>`; 
+                } 
             } 
+
+            html += `<div class="p-4 text-center text-gray-500 font-bold text-lg cursor-pointer active:bg-gray-50 mt-2" onclick="closeMicSheet(event)">Cancel</div>`;
+
+            content.innerHTML = html;
+            
+            sheet.classList.remove('hidden');
+            sheet.style.display = 'flex';
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+        };
+
+        window.closeMicSheet = (e) => {
+            if(e) e.stopPropagation();
+            const sheet = document.getElementById('mic-action-sheet');
+            const content = document.getElementById('mic-sheet-content');
+            sheet.classList.add('opacity-0');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                sheet.classList.add('hidden');
+                sheet.style.display = 'none';
+            }, 300);
+        };
+
+        // ================= NEW HALF PROFILE (Bottom Sheet) =================
+        let targetHPUid = null;
+
+        window.openHalfProfile = async (uid, seatId) => {
+            targetHPUid = uid;
+            const sheet = document.getElementById('half-profile-sheet');
+            const content = document.getElementById('half-profile-content');
+            
+            // Show sheet
+            sheet.classList.remove('hidden');
+            sheet.style.display = 'flex';
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+
+            // Fetch User Data
+            const snap = await get(ref(db, `users/${uid}`));
+            const d = snap.val() || {};
+
+            document.getElementById('hp-dp').src = d.photoURL || 'https://placehold.co/100';
+            
+            const frameImg = document.getElementById('hp-frame');
+            if (d.currentFrame) {
+                frameImg.src = d.currentFrame;
+                frameImg.classList.remove('hidden');
+            } else {
+                frameImg.classList.add('hidden');
+            }
+
+            document.getElementById('hp-name').innerHTML = `${d.username} <img src="${d.gender === 'female' ? './female.png' : './male.png'}" class="w-4 h-4 ml-1">`;
+            document.getElementById('hp-id').innerText = d.customId || '000000';
+
+            // Level Logic
+            let exp = d.userExp || 0;
+            let lvl = getUserLevel(exp);
+            document.getElementById('hp-level-text').innerText = `Lv.${lvl}`;
+            document.getElementById('hp-medal-img').src = getMedalImage(lvl);
+
+            // 5 Medals Logic
+            const medalsList = document.getElementById('hp-medals-list');
+            medalsList.innerHTML = '';
+            let milestones =[10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+            let achievedMedals =[];
+            for (let m of milestones) {
+                if (lvl >= m) achievedMedals.push(getMedalImage(m));
+            }
+            let recentMedals = achievedMedals.slice(-5);
+            recentMedals.forEach(src => {
+                medalsList.innerHTML += `<img src="${src}" class="w-6 h-6 object-contain drop-shadow-sm">`;
+            });
+            if(recentMedals.length === 0) medalsList.innerHTML = `<span class="text-[10px] text-gray-400">No medals yet</span>`;
+
+            // Follow Button
+            const followBtn = document.getElementById('hp-follow-btn');
+            const fCheck = await get(ref(db, `users/${currentUser.uid}/friends/${uid}`)); 
+            if(fCheck.exists()) {
+                followBtn.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                followBtn.className = "w-14 h-14 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center shadow-md active:scale-95 transition";
+                followBtn.onclick = null; // Unfollow is done from full profile
+            } else {
+                followBtn.innerHTML = `<i class="fa-solid fa-plus text-xl"></i>`;
+                followBtn.className = "w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition";
+                followBtn.onclick = () => followUser(uid, followBtn);
+            }
+
+            // Room Owner Actions (Kick / Invite-Remove)
+            const ownerActions = document.getElementById('hp-owner-actions');
+            const amIOwner = currentUser.uid === currentRoomOwner; 
+            
+            if (amIOwner && uid !== currentUser.uid) {
+                ownerActions.classList.remove('hidden');
+                document.getElementById('hp-kick-btn').onclick = () => {
+                    kickUserFromRoom(seatId, uid);
+                    closeHalfProfile();
+                };
+                document.getElementById('hp-invite-btn').onclick = () => {
+                    unseatUser(seatId); 
+                    closeHalfProfile();
+                };
+                document.getElementById('hp-invite-btn').innerText = "Remove from Seat";
+            } else {
+                ownerActions.classList.add('hidden');
+            }
+        };
+
+        window.closeHalfProfile = (e) => {
+            if(e) e.stopPropagation();
+            const sheet = document.getElementById('half-profile-sheet');
+            const content = document.getElementById('half-profile-content');
+            sheet.classList.add('opacity-0');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                sheet.classList.add('hidden');
+                sheet.style.display = 'none';
+            }, 300);
+        };
+
+        window.openDirectChatFromHP = () => {
+            closeHalfProfile();
+            let name = document.getElementById('hp-name').innerText.trim();
+            openDirectChat(targetHPUid, name);
+        };
+
+        window.openGiftFromHP = () => {
+            closeHalfProfile();
+            let name = document.getElementById('hp-name').innerText.trim();
+            selectedGiftTargetUid = targetHPUid;
+            selectedGiftTargetName = name;
+            openGiftModal(); 
+        };
+
+        window.kickUserFromRoom = async (seatId, targetUid) => {
+            const res = await Swal.fire({ title: 'Kick User?', text: 'They will be kicked out of the room.', icon: 'warning', showCancelButton: true, background: '#111', color: '#fff' });
+            if(res.isConfirmed) {
+                if (seatId) await unseatUser(seatId);
+                await set(ref(db, `rooms/${currentRoomId}/kicked/${targetUid}`), Date.now());
+                push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `User was kicked from the room.`, type: 'system', timestamp: Date.now() });
+                Swal.fire({toast:true, icon:'success', title:'User Kicked', position:'top', timer:1500, showConfirmButton:false});
+            }
+        };
+
+        window.unseatUser = async (seatId) => {
+            if (peerConnections[seatId]) { peerConnections[seatId].close(); delete peerConnections[seatId]; }
+            await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`));
+            Swal.fire({toast:true, icon:'info', title:'Removed from seat', position:'top', timer:1500, showConfirmButton:false});
+        };
+
+        window.toggleLock = async (seatId, lock) => {
+            if(lock) {
+                await set(ref(db, `rooms/${currentRoomId}/seats/${seatId}`), { locked: true });
+            } else {
+                await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`));
+            }
         };
         // ========== نیا leaveSeat (بلبلوں کے ساتھ) ==========
 window.leaveSeat = async (sid) => {
@@ -3668,57 +4425,110 @@ window.leaveSeat = async (sid) => {
             const snap = await get(ref(db, `users/${currentUser.uid}`));
             const userData = snap.val() || {};
             const currentEquipped = userData.currentFrame;
-            const unlockedFrames = userData.unlockedFrames || {};
+            const currentVip = userData.nameColorClass;
             
+            let unlockedFrames = userData.unlockedFrames || {};
+            const unlockedVIPs = userData.unlockedVIPs || {}; 
+            
+            let needsMigration = false;
+
+            if (Object.keys(unlockedVIPs).length > 0) {
+                for (let [vipClass, isOwned] of Object.entries(unlockedVIPs)) {
+                    if (isOwned) {
+                        let lvl = 20; let days = 7; let iconPath = './green_vip.png'; let vName = 'VIP Green';
+                        
+                        if(vipClass.includes('yellow')) { lvl = 30; days = 30; iconPath = './yellow_vip.png'; vName = 'VIP Yellow'; }
+                        if(vipClass.includes('pink')) { lvl = 50; days = 14; iconPath = './pink_vip.png'; vName = 'VIP Pink'; }
+                        if(vipClass.includes('colorful')) { lvl = 100; days = 30; iconPath = './colorful_vip.png'; vName = 'VIP Colorful'; }
+                        
+                        let expiryTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+                        let uniqueId = 'vip_migrated_' + lvl + '_' + Date.now();
+                        
+                        unlockedFrames[uniqueId] = {
+                            name: vName,
+                            img: vipClass,
+                            icon: iconPath,
+                            isVipName: true,
+                            purchasedAt: Date.now(),
+                            expiry: expiryTime,
+                            status: 'unused'
+                        };
+                        needsMigration = true;
+                    }
+                }
+            }
+
+            if (needsMigration) {
+                await update(ref(db, `users/${currentUser.uid}`), {
+                    unlockedFrames: unlockedFrames,
+                    unlockedVIPs: null 
+                });
+            }
+
             let htmlContent = '';
             let hasFrames = false;
 
-            for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+            for (let[purchaseId, frameData] of Object.entries(unlockedFrames)) {
                 hasFrames = true;
-                let isEquipped = (currentEquipped === frameData.img);
+                let isEquipped = frameData.isVipName ? (currentVip === frameData.img) : (currentEquipped === frameData.img);
                 let btnText, btnClass, btnAction, statusText;
 
                 if (frameData.status === 'unused') {
-                    btnText = "USE (Starts 7 Days)";
+                    btnText = "USE NOW";
                     btnClass = "bg-green-600";
-                    btnAction = `applyFrame('${purchaseId}', '${frameData.img}')`;
+                    btnAction = `applyFrame('${purchaseId}', '${frameData.img}', ${frameData.isVipName || false})`;
                     statusText = `<span class="text-green-400 text-[9px] font-bold">UNUSED</span>`;
-                } else if (frameData.expiry > Date.now()) {
+                } else if (frameData.expiry && frameData.expiry > Date.now()) {
                     let daysLeft = Math.max(1, Math.ceil((frameData.expiry - Date.now()) / (1000 * 60 * 60 * 24)));
                     statusText = `<span class="text-yellow-400 text-[9px] font-bold">${daysLeft} Days Left</span>`;
                     
                     if (isEquipped) {
-                        btnText = "UNEQUIP (Remove)";
+                        btnText = "UNEQUIP";
                         btnClass = "bg-red-600";
-                        btnAction = "unequipFrame()";
+                        btnAction = frameData.isVipName ? "removeVIPName()" : "unequipFrame()";
                     } else {
                         btnText = "EQUIP";
                         btnClass = "bg-blue-600";
-                        btnAction = `equipActiveFrame('${frameData.img}')`;
+                        btnAction = `equipActiveFrame('${frameData.img}', ${frameData.isVipName || false})`;
                     }
                 } else {
-                    // Expired
                     statusText = `<span class="text-red-500 text-[9px] font-bold">EXPIRED</span>`;
                     btnText = "DELETE";
                     btnClass = "bg-gray-600";
                     btnAction = `deleteExpiredFrame('${purchaseId}', ${isEquipped})`;
                 }
 
+                let iconHtml = '';
+                let finalName = frameData.name;
+
+                if (frameData.isVipName) {
+                    let iconSrc = frameData.icon;
+                    // پرانے ناموں کو زبردستی خوبصورت ناموں میں بدلنا
+                    if(frameData.img.includes('green')) { iconSrc = './green_vip.png'; finalName = 'VIP Green'; }
+                    else if(frameData.img.includes('yellow')) { iconSrc = './yellow_vip.png'; finalName = 'VIP Yellow'; }
+                    else if(frameData.img.includes('pink')) { iconSrc = './pink_vip.png'; finalName = 'VIP Pink'; }
+                    else if(frameData.img.includes('colorful')) { iconSrc = './colorful_vip.png'; finalName = 'VIP Colorful'; }
+                    
+                    // یہ لائن میں نے اپڈیٹ کی ہے تاکہ اگر امیج نہ ملے تو کچھ بھی شو نہ ہو، گرے ڈبہ ختم!
+                    iconHtml = `<img src="${iconSrc}" class="w-16 h-16 object-contain drop-shadow-lg" onerror="this.style.display='none'">`;
+                } else {
+                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${frameData.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">`;
+                }
+
                 htmlContent += `
                 <div class="bg-gray-900 border ${isEquipped ? 'border-green-500' : 'border-gray-700'} rounded-xl p-4 flex flex-col items-center relative shadow-lg">
                     ${isEquipped ? '<div class="absolute top-2 left-2 w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></div>' : ''}
                     <div class="w-20 h-20 relative mb-2 flex items-center justify-center">
-                        <img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover">
-                        <img src="${frameData.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">
+                        ${iconHtml}
                     </div>
-                    <span class="text-white font-bold text-xs text-center truncate w-full">${frameData.name}</span>
+                    <span class="text-white font-bold text-[13px] text-center w-full truncate px-1">${finalName}</span>
                     <div class="mb-3 mt-1">${statusText}</div>
                     <button onclick="${btnAction}" class="w-full ${btnClass} text-white font-bold text-[10px] py-2 rounded-lg transition active:scale-95 uppercase">${btnText}</button>
                 </div>`;
             }
 
             if (!hasFrames) {
-                grid.innerHTML = '<div class="text-gray-500 text-center w-full mt-10 col-span-2 text-sm">Your warehouse is empty.<br>Go to Store to buy frames.</div>';
+                grid.innerHTML = '<div class="text-gray-500 text-center w-full mt-10 col-span-2 text-sm">Your warehouse is empty.</div>';
             } else {
                 grid.innerHTML = htmlContent;
             }
@@ -3734,24 +4544,21 @@ window.leaveSeat = async (sid) => {
             modal.style.display = 'none';
         };
 
-        // جب فریم پہلی بار استعمال ہو (7 دن کا ٹائم شروع)
-        window.applyFrame = async (purchaseId, imgPath) => {
-            const expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 Days
-            
+        window.applyFrame = async (purchaseId, imgPath, isVipName = false) => {
             await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
                 activatedAt: Date.now(),
-                expiry: expiryTime,
                 status: 'active'
             });
-
-            await equipActiveFrame(imgPath);
-            Swal.fire({toast:true, icon:'success', title:'7-Day Timer Started!', position:'top-end', showConfirmButton:false, timer:2000});
+            await window.equipActiveFrame(imgPath, isVipName);
+            Swal.fire({toast:true, icon:'success', title:'Timer Started!', position:'top-end', showConfirmButton:false, timer:2000});
         };
 
-        // ٹائم شروع ہونے کے بعد صرف پہننے (Equip) کے لیے
-        // فریم پہننے (USE) کے لیے
-        window.equipActiveFrame = async (imgPath) => {
-            await update(ref(db, `users/${currentUser.uid}`), { currentFrame: imgPath }); 
+        window.equipActiveFrame = async (imgPath, isVipName = false) => {
+            if (isVipName) {
+                await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: imgPath }); 
+            } else {
+                await update(ref(db, `users/${currentUser.uid}`), { currentFrame: imgPath }); 
+            }
             
             if(currentRoomId) { 
                 const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); 
@@ -3759,16 +4566,19 @@ window.leaveSeat = async (sid) => {
                     const seats = seatsSnap.val(); 
                     Object.keys(seats).forEach(async (k) => { 
                         if(seats[k].uid === currentUser.uid) { 
-                            await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: imgPath }); 
+                            if (isVipName) {
+                                await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { nameColorClass: imgPath }); 
+                            } else {
+                                await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: imgPath }); 
+                            }
                         } 
                     }); 
                 } 
             } 
-            window.openPropHouse(); // پیج ریفریش کرے گا
-            Swal.fire({toast:true, icon:'success', title:'Frame Equipped!', position:'top', showConfirmButton:false, timer:1500});
+            window.openPropHouse();
+            Swal.fire({toast:true, icon:'success', title:'Equipped!', position:'top', showConfirmButton:false, timer:1500});
         };
 
-        // فریم ہٹانے (UNEQUIP / UNUSE) کے لیے
         window.unequipFrame = async () => { 
             await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null }); 
             if(currentRoomId) { 
@@ -3782,19 +4592,9 @@ window.leaveSeat = async (sid) => {
                     }); 
                 } 
             } 
-            window.openPropHouse(); // پیج ریفریش کرے گا
-            Swal.fire({toast:true, icon:'info', title:'Frame Removed', position:'top', showConfirmButton:false, timer:1500}); 
-        };
-
-        // Expire ہونے کے بعد ڈیلیٹ کرنے کے لیے
-        window.deleteExpiredFrame = async (purchaseId, wasEquipped) => {
-            if (wasEquipped) {
-                await unequipFrame();
-            }
-            await remove(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`));
             window.openPropHouse();
         };
-        // ================= END NEW STORE & WAREHOUSE SYSTEM =================
+
         window.removeVIPName = async () => {
             await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: null });
             if(currentRoomId) {
@@ -3806,8 +4606,13 @@ window.leaveSeat = async (sid) => {
                     });
                 }
             }
-            Swal.fire({toast:true, icon:'info', title:'VIP Name Removed', position:'top-end', showConfirmButton:false, timer:1500});
-            openPropHouse();
+            window.openPropHouse();
+        };
+
+        window.deleteExpiredFrame = async (purchaseId, wasEquipped) => {
+            if (wasEquipped) await unequipFrame();
+            await remove(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`));
+            window.openPropHouse();
         };
 
         window.closePropHouse = () => {
@@ -3845,8 +4650,9 @@ window.leaveSeat = async (sid) => {
       // ================= FIXED FULL PROFILE VIEW LOGIC =================
         let viewingProfileUid = null;
 
-        window.openFullProfileView = async () => {
-            viewingProfileUid = currentUser.uid; 
+        window.openFullProfileView = async (targetUid) => {
+            // اگر targetUid پاس کیا گیا ہے تو وہ کھلے گا، ورنہ اپنا پروفائل کھلے گا
+            viewingProfileUid = (targetUid && typeof targetUid === 'string') ? targetUid : currentUser.uid; 
             
             const view = document.getElementById('full-profile-view');
             view.classList.remove('hidden');
@@ -5877,11 +6683,12 @@ async function loadCPRankingData() {
                         weeklyGifts = u.cp.cpGiftAmount_weekly || 0;
                     }
                     
-                    var partnerName = u.cp.partnerName || 'Partner';
-                    var partnerPic = u.cp.partnerPic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(partnerName);
-                    
-                    // Partner data حاصل کریں
+                    // Partner data حاصل کریں (Live Data)
                     var partnerData = allUsersMap.get(u.cp.partnerUid) || {};
+                    
+                    // لائیو نام اور لائیو ڈی پی کو ترجیح دیں تاکہ یوزر کی کرنٹ تصویر شو ہو
+                    var partnerName = partnerData.username || u.cp.partnerName || 'Partner';
+                    var livePartnerPic = partnerData.photoURL || u.cp.partnerPic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(partnerName) + '&background=random';
                     
                     var points = Math.floor(weeklyGifts / 3000);
                     
@@ -5890,12 +6697,12 @@ async function loadCPRankingData() {
                     couplesMap.set(pairKey, {
                         u1Uid: u.uid,
                         u1Name: u.username || 'User',
-                        u1NameColor: u.nameColorClass || '',  // <-- یہ اہم ہے
-                        u1Pic: u.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username || 'User'),
+                        u1NameColor: u.nameColorClass || '',  
+                        u1Pic: u.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username || 'User') + '&background=random',
                         u2Uid: u.cp.partnerUid,
                         u2Name: partnerName,
-                        u2NameColor: partnerData.nameColorClass || '',  // <-- یہ اہم ہے
-                        u2Pic: partnerPic,
+                        u2NameColor: partnerData.nameColorClass || '',  
+                        u2Pic: livePartnerPic, // <-- لائیو ڈی پی یہاں اپڈیٹ ہو گئی
                         points: points
                     });
                     couplesCount++;
@@ -6236,45 +7043,27 @@ window.loadCPWeeklyComingSoon = function() {
     
     listContainer.innerHTML = html;
 };
-// ================= ویب آر ٹی سی (آواز) کا سسٹم =================
-// یہ سسٹم 10-20 یوزرز کے لیے مکمل مفت ہے
+// ================= ویب آر ٹی سی (آواز) اور اینیمیشن کا سسٹم =================
 
-let peerConnections = {};        // تمام کنکشنز
-let localAudioStream = null;     // اپنی آواز
-let currentSeatId = null;        // موجودہ سیٹ
-let pendingCandidates = {};      // ICE کینڈیڈیٹس
+let peerConnections = {};        
+let localAudioStream = null;     
+let currentSeatId = null;        
+let audioContexts = {}; // ریموٹ یوزرز کے بلبلے (اینیمیشن) دکھانے کے لیے
 
-// STUN سرور (مکمل مفت)
 const iceServers = {
-    iceServers: [
+    iceServers:[
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' }
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' }
     ]
 };
 
-// ========== مائک تک رسائی ==========
-// ================= خوبصورت انگلش مائک پرامپٹ =================
-// ================= چھوٹا اور سادہ مائک پرامپٹ =================
 async function initLocalAudio() {
     try {
         if (localAudioStream) return localAudioStream;
         
-        // براؤزر چیک
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Browser Not Supported',
-                text: 'Please use Chrome, Firefox, or Safari.',
-                background: '#111',
-                color: '#fff',
-                timer: 2000,
-                showConfirmButton: false
-            });
-            return null;
-        }
-        
-        // چھوٹا سا پرامپٹ
         const result = await Swal.fire({
             title: '🎤 Microphone Access',
             text: 'YARAAN wants to access your microphone',
@@ -6283,80 +7072,32 @@ async function initLocalAudio() {
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Allow',
-            cancelButtonText: 'Deny',
             background: '#111',
-            color: '#fff',
-            width: '350px'
+            color: '#fff'
         });
 
-        if (!result.isConfirmed) {
-            return null;
-        }
+        if (!result.isConfirmed) return null;
         
-        // مائک تک رسائی
         localAudioStream = await navigator.mediaDevices.getUserMedia({ 
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
-            } 
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } 
         });
-        
-        // چھوٹا سا ٹوسٹ
-        Swal.fire({
-            title: 'Microphone Ready',
-            icon: 'success',
-            background: '#111',
-            color: '#fff',
-            showConfirmButton: false,
-            timer: 1000,
-            toast: true,
-            position: 'top'
-        });
-        
-        const audioPreview = document.getElementById('local-audio-preview');
-        if (audioPreview) {
-            audioPreview.srcObject = localAudioStream;
-        }
         
         return localAudioStream;
-        
     } catch (err) {
-        console.error("❌ مائک ایرر:", err);
-        
-        let msg = 'Could not access microphone.';
-        if (err.name === 'NotAllowedError') msg = 'Microphone access denied.';
-        else if (err.name === 'NotFoundError') msg = 'No microphone found.';
-        
-        Swal.fire({
-            icon: 'error',
-            title: 'Microphone Error',
-            text: msg,
-            background: '#111',
-            color: '#fff',
-            timer: 2000,
-            showConfirmButton: false
-        });
+        Swal.fire({icon: 'error', title: 'Mic Error', text: 'Could not access microphone.', background: '#111', color: '#fff'});
         return null;
     }
 }
 
-// ========== نیا سادہ sitDown (چھوٹا) ==========
-// ========== نیا sitDown (بلبلوں کے ساتھ) ==========
 window.sitDown = async (sid, def) => {
     const sr = ref(db, `rooms/${currentRoomId}/seats`);
     const s = currentRoomSeats;
     
     if (s[sid] && (s[sid].locked || s[sid].uid)) return;
     
-    let unseatUpdates = {};
-    ['seat1','seat2','seat3','seat4','seat5','seat6'].forEach(k => {
+    let unseatUpdates = {};['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
         if (s[k] && s[k].uid === currentUser.uid) {
             unseatUpdates[k] = null;
-            if (peerConnections[k]) {
-                peerConnections[k].close();
-                delete peerConnections[k];
-            }
         }
     });
     
@@ -6364,10 +7105,7 @@ window.sitDown = async (sid, def) => {
     const userData = userSnap.val();
     
     const stream = await initLocalAudio();
-    if (stream) {
-        // بلبلے شروع کریں
-        setupAudioRipple();
-    }
+    if (stream) setupAudioRipple();
     
     const mySeatData = {
         uid: currentUser.uid,
@@ -6378,489 +7116,310 @@ window.sitDown = async (sid, def) => {
         nameColorClass: userData.nameColorClass || null
     };
     
-    const targetSeatRef = child(sr, sid);
     await update(sr, unseatUpdates);
+    const targetSeatRef = child(sr, sid);
     await set(targetSeatRef, mySeatData);
     onDisconnect(targetSeatRef).remove();
     
     currentSeatId = sid;
-    
     document.getElementById(`menu-${sid}`).style.display = 'none';
     
-    setupAllPeerConnections();
+    // جب میں سیٹ پر بیٹھوں تو روم میں موجود ہر بندے (مائک والے اور آڈینس) کو اپنی آفر بھیجوں
+    setupAllPeerConnections(); 
 };
-// ========== سیٹ چھوڑنے کا اپڈیٹڈ فنکشن ==========
+
 window.leaveSeat = async (sid) => {
     const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
-    
-    // کنکشن بند کریں
-    if (peerConnections[sid]) {
-        peerConnections[sid].close();
-        delete peerConnections[sid];
-    }
-    
-    // Firebase سے ہٹائیں
+    cleanupRipples();
     onDisconnect(seatRef).cancel();
     await remove(seatRef);
     document.getElementById(`menu-${sid}`).style.display = 'none';
-    
     if (currentSeatId === sid) {
         currentSeatId = null;
+        // جب مائک چھوڑیں تو اپنا سٹریمنگ کنکشن بند کریں
+        cleanupWebRTC(); 
+        // دوبارہ آڈینس بن کر مائک والوں کو سنیں
+        setTimeout(setupAllPeerConnections, 1000); 
     }
 };
 
-// ========== تمام سیٹس پر کنکشن بنانا ==========
+// یہ فنکشن اب Audience اور Speakers دونوں کو کنیکٹ کرے گا
 function setupAllPeerConnections() {
-    if (!currentRoomSeats || !currentUser) return;
+    if (!currentRoomId || !currentUser) return;
     
-    Object.keys(currentRoomSeats).forEach(seatId => {
-        const seatData = currentRoomSeats[seatId];
-        
-        // اگر یہ میری سیٹ ہے تو نظر انداز کریں
-        if (seatData && seatData.uid === currentUser.uid) {
-            return;
-        }
-        
-        // اگر سیٹ خالی ہے تو نظر انداز کریں
-        if (!seatData || !seatData.uid) {
-            return;
-        }
-        
-        // اگر پہلے سے کنکشن ہے تو نظر انداز کریں
-        if (peerConnections[seatId]) {
-            return;
-        }
-        
-        // نیا کنکشن بنائیں
-        createPeerConnection(seatId, seatData.uid);
-    });
-}
-
-// ========== نیا کنکشن بنانا ==========
-function createPeerConnection(targetSeatId, targetUid) {
-    console.log(`🔌 کنکشن بنا رہے ہیں: ${targetSeatId} -> ${targetUid}`);
-    
-    const pc = new RTCPeerConnection(iceServers);
-    peerConnections[targetSeatId] = pc;
-    
-    // اپنی آواز شامل کریں
-    if (localAudioStream) {
-        localAudioStream.getTracks().forEach(track => {
-            pc.addTrack(track, localAudioStream);
+    // روم میں موجود تمام مائک والوں (Speakers) کے ساتھ کنکشن بنانا ہے
+    if(currentRoomSeats) {
+        Object.keys(currentRoomSeats).forEach(seatId => {
+            const seatData = currentRoomSeats[seatId];
+            if (seatData && seatData.uid && seatData.uid !== currentUser.uid) {
+                if (!peerConnections[seatData.uid]) {
+                    createPeerConnection(seatData.uid, seatId);
+                }
+            }
         });
     }
+}
+
+function createPeerConnection(targetUid, seatId) {
+    const pc = new RTCPeerConnection(iceServers);
+    peerConnections[targetUid] = pc;
     
-    // دوسرے کی آواز سننے کے لیے
+    if (localAudioStream && currentSeatId) {
+        localAudioStream.getTracks().forEach(track => pc.addTrack(track, localAudioStream));
+    }
+    
     pc.ontrack = (event) => {
-        console.log(`🔊 آواز آ رہی ہے: ${targetSeatId}`);
-        
-        // آڈیو عنصر بنائیں
-        const audio = document.createElement('audio');
+        let audio = document.getElementById(`audio-${targetUid}`);
+        if (!audio) {
+            audio = document.createElement('audio');
+            audio.id = `audio-${targetUid}`;
+            audio.autoplay = true;
+            document.getElementById('remote-audio-container').appendChild(audio);
+        }
         audio.srcObject = event.streams[0];
-        audio.autoplay = true;
-        audio.id = `audio-${targetSeatId}`;
-        document.getElementById('remote-audio-container').appendChild(audio);
+        
+        // دوسرے بندے کی آواز پر اس کا بلبلہ شو کروانا
+        setupRemoteAudioRipple(event.streams[0], targetUid);
     };
     
-    // ICE کینڈیڈیٹس کا تبادلہ
     pc.onicecandidate = (event) => {
         if (event.candidate) {
-            // Firebase پر بھیجیں
-            const candidateRef = ref(db, `calls/${targetUid}/candidates/${currentUser.uid}`);
-            set(candidateRef, {
-                candidate: event.candidate,
-                seatId: currentSeatId,
-                timestamp: Date.now()
+            set(ref(db, `calls/${targetUid}/candidates/${currentUser.uid}_${Date.now()}`), {
+                candidate: event.candidate, timestamp: Date.now()
             });
         }
     };
     
-    // کنکشن کی حالت
     pc.onconnectionstatechange = () => {
-        console.log(`📡 کنکشن حالت (${targetSeatId}):`, pc.connectionState);
         if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
-            // کنکشن ختم ہو گیا
-            const audioEl = document.getElementById(`audio-${targetSeatId}`);
+            const audioEl = document.getElementById(`audio-${targetUid}`);
             if (audioEl) audioEl.remove();
-            delete peerConnections[targetSeatId];
+            delete peerConnections[targetUid];
         }
     };
     
-    // Offer بھیجیں
     pc.createOffer()
         .then(offer => pc.setLocalDescription(offer))
         .then(() => {
-            const offerRef = ref(db, `calls/${targetUid}/offers/${currentUser.uid}`);
-            set(offerRef, {
-                offer: pc.localDescription,
-                seatId: currentSeatId,
-                timestamp: Date.now()
+            set(ref(db, `calls/${targetUid}/offers/${currentUser.uid}`), {
+                offer: pc.localDescription, timestamp: Date.now()
             });
         });
-    
+        
     return pc;
 }
 
-// ========== Firebase پر سگنلنگ سننا ==========
 function listenForSignals() {
     if (!currentUser) return;
-    
     const uid = currentUser.uid;
     
-    // Offers سنیں
-    const offersRef = ref(db, `calls/${uid}/offers`);
-    onValue(offersRef, (snap) => {
+    // Offers
+    onValue(ref(db, `calls/${uid}/offers`), (snap) => {
         if (!snap.exists()) return;
-        
         snap.forEach(childSnap => {
             const data = childSnap.val();
             const fromUid = childSnap.key;
             
-            // پہلے سے کنکشن ہے؟
-            let targetSeatId = null;
-            Object.keys(currentRoomSeats).forEach(seatId => {
-                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
-                    targetSeatId = seatId;
-                }
-            });
+            // آفر ایکسیپٹ کریں چاہے وہ آڈینس ہو یا سپیکر
+            if (peerConnections[fromUid]) return;
             
-            if (!targetSeatId) return;
-            
-            // اگر پہلے سے کنکشن ہے تو چھوڑ دیں
-            if (peerConnections[targetSeatId]) return;
-            
-            // نیا کنکشن بنائیں
             const pc = new RTCPeerConnection(iceServers);
-            peerConnections[targetSeatId] = pc;
+            peerConnections[fromUid] = pc;
             
-            // اپنی آواز شامل کریں
-            if (localAudioStream) {
-                localAudioStream.getTracks().forEach(track => {
-                    pc.addTrack(track, localAudioStream);
-                });
+            if (localAudioStream && currentSeatId) {
+                localAudioStream.getTracks().forEach(track => pc.addTrack(track, localAudioStream));
             }
             
-            // دوسرے کی آواز
             pc.ontrack = (event) => {
-                const audio = document.createElement('audio');
+                let audio = document.getElementById(`audio-${fromUid}`);
+                if (!audio) {
+                    audio = document.createElement('audio');
+                    audio.id = `audio-${fromUid}`;
+                    audio.autoplay = true;
+                    document.getElementById('remote-audio-container').appendChild(audio);
+                }
                 audio.srcObject = event.streams[0];
-                audio.autoplay = true;
-                audio.id = `audio-${targetSeatId}`;
-                document.getElementById('remote-audio-container').appendChild(audio);
+                setupRemoteAudioRipple(event.streams[0], fromUid);
             };
             
-            // ICE کینڈیڈیٹس
             pc.onicecandidate = (event) => {
                 if (event.candidate) {
-                    const candidateRef = ref(db, `calls/${fromUid}/candidates/${uid}`);
-                    set(candidateRef, {
-                        candidate: event.candidate,
-                        seatId: currentSeatId,
-                        timestamp: Date.now()
+                    set(ref(db, `calls/${fromUid}/candidates/${uid}_${Date.now()}`), {
+                        candidate: event.candidate, timestamp: Date.now()
                     });
                 }
             };
             
-            // Offer سیٹ کریں
             pc.setRemoteDescription(data.offer)
                 .then(() => pc.createAnswer())
                 .then(answer => pc.setLocalDescription(answer))
                 .then(() => {
-                    const answerRef = ref(db, `calls/${fromUid}/answers/${uid}`);
-                    set(answerRef, {
-                        answer: pc.localDescription,
-                        seatId: currentSeatId,
-                        timestamp: Date.now()
+                    set(ref(db, `calls/${fromUid}/answers/${uid}`), {
+                        answer: pc.localDescription, timestamp: Date.now()
                     });
                 });
             
-            // اس Offer کو ڈیلیٹ کریں
             remove(childSnap.ref);
         });
     });
     
-    // Answers سنیں
-    const answersRef = ref(db, `calls/${uid}/answers`);
-    onValue(answersRef, (snap) => {
+    // Answers
+    onValue(ref(db, `calls/${uid}/answers`), (snap) => {
         if (!snap.exists()) return;
-        
         snap.forEach(childSnap => {
             const data = childSnap.val();
             const fromUid = childSnap.key;
-            
-            let targetSeatId = null;
-            Object.keys(currentRoomSeats).forEach(seatId => {
-                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
-                    targetSeatId = seatId;
-                }
-            });
-            
-            if (targetSeatId && peerConnections[targetSeatId]) {
-                peerConnections[targetSeatId].setRemoteDescription(data.answer);
+            if (peerConnections[fromUid]) {
+                peerConnections[fromUid].setRemoteDescription(data.answer);
             }
-            
             remove(childSnap.ref);
         });
     });
     
-    // Candidates سنیں
-    const candidatesRef = ref(db, `calls/${uid}/candidates`);
-    onValue(candidatesRef, (snap) => {
+    // Candidates
+    onValue(ref(db, `calls/${uid}/candidates`), (snap) => {
         if (!snap.exists()) return;
-        
         snap.forEach(childSnap => {
             const data = childSnap.val();
-            const fromUid = childSnap.key;
-            
-            let targetSeatId = null;
-            Object.keys(currentRoomSeats).forEach(seatId => {
-                if (currentRoomSeats[seatId] && currentRoomSeats[seatId].uid === fromUid) {
-                    targetSeatId = seatId;
-                }
-            });
-            
-            if (targetSeatId && peerConnections[targetSeatId]) {
-                peerConnections[targetSeatId].addIceCandidate(data.candidate);
+            const fromUid = childSnap.key.split('_')[0]; 
+            if (peerConnections[fromUid]) {
+                peerConnections[fromUid].addIceCandidate(data.candidate);
             }
-            
             remove(childSnap.ref);
         });
     });
 }
 
-// ========== سیٹس کی تبدیلی سننا ==========
-function setupSeatListener() {
-    if (!currentRoomId) return;
-    
-    const seatsRef = ref(db, `rooms/${currentRoomId}/seats`);
-    onValue(seatsRef, (snap) => {
-        const oldSeats = currentRoomSeats;
-        currentRoomSeats = snap.val() || {};
-        
-        // پرانے کنکشنز کو بند کریں اگر کوئی سیٹ خالی ہو گئی
-        Object.keys(oldSeats).forEach(seatId => {
-            if (!currentRoomSeats[seatId] || !currentRoomSeats[seatId].uid) {
-                if (peerConnections[seatId]) {
-                    peerConnections[seatId].close();
-                    delete peerConnections[seatId];
-                    
-                    const audioEl = document.getElementById(`audio-${seatId}`);
-                    if (audioEl) audioEl.remove();
-                }
-            }
-        });
-        
-        // نئے کنکشنز بنائیں
-        setupAllPeerConnections();
-        
-        // UI اپڈیٹ کریں
-        updateSeat('seat1', currentRoomSeats.seat1, "UMAR");
-        updateSeat('seat2', currentRoomSeats.seat2, "GURIYA");
-        updateSeat('seat3', currentRoomSeats.seat3, "1");
-        updateSeat('seat4', currentRoomSeats.seat4, "2");
-        updateSeat('seat5', currentRoomSeats.seat5, "3");
-        updateSeat('seat6', currentRoomSeats.seat6, "4");
-        
-        const hc = document.getElementById('heartbeat-container');
-        const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid;
-        const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid;
-        if(seat1Occupied && seat2Occupied) {
-            hc.classList.add('heartbeat-active');
-        } else {
-            hc.classList.remove('heartbeat-active');
-        }
-    });
-}
-
-// ========== نیا cleanupWebRTC (بلبلوں کے ساتھ) ==========
 function cleanupWebRTC() {
-    cleanupRipples();  // بلبلے بند کریں
-    
-    Object.keys(peerConnections).forEach(seatId => {
-        peerConnections[seatId].close();
-        delete peerConnections[seatId];
+    cleanupRipples();
+    Object.keys(peerConnections).forEach(uid => {
+        peerConnections[uid].close();
+        delete peerConnections[uid];
     });
-    
     if (localAudioStream) {
         localAudioStream.getTracks().forEach(track => track.stop());
         localAudioStream = null;
     }
-    
     document.getElementById('remote-audio-container').innerHTML = '';
 }
 
-// ========== جوائن روم میں اضافہ ==========
-// (اصل joinRoom فنکشن میں یہ لائن شامل کریں)
-// cleanupWebRTC();  // پہلے صفائی
-// setupSeatListener();  // سیٹ سننے والا
-// listenForSignals();  // سگنل سننے والا
-
-// ========== مائک میوٹ/انمیوٹ (بلبلوں کے ساتھ) ==========
 window.toggleMic = () => {
     const btn = document.getElementById('btn-mic');
     isMicMuted = !isMicMuted;
-    
     if(localAudioStream) {
-        localAudioStream.getAudioTracks().forEach(track => {
-            track.enabled = !isMicMuted;
-        });
+        localAudioStream.getAudioTracks().forEach(t => t.enabled = !isMicMuted);
     }
-    
     if(isMicMuted) {
         btn.className = 'fa-solid fa-microphone-slash room-icon-btn text-gray-500';
-        // بلبلے ہٹائیں
         document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
     } else {
         btn.className = 'fa-solid fa-microphone room-icon-btn text-white';
     }
-    
-    if(currentRoomId) updateSeatMuteStatus();
 };
 
-// ========== اسپیکر میوٹ ==========
 window.toggleSpeaker = () => {
     const btn = document.getElementById('btn-speaker');
     isSpeakerMuted = !isSpeakerMuted;
-    
-    // تمام ریموٹ آڈیو کو میوٹ/انمیوٹ کریں
-    const audioElements = document.querySelectorAll('#remote-audio-container audio');
-    audioElements.forEach(audio => {
-        audio.muted = isSpeakerMuted;
-    });
-    
-    if(isSpeakerMuted) {
-        btn.className = 'fa-solid fa-volume-xmark room-icon-btn text-gray-500';
-    } else {
-        btn.className = 'fa-solid fa-volume-high room-icon-btn text-white';
-    }
+    document.querySelectorAll('#remote-audio-container audio').forEach(a => a.muted = isSpeakerMuted);
+    btn.className = isSpeakerMuted ? 'fa-solid fa-volume-xmark room-icon-btn text-gray-500' : 'fa-solid fa-volume-high room-icon-btn text-white';
 };
-// ========== مائک پر بلبلے (Ripple Effect) - نیا ==========
 
-// آواز کی شدت ناپنے کے لیے
+// ========== مائک پر بلبلے (Ripple Effect) ==========
 let audioAnalyser = null;
 let audioDataArray = null;
-let audioSource = null;
 let audioContext = null;
 let rippleInterval = null;
 
 function setupAudioRipple() {
     if (!localAudioStream) return;
-    
-    // پرانا انٹرول بند کریں
     if (rippleInterval) clearInterval(rippleInterval);
-    
     try {
-        // آڈیو سیٹ اپ
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        audioSource = audioContext.createMediaStreamSource(localAudioStream);
-        const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.3;
-        
-        audioSource.connect(analyser);
-        audioAnalyser = analyser;
-        audioDataArray = new Uint8Array(analyser.frequencyBinCount);
-        
-        // ہر 100ms بعد آواز چیک کریں
+        const source = audioContext.createMediaStreamSource(localAudioStream);
+        audioAnalyser = audioContext.createAnalyser();
+        audioAnalyser.fftSize = 128;
+        source.connect(audioAnalyser);
+        audioDataArray = new Uint8Array(audioAnalyser.frequencyBinCount);
         rippleInterval = setInterval(checkAudioLevel, 100);
-        
-        console.log("✅ بلبلے تیار");
-    } catch (e) {
-        console.log("❌ بلبلے میں مسئلہ:", e);
-    }
+    } catch (e) { console.log(e); }
 }
 
 function checkAudioLevel() {
-    // اگر میوٹ ہے تو کچھ نہ کریں
     if (isMicMuted || !audioAnalyser || !currentSeatId) {
-        removeAllRipples();
+        removeRipple(currentSeatId);
         return;
     }
-    
     audioAnalyser.getByteFrequencyData(audioDataArray);
-    
-    // آواز کی شدت (0-255)
     let sum = 0;
-    for (let i = 0; i < audioDataArray.length; i++) {
-        sum += audioDataArray[i];
-    }
-    let average = sum / audioDataArray.length;
+    for (let i = 0; i < audioDataArray.length; i++) sum += audioDataArray[i];
+    if ((sum / audioDataArray.length) > 10) showRipple(currentSeatId);
+    else removeRipple(currentSeatId);
+}
+
+// دوسرے یوزرز کی اینیمیشن
+function setupRemoteAudioRipple(stream, uid) {
+    try {
+        if(!audioContexts[uid]) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = ctx.createMediaStreamSource(stream);
+            const analyser = ctx.createAnalyser();
+            analyser.fftSize = 128;
+            source.connect(analyser);
+            audioContexts[uid] = { ctx, analyser, dataArray: new Uint8Array(analyser.frequencyBinCount) };
+            
+            setInterval(() => {
+                if(isSpeakerMuted) return;
+                const data = audioContexts[uid];
+                data.analyser.getByteFrequencyData(data.dataArray);
+                let sum = 0;
+                for (let i = 0; i < data.dataArray.length; i++) sum += data.dataArray[i];
+                let avg = sum / data.dataArray.length;
+                
+                let seatId = null;
+                for (let k in currentRoomSeats) {
+                    if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) seatId = k;
+                }
+                if (seatId && avg > 10) showRipple(seatId);
+                else if (seatId) removeRipple(seatId);
+            }, 100);
+        }
+    } catch(e) {}
+}
+
+function showRipple(seatId) {
+    const seatContainer = document.getElementById(`cont-${seatId}`);
+    if (!seatContainer) return;
+    const visualRoot = seatContainer.querySelector('.visual-root');
+    if (!visualRoot) return;
     
-    // اگر آواز ہے تو بلبلے دکھائیں
-    if (average > 15) { // 15 سے اوپر = آواز
-        showRipple(currentSeatId, average);
-    } else {
-        removeAllRipples();
+    if (!visualRoot.querySelector('.mic-ripple')) {
+        const ripple = document.createElement('div');
+        ripple.className = 'mic-ripple';
+        visualRoot.appendChild(ripple);
     }
 }
 
-function showRipple(seatId, intensity) {
-    // پہلے والے بلبلے ہٹائیں
-    removeAllRipples();
-    
+function removeRipple(seatId) {
+    if(!seatId) return;
     const seatContainer = document.getElementById(`cont-${seatId}`);
-    if (!seatContainer) return;
-    
-    // شدت کے حساب سے بلبلے کا سائز (50px سے 100px)
-    let size = 50 + (intensity / 5);
-    if (size > 100) size = 100;
-    
-    // بلبلہ بنائیں
-    const ripple = document.createElement('div');
-    ripple.className = 'mic-ripple';
-    ripple.style.cssText = `
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: ${size}px;
-        height: ${size}px;
-        border-radius: 50%;
-        background: rgba(34, 197, 94, 0.3);
-        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
-        animation: rippleWave 0.8s ease-out infinite;
-        z-index: 25;
-        pointer-events: none;
-    `;
-    
-    seatContainer.style.position = 'relative';
-    seatContainer.appendChild(ripple);
-    
-    // دوسرا بلبلہ (اندرونی)
-    setTimeout(() => {
-        if (document.querySelector('.mic-ripple')) {
-            const innerRipple = document.createElement('div');
-            innerRipple.className = 'mic-ripple-inner';
-            innerRipple.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: ${size - 20}px;
-                height: ${size - 20}px;
-                border-radius: 50%;
-                background: rgba(34, 197, 94, 0.5);
-                box-shadow: 0 0 30px #22c55e;
-                animation: innerPulse 0.5s ease-out infinite alternate;
-                z-index: 26;
-                pointer-events: none;
-            `;
-            seatContainer.appendChild(innerRipple);
-        }
-    }, 100);
+    if (seatContainer) {
+        const rip = seatContainer.querySelector('.mic-ripple');
+        if(rip) rip.remove();
+    }
 }
 
 function removeAllRipples() {
-    document.querySelectorAll('.mic-ripple, .mic-ripple-inner').forEach(el => el.remove());
+    document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
 }
 
-// صفائی
 function cleanupRipples() {
     if (rippleInterval) clearInterval(rippleInterval);
-    if (audioSource) audioSource.disconnect();
-    if (audioContext) audioContext.close();
     removeAllRipples();
 }
-    </script>
+
+// Ensure listeners start on load
+setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 2000);
+
+</script>
 </body>
 </html>
