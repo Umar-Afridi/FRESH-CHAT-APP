@@ -7045,18 +7045,19 @@ window.loadCPWeeklyComingSoon = function() {
 };
 // ================= ویب آر ٹی سی (آواز) اور اینیمیشن کا سسٹم =================
 
+// ================= ویب آر ٹی سی (آواز) اور اینیمیشن کا سسٹم (FREE VERSION FOR AUDIENCE & SPEAKERS) =================
+
 let peerConnections = {};        
 let localAudioStream = null;     
 let currentSeatId = null;        
-let audioContexts = {}; // ریموٹ یوزرز کے بلبلے (اینیمیشن) دکھانے کے لیے
+let audioContexts = {}; 
 
+// فری اور بہتر STUN/TURN سرورز تاکہ آواز نہ کٹے
 const iceServers = {
     iceServers:[
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' },
-        { urls: 'stun:stun4.l.google.com:19302' }
+        { urls: 'stun:stun.relay.metered.ca:80' }
     ]
 };
 
@@ -7105,7 +7106,9 @@ window.sitDown = async (sid, def) => {
     const userData = userSnap.val();
     
     const stream = await initLocalAudio();
-    if (stream) setupAudioRipple();
+    if (!stream) return; // اگر مائیک کی پرمیشن نہیں دی تو کینسل کر دیں
+    
+    setupAudioRipple();
     
     const mySeatData = {
         uid: currentUser.uid,
@@ -7124,8 +7127,8 @@ window.sitDown = async (sid, def) => {
     currentSeatId = sid;
     document.getElementById(`menu-${sid}`).style.display = 'none';
     
-    // جب میں سیٹ پر بیٹھوں تو روم میں موجود ہر بندے (مائک والے اور آڈینس) کو اپنی آفر بھیجوں
-    setupAllPeerConnections(); 
+    // جب میں مائیک پر بیٹھوں گا، تو روم میں موجود ہر بندے (مائیک والے اور آڈینس) کو اپنی آواز بھیجوں گا
+    setupBroadcasterConnections(); 
 };
 
 window.leaveSeat = async (sid) => {
@@ -7134,41 +7137,55 @@ window.leaveSeat = async (sid) => {
     onDisconnect(seatRef).cancel();
     await remove(seatRef);
     document.getElementById(`menu-${sid}`).style.display = 'none';
+    
     if (currentSeatId === sid) {
         currentSeatId = null;
-        // جب مائک چھوڑیں تو اپنا سٹریمنگ کنکشن بند کریں
+        // جب مائیک چھوڑیں تو اپنا سٹریمنگ کنکشن بند کریں
         cleanupWebRTC(); 
-        // دوبارہ آڈینس بن کر مائک والوں کو سنیں
-        setTimeout(setupAllPeerConnections, 1000); 
     }
 };
 
-// یہ فنکشن اب Audience اور Speakers دونوں کو کنیکٹ کرے گا
-function setupAllPeerConnections() {
+// یہ فنکشن مائیک والے کو پورے روم (مائیک + آڈینس) کے ساتھ کنیکٹ کرے گا
+function setupBroadcasterConnections() {
     if (!currentRoomId || !currentUser) return;
     
-    // روم میں موجود تمام مائک والوں (Speakers) کے ساتھ کنکشن بنانا ہے
-    if(currentRoomSeats) {
-        Object.keys(currentRoomSeats).forEach(seatId => {
-            const seatData = currentRoomSeats[seatId];
-            if (seatData && seatData.uid && seatData.uid !== currentUser.uid) {
-                if (!peerConnections[seatData.uid]) {
-                    createPeerConnection(seatData.uid, seatId);
+    const activeUsersRef = ref(db, `rooms/${currentRoomId}/activeUsers`);
+    
+    // 1. روم میں پہلے سے موجود تمام لوگوں کو کنکشن (آفر) بھیجیں
+    get(activeUsersRef).then(snap => {
+        if(snap.exists()) {
+            Object.keys(snap.val()).forEach(uid => {
+                if (uid !== currentUser.uid) {
+                    if(peerConnections[uid]) {
+                        peerConnections[uid].close();
+                        delete peerConnections[uid];
+                    }
+                    createPeerConnection(uid, true);
                 }
-            }
-        });
-    }
+            });
+        }
+    });
+
+    // 2. اگر کوئی نیا بندہ روم میں آتا ہے، تو اسے بھی فورا آفر بھیجیں
+    onChildAdded(activeUsersRef, (snap) => {
+        const newUid = snap.key;
+        if (currentSeatId && newUid !== currentUser.uid && !peerConnections[newUid]) {
+            createPeerConnection(newUid, true);
+        }
+    });
 }
 
-function createPeerConnection(targetUid, seatId) {
+function createPeerConnection(targetUid, isCaller) {
     const pc = new RTCPeerConnection(iceServers);
     peerConnections[targetUid] = pc;
     
+    // اگر میں مائیک پر ہوں، تو اپنا آڈیو ٹریک کنکشن میں ڈال دوں گا
     if (localAudioStream && currentSeatId) {
         localAudioStream.getTracks().forEach(track => pc.addTrack(track, localAudioStream));
     }
     
     pc.ontrack = (event) => {
+        // دوسرے لوگوں کی آواز سننا اور ان کے بلبلے شو کروانا
         let audio = document.getElementById(`audio-${targetUid}`);
         if (!audio) {
             audio = document.createElement('audio');
@@ -7177,15 +7194,15 @@ function createPeerConnection(targetUid, seatId) {
             document.getElementById('remote-audio-container').appendChild(audio);
         }
         audio.srcObject = event.streams[0];
-        
-        // دوسرے بندے کی آواز پر اس کا بلبلہ شو کروانا
         setupRemoteAudioRipple(event.streams[0], targetUid);
     };
     
     pc.onicecandidate = (event) => {
         if (event.candidate) {
-            set(ref(db, `calls/${targetUid}/candidates/${currentUser.uid}_${Date.now()}`), {
-                candidate: event.candidate, timestamp: Date.now()
+            push(ref(db, `calls/${targetUid}/candidates`), {
+                from: currentUser.uid,
+                candidate: JSON.stringify(event.candidate),
+                timestamp: Date.now()
             });
         }
     };
@@ -7198,95 +7215,70 @@ function createPeerConnection(targetUid, seatId) {
         }
     };
     
-    pc.createOffer()
-        .then(offer => pc.setLocalDescription(offer))
-        .then(() => {
-            set(ref(db, `calls/${targetUid}/offers/${currentUser.uid}`), {
-                offer: pc.localDescription, timestamp: Date.now()
+    if (isCaller) {
+        pc.createOffer()
+            .then(offer => pc.setLocalDescription(offer))
+            .then(() => {
+                push(ref(db, `calls/${targetUid}/offers`), {
+                    from: currentUser.uid,
+                    offer: JSON.stringify(pc.localDescription),
+                    timestamp: Date.now()
+                });
             });
-        });
+    }
         
     return pc;
 }
 
+// یہ فنکشن ہر یوزر (مائیک والا اور آڈینس) سگنلز سننے کے لیے استعمال کرے گا
 function listenForSignals() {
     if (!currentUser) return;
     const uid = currentUser.uid;
     
-    // Offers
-    onValue(ref(db, `calls/${uid}/offers`), (snap) => {
-        if (!snap.exists()) return;
-        snap.forEach(childSnap => {
-            const data = childSnap.val();
-            const fromUid = childSnap.key;
-            
-            // آفر ایکسیپٹ کریں چاہے وہ آڈینس ہو یا سپیکر
-            if (peerConnections[fromUid]) return;
-            
-            const pc = new RTCPeerConnection(iceServers);
-            peerConnections[fromUid] = pc;
-            
-            if (localAudioStream && currentSeatId) {
-                localAudioStream.getTracks().forEach(track => pc.addTrack(track, localAudioStream));
-            }
-            
-            pc.ontrack = (event) => {
-                let audio = document.getElementById(`audio-${fromUid}`);
-                if (!audio) {
-                    audio = document.createElement('audio');
-                    audio.id = `audio-${fromUid}`;
-                    audio.autoplay = true;
-                    document.getElementById('remote-audio-container').appendChild(audio);
-                }
-                audio.srcObject = event.streams[0];
-                setupRemoteAudioRipple(event.streams[0], fromUid);
-            };
-            
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    set(ref(db, `calls/${fromUid}/candidates/${uid}_${Date.now()}`), {
-                        candidate: event.candidate, timestamp: Date.now()
-                    });
-                }
-            };
-            
-            pc.setRemoteDescription(data.offer)
-                .then(() => pc.createAnswer())
-                .then(answer => pc.setLocalDescription(answer))
-                .then(() => {
-                    set(ref(db, `calls/${fromUid}/answers/${uid}`), {
-                        answer: pc.localDescription, timestamp: Date.now()
-                    });
+    // Offers سننا (کوئی مائیک پر بیٹھا ہے اور مجھے آواز بھیجنا چاہتا ہے)
+    onChildAdded(ref(db, `calls/${uid}/offers`), (snap) => {
+        const data = snap.val();
+        const fromUid = data.from;
+        
+        if (peerConnections[fromUid]) {
+            peerConnections[fromUid].close();
+            delete peerConnections[fromUid];
+        }
+        
+        const pc = createPeerConnection(fromUid, false);
+        
+        pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(data.offer)))
+            .then(() => pc.createAnswer())
+            .then(answer => pc.setLocalDescription(answer))
+            .then(() => {
+                push(ref(db, `calls/${fromUid}/answers`), {
+                    from: uid,
+                    answer: JSON.stringify(pc.localDescription),
+                    timestamp: Date.now()
                 });
+            });
             
-            remove(childSnap.ref);
-        });
+        remove(snap.ref); // ڈیٹا کلین اپ (Loop سے بچنے کے لیے)
     });
     
-    // Answers
-    onValue(ref(db, `calls/${uid}/answers`), (snap) => {
-        if (!snap.exists()) return;
-        snap.forEach(childSnap => {
-            const data = childSnap.val();
-            const fromUid = childSnap.key;
-            if (peerConnections[fromUid]) {
-                peerConnections[fromUid].setRemoteDescription(data.answer);
-            }
-            remove(childSnap.ref);
-        });
+    // Answers سننا
+    onChildAdded(ref(db, `calls/${uid}/answers`), (snap) => {
+        const data = snap.val();
+        const fromUid = data.from;
+        if (peerConnections[fromUid]) {
+            peerConnections[fromUid].setRemoteDescription(new RTCSessionDescription(JSON.parse(data.answer)));
+        }
+        remove(snap.ref);
     });
     
-    // Candidates
-    onValue(ref(db, `calls/${uid}/candidates`), (snap) => {
-        if (!snap.exists()) return;
-        snap.forEach(childSnap => {
-            const data = childSnap.val();
-            const fromUid = childSnap.key.split('_')[0]; 
-            if (peerConnections[fromUid]) {
-                peerConnections[fromUid].addIceCandidate(data.candidate);
-            }
-            remove(childSnap.ref);
-        });
+    // Candidates سننا
+    onChildAdded(ref(db, `calls/${uid}/candidates`), (snap) => {
+        const data = snap.val();
+        const fromUid = data.from; 
+        if (peerConnections[fromUid]) {
+            peerConnections[fromUid].addIceCandidate(new RTCIceCandidate(JSON.parse(data.candidate))).catch(e=>console.log(e));
+        }
+        remove(snap.ref);
     });
 }
 
@@ -7419,6 +7411,7 @@ function cleanupRipples() {
 
 // Ensure listeners start on load
 setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 2000);
+
 
 </script>
 </body>
