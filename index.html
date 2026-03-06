@@ -7296,14 +7296,37 @@ window.listenForSignals = async () => {
     }
 };
 
-// 💡 3. FAST SIT DOWN (پروفیشنل طریقہ - نو لوڈنگ سکرین!)
+// 💡 FAST SIT DOWN (پہلے مائیک آن ہوگا، پھر سیٹ پر بیٹھے گا)
 window.sitDown = async (sid, def) => {
     const sr = ref(db, `rooms/${currentRoomId}/seats`);
     const s = currentRoomSeats;
     
     if (s[sid] && (s[sid].locked || s[sid].uid)) return;
-    
-    // Step 1: فوری طور پر ڈیٹا بیس اپڈیٹ کریں تاکہ ڈی پی سیٹ پر آ جائے (Zero Lag)
+
+    // 🔴 سب سے پہلے مائیک کی پرمیشن مانگو (بغیر کسی دیری کے)
+    try {
+        if (!zg) {
+            Swal.fire({toast:true, icon:'info', title:'Connecting...', position:'top', showConfirmButton:false, timer:1000});
+            await window.listenForSignals();
+        }
+        
+        // اگر مائیک پہلے سے نہیں بنا ہوا، تو بناؤ
+        if (!localZegoStream) {
+            localZegoStream = await zg.createStream({camera: false, mic: true});
+        }
+    } catch (err) {
+        console.error("Mic Blocked by Browser:", err);
+        // اگر براؤزر نے مائیک بلاک کر دیا، تو یوزر کو سیٹ پر بٹھانے کے بجائے سیدھا ایرر دکھاؤ
+        Swal.fire({
+            icon: 'error',
+            title: 'مائیک بند ہے!',
+            html: 'آپ کے براؤزر نے مائیک بلاک کیا ہوا ہے۔<br><br>اوپر <b>تالے (🔒)</b> کے نشان پر کلک کریں اور مائیکروفون کو <b>Allow</b> کریں۔',
+            background: '#111', color: '#fff', confirmButtonText: 'ٹھیک ہے'
+        });
+        return; // یہاں سے کوڈ رک جائے گا، ڈی پی سیٹ پر نہیں جائے گی
+    }
+
+    // 🟢 اگر مائیک آن ہو گیا، تو اب ڈیٹا بیس میں ڈی پی سیٹ پر لگاؤ
     let unseatUpdates = {};
     ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
         if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
@@ -7328,17 +7351,13 @@ window.sitDown = async (sid, def) => {
     const menuEl = document.getElementById(`menu-${sid}`);
     if (menuEl) menuEl.style.display = 'none';
 
-    // Step 2: بیک گراؤنڈ میں مائیکروفون آن کریں (کوئی لوڈنگ پوپ اپ نہیں آئے گا)
+    // 🟢 اب آواز کو روم میں بھیج دو
     try {
-        localZegoStream = await zg.createStream({camera: false, mic: true});
         publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
         await zg.startPublishingStream(publishedStreamId, localZegoStream);
-        console.log("🎙️ Mic Connected Fast!");
-    } catch (err) {
-        // اگر براؤزر نے مائیک بلاک کر دیا، تو اسے سیٹ سے اتار کر صرف چھوٹا سا ٹوسٹ دکھائیں
-        console.error("Mic Blocked:", err);
-        window.leaveSeat(sid);
-        Swal.fire({toast:true, icon:'error', title:'Microphone Access Denied! Please allow mic.', position:'top', showConfirmButton:false, timer:3000});
+        console.log("🎙️ Mic Published Successfully!");
+    } catch (publishErr) {
+        console.error("Publish Error:", publishErr);
     }
 };
 
