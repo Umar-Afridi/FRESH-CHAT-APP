@@ -7206,51 +7206,75 @@ window.loadCPWeeklyComingSoon = function() {
     
     listContainer.innerHTML = html;
 };
+
 // ================= ZEGOCLOUD (REAL VOICE CHAT) SYSTEM =================
 const ZEGO_APP_ID = 233087486;
+const ZEGO_SERVER_SECRET = "55f12f4d63943173b8832f4644c3057c";
+const ZEGO_TOKEN = "04AAAAAGmsSkgADH+FxGh2OWr9iJjpcgCxWVqP4L3MNFa8Y+0Qj9zGw+zt1ymgAvR0akHRJfTmYTmOL1P9VpSn4KGVG2s+eeA7s+RmF2UAWALpXuvPuyoeoqnBORZ9PZe70qV3fye0Ra/TBe7g+GHNrsloKJzuqnl7IZKelqrONF0hM1ZbJOdinuO0a5Q9YOSF8yLuX0LwMNonLQbVrFI6wJPaZrPQmt7GEeCvudRvTi7PN7+z/5Uvw4vIhWRbA+StOnDysJwCHk3VAQ==";
 
 let zg = null;
 let localZegoStream = null;
 let publishedStreamId = null;
 let currentSeatId = null;
 
-// 💡 یہ نیا جادوئی فنکشن ہے: یہ خود Zego کو ڈاؤنلوڈ کرے گا، آپ کو HTML میں لنک لگانے کی ضرورت ہی نہیں!
-function forceLoadZego() {
-    return new Promise((resolve, reject) => {
+// 💡 NEW FIXED SCRIPT LOADER (NO CRASHES)
+async function forceLoadZego() {
+    return new Promise((resolve) => {
         if (typeof window.ZegoExpressEngine !== 'undefined') {
-            resolve(); return;
+            resolve(true); 
+            return;
         }
+        
         const script = document.createElement('script');
-        script.src = "https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error("Network Error"));
+        // Using jsdelivr because unpkg gets blocked in some Mobile WebViews
+        script.src = "https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
+        
+        script.onload = () => {
+            console.log("✅ Zego SDK Loaded");
+            resolve(true);
+        };
+        
+        script.onerror = () => {
+            console.log("⚠️ Primary SDK failed, trying fallback...");
+            const fallback = document.createElement('script');
+            fallback.src = "https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
+            fallback.onload = () => resolve(true);
+            fallback.onerror = () => resolve(false); // Reject کی بجائے False دے گا تاکہ ایپ کریش نہ ہو
+            document.head.appendChild(fallback);
+        };
+        
         document.head.appendChild(script);
     });
 }
 
+// 💡 IMPROVED INIT FUNCTION (NO ANNOYING POPUPS)
 async function initZego() {
     if (zg) return true;
     
     try {
-        Swal.fire({title: 'Loading System...', text: 'Please wait', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
-        
-        // پہلے زبردستی Zego لوڈ کرواؤ
-        await forceLoadZego();
-        
-        // اب Zego کو سٹارٹ کرو
+        const isLoaded = await forceLoadZego();
+        if (!isLoaded || typeof window.ZegoExpressEngine === 'undefined') {
+            Swal.fire({toast:true, icon:'warning', title:'Zego Network Issue. Retrying...', position:'top', showConfirmButton:false, timer:2000});
+            return false;
+        }
+
         zg = new window.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
 
         zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
             if (updateType === 'ADD') {
                 for (let i = 0; i < streamList.length; i++) {
                     const streamId = streamList[i].streamID;
-                    const remoteStream = await zg.startPlayingStream(streamId);
-                    const audio = document.createElement('audio');
-                    audio.id = `zego-audio-${streamId}`;
-                    audio.autoplay = true;
-                    audio.muted = isSpeakerMuted; 
-                    audio.srcObject = remoteStream;
-                    document.getElementById('remote-audio-container').appendChild(audio);
+                    try {
+                        const remoteStream = await zg.startPlayingStream(streamId);
+                        const audio = document.createElement('audio');
+                        audio.id = `zego-audio-${streamId}`;
+                        audio.autoplay = true;
+                        audio.muted = isSpeakerMuted; 
+                        audio.srcObject = remoteStream;
+                        document.getElementById('remote-audio-container').appendChild(audio);
+                    } catch(e) {
+                        console.error("Stream Play Error:", e);
+                    }
                 }
             } else if (updateType === 'DELETE') {
                 for (let i = 0; i < streamList.length; i++) {
@@ -7274,25 +7298,27 @@ async function initZego() {
             });
         });
 
-        Swal.close();
         return true;
     } catch (error) {
         console.error("Zego Init Error:", error);
-        Swal.fire('Network Error', 'انٹرنیٹ کا مسئلہ ہے۔ Zego سرور سے کنیکٹ نہیں ہو سکا۔', 'error');
+        // بڑا پوپ اپ ہٹا کر چھوٹا ٹوسٹ لگا دیا ہے
+        Swal.fire({toast:true, icon:'error', title:'Connection failed. Check internet.', position:'top', showConfirmButton:false, timer:2000});
         return false;
     }
 }
 
+// 💡 IMPROVED MIC FUNCTION
 async function startZegoMic() {
     try {
-        let isInit = await initZego();
-        if (!isInit) return false;
-
         Swal.fire({title: 'Connecting Mic...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
 
-        // مائیک کی پرمیشن لے کر سٹریم بناؤ
+        let isInit = await initZego();
+        if (!isInit) {
+            Swal.close();
+            return false;
+        }
+
         localZegoStream = await zg.createStream({camera: false, mic: true});
-        
         publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
         await zg.startPublishingStream(publishedStreamId, localZegoStream);
         
@@ -7300,8 +7326,14 @@ async function startZegoMic() {
         return true;
 
     } catch (err) {
+        Swal.close(); // ایرر پر لوڈنگ سکرین فوراً بند
         console.error("Mic Error:", err);
-        Swal.fire('Mic Error', 'براؤزر سے مائیک کی پرمیشن دیں (اوپر تالے 🔒 کے نشان پر کلک کر کے)', 'error');
+        
+        if(err.message && err.message.includes('Token')) {
+            Swal.fire('Token Error', 'Zego Token is expired. Please generate a new one.', 'error');
+        } else {
+            Swal.fire({toast:true, icon:'error', title:'Mic Permission Denied / Network Error', position:'top', showConfirmButton:false, timer:2500});
+        }
         return false;
     }
 }
@@ -7321,11 +7353,14 @@ window.listenForSignals = async () => {
     let isInit = await initZego();
     if (!isInit) return;
     try {
-        // ٹوکن کی جگہ dummy سٹرنگ بھیجی ہے تاکہ authentication off ہونے پر بھی کریش نہ ہو
-        await zg.loginRoom(currentRoomId, "dummy_token", { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
+        // Here the REAL token is used
+        await zg.loginRoom(currentRoomId, ZEGO_TOKEN, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
         zg.setSoundLevelDelegate(true, 100); 
+        console.log("✅ Room Logged In");
     } catch(e) {
         console.error("Login Room Error:", e);
+        // Error handling improved
+        Swal.fire({toast:true, icon:'error', title:'Room connection issue: ' + e.message, position:'top', showConfirmButton:false, timer:2500});
     }
 };
 
@@ -7352,7 +7387,6 @@ window.sitDown = async (sid, def) => {
         }
     });
 
-    // 💡 مائیک سٹارٹ ہونے کا انتظار کرے گا
     const micStarted = await startZegoMic();
     if (!micStarted) return; 
     
