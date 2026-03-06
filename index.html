@@ -7218,7 +7218,8 @@ let currentSeatId = null;
 
 async function initZego() {
     if (zg) return;
-    zg = new ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
+    // مسئلہ یہاں تھا، CDN لنک میں ZegoExpressEngine کے اندر ZegoExpressEngine کال کرنا پڑتا ہے
+    zg = new ZegoExpressEngine.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
 
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         if (updateType === 'ADD') {
@@ -7265,12 +7266,17 @@ async function initZego() {
 }
 
 function generateZegoToken(userId, roomId) {
-    // چونکہ آپ نے ڈیش بورڈ سے ٹوکن بند کر دیا ہے، اس لیے ہم اسے خالی بھیجیں گے تاکہ لاگ ان فیل نہ ہو
-    return ""; 
+    // Zego SDK خالی "" سٹرنگ قبول نہیں کرتا، اس لیے کوئی بھی ڈمی ورڈ پاس کر دیں
+    return "dummy_test_token_123"; 
 }
 
 async function startZegoMic() {
     try {
+        // یہ چیک لگانا بہت ضروری ہے تاکہ null والا ایرر زندگی میں کبھی نہ آئے
+        if (!zg) {
+            await initZego();
+        }
+        
         // 1. سب سے پہلے ہم زبردستی براؤزر کا اپنا اصلی پرمیشن پاپ اپ لائیں گے
         let nativeStream;
         try {
