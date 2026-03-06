@@ -7265,53 +7265,47 @@ async function initZego() {
 }
 
 function generateZegoToken(userId, roomId) {
-    try {
-        // یہ کوڈ خود بخود ٹوکن بنائے گا، اب ڈیش بورڈ سے سیٹنگ بند کرنے کی ضرورت نہیں!
-        const token = ZegoUIKitPrebuilt.generateKitTokenForTest(
-            ZEGO_APP_ID, 
-            ZEGO_SERVER_SECRET, 
-            roomId, 
-            userId, 
-            currentUser.displayName || "User"
-        );
-        return token;
-    } catch(e) {
-        console.error("Token Generation Error:", e);
-        return "";
-    }
+    // چونکہ آپ نے ڈیش بورڈ سے ٹوکن بند کر دیا ہے، اس لیے ہم اسے خالی بھیجیں گے تاکہ لاگ ان فیل نہ ہو
+    return ""; 
 }
 
 async function startZegoMic() {
     try {
-        // پرانے کوڈ کی طرح پہلے یوزر سے پرمیشن مانگیں (موبائل براؤزرز کے لیے یہ لازمی شرط ہے)
-        const result = await Swal.fire({
-            title: '🎤 Microphone Access',
-            text: 'YARAAN wants to access your microphone for Voice Chat.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#10b981',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Allow',
-            background: '#111',
-            color: '#fff'
-        });
+        // 1. سب سے پہلے ہم زبردستی براؤزر کا اپنا اصلی پرمیشن پاپ اپ لائیں گے
+        let nativeStream;
+        try {
+            nativeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch (nativeErr) {
+            console.error("Browser Blocked Mic:", nativeErr);
+            Swal.fire({
+                title: 'مائیک بند ہے!',
+                text: 'آپ کے براؤزر نے مائیک کو بلاک کیا ہوا ہے۔ اوپر تالے (🔒) کے نشان پر کلک کریں اور مائیک کو Allow کریں۔',
+                icon: 'error',
+                background: '#111', color: '#fff'
+            });
+            return false;
+        }
 
-        // اگر یوزر نے کینسل کر دیا تو واپس چلے جائیں
-        if (!result.isConfirmed) return false;
+        Swal.fire({title: 'Starting Voice...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
 
-        // مائیک کنیکٹ ہونے تک لوڈنگ سکرین دکھائیں
-        Swal.fire({title: 'Connecting Mic...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
-
-        // Zego کا مائیک آن کریں
+        // 2. چونکہ براؤزر نے اب پرمیشن دے دی ہے، اب Zego کو چلائیں گے
         localZegoStream = await zg.createStream({camera: false, mic: true});
-        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
-        zg.startPublishingStream(publishedStreamId, localZegoStream);
         
-        Swal.close(); // لوڈنگ بند کریں
+        // 3. براؤزر والے کچے مائیک کو بند کر دیں گے تاکہ آواز ڈبل نہ ہو
+        if(nativeStream) {
+            nativeStream.getTracks().forEach(track => track.stop());
+        }
+
+        // 4. روم میں آواز بھیجنا شروع کریں
+        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
+        let pubResult = await zg.startPublishingStream(publishedStreamId, localZegoStream);
+        
+        Swal.close(); 
         return true;
+
     } catch (err) {
-        console.error("Zego Mic Error:", err);
-        Swal.fire('Error', 'Microphone access denied. Please check device settings.', 'error');
+        console.error("Zego Engine Error:", err);
+        Swal.fire('System Error', err.message || 'Please refresh the page and try again.', 'error');
         return false;
     }
 }
