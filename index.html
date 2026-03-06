@@ -947,6 +947,9 @@
     animation: slideInLeft 0.3s ease-out forwards;
 }
     </style>
+    <!-- ZEGOCLOUD SDKs -->
+    <script src="https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
+    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
 </head>
 <body>
 <!-- WebRTC آڈیو کنٹینرز (چھپے ہوئے) -->
@@ -7204,52 +7207,118 @@ window.loadCPWeeklyComingSoon = function() {
     
     listContainer.innerHTML = html;
 };
-// ================= ویب آر ٹی سی (آواز) اور اینیمیشن کا سسٹم =================
+// ================= ZEGOCLOUD (REAL VOICE CHAT) SYSTEM =================
+const ZEGO_APP_ID = 233087486;
+const ZEGO_SERVER_SECRET = "55f12f4d63943173b8832f4644c3057c";
 
-// ================= ویب آر ٹی سی (آواز) اور اینیمیشن کا سسٹم (FREE VERSION FOR AUDIENCE & SPEAKERS) =================
+let zg = null;
+let localZegoStream = null;
+let publishedStreamId = null;
+let currentSeatId = null;
 
-let peerConnections = {};        
-let localAudioStream = null;     
-let currentSeatId = null;        
-let audioContexts = {}; 
+async function initZego() {
+    if (zg) return;
+    zg = new ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
 
-// فری اور بہتر STUN/TURN سرورز تاکہ آواز نہ کٹے
-const iceServers = {
-    iceServers:[
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun.relay.metered.ca:80' }
-    ]
-};
+    zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
+        if (updateType === 'ADD') {
+            for (let i = 0; i < streamList.length; i++) {
+                const streamId = streamList[i].streamID;
+                const remoteStream = await zg.startPlayingStream(streamId);
+                
+                const audio = document.createElement('audio');
+                audio.id = `zego-audio-${streamId}`;
+                audio.autoplay = true;
+                audio.muted = isSpeakerMuted; 
+                audio.srcObject = remoteStream;
+                document.getElementById('remote-audio-container').appendChild(audio);
+            }
+        } else if (updateType === 'DELETE') {
+            for (let i = 0; i < streamList.length; i++) {
+                const streamId = streamList[i].streamID;
+                zg.stopPlayingStream(streamId);
+                const audio = document.getElementById(`zego-audio-${streamId}`);
+                if (audio) audio.remove();
+            }
+        }
+    });
 
-async function initLocalAudio() {
+    zg.on('soundLevelUpdate', (soundLevelList) => {
+        soundLevelList.forEach(item => {
+            let uid = item.streamID.split('_')[0]; 
+            let seatId = null;
+            
+            for (let k in currentRoomSeats) {
+                if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) {
+                    seatId = k;
+                    break;
+                }
+            }
+            
+            if (seatId && item.soundLevel > 10) {
+                showRipple(seatId);
+            } else if (seatId) {
+                removeRipple(seatId);
+            }
+        });
+    });
+}
+
+function generateZegoToken(userId, roomId) {
     try {
-        if (localAudioStream) return localAudioStream;
-        
-        const result = await Swal.fire({
-            title: '🎤 Microphone Access',
-            text: 'YARAAN wants to access your microphone',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#10b981',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Allow',
-            background: '#111',
-            color: '#fff'
-        });
-
-        if (!result.isConfirmed) return null;
-        
-        localAudioStream = await navigator.mediaDevices.getUserMedia({ 
-            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } 
-        });
-        
-        return localAudioStream;
-    } catch (err) {
-        Swal.fire({icon: 'error', title: 'Mic Error', text: 'Could not access microphone.', background: '#111', color: '#fff'});
-        return null;
+        // یہ کوڈ خود بخود ٹوکن بنائے گا، اب ڈیش بورڈ سے سیٹنگ بند کرنے کی ضرورت نہیں!
+        const token = ZegoUIKitPrebuilt.generateKitTokenForTest(
+            ZEGO_APP_ID, 
+            ZEGO_SERVER_SECRET, 
+            roomId, 
+            userId, 
+            currentUser.displayName || "User"
+        );
+        return token;
+    } catch(e) {
+        console.error("Token Generation Error:", e);
+        return "";
     }
 }
+
+async function startZegoMic() {
+    try {
+        localZegoStream = await zg.createStream({camera: false, mic: true});
+        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
+        zg.startPublishingStream(publishedStreamId, localZegoStream);
+        return true;
+    } catch (err) {
+        Swal.fire('Error', 'Microphone access denied. Please allow mic permissions.', 'error');
+        return false;
+    }
+}
+
+async function stopZegoMic() {
+    if (zg && publishedStreamId) {
+        zg.stopPublishingStream(publishedStreamId);
+        if (localZegoStream) {
+            zg.destroyStream(localZegoStream);
+            localZegoStream = null;
+        }
+        publishedStreamId = null;
+    }
+}
+
+window.listenForSignals = async () => {
+    await initZego();
+    const token = generateZegoToken(currentUser.uid, currentRoomId);
+    await zg.loginRoom(currentRoomId, token, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
+    zg.setSoundLevelDelegate(true, 100); 
+};
+
+window.cleanupWebRTC = async () => {
+    cleanupRipples();
+    if (zg && currentRoomId) {
+        await stopZegoMic();
+        zg.logoutRoom(currentRoomId);
+    }
+    document.getElementById('remote-audio-container').innerHTML = '';
+};
 
 window.sitDown = async (sid, def) => {
     const sr = ref(db, `rooms/${currentRoomId}/seats`);
@@ -7257,19 +7326,18 @@ window.sitDown = async (sid, def) => {
     
     if (s[sid] && (s[sid].locked || s[sid].uid)) return;
     
-    let unseatUpdates = {};['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
+    let unseatUpdates = {};
+    ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
         if (s[k] && s[k].uid === currentUser.uid) {
             unseatUpdates[k] = null;
         }
     });
+
+    const micStarted = await startZegoMic();
+    if (!micStarted) return; 
     
     const userSnap = await get(ref(db, `users/${currentUser.uid}`));
     const userData = userSnap.val();
-    
-    const stream = await initLocalAudio();
-    if (!stream) return; // اگر مائیک کی پرمیشن نہیں دی تو کینسل کر دیں
-    
-    setupAudioRipple();
     
     const mySeatData = {
         uid: currentUser.uid,
@@ -7287,184 +7355,33 @@ window.sitDown = async (sid, def) => {
     
     currentSeatId = sid;
     document.getElementById(`menu-${sid}`).style.display = 'none';
-    
-    // جب میں مائیک پر بیٹھوں گا، تو روم میں موجود ہر بندے (مائیک والے اور آڈینس) کو اپنی آواز بھیجوں گا
-    setupBroadcasterConnections(); 
 };
 
 window.leaveSeat = async (sid) => {
     const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
     cleanupRipples();
+    
     onDisconnect(seatRef).cancel();
     await remove(seatRef);
     document.getElementById(`menu-${sid}`).style.display = 'none';
     
     if (currentSeatId === sid) {
         currentSeatId = null;
-        // جب مائیک چھوڑیں تو اپنا سٹریمنگ کنکشن بند کریں
-        cleanupWebRTC(); 
+        await stopZegoMic(); 
     }
 };
-
-// یہ فنکشن مائیک والے کو پورے روم (مائیک + آڈینس) کے ساتھ کنیکٹ کرے گا
-function setupBroadcasterConnections() {
-    if (!currentRoomId || !currentUser) return;
-    
-    const activeUsersRef = ref(db, `rooms/${currentRoomId}/activeUsers`);
-    
-    // 1. روم میں پہلے سے موجود تمام لوگوں کو کنکشن (آفر) بھیجیں
-    get(activeUsersRef).then(snap => {
-        if(snap.exists()) {
-            Object.keys(snap.val()).forEach(uid => {
-                if (uid !== currentUser.uid) {
-                    if(peerConnections[uid]) {
-                        peerConnections[uid].close();
-                        delete peerConnections[uid];
-                    }
-                    createPeerConnection(uid, true);
-                }
-            });
-        }
-    });
-
-    // 2. اگر کوئی نیا بندہ روم میں آتا ہے، تو اسے بھی فورا آفر بھیجیں
-    onChildAdded(activeUsersRef, (snap) => {
-        const newUid = snap.key;
-        if (currentSeatId && newUid !== currentUser.uid && !peerConnections[newUid]) {
-            createPeerConnection(newUid, true);
-        }
-    });
-}
-
-function createPeerConnection(targetUid, isCaller) {
-    const pc = new RTCPeerConnection(iceServers);
-    peerConnections[targetUid] = pc;
-    
-    // اگر میں مائیک پر ہوں، تو اپنا آڈیو ٹریک کنکشن میں ڈال دوں گا
-    if (localAudioStream && currentSeatId) {
-        localAudioStream.getTracks().forEach(track => pc.addTrack(track, localAudioStream));
-    }
-    
-    pc.ontrack = (event) => {
-        // دوسرے لوگوں کی آواز سننا اور ان کے بلبلے شو کروانا
-        let audio = document.getElementById(`audio-${targetUid}`);
-        if (!audio) {
-            audio = document.createElement('audio');
-            audio.id = `audio-${targetUid}`;
-            audio.autoplay = true;
-            document.getElementById('remote-audio-container').appendChild(audio);
-        }
-        audio.srcObject = event.streams[0];
-        setupRemoteAudioRipple(event.streams[0], targetUid);
-    };
-    
-    pc.onicecandidate = (event) => {
-        if (event.candidate) {
-            push(ref(db, `calls/${targetUid}/candidates`), {
-                from: currentUser.uid,
-                candidate: JSON.stringify(event.candidate),
-                timestamp: Date.now()
-            });
-        }
-    };
-    
-    pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
-            const audioEl = document.getElementById(`audio-${targetUid}`);
-            if (audioEl) audioEl.remove();
-            delete peerConnections[targetUid];
-        }
-    };
-    
-    if (isCaller) {
-        pc.createOffer()
-            .then(offer => pc.setLocalDescription(offer))
-            .then(() => {
-                push(ref(db, `calls/${targetUid}/offers`), {
-                    from: currentUser.uid,
-                    offer: JSON.stringify(pc.localDescription),
-                    timestamp: Date.now()
-                });
-            });
-    }
-        
-    return pc;
-}
-
-// یہ فنکشن ہر یوزر (مائیک والا اور آڈینس) سگنلز سننے کے لیے استعمال کرے گا
-function listenForSignals() {
-    if (!currentUser) return;
-    const uid = currentUser.uid;
-    
-    // Offers سننا (کوئی مائیک پر بیٹھا ہے اور مجھے آواز بھیجنا چاہتا ہے)
-    onChildAdded(ref(db, `calls/${uid}/offers`), (snap) => {
-        const data = snap.val();
-        const fromUid = data.from;
-        
-        if (peerConnections[fromUid]) {
-            peerConnections[fromUid].close();
-            delete peerConnections[fromUid];
-        }
-        
-        const pc = createPeerConnection(fromUid, false);
-        
-        pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(data.offer)))
-            .then(() => pc.createAnswer())
-            .then(answer => pc.setLocalDescription(answer))
-            .then(() => {
-                push(ref(db, `calls/${fromUid}/answers`), {
-                    from: uid,
-                    answer: JSON.stringify(pc.localDescription),
-                    timestamp: Date.now()
-                });
-            });
-            
-        remove(snap.ref); // ڈیٹا کلین اپ (Loop سے بچنے کے لیے)
-    });
-    
-    // Answers سننا
-    onChildAdded(ref(db, `calls/${uid}/answers`), (snap) => {
-        const data = snap.val();
-        const fromUid = data.from;
-        if (peerConnections[fromUid]) {
-            peerConnections[fromUid].setRemoteDescription(new RTCSessionDescription(JSON.parse(data.answer)));
-        }
-        remove(snap.ref);
-    });
-    
-    // Candidates سننا
-    onChildAdded(ref(db, `calls/${uid}/candidates`), (snap) => {
-        const data = snap.val();
-        const fromUid = data.from; 
-        if (peerConnections[fromUid]) {
-            peerConnections[fromUid].addIceCandidate(new RTCIceCandidate(JSON.parse(data.candidate))).catch(e=>console.log(e));
-        }
-        remove(snap.ref);
-    });
-}
-
-function cleanupWebRTC() {
-    cleanupRipples();
-    Object.keys(peerConnections).forEach(uid => {
-        peerConnections[uid].close();
-        delete peerConnections[uid];
-    });
-    if (localAudioStream) {
-        localAudioStream.getTracks().forEach(track => track.stop());
-        localAudioStream = null;
-    }
-    document.getElementById('remote-audio-container').innerHTML = '';
-}
 
 window.toggleMic = () => {
     const btn = document.getElementById('btn-mic');
     isMicMuted = !isMicMuted;
-    if(localAudioStream) {
-        localAudioStream.getAudioTracks().forEach(t => t.enabled = !isMicMuted);
+    
+    if (localZegoStream) {
+        zg.muteMicrophone(isMicMuted);
     }
-    if(isMicMuted) {
+    
+    if (isMicMuted) {
         btn.className = 'fa-solid fa-microphone-slash room-icon-btn text-gray-500';
-        document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
+        removeRipple(currentSeatId);
     } else {
         btn.className = 'fa-solid fa-microphone room-icon-btn text-white';
     }
@@ -7473,71 +7390,13 @@ window.toggleMic = () => {
 window.toggleSpeaker = () => {
     const btn = document.getElementById('btn-speaker');
     isSpeakerMuted = !isSpeakerMuted;
-    document.querySelectorAll('#remote-audio-container audio').forEach(a => a.muted = isSpeakerMuted);
+    
+    document.querySelectorAll('#remote-audio-container audio').forEach(a => {
+        a.muted = isSpeakerMuted;
+    });
+    
     btn.className = isSpeakerMuted ? 'fa-solid fa-volume-xmark room-icon-btn text-gray-500' : 'fa-solid fa-volume-high room-icon-btn text-white';
 };
-
-// ========== مائک پر بلبلے (Ripple Effect) ==========
-let audioAnalyser = null;
-let audioDataArray = null;
-let audioContext = null;
-let rippleInterval = null;
-
-function setupAudioRipple() {
-    if (!localAudioStream) return;
-    if (rippleInterval) clearInterval(rippleInterval);
-    try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContext.createMediaStreamSource(localAudioStream);
-        audioAnalyser = audioContext.createAnalyser();
-        audioAnalyser.fftSize = 128;
-        source.connect(audioAnalyser);
-        audioDataArray = new Uint8Array(audioAnalyser.frequencyBinCount);
-        rippleInterval = setInterval(checkAudioLevel, 100);
-    } catch (e) { console.log(e); }
-}
-
-function checkAudioLevel() {
-    if (isMicMuted || !audioAnalyser || !currentSeatId) {
-        removeRipple(currentSeatId);
-        return;
-    }
-    audioAnalyser.getByteFrequencyData(audioDataArray);
-    let sum = 0;
-    for (let i = 0; i < audioDataArray.length; i++) sum += audioDataArray[i];
-    if ((sum / audioDataArray.length) > 10) showRipple(currentSeatId);
-    else removeRipple(currentSeatId);
-}
-
-// دوسرے یوزرز کی اینیمیشن
-function setupRemoteAudioRipple(stream, uid) {
-    try {
-        if(!audioContexts[uid]) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const source = ctx.createMediaStreamSource(stream);
-            const analyser = ctx.createAnalyser();
-            analyser.fftSize = 128;
-            source.connect(analyser);
-            audioContexts[uid] = { ctx, analyser, dataArray: new Uint8Array(analyser.frequencyBinCount) };
-            
-            setInterval(() => {
-                if(isSpeakerMuted) return;
-                const data = audioContexts[uid];
-                data.analyser.getByteFrequencyData(data.dataArray);
-                let sum = 0;
-                for (let i = 0; i < data.dataArray.length; i++) sum += data.dataArray[i];
-                let avg = sum / data.dataArray.length;
-                
-                let seatId = null;
-                for (let k in currentRoomSeats) {
-                    if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) seatId = k;
-                }
-                if (seatId && avg > 10) showRipple(seatId);
-                else if (seatId) removeRipple(seatId);
-            }, 100);
-        }
-    } catch(e) {}
-}
 
 function showRipple(seatId) {
     const seatContainer = document.getElementById(`cont-${seatId}`);
@@ -7553,26 +7412,19 @@ function showRipple(seatId) {
 }
 
 function removeRipple(seatId) {
-    if(!seatId) return;
+    if (!seatId) return;
     const seatContainer = document.getElementById(`cont-${seatId}`);
     if (seatContainer) {
         const rip = seatContainer.querySelector('.mic-ripple');
-        if(rip) rip.remove();
+        if (rip) rip.remove();
     }
 }
 
-function removeAllRipples() {
+function cleanupRipples() {
     document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
 }
 
-function cleanupRipples() {
-    if (rippleInterval) clearInterval(rippleInterval);
-    removeAllRipples();
-}
-
-// Ensure listeners start on load
 setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 2000);
-
 
 </script>
 </body>
