@@ -7208,7 +7208,7 @@ window.loadCPWeeklyComingSoon = function() {
     listContainer.innerHTML = html;
 };
 
-// ================= ZEGOCLOUD (REAL VOICE CHAT) SYSTEM =================
+// ================= ZEGOCLOUD (REAL VOICE CHAT) FAST SYSTEM =================
 const ZEGO_APP_ID = 233087486;
 const ZEGO_SERVER_SECRET = "55f12f4d63943173b8832f4644c3057c";
 
@@ -7217,207 +7217,132 @@ let localZegoStream = null;
 let publishedStreamId = null;
 let currentSeatId = null;
 
-// 💡 NEW: AUTO TOKEN GENERATOR (یہ ہر یوزر کے لیے نیا ٹوکن بنائے گا)
+// 💡 1. AUTO TOKEN GENERATOR (یہ خود ٹوکن بنائے گا)
 function generateZegoToken(appId, serverSecret, userId) {
-    const nonce = new Date().getTime().toString() + Math.floor(Math.random() * 100000).toString();
-    const time = Math.floor(new Date().getTime() / 1000);
-    const expire = time + (24 * 60 * 60); // 24 hours expiry
-    
-    const payloadObject = {
-        app_id: appId,
-        user_id: userId,
-        nonce: nonce,
-        privilege: { 1: 1, 2: 1 },
-        stream_id_list: null
-    };
-    const payload = JSON.stringify(payloadObject);
-    
-    const secret = CryptoJS.enc.Utf8.parse(serverSecret);
-    const iv = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
-    const encrypted = CryptoJS.AES.encrypt(payload, secret, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    
-    const encryptedBytes = encrypted.ciphertext;
-    const buffer = new Uint8Array(28 + encryptedBytes.sigBytes);
-    const dataView = new DataView(buffer.buffer);
-    
-    dataView.setUint32(0, expire, false);
-    
-    const ivBytes = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
-    for (let i = 0; i < 16; i++) {
-        buffer[4 + i] = ivBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff;
-    }
-    
-    dataView.setUint16(20, encryptedBytes.sigBytes, false);
-    
-    for (let i = 0; i < encryptedBytes.sigBytes; i++) {
-        buffer[22 + i] = encryptedBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff;
-    }
-    
-    return "04" + btoa(String.fromCharCode.apply(null, buffer));
-}
-
-// 💡 Zego Loader
-async function forceLoadZego() {
-    return new Promise((resolve) => {
-        if (typeof window.ZegoExpressEngine !== 'undefined') {
-            resolve(true); 
-            return;
-        }
-        const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
-        script.onload = () => resolve(true);
-        script.onerror = () => {
-            const fallback = document.createElement('script');
-            fallback.src = "https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
-            fallback.onload = () => resolve(true);
-            fallback.onerror = () => resolve(false);
-            document.head.appendChild(fallback);
-        };
-        document.head.appendChild(script);
-    });
-}
-
-async function initZego() {
-    if (zg) return true;
     try {
-        const isLoaded = await forceLoadZego();
-        if (!isLoaded) return false;
-
-        zg = new window.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
-
-        zg.on('roomStreamUpdate', async (roomID, updateType, streamList) => {
-            if (updateType === 'ADD') {
-                for (let i = 0; i < streamList.length; i++) {
-                    const streamId = streamList[i].streamID;
-                    try {
-                        const remoteStream = await zg.startPlayingStream(streamId);
-                        const audio = document.createElement('audio');
-                        audio.id = `zego-audio-${streamId}`;
-                        audio.autoplay = true;
-                        audio.muted = isSpeakerMuted; 
-                        audio.srcObject = remoteStream;
-                        document.getElementById('remote-audio-container').appendChild(audio);
-                    } catch(e) { console.error(e); }
-                }
-            } else if (updateType === 'DELETE') {
-                for (let i = 0; i < streamList.length; i++) {
-                    const streamId = streamList[i].streamID;
-                    zg.stopPlayingStream(streamId);
-                    const audio = document.getElementById(`zego-audio-${streamId}`);
-                    if (audio) audio.remove();
-                }
-            }
-        });
-        return true;
-    } catch (error) { return false; }
-}
-
-async function startZegoMic() {
-    try {
-        Swal.fire({title: 'Connecting Mic...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
-
-        let isInit = await initZego();
-        if (!isInit) {
-            Swal.close();
-            return false;
-        }
-
-        localZegoStream = await zg.createStream({camera: false, mic: true});
-        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
-        await zg.startPublishingStream(publishedStreamId, localZegoStream);
+        const nonce = new Date().getTime().toString() + Math.floor(Math.random() * 100000).toString();
+        const time = Math.floor(new Date().getTime() / 1000);
+        const expire = time + (24 * 60 * 60); // 24 hours expiry
         
-        Swal.close(); 
-        return true;
-
-    } catch (err) {
-        Swal.close(); 
-        console.error("Mic Error:", err);
-        Swal.fire({
-            icon: 'error',
-            title: 'Mic Blocked',
-            text: 'Please allow microphone access or test on a live HTTPS link (GitHub).',
-            background: '#111', color: '#fff'
-        });
-        return false;
+        const payloadObject = { app_id: appId, user_id: userId.toString(), nonce: nonce, privilege: { 1: 1, 2: 1 }, stream_id_list: null };
+        const payload = JSON.stringify(payloadObject);
+        
+        const secret = CryptoJS.enc.Utf8.parse(serverSecret);
+        const iv = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
+        const encrypted = CryptoJS.AES.encrypt(payload, secret, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+        
+        const encryptedBytes = encrypted.ciphertext;
+        const buffer = new Uint8Array(28 + encryptedBytes.sigBytes);
+        const dataView = new DataView(buffer.buffer);
+        
+        dataView.setUint32(0, expire, false);
+        
+        const ivBytes = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
+        for (let i = 0; i < 16; i++) { buffer[4 + i] = ivBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff; }
+        
+        dataView.setUint16(20, encryptedBytes.sigBytes, false);
+        for (let i = 0; i < encryptedBytes.sigBytes; i++) { buffer[22 + i] = encryptedBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff; }
+        
+        return "04" + btoa(String.fromCharCode.apply(null, buffer));
+    } catch(e) {
+        console.error("Token Error:", e);
+        return "";
     }
 }
 
-async function stopZegoMic() {
-    if (zg && publishedStreamId) {
-        zg.stopPublishingStream(publishedStreamId);
-        if (localZegoStream) {
-            zg.destroyStream(localZegoStream);
-            localZegoStream = null;
-        }
-        publishedStreamId = null;
-    }
-}
-
+// 💡 2. SETUP ZEGO (بغیر کسی پوپ اپ کے خاموشی سے کنیکٹ ہوگا)
 window.listenForSignals = async () => {
-    let isInit = await initZego();
-    if (!isInit) return;
     try {
-        // 💡 MAGIC: یہ خود بخود ٹوکن بنائے گا!
+        if (!zg) {
+            zg = new window.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
+            
+            zg.on('roomStreamUpdate', async (roomID, updateType, streamList) => {
+                if (updateType === 'ADD') {
+                    for (let i = 0; i < streamList.length; i++) {
+                        try {
+                            const remoteStream = await zg.startPlayingStream(streamList[i].streamID);
+                            const audio = document.createElement('audio');
+                            audio.id = `zego-audio-${streamList[i].streamID}`;
+                            audio.autoplay = true;
+                            audio.srcObject = remoteStream;
+                            document.getElementById('remote-audio-container').appendChild(audio);
+                        } catch(e) { console.error("Stream Play Error"); }
+                    }
+                } else if (updateType === 'DELETE') {
+                    streamList.forEach(stream => {
+                        zg.stopPlayingStream(stream.streamID);
+                        const audio = document.getElementById(`zego-audio-${stream.streamID}`);
+                        if (audio) audio.remove();
+                    });
+                }
+            });
+
+            zg.on('soundLevelUpdate', (soundLevelList) => {
+                soundLevelList.forEach(item => {
+                    let uid = item.streamID.split('_')[0]; 
+                    let seatId = null;
+                    for (let k in currentRoomSeats) { if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) { seatId = k; break; } }
+                    if (seatId && item.soundLevel > 10) showRipple(seatId); else if (seatId) removeRipple(seatId);
+                });
+            });
+        }
+
         const autoToken = generateZegoToken(ZEGO_APP_ID, ZEGO_SERVER_SECRET, currentUser.uid);
-        
         await zg.loginRoom(currentRoomId, autoToken, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
         zg.setSoundLevelDelegate(true, 100); 
-        console.log("✅ Room Logged In With Auto Token!");
+        console.log("✅ Zego Room Logged In Silently!");
     } catch(e) {
         console.error("Login Room Error:", e);
     }
 };
 
-window.cleanupWebRTC = async () => {
-    cleanupRipples();
-    if (zg && currentRoomId) {
-        await stopZegoMic();
-        zg.logoutRoom(currentRoomId);
-    }
-    const container = document.getElementById('remote-audio-container');
-    if (container) container.innerHTML = '';
-};
-
+// 💡 3. FAST SIT DOWN (پروفیشنل طریقہ - نو لوڈنگ سکرین!)
 window.sitDown = async (sid, def) => {
     const sr = ref(db, `rooms/${currentRoomId}/seats`);
     const s = currentRoomSeats;
     
     if (s[sid] && (s[sid].locked || s[sid].uid)) return;
     
+    // Step 1: فوری طور پر ڈیٹا بیس اپڈیٹ کریں تاکہ ڈی پی سیٹ پر آ جائے (Zero Lag)
     let unseatUpdates = {};
     ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
         if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
     });
 
-    const micStarted = await startZegoMic();
-    if (!micStarted) return; 
-    
     const userSnap = await get(ref(db, `users/${currentUser.uid}`));
-    const userData = userSnap.val();
+    const userData = userSnap.val() || {};
     
-    const mySeatData = {
+    await update(sr, unseatUpdates);
+    const targetSeatRef = child(sr, sid);
+    await set(targetSeatRef, {
         uid: currentUser.uid,
         name: currentUser.displayName,
         pic: currentUser.photoURL,
         frame: userData.currentFrame || null,
         isOfficial: userData.isOfficial || false,
         nameColorClass: userData.nameColorClass || null
-    };
-    
-    await update(sr, unseatUpdates);
-    const targetSeatRef = child(sr, sid);
-    await set(targetSeatRef, mySeatData);
+    });
     onDisconnect(targetSeatRef).remove();
     
     currentSeatId = sid;
     const menuEl = document.getElementById(`menu-${sid}`);
     if (menuEl) menuEl.style.display = 'none';
+
+    // Step 2: بیک گراؤنڈ میں مائیکروفون آن کریں (کوئی لوڈنگ پوپ اپ نہیں آئے گا)
+    try {
+        localZegoStream = await zg.createStream({camera: false, mic: true});
+        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
+        await zg.startPublishingStream(publishedStreamId, localZegoStream);
+        console.log("🎙️ Mic Connected Fast!");
+    } catch (err) {
+        // اگر براؤزر نے مائیک بلاک کر دیا، تو اسے سیٹ سے اتار کر صرف چھوٹا سا ٹوسٹ دکھائیں
+        console.error("Mic Blocked:", err);
+        window.leaveSeat(sid);
+        Swal.fire({toast:true, icon:'error', title:'Microphone Access Denied! Please allow mic.', position:'top', showConfirmButton:false, timer:3000});
+    }
 };
 
+// 💡 4. LEAVE SEAT
 window.leaveSeat = async (sid) => {
     const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
     cleanupRipples();
@@ -7427,8 +7352,23 @@ window.leaveSeat = async (sid) => {
     if (menuEl) menuEl.style.display = 'none';
     if (currentSeatId === sid) {
         currentSeatId = null;
-        await stopZegoMic(); 
+        if (zg && publishedStreamId) {
+            zg.stopPublishingStream(publishedStreamId);
+            if (localZegoStream) { zg.destroyStream(localZegoStream); localZegoStream = null; }
+            publishedStreamId = null;
+        }
     }
+};
+
+window.cleanupWebRTC = async () => {
+    cleanupRipples();
+    if (zg && currentRoomId) {
+        if (publishedStreamId) { zg.stopPublishingStream(publishedStreamId); publishedStreamId = null; }
+        if (localZegoStream) { zg.destroyStream(localZegoStream); localZegoStream = null; }
+        zg.logoutRoom(currentRoomId);
+    }
+    const container = document.getElementById('remote-audio-container');
+    if (container) container.innerHTML = '';
 };
 
 window.toggleMic = () => {
@@ -7471,11 +7411,10 @@ function removeRipple(seatId) {
     }
 }
 
-function cleanupRipples() {
-    document.querySelectorAll('.mic-ripple').forEach(el => el.remove());
-}
+function cleanupRipples() { document.querySelectorAll('.mic-ripple').forEach(el => el.remove()); }
 
-setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 2000);
+// جب روم کھلے گا، تو Zego خاموشی سے ایکٹیو ہو جائے گا
+setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 1500);
 </script>
 </body>
 </html>
