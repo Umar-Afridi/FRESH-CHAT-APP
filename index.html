@@ -948,7 +948,8 @@
 }
     </style>
 <!-- ZEGOCLOUD SDK -->
-    <script src="https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
 <!-- WebRTC آڈیو کنٹینرز (چھپے ہوئے) -->
@@ -7210,57 +7211,85 @@ window.loadCPWeeklyComingSoon = function() {
 // ================= ZEGOCLOUD (REAL VOICE CHAT) SYSTEM =================
 const ZEGO_APP_ID = 233087486;
 const ZEGO_SERVER_SECRET = "55f12f4d63943173b8832f4644c3057c";
-const ZEGO_TOKEN = "04AAAAAGmsSkgADH+FxGh2OWr9iJjpcgCxWVqP4L3MNFa8Y+0Qj9zGw+zt1ymgAvR0akHRJfTmYTmOL1P9VpSn4KGVG2s+eeA7s+RmF2UAWALpXuvPuyoeoqnBORZ9PZe70qV3fye0Ra/TBe7g+GHNrsloKJzuqnl7IZKelqrONF0hM1ZbJOdinuO0a5Q9YOSF8yLuX0LwMNonLQbVrFI6wJPaZrPQmt7GEeCvudRvTi7PN7+z/5Uvw4vIhWRbA+StOnDysJwCHk3VAQ==";
 
 let zg = null;
 let localZegoStream = null;
 let publishedStreamId = null;
 let currentSeatId = null;
 
-// 💡 NEW FIXED SCRIPT LOADER (NO CRASHES)
+// 💡 NEW: AUTO TOKEN GENERATOR (یہ ہر یوزر کے لیے نیا ٹوکن بنائے گا)
+function generateZegoToken(appId, serverSecret, userId) {
+    const nonce = new Date().getTime().toString() + Math.floor(Math.random() * 100000).toString();
+    const time = Math.floor(new Date().getTime() / 1000);
+    const expire = time + (24 * 60 * 60); // 24 hours expiry
+    
+    const payloadObject = {
+        app_id: appId,
+        user_id: userId,
+        nonce: nonce,
+        privilege: { 1: 1, 2: 1 },
+        stream_id_list: null
+    };
+    const payload = JSON.stringify(payloadObject);
+    
+    const secret = CryptoJS.enc.Utf8.parse(serverSecret);
+    const iv = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
+    const encrypted = CryptoJS.AES.encrypt(payload, secret, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    
+    const encryptedBytes = encrypted.ciphertext;
+    const buffer = new Uint8Array(28 + encryptedBytes.sigBytes);
+    const dataView = new DataView(buffer.buffer);
+    
+    dataView.setUint32(0, expire, false);
+    
+    const ivBytes = CryptoJS.enc.Utf8.parse(serverSecret.substring(0, 16));
+    for (let i = 0; i < 16; i++) {
+        buffer[4 + i] = ivBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff;
+    }
+    
+    dataView.setUint16(20, encryptedBytes.sigBytes, false);
+    
+    for (let i = 0; i < encryptedBytes.sigBytes; i++) {
+        buffer[22 + i] = encryptedBytes.words[i >>> 2] >>> (24 - (i % 4) * 8) & 0xff;
+    }
+    
+    return "04" + btoa(String.fromCharCode.apply(null, buffer));
+}
+
+// 💡 Zego Loader
 async function forceLoadZego() {
     return new Promise((resolve) => {
         if (typeof window.ZegoExpressEngine !== 'undefined') {
             resolve(true); 
             return;
         }
-        
         const script = document.createElement('script');
-        // Using jsdelivr because unpkg gets blocked in some Mobile WebViews
         script.src = "https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
-        
-        script.onload = () => {
-            console.log("✅ Zego SDK Loaded");
-            resolve(true);
-        };
-        
+        script.onload = () => resolve(true);
         script.onerror = () => {
-            console.log("⚠️ Primary SDK failed, trying fallback...");
             const fallback = document.createElement('script');
             fallback.src = "https://unpkg.com/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js";
             fallback.onload = () => resolve(true);
-            fallback.onerror = () => resolve(false); // Reject کی بجائے False دے گا تاکہ ایپ کریش نہ ہو
+            fallback.onerror = () => resolve(false);
             document.head.appendChild(fallback);
         };
-        
         document.head.appendChild(script);
     });
 }
 
-// 💡 IMPROVED INIT FUNCTION (NO ANNOYING POPUPS)
 async function initZego() {
     if (zg) return true;
-    
     try {
         const isLoaded = await forceLoadZego();
-        if (!isLoaded || typeof window.ZegoExpressEngine === 'undefined') {
-            Swal.fire({toast:true, icon:'warning', title:'Zego Network Issue. Retrying...', position:'top', showConfirmButton:false, timer:2000});
-            return false;
-        }
+        if (!isLoaded) return false;
 
         zg = new window.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
 
-        zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
+        zg.on('roomStreamUpdate', async (roomID, updateType, streamList) => {
             if (updateType === 'ADD') {
                 for (let i = 0; i < streamList.length; i++) {
                     const streamId = streamList[i].streamID;
@@ -7272,9 +7301,7 @@ async function initZego() {
                         audio.muted = isSpeakerMuted; 
                         audio.srcObject = remoteStream;
                         document.getElementById('remote-audio-container').appendChild(audio);
-                    } catch(e) {
-                        console.error("Stream Play Error:", e);
-                    }
+                    } catch(e) { console.error(e); }
                 }
             } else if (updateType === 'DELETE') {
                 for (let i = 0; i < streamList.length; i++) {
@@ -7285,29 +7312,10 @@ async function initZego() {
                 }
             }
         });
-
-        zg.on('soundLevelUpdate', (soundLevelList) => {
-            soundLevelList.forEach(item => {
-                let uid = item.streamID.split('_')[0]; 
-                let seatId = null;
-                for (let k in currentRoomSeats) {
-                    if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) { seatId = k; break; }
-                }
-                if (seatId && item.soundLevel > 10) showRipple(seatId);
-                else if (seatId) removeRipple(seatId);
-            });
-        });
-
         return true;
-    } catch (error) {
-        console.error("Zego Init Error:", error);
-        // بڑا پوپ اپ ہٹا کر چھوٹا ٹوسٹ لگا دیا ہے
-        Swal.fire({toast:true, icon:'error', title:'Connection failed. Check internet.', position:'top', showConfirmButton:false, timer:2000});
-        return false;
-    }
+    } catch (error) { return false; }
 }
 
-// 💡 IMPROVED MIC FUNCTION
 async function startZegoMic() {
     try {
         Swal.fire({title: 'Connecting Mic...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
@@ -7326,14 +7334,14 @@ async function startZegoMic() {
         return true;
 
     } catch (err) {
-        Swal.close(); // ایرر پر لوڈنگ سکرین فوراً بند
+        Swal.close(); 
         console.error("Mic Error:", err);
-        
-        if(err.message && err.message.includes('Token')) {
-            Swal.fire('Token Error', 'Zego Token is expired. Please generate a new one.', 'error');
-        } else {
-            Swal.fire({toast:true, icon:'error', title:'Mic Permission Denied / Network Error', position:'top', showConfirmButton:false, timer:2500});
-        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Mic Blocked',
+            text: 'Please allow microphone access or test on a live HTTPS link (GitHub).',
+            background: '#111', color: '#fff'
+        });
         return false;
     }
 }
@@ -7353,14 +7361,14 @@ window.listenForSignals = async () => {
     let isInit = await initZego();
     if (!isInit) return;
     try {
-        // Here the REAL token is used
-        await zg.loginRoom(currentRoomId, ZEGO_TOKEN, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
+        // 💡 MAGIC: یہ خود بخود ٹوکن بنائے گا!
+        const autoToken = generateZegoToken(ZEGO_APP_ID, ZEGO_SERVER_SECRET, currentUser.uid);
+        
+        await zg.loginRoom(currentRoomId, autoToken, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
         zg.setSoundLevelDelegate(true, 100); 
-        console.log("✅ Room Logged In");
+        console.log("✅ Room Logged In With Auto Token!");
     } catch(e) {
         console.error("Login Room Error:", e);
-        // Error handling improved
-        Swal.fire({toast:true, icon:'error', title:'Room connection issue: ' + e.message, position:'top', showConfirmButton:false, timer:2500});
     }
 };
 
@@ -7382,9 +7390,7 @@ window.sitDown = async (sid, def) => {
     
     let unseatUpdates = {};
     ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
-        if (s[k] && s[k].uid === currentUser.uid) {
-            unseatUpdates[k] = null;
-        }
+        if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
     });
 
     const micStarted = await startZegoMic();
@@ -7415,12 +7421,10 @@ window.sitDown = async (sid, def) => {
 window.leaveSeat = async (sid) => {
     const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
     cleanupRipples();
-    
     onDisconnect(seatRef).cancel();
     await remove(seatRef);
     const menuEl = document.getElementById(`menu-${sid}`);
     if (menuEl) menuEl.style.display = 'none';
-    
     if (currentSeatId === sid) {
         currentSeatId = null;
         await stopZegoMic(); 
@@ -7430,9 +7434,7 @@ window.leaveSeat = async (sid) => {
 window.toggleMic = () => {
     const btn = document.getElementById('btn-mic');
     isMicMuted = !isMicMuted;
-    
     if (localZegoStream) zg.muteMicrophone(isMicMuted);
-    
     if (isMicMuted) {
         btn.className = 'fa-solid fa-microphone-slash room-icon-btn text-gray-500';
         removeRipple(currentSeatId);
@@ -7444,11 +7446,7 @@ window.toggleMic = () => {
 window.toggleSpeaker = () => {
     const btn = document.getElementById('btn-speaker');
     isSpeakerMuted = !isSpeakerMuted;
-    
-    document.querySelectorAll('#remote-audio-container audio').forEach(a => {
-        a.muted = isSpeakerMuted;
-    });
-    
+    document.querySelectorAll('#remote-audio-container audio').forEach(a => a.muted = isSpeakerMuted);
     btn.className = isSpeakerMuted ? 'fa-solid fa-volume-xmark room-icon-btn text-gray-500' : 'fa-solid fa-volume-high room-icon-btn text-white';
 };
 
