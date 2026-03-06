@@ -7283,12 +7283,35 @@ function generateZegoToken(userId, roomId) {
 
 async function startZegoMic() {
     try {
+        // پرانے کوڈ کی طرح پہلے یوزر سے پرمیشن مانگیں (موبائل براؤزرز کے لیے یہ لازمی شرط ہے)
+        const result = await Swal.fire({
+            title: '🎤 Microphone Access',
+            text: 'YARAAN wants to access your microphone for Voice Chat.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Allow',
+            background: '#111',
+            color: '#fff'
+        });
+
+        // اگر یوزر نے کینسل کر دیا تو واپس چلے جائیں
+        if (!result.isConfirmed) return false;
+
+        // مائیک کنیکٹ ہونے تک لوڈنگ سکرین دکھائیں
+        Swal.fire({title: 'Connecting Mic...', background: '#111', color: '#fff', showConfirmButton: false, allowOutsideClick: false});
+
+        // Zego کا مائیک آن کریں
         localZegoStream = await zg.createStream({camera: false, mic: true});
         publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
         zg.startPublishingStream(publishedStreamId, localZegoStream);
+        
+        Swal.close(); // لوڈنگ بند کریں
         return true;
     } catch (err) {
-        Swal.fire('Error', 'Microphone access denied. Please allow mic permissions.', 'error');
+        console.error("Zego Mic Error:", err);
+        Swal.fire('Error', 'Microphone access denied. Please check device settings.', 'error');
         return false;
     }
 }
