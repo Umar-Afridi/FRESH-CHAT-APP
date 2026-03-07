@@ -2024,8 +2024,10 @@
             
             <div id="room-bottom-bar">
                 <div class="flex items-center justify-between w-full" id="room-icons-container">
-                    <i onclick="openRoomChatInput()" class="fa-solid fa-comment-dots room-icon-btn"></i>
-                    <i onclick="minimizeRoom(); switchTab('view-inbox', document.getElementById('btn-inbox'))" class="fa-solid fa-inbox room-icon-btn"></i>
+                    <i onclick="openRoomChatInput()" class="fa-solid fa-comment-dots room-icon-btn text-white"></i>
+                    <i onclick="minimizeRoom(); switchTab('view-inbox', document.getElementById('btn-inbox'))" class="fa-solid fa-inbox room-icon-btn text-white"></i>
+                    <!-- ایموجی بٹن وائٹ ہو گیا -->
+                    <i onclick="window.openEmojiSheet()" class="fa-regular fa-face-smile room-icon-btn text-white"></i>
                     <i onclick="toggleMic()" id="btn-mic" class="fa-solid fa-microphone room-icon-btn text-white"></i>
                     <i onclick="toggleSpeaker()" id="btn-speaker" class="fa-solid fa-volume-high room-icon-btn text-white"></i>
                     <i onclick="openGiftModal()" class="fa-solid fa-gift room-icon-btn text-pink-400"></i>
@@ -2044,6 +2046,47 @@
             <div class="nav-item" id="btn-inbox" onclick="switchTab('view-inbox', this)"><div class="relative"><i class="fa-solid fa-inbox"></i><div id="inbox-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-600 rounded-full hidden"></div></div><span>Inbox</span></div>
             <div class="nav-item" id="btn-profile" onclick="switchTab('view-profile', this)"><i class="fa-solid fa-user"></i><span>Me</span></div>
         </nav>
+    </div>
+
+    <!-- ================= EMOJI BOTTOM SHEET (UPDATED WITH 7 EMOJIS) ================= -->
+    <div id="emoji-sheet" class="hidden fixed inset-0 bg-black/60 z-[4000] flex flex-col justify-end transition-opacity duration-300">
+        <div onclick="window.closeEmojiSheet()" class="flex-1"></div>
+        <div class="bg-gray-900 rounded-t-3xl p-5 flex flex-col border-t border-gray-700 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+            <h3 class="text-white font-bold text-center mb-5 text-sm tracking-widest uppercase">Send Emoji</h3>
+            <div class="grid grid-cols-4 gap-4 px-2 pb-4">
+                
+                <!-- NEW HAHA EMOJI (SAB SE PEHLE) -->
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('haha')">
+                    <img src="./haha_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=Haha'">
+                    <span class="text-gray-300 text-[11px] font-bold">Haha</span>
+                </div>
+
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('sad')">
+                    <img src="./sad_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=Sad'">
+                    <span class="text-gray-300 text-[11px] font-bold">Sad</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('angry')">
+                    <img src="./angry_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=Angry'">
+                    <span class="text-gray-300 text-[11px] font-bold">Angry</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('caring')">
+                    <img src="./caring_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=Caring'">
+                    <span class="text-gray-300 text-[11px] font-bold">Caring</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('love')">
+                    <img src="./love_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=Love'">
+                    <span class="text-gray-300 text-[11px] font-bold">Love</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('left_kiss')">
+                    <img src="./left_kiss_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=L+Kiss'">
+                    <span class="text-gray-300 text-[11px] font-bold">Left Kiss</span>
+                </div>
+                <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="window.sendEmojiToRoom('right_kiss')">
+                    <img src="./right_kiss_emoji.png" class="w-14 h-14 object-contain mb-2 drop-shadow-lg" onerror="this.src='https://placehold.co/100?text=R+Kiss'">
+                    <span class="text-gray-300 text-[11px] font-bold">Right Kiss</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- NEW 8 GIFTS MODAL WITH TARGET SELECTOR -->
@@ -4550,6 +4593,18 @@ window.joinRoom = async (rid) => {
     });
     
     const rr = ref(db, `rooms/${rid}`);
+
+    // ===== NEW: EMOJI LISTENER (Live Sync) =====
+    const emojisRef = child(rr, 'emojis');
+    onChildAdded(emojisRef, (snap) => {
+        const data = snap.val();
+        if (data && (Date.now() - data.timestamp < 5000)) {
+            if (typeof window.playEmojiOnSeat === 'function') {
+                window.playEmojiOnSeat(data.seatId, data.emojiName);
+            }
+        }
+    });
+    // ===========================================
     
     onValue(child(rr, 'videoId'), s => { 
         const v = s.val(); 
@@ -8202,6 +8257,112 @@ function cleanupRipples() { document.querySelectorAll('.mic-ripple').forEach(el 
 
 // جب روم کھلے گا، تو Zego خاموشی سے ایکٹیو ہو جائے گا
 setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(); }, 1500);
+// ================= EMOJI PLAY & GREEN SCREEN REMOVAL (FIXED ASPECT RATIO) =================
+        window.openEmojiSheet = () => {
+            document.getElementById('emoji-sheet').classList.remove('hidden');
+        };
+
+        window.closeEmojiSheet = () => {
+            document.getElementById('emoji-sheet').classList.add('hidden');
+        };
+
+        window.sendEmojiToRoom = (emojiName) => {
+            window.closeEmojiSheet();
+            
+            let mySeatId = window.currentSeatId; 
+            if (!mySeatId && currentRoomSeats) {
+                for (let i = 1; i <= 10; i++) {
+                    if (currentRoomSeats[`seat${i}`] && currentRoomSeats[`seat${i}`].uid === currentUser.uid) {
+                        mySeatId = `seat${i}`; break;
+                    }
+                }
+            }
+
+            // اگر یوزر مائیک پر نہیں ہے تو بغیر کوئی ایرر دیے خاموشی سے واپس آ جاؤ
+            if (!mySeatId) {
+                return; 
+            }
+
+            push(ref(db, `rooms/${currentRoomId}/emojis`), {
+                seatId: mySeatId,
+                emojiName: emojiName,
+                timestamp: Date.now()
+            });
+        };
+
+        window.playEmojiOnSeat = (seatId, emojiName) => {
+            const seatVisual = document.getElementById(`${seatId}-visual`);
+            if (!seatVisual) return;
+
+            let existingCanvas = document.getElementById(`canvas-emoji-${seatId}`);
+            let existingVideo = document.getElementById(`video-emoji-${seatId}`);
+            if (existingCanvas) existingCanvas.remove();
+            if (existingVideo) existingVideo.remove();
+
+            const videoSrc = `./${emojiName}_emoji.mp4`; 
+            
+            const video = document.createElement('video');
+            video.id = `video-emoji-${seatId}`;
+            video.src = videoSrc;
+            video.muted = true;
+            video.setAttribute('playsinline', '');
+            video.crossOrigin = "anonymous";
+            video.style.display = 'none'; 
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = `canvas-emoji-${seatId}`;
+            
+            // FIX: Aspect Ratio (اب ایموجی پچکا ہوا یا دبا ہوا نظر نہیں آئے گا)
+            canvas.style.position = 'absolute';
+            canvas.style.top = '50%';
+            canvas.style.left = '50%';
+            canvas.style.transform = 'translate(-50%, -50%)';
+            canvas.style.width = '140%'; // مائیک سے تھوڑا سا بڑا
+            canvas.style.height = '140%';
+            canvas.style.objectFit = 'contain'; // اصلی شکل برقرار رکھنے کے لیے
+            canvas.style.zIndex = '100'; 
+            canvas.style.pointerEvents = 'none'; 
+            
+            seatVisual.appendChild(video);
+            seatVisual.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+            video.addEventListener('loadedmetadata', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                video.play().catch(e => console.log("Emoji Play Error:", e));
+            });
+
+            video.addEventListener('play', () => {
+                function processFrame() {
+                    if (video.paused || video.ended) {
+                        video.remove();
+                        canvas.remove();
+                        return;
+                    }
+                    
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    let length = frame.data.length / 4;
+
+                    for (let i = 0; i < length; i++) {
+                        let r = frame.data[i * 4 + 0];
+                        let g = frame.data[i * 4 + 1];
+                        let b = frame.data[i * 4 + 2];
+                        
+                        if (g > 90 && g > r * 1.3 && g > b * 1.3) {
+                            frame.data[i * 4 + 3] = 0; 
+                        }
+                    }
+                    
+                    ctx.putImageData(frame, 0, 0);
+                    requestAnimationFrame(processFrame);
+                }
+                processFrame();
+            });
+        };
 </script>
 </body>
 </html>
