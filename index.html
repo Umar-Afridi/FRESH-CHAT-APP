@@ -1689,26 +1689,36 @@
             <div id="room-exit-blocker" onclick="closeExitMenu()"></div>
 
             <div id="room-top-content">
-                <!-- ٹرانسپیرنٹ ہیڈر (نیا) -->
-                <div class="absolute top-0 left-0 w-full z-[100] flex items-center justify-between px-4 py-3 bg-transparent pointer-events-none">
-                    <!-- لیفٹ سائیڈ (ڈی پی اور نام) -->
-                    <div id="room-header-info" class="flex items-center gap-2 overflow-hidden bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 pointer-events-auto shadow-lg max-w-[65%] transition-opacity duration-300">
-                        <img id="room-header-cover" src="https://placehold.co/40x40" class="w-9 h-9 rounded-full border-2 border-white/50 object-cover flex-shrink-0 shadow-md">
-                        <div class="flex flex-col min-w-0 pr-2">
-                            <span id="room-header-name" class="text-[13px] font-extrabold text-white truncate drop-shadow-md">Room Name</span>
-                            <div class="flex items-center text-[10px] text-gray-200 font-bold drop-shadow-md">
-                                <span>ID: <span id="room-header-id">00000</span></span><span class="mx-1.5 text-gray-400">|</span><i class="fa-solid fa-users text-gray-300 mr-1 text-[9px]"></i><span id="room-user-count" onclick="showRoomUserList()" class="text-white cursor-pointer hover:text-yellow-400">0</span>
+                
+<!-- ٹرانسپیرنٹ ہیڈر (نیا) -->
+                <div class="absolute top-0 left-0 w-full z-[100] flex items-center justify-between pr-3 pl-0 py-1.5 bg-transparent pointer-events-none mt-1">
+                    
+                    <!-- لیفٹ سائیڈ: دیوار سے ٹچ، چھوٹی پٹی، سکوئر ڈی پی، اور چلنے والا نام -->
+                    <div id="room-header-info" class="flex items-center gap-1.5 overflow-hidden bg-black/60 pr-2 pl-0.5 py-0.5 rounded-r-full backdrop-blur-md border border-white/10 border-l-0 pointer-events-auto shadow-lg w-[115px] transition-opacity duration-300">
+                        
+                        <!-- ڈی پی: اب گول کی بجائے سکوئر (rounded-md) ہے -->
+                        <img id="room-header-cover" src="https://placehold.co/40x40" class="w-8 h-8 rounded-md border border-white/30 object-cover flex-shrink-0 shadow-sm">
+                        
+                        <!-- ٹیکسٹ والا حصہ: چوڑائی کافی کم کر دی گئی ہے -->
+                        <div class="flex flex-col w-[72px] overflow-hidden">
+                            
+                            <!-- نام: مارکی (چلنے کے لیے) - بلاک اور فل وڈتھ کے ساتھ -->
+                            <marquee scrollamount="3" id="room-header-name" class="text-[12px] font-extrabold text-white drop-shadow-md leading-tight pt-0.5 block w-full">Room Name</marquee>
+                            
+                            <!-- آئی ڈی اور یوزرز کاؤنٹ -->
+                            <div class="flex items-center text-[8.5px] text-gray-200 font-bold drop-shadow-md mt-[1px]">
+                                <span>ID:<span id="room-header-id">00000</span></span><span class="mx-1 text-gray-400">|</span><i class="fa-solid fa-users text-gray-300 mr-0.5 text-[8px]"></i><span id="room-user-count" onclick="showRoomUserList()" class="text-white cursor-pointer hover:text-yellow-400">0</span>
                             </div>
                         </div>
                     </div>
-                    <!-- رائٹ سائیڈ (سیٹنگز اور ایگزٹ - مکمل ٹرانسپیرنٹ) -->
-                    <div class="flex gap-5 items-center flex-shrink-0 bg-transparent pointer-events-auto pr-1">
-                        <button onclick="window.showInviteModal()" class="text-white hover:text-green-400 transition" style="filter: drop-shadow(0 2px 5px rgba(0,0,0,1));"><i class="fa-solid fa-user-plus text-[18px]"></i></button>
-                        <button onclick="window.openRoomSettings()" class="text-white hover:text-blue-400 transition" style="filter: drop-shadow(0 2px 5px rgba(0,0,0,1));"><i class="fa-solid fa-gear text-[18px]"></i></button>
-                        <button onclick="window.toggleExitMenu()" class="text-white hover:text-red-500 transition" style="filter: drop-shadow(0 2px 5px rgba(0,0,0,1));"><i class="fa-solid fa-right-from-bracket text-[18px]"></i></button>
+
+                    <!-- رائٹ سائیڈ (سیٹنگز اور ایگزٹ) -->
+                    <div class="flex gap-4 items-center flex-shrink-0 bg-transparent pointer-events-auto pr-1">
+                        <button onclick="window.showInviteModal()" class="text-white hover:text-green-400 transition drop-shadow-md"><i class="fa-solid fa-user-plus text-[16px]"></i></button>
+                        <button onclick="window.openRoomSettings()" class="text-white hover:text-blue-400 transition drop-shadow-md"><i class="fa-solid fa-gear text-[16px]"></i></button>
+                        <button onclick="window.toggleExitMenu()" class="text-white hover:text-red-500 transition drop-shadow-md"><i class="fa-solid fa-right-from-bracket text-[16px]"></i></button>
                     </div>
                 </div>
-
                 <!-- VIDEO AREA WRAPPER (Can be hidden for Chat Room) -->
                 <div id="video-area-wrapper" class="w-full flex-shrink-0 hidden mt-[60px]" onclick="hideAllMicMenus(event)">
                     <div class="cinema-frame relative group">
@@ -1769,8 +1779,8 @@
                 <div id="rocket-fly-layer"></div>
 
                 <!-- 10 MICS LAYOUT (SUPER MIC + 8 NORMAL) -->
-<div id="mics-scroll-area" style="padding-top: 0px !important; margin-top: -15px !important;">
-    <div class="mics-container-main" style="gap: 15px; padding-top: 5px !important;">
+<div id="mics-scroll-area" style="padding-top: 48px !important; margin-top: 0px !important;">
+    <div class="mics-container-main" style="gap: 10px; padding-top: 0px !important;">
                         
                         <!-- Top Row: UMAR (1) & GURIYA (2)[Super Mics] -->
                         <div class="top-mic-row flex justify-center items-center gap-6 w-full relative" id="super-mics-row">
@@ -1804,8 +1814,8 @@
                     <marquee id="room-notice-text" class="text-white text-[13px] font-extrabold tracking-wide" style="text-shadow: 0 2px 4px rgba(0,0,0,0.9);" scrollamount="4"></marquee>
                 </div>
 
-                <!-- ENTRY MESSAGE BANNER AREA (FIXED POSITION) -->
-                <div id="room-entry-banner-container" class="w-full px-4 z-[45] pointer-events-none flex flex-col gap-1 mb-1"></div>
+                <!-- ENTRY MESSAGE BANNER AREA (FIXED POSITION - RED LINE LOCATION) -->
+                <div id="room-entry-banner-container" class="absolute w-full px-4 z-[150] pointer-events-none flex flex-col gap-1" style="bottom: 34%;"></div>
 
                 <div id="chat-display-area"></div>
             </div>
@@ -3911,16 +3921,23 @@ window.joinRoom = async (rid) => {
         const videoWrapper = document.getElementById('video-area-wrapper');
         const bottomMicsRow = document.getElementById('bottom-4-mics-row'); 
         const roomHeaderInfo = document.getElementById('room-header-info'); // روم کا نام اور ڈی پی
+        const micsArea = document.getElementById('mics-scroll-area'); // مائیکس کا کنٹینر
         
         if(videoWrapper) {
             if (rtData.roomType === 'video') {
                 videoWrapper.classList.remove('hidden');
                 if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // نیچے والے 4 مائیک غائب
                 if(roomHeaderInfo) roomHeaderInfo.classList.add('opacity-0', 'pointer-events-none'); // ویڈیو روم میں نام چھپا دیں
+                
+                // 🔥 ویڈیو روم کے لیے مائیکس کو اوپر کر دیں (فاصلہ کم کر دیں)
+                if(micsArea) micsArea.style.setProperty('padding-top', '5px', 'important');
             } else {
                 videoWrapper.classList.add('hidden');
                 if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں مائیک شو
                 if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // چیٹ روم میں نام واپس شو کریں
+                
+                // 🔥 وائس چیٹ کے لیے مائیکس کو پرفیکٹ جگہ پر واپس نیچے کر دیں
+                if(micsArea) micsArea.style.setProperty('padding-top', '48px', 'important');
             }
         }
 
