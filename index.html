@@ -232,14 +232,53 @@
         .nav-item i { font-size: 22px; margin-bottom: 3px; }
         .nav-item.active { color: #dc2626; font-weight: bold; }
 
-       /* ====== NEW ROOM SETTINGS & THEME UI ====== */
+       /* ====== NEW ROOM SETTINGS & THEME UI (HALF SCREEN + SUB SHEETS) ====== */
 .bottom-sheet-modal {
     position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.6);
     display: none; flex-direction: column; justify-content: flex-end;
 }
 .bottom-sheet-content {
+    background: #f8f9fa; width: 100%; border-radius: 24px 24px 0 0;
+    padding: 15px 20px 0 20px; animation: slideUp 0.3s ease-out; 
+    height: 65vh; 
+    display: flex; flex-direction: column;
+    position: absolute; bottom: 0; left: 0; /* یہ کوڈ نیچے کی بلیک جگہ کو 100% ختم کر دے گا */
+}
+.settings-scroll-area {
+    flex: 1; overflow-y: auto; 
+    padding-bottom: max(40px, env(safe-area-inset-bottom)); /* موبائل کے نچلے حصے کے لیے پرفیکٹ پیڈنگ */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* نئے چھوٹے پاپ اپس (Sub Sheets) کے لیے */
+.sub-sheet-modal {
+    position: fixed; inset: 0; z-index: 3500; background: rgba(0,0,0,0.5);
+    display: none; flex-direction: column; justify-content: flex-end;
+}
+.sub-sheet-content {
     background: #ffffff; width: 100%; border-radius: 24px 24px 0 0;
-    padding: 20px; animation: slideUp 0.3s ease-out; max-height: 90vh; overflow-y: auto;
+    padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom));
+    animation: slideUp 0.2s ease-out;
+}
+
+/* نیا PIN (Password) Box کا ڈیزائن */
+.pin-box {
+    width: 55px;
+    height: 60px;
+    background-color: #f3f4f6;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid transparent;
+    outline: none;
+    transition: all 0.2s;
+    color: #1f2937;
+}
+.pin-box:focus {
+    border-color: #7ce2e4;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(124, 226, 228, 0.3);
 }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
@@ -276,8 +315,10 @@
         .cinema-frame { position: relative; width: 96%; margin: 5px auto; aspect-ratio: 16/9; background: #000000; overflow: hidden; z-index: 10; border-radius: 20px; border: 1px solid #222; box-shadow: 0 5px 20px rgba(0,0,0,0.5); flex-shrink: 0; }
         #video-controls-wrapper { transition: all 0.4s ease-in-out; max-height: 200px; opacity: 1; overflow: hidden; margin-bottom: 5px; flex-shrink: 0; }
         
-        #room-lower-half { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; background-size: cover; background-position: center; background-repeat: no-repeat; margin-top: 5px; min-height: 0; }
-        #theme-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
+        #room-lower-half { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; margin-top: 5px; min-height: 0; }
+        .fixed-bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; z-index: -10; pointer-events: none; }
+        #theme-image-bg { background-size: cover; background-position: center; background-repeat: no-repeat; }
+        #theme-video-bg { object-fit: cover; }
 
         /* MICS AREA */
         #mics-scroll-area { flex-shrink: 0; overflow: visible; padding-top: 10px; background: transparent !important; z-index: 10; position: relative; height: auto; }
@@ -977,7 +1018,7 @@
                     <button onclick="switchHomeTab('recent')" id="tab-recent" class="home-tab">Recent</button>
                 </div>
                 <div class="header-icons">
-                    <button onclick="toggleSearch()" class="icon-btn text-gray-800"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button onclick="openGlobalSearch()" class="icon-btn text-gray-800"><i class="fa-solid fa-magnifying-glass"></i></button>
                     <button onclick="triggerCreateRoom()" class="icon-btn text-red-600"><i class="fa-solid fa-square-plus"></i></button>
                 </div>
             </div>
@@ -990,13 +1031,30 @@
             <i class="fa-solid fa-music" style="position: absolute; font-size: 24px; color: white; filter: drop-shadow(0 2px 2px black); z-index: 10;"></i>
         </div>
 
-        <div id="search-overlay">
-            <div class="flex gap-2">
-                <input type="number" id="search-input" placeholder="User ID" class="flex-1 bg-gray-50 border border-gray-300 rounded-full px-4 py-2 text-gray-900 focus:outline-none focus:border-red-600 appearance-none shadow-sm">
-                <button onclick="searchUser()" class="bg-red-700 text-white px-4 rounded-full shadow"><i class="fa-solid fa-arrow-right"></i></button>
+        <!-- NEW FULL SCREEN SEARCH VIEW (Screenshot 1 & 2) -->
+        <div id="global-search-view" class="fixed inset-0 bg-white z-[6000] hidden flex-col transition-transform transform translate-x-full duration-300">
+            <!-- Top Search Bar -->
+            <div class="flex items-center px-2 py-3 border-b border-gray-100 pt-10">
+                <i class="fa-solid fa-chevron-left text-xl text-gray-800 cursor-pointer p-3 active:opacity-50" onclick="closeGlobalSearch()"></i>
+                <div class="flex-1 flex items-center bg-gray-50 rounded-full px-4 py-2.5 mx-1 border border-gray-200">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                    <input type="number" id="global-search-input" placeholder="Search ID..." class="bg-transparent border-none outline-none w-full ml-3 text-sm text-gray-800 font-medium" onkeyup="if(event.key==='Enter') executeGlobalSearch()">
+                    <i class="fa-solid fa-circle-xmark text-gray-300 hidden cursor-pointer" id="global-search-clear" onclick="clearGlobalSearchInput()"></i>
+                </div>
+                <button onclick="executeGlobalSearch()" class="text-purple-600 font-bold text-sm tracking-wide px-3">Search</button>
             </div>
-            <div id="search-result" class="mt-4"></div>
-            <button onclick="toggleSearch()" class="mt-4 text-xs text-gray-500 w-full text-center">Close Search</button>
+
+            <!-- Search History Area -->
+            <div id="search-history-container" class="p-5 flex-1">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-gray-500 font-medium">Search record</span>
+                    <i class="fa-regular fa-trash-can text-gray-400 cursor-pointer text-lg p-1" onclick="clearSearchHistory()"></i>
+                </div>
+                <div id="search-history-list" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Search Results Area -->
+            <div id="global-search-results" class="flex-1 overflow-y-auto p-2 hidden"></div>
         </div>
 
         <div id="create-room-view">
@@ -1012,79 +1070,203 @@
             </div>
         </div>
 
-        <!-- NEW ROOM SETTINGS MODAL -->
+        <!-- NEW ROOM SETTINGS MODAL (HALF SCREEN) -->
         <div id="room-settings-modal" class="bottom-sheet-modal" onclick="closeRoomSettings()">
             <div class="bottom-sheet-content text-gray-900" onclick="event.stopPropagation()">
-                <div class="flex justify-center mb-4">
-                    <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+                
+                <!-- کلوز کرنے کے لیے گرے لائن والا حصہ (Clickable) -->
+                <div class="flex justify-center pb-4 pt-1 flex-shrink-0 cursor-pointer w-full active:opacity-50 transition" onclick="closeRoomSettings()">
+                    <div class="w-16 h-1.5 bg-gray-300 rounded-full"></div>
                 </div>
                 
-                <h2 class="text-center font-bold text-lg mb-6">Room Setting</h2>
+                <h2 class="text-center font-bold text-lg mb-4 flex-shrink-0">Room Setting</h2>
                 
-                <div class="flex justify-center mb-6 relative">
-                    <div class="relative cursor-pointer" onclick="triggerRoomCoverUpload()">
-                        <img id="rs-cover-img" src="https://placehold.co/100" class="w-20 h-20 rounded-2xl object-cover shadow-md">
-                        <div class="absolute -bottom-2 -right-2 bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center text-white border-2 border-white"><i class="fa-solid fa-camera"></i></div>
+                <!-- سکرول ہونے والا حصہ -->
+                <div class="settings-scroll-area">
+                    <div class="flex justify-center mb-6 relative">
+                        <div class="relative cursor-pointer" onclick="triggerRoomCoverUpload()">
+                            <img id="rs-cover-img" src="https://placehold.co/100" class="w-20 h-20 rounded-2xl object-cover shadow-md border-2 border-gray-200">
+                            <div class="absolute -bottom-2 -right-2 bg-[#48d1cc] w-8 h-8 rounded-full flex items-center justify-center text-white border-2 border-white"><i class="fa-solid fa-camera"></i></div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-4">
-                    <label class="text-xs font-bold text-gray-500 ml-1">Room Name</label>
-                    <input type="text" id="rs-name" class="w-full bg-gray-50 border border-gray-200 rounded-full p-3 mt-1 text-sm outline-none focus:border-purple-400 font-bold text-center">
-                </div>
+                    <!-- Room Name (اب کلک کرنے پر نیچے سے کھلے گا) -->
+                    <div class="mb-4">
+                        <label class="text-xs font-bold text-gray-500 ml-1">Room Name</label>
+                        <div onclick="openSubSheet('name')" id="rs-name-display" class="w-full bg-gray-200 rounded-full p-3 mt-1 text-sm font-bold text-center text-gray-700 cursor-pointer flex items-center justify-center gap-2">
+                            <span id="rs-name-text">Room Name</span> <i class="fa-solid fa-pen text-gray-400 text-[10px]"></i>
+                        </div>
+                    </div>
 
-                <div class="mb-4">
-                    <label class="text-xs font-bold text-gray-500 ml-1">Room Notice</label>
-                    <textarea id="rs-notice" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 mt-1 text-sm outline-none focus:border-purple-400 text-center resize-none" placeholder="Write room notice here..."></textarea>
-                </div>
+                    <!-- Room Notice -->
+                    <div class="mb-6">
+                        <label class="text-xs font-bold text-gray-500 ml-1">Room Notice</label>
+                        <div onclick="openSubSheet('notice')" class="w-full bg-gray-200 rounded-2xl p-4 mt-1 min-h-[80px] text-sm text-center text-gray-600 cursor-pointer relative flex flex-col justify-center items-center">
+                            <div id="rs-notice-text" class="whitespace-pre-line">Write room notice here...</div>
+                            <i class="fa-solid fa-pen text-gray-400 text-[10px] absolute bottom-2 right-3"></i>
+                        </div>
+                    </div>
 
-                <div class="settings-menu-item" onclick="toggleRoomType()">
-                    <span class="text-sm font-medium">Room Type <span class="text-xs text-gray-400 ml-1">(Click to switch)</span></span>
-                    <div class="flex items-center gap-2">
-                        <span id="rs-room-type-text" class="text-sm text-gray-400">Chat Room</span>
-                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                    <!-- مینوز -->
+                    <div class="settings-menu-item" onclick="openSubSheet('type')">
+                        <span class="text-sm font-medium">Room Type</span>
+                        <div class="flex items-center gap-2">
+                            <span id="rs-room-type-text" class="text-sm text-gray-400">Chat Room</span>
+                            <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                        </div>
                     </div>
-                </div>
 
-                <div class="settings-menu-item" onclick="toggleSuperMicSetting()">
-                    <span class="text-sm font-medium">Super Mic</span>
-                    <div class="flex items-center gap-2">
-                        <span id="rs-super-mic-text" class="text-sm text-gray-400">ON</span>
-                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                    <div class="settings-menu-item" onclick="openSubSheet('mic')">
+                        <span class="text-sm font-medium">Super Mic</span>
+                        <div class="flex items-center gap-2">
+                            <span id="rs-super-mic-text" class="text-sm text-gray-400">ON</span>
+                            <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="settings-menu-item">
-                    <span class="text-sm font-medium">Wheat mode (Mics)</span>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-gray-400">10 people</span>
-                        <i class="fa-solid fa-chevron-right text-gray-300"></i>
-                    </div>
-                </div>
 
-                <div class="flex justify-between items-center mt-8 px-2 pb-6">
-                    <div class="settings-icon-btn" onclick="openThemeModal()">
-                        <div class="icon-circle bg-purple-100 text-purple-600"><i class="fa-solid fa-image"></i></div>
-                        <span>Theme</span>
+                    <!-- آئیکنز -->
+                    <div class="flex justify-between items-center mt-6 px-2 pb-2">
+                        <div class="settings-icon-btn" onclick="openThemeModal()">
+                            <div class="icon-circle bg-purple-100 text-purple-600"><i class="fa-solid fa-image"></i></div>
+                            <span>Theme</span>
+                        </div>
+                        <div class="settings-icon-btn" onclick="document.getElementById('music-upload').click()">
+                            <div class="icon-circle bg-indigo-100 text-indigo-600"><i class="fa-solid fa-music"></i></div>
+                            <span>Music</span>
+                        </div>
+                        <div class="settings-icon-btn" onclick="handleRoomLock()">
+                            <div class="icon-circle bg-pink-100 text-pink-600"><i class="fa-solid fa-lock" id="rs-lock-icon"></i></div>
+                            <span id="rs-lock-text">Lock</span>
+                        </div>
+                        <div class="settings-icon-btn" onclick="openAdminSettings()">
+                            <div class="icon-circle bg-blue-100 text-blue-600"><i class="fa-solid fa-user-shield"></i></div>
+                            <span>Admin</span>
+                        </div>
                     </div>
-                    <div class="settings-icon-btn" onclick="document.getElementById('music-upload').click()">
-                        <div class="icon-circle bg-indigo-100 text-indigo-600"><i class="fa-solid fa-music"></i></div>
-                        <span>Music</span>
-                    </div>
-                    <div class="settings-icon-btn" onclick="handleRoomLock()">
-                        <div class="icon-circle bg-pink-100 text-pink-600"><i class="fa-solid fa-lock" id="rs-lock-icon"></i></div>
-                        <span id="rs-lock-text">Lock</span>
-                    </div>
-                    <div class="settings-icon-btn" onclick="openAdminSettings()">
-                        <div class="icon-circle bg-blue-100 text-blue-600"><i class="fa-solid fa-user-shield"></i></div>
-                        <span>Administrator</span>
-                    </div>
-                </div>
-                
-                <button onclick="saveRoomSettings()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold py-3 rounded-full mb-4 shadow-lg">Save & Close</button>
+                </div> <!-- Scroll Area End -->
             </div>
         </div>
 
+        <!-- ====== SUB SHEETS (نئے پاپ اپس جو نیچے سے کھلیں گے) ====== -->
+        
+        <!-- 1. Edit Name Sheet -->
+        <div id="sub-sheet-name" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-name')">
+            <div class="sub-sheet-content" onclick="event.stopPropagation()">
+                <h3 class="text-center font-bold mb-4 text-lg">Room Name</h3>
+                <input type="text" id="edit-input-name" class="w-full bg-gray-100 border border-transparent focus:border-[#7ce2e4] rounded-full p-3 text-center font-bold outline-none" oninput="checkSaveButtonState('name')">
+                <button id="btn-save-name" onclick="saveLiveSetting('name')" class="w-full mt-5 py-3 rounded-full text-white font-bold transition-all duration-300 bg-gray-300 pointer-events-none">Save</button>
+            </div>
+        </div>
+
+        <!-- 2. Edit Notice Sheet -->
+        <div id="sub-sheet-notice" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-notice')">
+            <div class="sub-sheet-content" onclick="event.stopPropagation()">
+                <h3 class="text-center font-bold mb-4 text-lg">Announcement</h3>
+                <textarea id="edit-input-notice" rows="4" class="w-full bg-gray-100 border border-transparent focus:border-[#7ce2e4] rounded-2xl p-4 text-center text-sm outline-none resize-none" oninput="checkSaveButtonState('notice')"></textarea>
+                <button id="btn-save-notice" onclick="saveLiveSetting('notice')" class="w-full mt-5 py-3 rounded-full text-white font-bold transition-all duration-300 bg-gray-300 pointer-events-none">Save</button>
+            </div>
+        </div>
+
+        <!-- 3. Room Type Sheet (Screenshot کے مطابق) -->
+        <div id="sub-sheet-type" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-type')">
+            <div class="sub-sheet-content flex flex-col items-center" onclick="event.stopPropagation()">
+                <h3 class="text-center font-bold mb-6 text-lg">Room Type</h3>
+                <div class="flex gap-4 w-full justify-center px-4 mb-4">
+                    <div onclick="saveLiveSetting('type', 'chat')" class="w-36 h-36 bg-gradient-to-b from-[#6b8fff] to-[#4570ff] rounded-2xl flex flex-col items-center justify-center text-white cursor-pointer shadow-lg active:scale-95 transition border-2 border-transparent" id="btn-type-chat">
+                        <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-3"><i class="fa-solid fa-comment-dots text-3xl"></i></div>
+                        <span class="font-bold text-sm">Chat Room</span>
+                    </div>
+                    <div onclick="saveLiveSetting('type', 'video')" class="w-36 h-36 bg-gradient-to-b from-[#df80ff] to-[#d64dff] rounded-2xl flex flex-col items-center justify-center text-white cursor-pointer shadow-lg active:scale-95 transition border-2 border-transparent" id="btn-type-video">
+                        <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-3"><i class="fa-solid fa-video text-3xl text-white/90"></i></div>
+                        <span class="font-bold text-sm">Video Room</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Super Mic Sheet -->
+        <div id="sub-sheet-mic" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-mic')">
+            <div class="sub-sheet-content" onclick="event.stopPropagation()">
+                <h3 class="text-center font-bold mb-6 text-lg">Super Mic Setting</h3>
+                <div class="flex justify-between items-center bg-gray-100 p-4 rounded-xl mb-4 border border-gray-200">
+                    <div>
+                        <span class="font-bold text-gray-800 block">Super Mic</span>
+                        <span class="text-[10px] text-gray-500">Enable/Disable GURIYA seat</span>
+                    </div>
+                    <!-- Custom Toggle Switch -->
+                    <div id="toggle-super-mic" class="toggle-switch active" onclick="toggleSuperMicLive()">
+                        <div class="toggle-circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- 5. Lock / Unlock Menu Sheet (Screenshot 2) -->
+        <div id="sub-sheet-lock-menu" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-lock-menu')">
+            <div class="w-full bg-white rounded-t-3xl flex flex-col text-center pb-[env(safe-area-inset-bottom)]" onclick="event.stopPropagation()">
+                <div class="py-4 border-b border-gray-100 text-base font-medium text-gray-800 cursor-pointer active:bg-gray-50" onclick="openPasswordInput()">Change password</div>
+                <div class="py-4 border-b border-gray-100 text-base font-medium text-gray-800 cursor-pointer active:bg-gray-50" onclick="unlockRoomAction()">Unlock</div>
+                <div class="py-4 text-base font-medium text-gray-500 cursor-pointer active:bg-gray-50 mt-1" onclick="closeSubSheet('sub-sheet-lock-menu')">Cancel</div>
+            </div>
+        </div>
+
+        <!-- 6. Set Password 4-Digit Input Sheet (Screenshot 1) -->
+        <div id="sub-sheet-set-password" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-set-password')">
+            <div class="sub-sheet-content flex flex-col items-center" onclick="event.stopPropagation()">
+                <h3 class="text-center font-bold mb-6 text-lg text-gray-800">Set password</h3>
+                
+                <div class="flex gap-3 justify-center mb-8" id="pin-container">
+                    <input type="tel" maxlength="1" class="pin-box" data-index="0">
+                    <input type="tel" maxlength="1" class="pin-box" data-index="1">
+                    <input type="tel" maxlength="1" class="pin-box" data-index="2">
+                    <input type="tel" maxlength="1" class="pin-box" data-index="3">
+                </div>
+                
+                <button id="btn-save-password" onclick="saveRoomPassword()" class="w-full py-3 rounded-full text-white font-bold transition-all duration-300 bg-[#7ce2e4] opacity-50 pointer-events-none">Set password</button>
+            </div>
+        </div>
+        <!-- 7. Administrator List Sheet (Screenshot 1) -->
+        <div id="sub-sheet-admin-list" class="sub-sheet-modal" onclick="closeSubSheet('sub-sheet-admin-list')">
+            <div class="sub-sheet-content h-[75vh] flex flex-col" onclick="event.stopPropagation()">
+                <div class="flex justify-center pb-4 pt-1 flex-shrink-0 cursor-pointer w-full active:opacity-50 transition" onclick="closeSubSheet('sub-sheet-admin-list')">
+                    <div class="w-16 h-1.5 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                <h3 class="text-center font-bold mb-1 text-lg text-gray-800" id="admin-count-title">Administrator(0/5) <i class="fa-regular fa-circle-question text-gray-400 text-sm ml-1"></i></h3>
+                <p class="text-[11px] text-gray-500 text-center mb-6 px-4 leading-relaxed">Administrator rights include: Quiet Mic, Block Mic, Kick People, Invite People, Play music</p>
+                
+                <!-- یہاں ایڈمنز کی لسٹ شو ہوگی -->
+                <div id="admin-list-container" class="flex-1 overflow-y-auto space-y-4 px-2 mb-4 w-full">
+                    <!-- JS will load admins here -->
+                </div>
+                
+                <button onclick="openAdminSearch()" class="w-full py-3.5 rounded-full text-white font-bold transition-all duration-300 bg-[#00d1c1] shadow-lg flex-shrink-0 active:scale-95 text-lg tracking-wide">Add</button>
+            </div>
+        </div>
+
+        <!-- 8. Search & Add Admin View (Full Screen - Screenshot 2 & 3) -->
+        <div id="admin-search-view" class="fixed inset-0 bg-white z-[6000] hidden flex-col transition-transform transform translate-x-full duration-300">
+            <!-- Top Search Bar -->
+            <div class="flex items-center px-4 py-3 border-b border-gray-100 pt-10">
+                <i class="fa-solid fa-chevron-left text-xl text-gray-800 cursor-pointer p-2 active:opacity-50" onclick="closeAdminSearch()"></i>
+                <div class="flex-1 flex items-center bg-gray-100 rounded-full px-4 py-2.5 ml-2 mr-3">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                    <input type="number" id="admin-search-input" placeholder="Enter ID..." class="bg-transparent border-none outline-none w-full ml-3 text-sm text-gray-800 font-medium" oninput="checkAdminSearchInput()">
+                    <i class="fa-solid fa-circle-xmark text-gray-300 hidden cursor-pointer" id="admin-search-clear" onclick="document.getElementById('admin-search-input').value=''; checkAdminSearchInput();"></i>
+                </div>
+                <button onclick="searchNewAdmin()" class="text-[#00d1c1] font-bold text-sm tracking-wide">Search</button>
+            </div>
+            
+            <!-- Search Result Area -->
+            <div id="admin-search-result" class="flex-1 p-4">
+                <!-- JS will load searched user here -->
+            </div>
+            
+            <!-- Bottom Add Button -->
+            <div class="p-6 flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
+                <p class="text-[11px] text-gray-400 mb-4">A maximum of 5 administrators can be added</p>
+                <button id="btn-confirm-add-admin" onclick="confirmAddAdmin()" class="w-full py-3.5 rounded-full text-white font-bold transition-all duration-300 bg-[#00d1c1] opacity-50 pointer-events-none text-lg tracking-wide shadow-lg">Add</button>
+            </div>
+        </div>
         <!-- NEW THEME MODAL -->
         <div id="theme-modal" class="bottom-sheet-modal" onclick="closeThemeModal()">
             <div class="bottom-sheet-content" onclick="event.stopPropagation()">
@@ -1210,8 +1392,8 @@
         </div>
 
     <!-- ================= فل پروفائل ویو (نیا - مکمل فکس) ================= -->
-<div id="full-profile-view" class="fixed inset-0 z-[5000] hidden flex-col overflow-hidden transition-transform transform translate-x-full duration-300 ease-in-out bg-black">
-    
+<!-- ================= فل پروفائل ویو (نیا - مکمل فکس) ================= -->
+<div id="full-profile-view" class="fixed inset-0 z-[9999] hidden flex-col overflow-hidden transition-transform transform translate-x-full duration-300 ease-in-out bg-black">
     <!-- ٹاپ بلیک ایریا (فکسڈ اونچائی) -->
     <div class="relative w-full h-80 flex-shrink-0 bg-black overflow-hidden z-10">
         <!-- Blurred Background -->
@@ -1221,8 +1403,15 @@
         <!-- Top Nav -->
         <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-8 text-white z-50">
             <i class="fa-solid fa-chevron-left text-2xl cursor-pointer hover:text-gray-300 drop-shadow-md" onclick="closeFullProfileView()"></i>
-            <div onclick="openEditProfileScreen()" class="cursor-pointer flex items-center gap-2 hover:text-gray-300 drop-shadow-md p-2">
-                <i class="fa-regular fa-pen-to-square text-2xl"></i>
+            <div class="flex items-center gap-2">
+                <!-- Edit Button (صرف اپنے لیے) -->
+                <div id="fpv-edit-btn" onclick="openEditProfileScreen()" class="cursor-pointer flex items-center hover:text-gray-300 drop-shadow-md p-2">
+                    <i class="fa-regular fa-pen-to-square text-2xl"></i>
+                </div>
+                <!-- 3 Dots Menu (صرف دوسروں کے لیے) -->
+                <div id="fpv-menu-btn" onclick="openUserOptionsMenu()" class="cursor-pointer hidden items-center hover:text-gray-300 drop-shadow-md p-2">
+                    <i class="fa-solid fa-ellipsis-vertical text-2xl"></i>
+                </div>
             </div>
         </div>
 
@@ -1327,6 +1516,17 @@
             </div>
             
         </div> <!-- END SCROLLABLE CONTENT -->
+        
+        <!-- NEW: BOTTOM ACTION BAR (Follow & Chat in Purple) -->
+        <div id="fpv-bottom-actions" class="hidden absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-[max(15px,env(safe-area-inset-bottom))] z-50 flex items-center justify-center gap-4 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-3xl">
+            <button id="fpv-btn-follow" class="flex-1 border-2 border-purple-600 text-purple-600 font-bold py-3 rounded-full flex items-center justify-center gap-2 active:scale-95 transition bg-white text-sm">
+                <i class="fa-solid fa-plus"></i> Follow
+            </button>
+            <button id="fpv-btn-chat" class="flex-1 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold py-3 rounded-full flex items-center justify-center gap-2 active:scale-95 transition shadow-[0_5px_15px_rgba(168,85,247,0.4)] text-sm">
+                <i class="fa-regular fa-comment-dots"></i> Chat
+            </button>
+        </div>
+
     </div> <!-- END WHITE CONTAINER -->
 </div> <!-- END FULL PROFILE VIEW -->
   
@@ -1739,7 +1939,9 @@
             </div>
 
             <div id="room-lower-half">
-                <video id="theme-video-bg" loop muted playsinline class="hidden absolute top-0 left-0 w-full h-full object-cover -z-10"></video>
+                <!-- FIXED BACKGROUNDS -->
+                <div id="theme-image-bg" class="fixed-bg-layer hidden"></div>
+                <video id="theme-video-bg" loop muted playsinline class="fixed-bg-layer hidden"></video>
 
                 <div id="rocket-trigger-btn" onclick="openRocketDetails()">
                     <img src="./rocket1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="rocket-display-icon" id="main-rocket-icon">
@@ -2506,14 +2708,16 @@
                 let pic = tabType === 2 ? d.roomCover : d.photoURL;
                 if(!pic) pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
                 let score = tabType === 0 ? d.exp_score : (tabType === 1 ? d.charm_score : d.wealth_score);
-                let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : '';
+                
+                // یہاں نیا لاجک ہے: اگر روم ہے تو جوائن روم، ورنہ فل پروفائل اوپن کرو
+                let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : `onclick="openFullProfileView('${d.uid}')"`;
 
                 let isOfficial = d.isOfficial || d.customId === 10005;
                 let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full p-[2px] shadow-md z-10 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
 
                 listHTML += `
-                <div class="vip-list-item" ${clickAct}>
-                    <div class="flex items-center gap-4">
+                <div class="vip-list-item cursor-pointer active:opacity-70 transition" ${clickAct}>
+                    <div class="flex items-center gap-4 pointer-events-none">
                         <span class="text-gray-400 font-bold w-4 text-center">${i+1}</span>
                         <div class="relative flex-shrink-0">
                             <img src="${pic}" class="w-12 h-12 rounded-full object-cover border-2 border-gray-600 shadow-md">
@@ -2523,7 +2727,7 @@
                             <span class="text-white font-bold text-sm truncate block">${name}</span>
                         </div>
                     </div>
-                    <div class="text-yellow-400 font-bold text-xs">${score.toLocaleString()} ${icon}</div>
+                    <div class="text-yellow-400 font-bold text-xs pointer-events-none">${score.toLocaleString()} ${icon}</div>
                 </div>`;
             }
             listHTML += `</div>`;
@@ -2538,23 +2742,26 @@
             let crown = rank === 1 ? '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135692.png" class="vip-crown">' : '';
             let badgeClass = rank === 1 ? 'bg-gold' : (rank === 2 ? 'bg-silver' : 'bg-bronze');
             
+            // ٹاپ 3 یوزرز پر بھی پروفائل کلک اپلائی کیا ہے
+            let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : `onclick="openFullProfileView('${d.uid}')"`;
+            
             let isOfficial = d.isOfficial || d.customId === 10005;
             let badgeSize = rank === 1 ? 'w-[26px] h-[26px]' : 'w-[22px] h-[22px]';
             let badgePos = rank === 1 ? 'bottom-2 -right-2' : 'bottom-1 -right-2';
             let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute ${badgePos} ${badgeSize} bg-white rounded-full p-[2px] shadow-lg z-20 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
 
             return `
-            <div class="vip-podium-item">
+            <div class="vip-podium-item cursor-pointer active:scale-95 transition" ${clickAct}>
                 ${crown}
-                <div class="relative flex justify-center">
+                <div class="relative flex justify-center pointer-events-none">
                     <img src="${pic}" class="vip-podium-dp rank-${rank}-dp">
                     ${vBadgeHTML}
                 </div>
-                <div class="vip-rank-badge ${badgeClass} relative z-30">${rank}</div>
-                <div class="mt-2 max-w-[80px] text-center">
+                <div class="vip-rank-badge ${badgeClass} relative z-30 pointer-events-none">${rank}</div>
+                <div class="mt-2 max-w-[80px] text-center pointer-events-none">
                     <span class="${d.nameColorClass || 'text-white'} font-bold text-[10px] truncate block">${name}</span>
                 </div>
-                <span class="text-yellow-400 font-bold text-[9px] drop-shadow-md">${score.toLocaleString()} ${icon}</span>
+                <span class="text-yellow-400 font-bold text-[9px] drop-shadow-md pointer-events-none">${score.toLocaleString()} ${icon}</span>
             </div>`;
         }
 
@@ -3520,9 +3727,10 @@ results.forEach(d => {
         window.triggerCreateRoom = async () => { const roomSnap = await get(ref(db, `rooms/${currentUser.uid}`)); if(roomSnap.exists()) { joinRoom(currentUser.uid); } else { document.getElementById('cr-name').value = ""; document.getElementById('cr-cover').value = ""; document.getElementById('cr-preview').src = 'https://placehold.co/200x200?text=Cover'; document.getElementById('create-room-view').classList.add('open'); } };
         window.closeCreateRoom = () => { document.getElementById('create-room-view').classList.remove('open'); }
         window.finalizeCreateRoom = async () => { const rName = document.getElementById('cr-name').value; const rCover = document.getElementById('cr-cover').value; if(!rName) return Swal.fire('Error', 'Room Name is required', 'error'); const myId = document.getElementById('profile-id').innerText; await update(ref(db, `rooms/${currentUser.uid}`), { owner: currentUser.uid, ownerName: currentUser.displayName, ownerCustomId: myId, active: true, isLive: true, roomName: rName, roomCover: rCover || null }); closeCreateRoom(); joinRoom(currentUser.uid); }
-        // ================= NEW ROOM SETTINGS & FEATURES LOGIC =================
-        
+        // ================= AUTO-SAVE ROOM SETTINGS & SUB SHEETS LOGIC =================
         let customThemeBase64 = null;
+        let originalRoomName = "";
+        let originalRoomNotice = "";
 
         window.openRoomSettings = async () => { 
             if(!currentRoomId || currentRoomId !== currentUser.uid) { 
@@ -3531,20 +3739,23 @@ results.forEach(d => {
             const snap = await get(ref(db, `rooms/${currentRoomId}`)); 
             const d = snap.val(); 
             
-            document.getElementById('rs-name').value = d.roomName || ''; 
-            document.getElementById('rs-notice').value = d.roomNotice || ''; 
+            // ویلیوز سٹور کریں تاکہ بٹن کا کلر بدل سکیں
+            originalRoomName = d.roomName || '';
+            originalRoomNotice = d.roomNotice || '';
+
+            // مین سیٹنگز UI کو اپڈیٹ کریں
+            document.getElementById('rs-name-text').innerText = originalRoomName || 'Set Name'; 
+            document.getElementById('rs-notice-text').innerText = originalRoomNotice || 'Write room notice here...'; 
             document.getElementById('rs-cover-img').src = d.roomCover || 'https://placehold.co/100'; 
             
-            // Room Type & Super Mic UI Status
             document.getElementById('rs-room-type-text').innerText = d.roomType === 'video' ? 'Video Room' : 'Chat Room';
             document.getElementById('rs-super-mic-text').innerText = d.superMic === false ? 'OFF' : 'ON';
 
-            // Lock UI Status
             if(d.isLocked && d.password) {
-                document.getElementById('rs-lock-text').innerText = "Unlock/Change";
+                document.getElementById('rs-lock-text').innerText = "Unlock";
                 document.getElementById('rs-lock-icon').className = "fa-solid fa-lock text-red-600";
             } else {
-                document.getElementById('rs-lock-text').innerText = "Lock Room";
+                document.getElementById('rs-lock-text').innerText = "Lock";
                 document.getElementById('rs-lock-icon').className = "fa-solid fa-unlock text-green-600";
             }
 
@@ -3553,111 +3764,235 @@ results.forEach(d => {
         };
 
         window.closeRoomSettings = () => {
-            const modal = document.getElementById('room-settings-modal');
-            modal.style.display = 'none';
+            document.getElementById('room-settings-modal').style.display = 'none';
         };
 
-        window.saveRoomSettings = async () => { 
-            const n = document.getElementById('rs-name').value; 
-            const notice = document.getElementById('rs-notice').value; 
-            const cover = document.getElementById('rs-cover-img').src; 
+        // --- SUB SHEETS CONTROLLERS ---
+        window.openSubSheet = (type) => {
+            if(type === 'name') {
+                document.getElementById('edit-input-name').value = originalRoomName;
+                checkSaveButtonState('name');
+                document.getElementById('sub-sheet-name').style.display = 'flex';
+            } 
+            else if(type === 'notice') {
+                document.getElementById('edit-input-notice').value = originalRoomNotice;
+                checkSaveButtonState('notice');
+                document.getElementById('sub-sheet-notice').style.display = 'flex';
+            }
+            else if(type === 'type') {
+                let currentType = document.getElementById('rs-room-type-text').innerText.includes('Video') ? 'video' : 'chat';
+                document.getElementById('btn-type-chat').style.borderColor = currentType === 'chat' ? 'white' : 'transparent';
+                document.getElementById('btn-type-video').style.borderColor = currentType === 'video' ? 'white' : 'transparent';
+                document.getElementById('sub-sheet-type').style.display = 'flex';
+            }
+            else if(type === 'mic') {
+                let isMicOn = document.getElementById('rs-super-mic-text').innerText === 'ON';
+                const toggle = document.getElementById('toggle-super-mic');
+                if(isMicOn) toggle.classList.add('active');
+                else toggle.classList.remove('active');
+                document.getElementById('sub-sheet-mic').style.display = 'flex';
+            }
+        };
 
-            await update(ref(db, `rooms/${currentRoomId}`), { 
-                roomName: n, 
-                roomNotice: notice,
-                roomCover: cover 
-            }); 
+        window.closeSubSheet = (sheetId) => {
+            document.getElementById(sheetId).style.display = 'none';
+        };
+
+        // --- INPUT VALIDATION FOR SAVE BUTTON COLOR ---
+        window.checkSaveButtonState = (type) => {
+            if(type === 'name') {
+                const val = document.getElementById('edit-input-name').value.trim();
+                const btn = document.getElementById('btn-save-name');
+                if(val !== "" && val !== originalRoomName) {
+                    btn.classList.remove('bg-gray-300', 'pointer-events-none');
+                    btn.classList.add('bg-[#48d1cc]', 'shadow-lg'); // Cyan color from screenshot
+                } else {
+                    btn.classList.add('bg-gray-300', 'pointer-events-none');
+                    btn.classList.remove('bg-[#48d1cc]', 'shadow-lg');
+                }
+            } else if(type === 'notice') {
+                const val = document.getElementById('edit-input-notice').value.trim();
+                const btn = document.getElementById('btn-save-notice');
+                if(val !== originalRoomNotice) {
+                    btn.classList.remove('bg-gray-300', 'pointer-events-none');
+                    btn.classList.add('bg-[#48d1cc]', 'shadow-lg');
+                } else {
+                    btn.classList.add('bg-gray-300', 'pointer-events-none');
+                    btn.classList.remove('bg-[#48d1cc]', 'shadow-lg');
+                }
+            }
+        };
+
+        // --- LIVE SAVE FUNCTIONS ---
+        window.saveLiveSetting = async (settingType, extraValue = null) => {
+            if(!currentRoomId) return;
+
+            let updates = {};
+            if (settingType === 'name') {
+                const newName = document.getElementById('edit-input-name').value.trim();
+                updates.roomName = newName;
+                originalRoomName = newName;
+                document.getElementById('rs-name-text').innerText = newName;
+                document.getElementById('room-header-name').innerText = newName;
+                closeSubSheet('sub-sheet-name');
+            } 
+            else if (settingType === 'notice') {
+                const newNotice = document.getElementById('edit-input-notice').value.trim();
+                updates.roomNotice = newNotice;
+                originalRoomNotice = newNotice;
+                document.getElementById('rs-notice-text').innerText = newNotice || "Write room notice here...";
+                closeSubSheet('sub-sheet-notice');
+            }
+            else if (settingType === 'type') {
+                updates.roomType = extraValue;
+                document.getElementById('rs-room-type-text').innerText = extraValue === 'video' ? 'Video Room' : 'Chat Room';
+                closeSubSheet('sub-sheet-type');
+            }
+
+            await update(ref(db, `rooms/${currentRoomId}`), updates);
+            Swal.fire({toast:true, icon:'success', title:'Saved', position:'top', timer:1500, showConfirmButton:false});
+        };
+
+        // --- SUPER MIC TOGGLE ---
+        window.toggleSuperMicLive = async () => {
+            if(!currentRoomId) return;
+            const toggle = document.getElementById('toggle-super-mic');
+            const isActive = toggle.classList.contains('active');
             
-            document.getElementById('room-header-name').innerText = n; 
-            document.getElementById('room-header-cover').src = cover; 
-            closeRoomSettings(); 
-            Swal.fire({toast:true, icon:'success', title:'Settings Saved', position:'top', timer:1500, showConfirmButton:false});
+            // Toggle UI state immediately for responsiveness
+            if(isActive) toggle.classList.remove('active');
+            else toggle.classList.add('active');
+
+            const newState = !isActive;
+            document.getElementById('rs-super-mic-text').innerText = newState ? 'ON' : 'OFF';
+            
+            await update(ref(db, `rooms/${currentRoomId}`), { superMic: newState });
         };
 
-        // Room Cover Upload
-        window.triggerRoomCoverUpload = () => { document.getElementById('image-upload').click(); };
+        // --- LIVE COVER UPLOAD (Instant Update) ---
         document.getElementById('image-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = async function(event) {
                     const base64String = event.target.result;
-                    document.getElementById('rs-cover-img').src = base64String;
+                    // اگر روم کی سیٹنگز کھلی ہیں تو روم کا کور اپڈیٹ کریں
+                    if(document.getElementById('room-settings-modal').style.display === 'flex') {
+                        document.getElementById('rs-cover-img').src = base64String;
+                        if(currentRoomId) {
+                            await update(ref(db, `rooms/${currentRoomId}`), { roomCover: base64String });
+                            document.getElementById('room-header-cover').src = base64String;
+                            Swal.fire({toast:true, icon:'success', title:'Cover Updated', position:'top', timer:1500, showConfirmButton:false});
+                        }
+                    } else {
+                        // پروفائل کے لیے
+                        document.getElementById('edit-preview-img').src = base64String;
+                        document.getElementById('edit-img-url').value = base64String; 
+                        currentEditingImg = base64String;
+                    }
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Chat Room / Video Room Toggle
-        window.toggleRoomType = async () => {
-            const snap = await get(ref(db, `rooms/${currentRoomId}`));
-            const currentType = snap.val().roomType || 'chat';
-            const newType = currentType === 'chat' ? 'video' : 'chat';
-            
-            await update(ref(db, `rooms/${currentRoomId}`), { roomType: newType });
-            document.getElementById('rs-room-type-text').innerText = newType === 'video' ? 'Video Room' : 'Chat Room';
-        };
-
-        // Super Mic Toggle
-        window.toggleSuperMicSetting = async () => {
-            const snap = await get(ref(db, `rooms/${currentRoomId}`));
-            const currentSuper = snap.val().superMic !== false; // Default is true
-            const newSuper = !currentSuper;
-            
-            await update(ref(db, `rooms/${currentRoomId}`), { superMic: newSuper });
-            document.getElementById('rs-super-mic-text').innerText = newSuper ? 'ON' : 'OFF';
-        };
-
-        // Password Lock System
+        // ================= NEW PASSWORD & LOCK SYSTEM LOGIC =================
+        
+        // 1. Lock Button Click Event
         window.handleRoomLock = async () => {
             const snap = await get(ref(db, `rooms/${currentRoomId}`));
             const data = snap.val();
             
             if (data.isLocked && data.password) {
-                // Already locked
-                Swal.fire({
-                    title: 'Room is Locked',
-                    text: 'What do you want to do?',
-                    icon: 'warning',
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: 'Unlock Room',
-                    denyButtonText: 'Change Password',
-                    background: '#111', color: '#fff'
-                }).then(async (result) => {
-                    if (result.isConfirmed) {
-                        await update(ref(db, `rooms/${currentRoomId}`), { isLocked: false, password: null });
-                        document.getElementById('rs-lock-text').innerText = "Lock Room";
-                        document.getElementById('rs-lock-icon').className = "fa-solid fa-unlock text-green-600";
-                        Swal.fire({toast:true, icon:'success', title:'Room Unlocked', position:'top', timer:1500, showConfirmButton:false});
-                    } else if (result.isDenied) {
-                        promptNewPassword();
-                    }
-                });
+                // اگر پہلے سے لاک ہے تو مینو اوپن کرو (Unlock / Change Password)
+                document.getElementById('sub-sheet-lock-menu').style.display = 'flex';
             } else {
-                promptNewPassword();
+                // اگر لاک نہیں ہے تو ڈائریکٹ پاسورڈ سیٹ کرنے والا پیج کھولو
+                openPasswordInput();
             }
         };
 
-        function promptNewPassword() {
-            Swal.fire({
-                title: 'Set 4-Digit Password',
-                input: 'password',
-                inputAttributes: { maxlength: 4, pattern: '[0-9]*', inputmode: 'numeric' },
-                showCancelButton: true,
-                confirmButtonText: 'Lock Room',
-                background: '#111', color: '#fff'
-            }).then(async (result) => {
-                if (result.isConfirmed && result.value.length === 4) {
-                    await update(ref(db, `rooms/${currentRoomId}`), { isLocked: true, password: result.value });
-                    document.getElementById('rs-lock-text').innerText = "Unlock/Change";
-                    document.getElementById('rs-lock-icon').className = "fa-solid fa-lock text-red-600";
-                    Swal.fire({toast:true, icon:'success', title:'Room Locked', position:'top', timer:1500, showConfirmButton:false});
-                } else if(result.isConfirmed) {
-                    Swal.fire('Error', 'Password must be exactly 4 digits', 'error');
+        // 2. Open Password Input Sheet
+        window.openPasswordInput = () => {
+            closeSubSheet('sub-sheet-lock-menu'); // پرانا مینو بند کرو
+            
+            // تمام ان پٹ باکسز خالی کرو
+            const inputs = document.querySelectorAll('.pin-box');
+            inputs.forEach(input => input.value = '');
+            
+            // سیو بٹن کو واپس بلر (Blur) کر دو
+            const btn = document.getElementById('btn-save-password');
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            
+            document.getElementById('sub-sheet-set-password').style.display = 'flex';
+            
+            // پہلے باکس پر فوکس کرو تاکہ کی بورڈ فوراً کھل جائے
+            setTimeout(() => { inputs[0].focus(); }, 300);
+        };
+
+        // 3. Unlock Room Action
+        window.unlockRoomAction = async () => {
+            await update(ref(db, `rooms/${currentRoomId}`), { isLocked: false, password: null });
+            
+            document.getElementById('rs-lock-text').innerText = "Lock";
+            document.getElementById('rs-lock-icon').className = "fa-solid fa-unlock text-green-600";
+            
+            closeSubSheet('sub-sheet-lock-menu');
+            Swal.fire({toast:true, icon:'success', title:'Room Unlocked', position:'top', timer:1500, showConfirmButton:false});
+        };
+
+        // 4. Auto-Next Focus Logic for 4-Digit Inputs
+        const pinInputs = document.querySelectorAll('.pin-box');
+        pinInputs.forEach((input, index) => {
+            // جب کچھ ٹائپ کیا جائے
+            input.addEventListener('input', (e) => {
+                // صرف نمبرز کی اجازت
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                
+                // اگر نمبر لکھ دیا گیا ہے تو اگلے باکس پر جاؤ
+                if (e.target.value !== '' && index < pinInputs.length - 1) {
+                    pinInputs[index + 1].focus();
+                }
+                checkPinCompletion();
+            });
+
+            // بیک اسپیس (Backspace) دبانے پر پچھلے خانے میں جاؤ
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    pinInputs[index - 1].focus();
                 }
             });
+        });
+
+        // چیک کریں کہ کیا 4 نمبر پورے ہو گئے ہیں؟
+        function checkPinCompletion() {
+            let pin = '';
+            pinInputs.forEach(input => pin += input.value);
+            
+            const btn = document.getElementById('btn-save-password');
+            if (pin.length === 4) {
+                // بٹن کا رنگ شوخ ہو جائے گا
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                // بٹن بلر ہو جائے گا
+                btn.classList.add('opacity-50', 'pointer-events-none');
+            }
         }
+
+        // 5. Save the 4-Digit Password to Firebase
+        window.saveRoomPassword = async () => {
+            let pin = '';
+            pinInputs.forEach(input => pin += input.value);
+            
+            if (pin.length === 4) {
+                await update(ref(db, `rooms/${currentRoomId}`), { isLocked: true, password: pin });
+                
+                document.getElementById('rs-lock-text').innerText = "Unlock";
+                document.getElementById('rs-lock-icon').className = "fa-solid fa-lock text-red-600";
+                
+                closeSubSheet('sub-sheet-set-password');
+                Swal.fire({toast:true, icon:'success', title:'Password Set Successfully', position:'top', timer:1500, showConfirmButton:false});
+            }
+        };
 
         // Room Password Entry on Join
         window.checkRoomPassword = async (rid, actualPassword) => {
@@ -3675,26 +4010,201 @@ results.forEach(d => {
             return false;
         };
 
-        // Administrator Logic (Placeholder for future)
-        window.openAdminSettings = () => {
+        // ================= NEW ADMINISTRATOR SYSTEM LOGIC =================
+        
+        let currentAdminsCount = 0;
+        let searchedAdminUid = null;
+        let searchedAdminData = null;
+
+        // 1. Open Admin List Sheet
+        window.openAdminSettings = async () => {
+            if(!currentRoomId) return;
+            
+            const listContainer = document.getElementById('admin-list-container');
+            listContainer.innerHTML = '<div class="text-center text-gray-400 mt-10 text-sm">Loading...</div>';
+            
+            document.getElementById('sub-sheet-admin-list').style.display = 'flex';
+
+            // Fetch Current Admins from Firebase
+            const adminsSnap = await get(ref(db, `rooms/${currentRoomId}/admins`));
+            let admins = adminsSnap.val() || {};
+            
+            let adminUids = Object.keys(admins);
+            currentAdminsCount = adminUids.length;
+            
+            document.getElementById('admin-count-title').innerHTML = `Administrator(${currentAdminsCount}/5) <i class="fa-regular fa-circle-question text-gray-400 text-sm ml-1"></i>`;
+
+            listContainer.innerHTML = '';
+
+            if (currentAdminsCount === 0) {
+                listContainer.innerHTML = '<div class="text-center text-gray-400 mt-10 text-sm">No administrators added yet.</div>';
+                return;
+            }
+
+            // Load Admin Details
+            for (let uid of adminUids) {
+                const uSnap = await get(ref(db, `users/${uid}`));
+                if (uSnap.exists()) {
+                    const d = uSnap.val();
+                    const genderIcon = d.gender === 'female' ? '<i class="fa-solid fa-venus text-pink-500"></i>' : '<i class="fa-solid fa-mars text-[#00d1c1]"></i>';
+                    
+                    listContainer.innerHTML += `
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center gap-3">
+                            <img src="${d.photoURL || 'https://placehold.co/100'}" class="w-12 h-12 rounded-full object-cover shadow-sm border border-gray-200">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-800 text-sm flex items-center gap-1">${d.username} ${genderIcon}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-400">
+                            <i class="fa-solid fa-user-gear text-lg"></i>
+                            <i class="fa-solid fa-arrow-right-from-bracket text-lg cursor-pointer hover:text-red-500 transition" onclick="removeAdmin('${uid}', '${d.username}')"></i>
+                        </div>
+                    </div>`;
+                }
+            }
+        };
+
+        // 2. Remove Admin
+        window.removeAdmin = async (uid, name) => {
             Swal.fire({
-                title: 'Add Administrator',
-                input: 'number',
-                inputPlaceholder: 'Enter User ID',
+                title: 'Remove Admin?',
+                text: `Remove ${name} from administrators?`,
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Add Admin',
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Remove',
                 background: '#111', color: '#fff'
             }).then(async (result) => {
-                if (result.isConfirmed && result.value) {
-                    const uidSnap = await get(ref(db, `idToUid/${result.value}`));
-                    if(uidSnap.exists()) {
-                        await set(ref(db, `rooms/${currentRoomId}/admins/${uidSnap.val()}`), true);
-                        Swal.fire('Success', 'Admin added successfully', 'success');
-                    } else {
-                        Swal.fire('Error', 'User ID not found', 'error');
-                    }
+                if (result.isConfirmed) {
+                    await remove(ref(db, `rooms/${currentRoomId}/admins/${uid}`));
+                    openAdminSettings(); // Refresh list
+                    Swal.fire({toast:true, icon:'success', title:'Admin Removed', position:'top', timer:1500, showConfirmButton:false});
                 }
             });
+        };
+
+        // 3. Open Search View (Full Screen)
+        window.openAdminSearch = () => {
+            if (currentAdminsCount >= 5) {
+                return Swal.fire({toast:true, icon:'error', title:'Maximum 5 admins allowed', position:'top', timer:2000, showConfirmButton:false});
+            }
+            
+            // Hide list sheet, show search view
+            document.getElementById('sub-sheet-admin-list').style.display = 'none';
+            const searchView = document.getElementById('admin-search-view');
+            searchView.classList.remove('hidden');
+            searchView.style.display = 'flex';
+            setTimeout(() => { searchView.classList.remove('translate-x-full'); }, 10);
+            
+            // Reset fields
+            document.getElementById('admin-search-input').value = '';
+            document.getElementById('admin-search-clear').classList.add('hidden');
+            document.getElementById('admin-search-result').innerHTML = '';
+            document.getElementById('btn-confirm-add-admin').classList.add('opacity-50', 'pointer-events-none');
+            searchedAdminUid = null;
+        };
+
+        // 4. Close Search View
+        window.closeAdminSearch = () => {
+            const searchView = document.getElementById('admin-search-view');
+            searchView.classList.add('translate-x-full');
+            setTimeout(() => { 
+                searchView.classList.add('hidden');
+                searchView.style.display = 'none';
+                openAdminSettings(); // Re-open list
+            }, 300);
+        };
+
+        // 5. Handle Clear Icon in Input
+        window.checkAdminSearchInput = () => {
+            const val = document.getElementById('admin-search-input').value;
+            const clearBtn = document.getElementById('admin-search-clear');
+            if (val.length > 0) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+        };
+
+        // 6. Search User Logic
+        window.searchNewAdmin = async () => {
+            const searchId = document.getElementById('admin-search-input').value.trim();
+            const resultArea = document.getElementById('admin-search-result');
+            const addBtn = document.getElementById('btn-confirm-add-admin');
+            
+            if(!searchId) return;
+
+            resultArea.innerHTML = '<div class="text-center text-gray-400 mt-5">Searching...</div>';
+            addBtn.classList.add('opacity-50', 'pointer-events-none');
+            searchedAdminUid = null;
+
+            try {
+                // Find UID from Custom ID
+                const uidSnap = await get(ref(db, `idToUid/${searchId}`));
+                if(!uidSnap.exists()) {
+                    resultArea.innerHTML = '<div class="text-center text-red-500 font-bold mt-5">User not found!</div>';
+                    return;
+                }
+
+                searchedAdminUid = uidSnap.val();
+
+                // Prevent adding Owner as admin
+                if (searchedAdminUid === currentRoomOwner) {
+                    resultArea.innerHTML = '<div class="text-center text-orange-500 font-bold mt-5">Room owner cannot be added as Admin.</div>';
+                    searchedAdminUid = null;
+                    return;
+                }
+
+                // Check if already admin
+                const adminCheck = await get(ref(db, `rooms/${currentRoomId}/admins/${searchedAdminUid}`));
+                if (adminCheck.exists()) {
+                    resultArea.innerHTML = '<div class="text-center text-blue-500 font-bold mt-5">This user is already an Administrator.</div>';
+                    searchedAdminUid = null;
+                    return;
+                }
+
+                // Fetch User Details
+                const userSnap = await get(ref(db, `users/${searchedAdminUid}`));
+                searchedAdminData = userSnap.val();
+
+                // Show UI (Screenshot 3 design)
+                resultArea.innerHTML = `
+                <div class="flex items-center justify-between mt-4 px-2">
+                    <div class="flex items-center gap-3">
+                        <img src="${searchedAdminData.photoURL || 'https://placehold.co/100'}" class="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-200">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-gray-800 text-base">${searchedAdminData.username}</span>
+                            <span class="text-[10px] text-gray-400 font-bold mt-0.5">ID:${searchId}</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-xmark text-gray-300 text-xl cursor-pointer p-2 active:opacity-50" onclick="document.getElementById('admin-search-result').innerHTML=''; document.getElementById('btn-confirm-add-admin').classList.add('opacity-50', 'pointer-events-none'); searchedAdminUid=null;"></i>
+                </div>`;
+
+                // Enable Add Button
+                addBtn.classList.remove('opacity-50', 'pointer-events-none');
+
+            } catch (error) {
+                resultArea.innerHTML = '<div class="text-center text-red-500 mt-5">Search failed. Try again.</div>';
+            }
+        };
+
+        // 7. Confirm Add Admin
+        window.confirmAddAdmin = async () => {
+            if (!searchedAdminUid || !currentRoomId) return;
+
+            // Double check count before adding
+            const adminsSnap = await get(ref(db, `rooms/${currentRoomId}/admins`));
+            let currentCount = adminsSnap.exists() ? Object.keys(adminsSnap.val()).length : 0;
+            
+            if (currentCount >= 5) {
+                Swal.fire({toast:true, icon:'error', title:'Maximum 5 admins reached!', position:'top', timer:2000, showConfirmButton:false});
+                return;
+            }
+
+            // Save to Firebase
+            await set(ref(db, `rooms/${currentRoomId}/admins/${searchedAdminUid}`), true);
+            
+            Swal.fire({toast:true, icon:'success', title:'Administrator Added!', position:'top', timer:1500, showConfirmButton:false});
+            
+            closeAdminSearch(); // This will automatically re-open the updated list
         };
 
         // Music Upload Logic
@@ -3876,24 +4386,27 @@ window.joinRoom = async (rid) => {
         document.getElementById('empty-state-trigger').style.display = 'flex'; 
         
         const theme = currentRoomData.theme; 
-        const area = document.getElementById('room-lower-half'); 
+        const imgBg = document.getElementById('theme-image-bg'); 
         const videoBg = document.getElementById('theme-video-bg');
         
         if(theme) { 
             if(theme.endsWith('.mp4')) { 
-                area.style.backgroundImage = 'none'; 
-                videoBg.src = `./${theme}`; 
-                videoBg.classList.remove('hidden'); 
-                videoBg.play().catch(e => console.log("Auto-play prevented")); 
+                if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
+                if(videoBg) {
+                    videoBg.src = `./${theme}`; 
+                    videoBg.classList.remove('hidden'); 
+                    videoBg.play().catch(e => console.log("Auto-play prevented")); 
+                }
             } else { 
-                videoBg.classList.add('hidden'); 
-                videoBg.pause(); 
-                area.style.backgroundImage = `url('./${theme}')`; 
+                if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
+                if(imgBg) {
+                    imgBg.style.backgroundImage = `url('./${theme}')`; 
+                    imgBg.classList.remove('hidden');
+                }
             } 
         } else { 
-            area.style.backgroundImage = 'none'; 
-            videoBg.classList.add('hidden'); 
-            videoBg.pause(); 
+            if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
+            if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
         }
         
         if(rid === currentUser.uid) { 
@@ -3927,14 +4440,14 @@ window.joinRoom = async (rid) => {
             if (rtData.roomType === 'video') {
                 videoWrapper.classList.remove('hidden');
                 if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // نیچے والے 4 مائیک غائب
-                if(roomHeaderInfo) roomHeaderInfo.classList.add('opacity-0', 'pointer-events-none'); // ویڈیو روم میں نام چھپا دیں
+                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // 🔥 ویڈیو روم میں بھی نام اور ڈی پی شو کرو
                 
                 // 🔥 ویڈیو روم کے لیے مائیکس کو اوپر کر دیں (فاصلہ کم کر دیں)
                 if(micsArea) micsArea.style.setProperty('padding-top', '5px', 'important');
             } else {
                 videoWrapper.classList.add('hidden');
                 if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں مائیک شو
-                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // چیٹ روم میں نام واپس شو کریں
+                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // چیٹ روم میں نام شو کرو
                 
                 // 🔥 وائس چیٹ کے لیے مائیکس کو پرفیکٹ جگہ پر واپس نیچے کر دیں
                 if(micsArea) micsArea.style.setProperty('padding-top', '48px', 'important');
@@ -3964,12 +4477,12 @@ window.joinRoom = async (rid) => {
         }
 
         const theme = rtData.theme; 
-        const area = document.getElementById('room-lower-half'); 
+        const imgBg = document.getElementById('theme-image-bg'); 
         const videoBg = document.getElementById('theme-video-bg');
         
         if(theme) { 
             if(theme.endsWith('.mp4')) { 
-                area.style.backgroundImage = 'none'; 
+                if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
                 if(videoBg) {
                     videoBg.src = `./${theme}`; 
                     videoBg.classList.remove('hidden'); 
@@ -3977,10 +4490,13 @@ window.joinRoom = async (rid) => {
                 }
             } else { 
                 if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
-                area.style.backgroundImage = `url('./${theme}')`; 
+                if(imgBg) {
+                    imgBg.style.backgroundImage = `url('./${theme}')`; 
+                    imgBg.classList.remove('hidden');
+                }
             } 
         } else { 
-            area.style.backgroundImage = 'none'; 
+            if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
             if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
         }
 
@@ -4853,8 +5369,8 @@ window.sitDown = async (sid, def) => {
         let viewingProfileUid = null;
 
         window.openFullProfileView = async (targetUid) => {
-            // اگر targetUid پاس کیا گیا ہے تو وہ کھلے گا، ورنہ اپنا پروفائل کھلے گا
             viewingProfileUid = (targetUid && typeof targetUid === 'string') ? targetUid : currentUser.uid; 
+            let isMe = (viewingProfileUid === currentUser.uid);
             
             const view = document.getElementById('full-profile-view');
             view.classList.remove('hidden');
@@ -4863,27 +5379,56 @@ window.sitDown = async (sid, def) => {
             const snap = await get(ref(db, `users/${viewingProfileUid}`));
             const d = snap.val() || {};
 
+            // --- UI LOGIC FOR ME vs OTHERS ---
+            if (isMe) {
+                document.getElementById('fpv-edit-btn').style.display = 'flex';
+                document.getElementById('fpv-menu-btn').style.display = 'none';
+                document.getElementById('fpv-bottom-actions').classList.add('hidden');
+            } else {
+                document.getElementById('fpv-edit-btn').style.display = 'none';
+                document.getElementById('fpv-menu-btn').style.display = 'flex';
+                document.getElementById('fpv-bottom-actions').classList.remove('hidden');
+
+                // Check Follow Status
+                const fCheck = await get(ref(db, `users/${currentUser.uid}/friends/${viewingProfileUid}`));
+                const followBtn = document.getElementById('fpv-btn-follow');
+                if(fCheck.exists()) {
+                    followBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> Following`;
+                    followBtn.className = "flex-1 border-2 border-gray-400 text-gray-500 font-bold py-3 rounded-full flex items-center justify-center gap-2 active:scale-95 transition bg-white text-sm";
+                    // اگر فالو ہے تو ان فالو کرنے کا اپشن بھی دے سکتے ہیں، یا صرف لکھا رہنے دیں
+                    followBtn.onclick = () => unfollowUserFromFPV(viewingProfileUid);
+                } else {
+                    followBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Follow`;
+                    followBtn.className = "flex-1 border-2 border-purple-600 text-purple-600 font-bold py-3 rounded-full flex items-center justify-center gap-2 active:scale-95 transition bg-white text-sm";
+                    followBtn.onclick = () => followUserFromFPV(viewingProfileUid);
+                }
+
+                // Chat Action Setup
+                document.getElementById('fpv-btn-chat').onclick = () => {
+                    closeFullProfileView();
+                    closeGlobalSearch(); // سرچ سکرین بھی بند کرے گا
+                    openDirectChat(viewingProfileUid, d.username);
+                };
+            }
+            // ---------------------------------
+
             // Basic Info & VIP COLOR LOGIC APPLIED HERE
             const fpvNameEl = document.getElementById('fpv-name');
             fpvNameEl.innerText = d.username || 'User';
             
-            // Check and apply VIP colorful name class
             if (d.nameColorClass && d.nameColorClass !== "") {
                 fpvNameEl.className = `text-xl drop-shadow-md ${d.nameColorClass}`;
             } else {
-                fpvNameEl.className = "text-xl font-extrabold text-white drop-shadow-md"; // Default
+                fpvNameEl.className = "text-xl font-extrabold text-white drop-shadow-md"; 
             }
 
             document.getElementById('fpv-id').innerText = d.customId || '0000';
             document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
             
-            // DP and Cover
             let profilePic = d.photoURL || 'https://placehold.co/100';
             document.getElementById('fpv-dp').src = profilePic;
             document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
             
-            // FRAME FIX: Reset display properties safely
-         // FPV TOP DP FRAME FIX
             const frameImg = document.getElementById('fpv-frame');
             if(d.currentFrame && d.currentFrame.trim() !== "") {
                 frameImg.src = d.currentFrame;
@@ -4895,24 +5440,18 @@ window.sitDown = async (sid, def) => {
                 frameImg.src = "";
             }
 
-            // DOB SE AGE NIKALNE KA SAFE FORMULA (To prevent -1)
-            let age = 18; // Default
+            let age = 18; 
             if (d.birthday) {
                 const birthDate = new Date(d.birthday);
-                if (!isNaN(birthDate)) { // Check if valid date
+                if (!isNaN(birthDate)) { 
                     const today = new Date();
                     let calcAge = today.getFullYear() - birthDate.getFullYear();
                     const m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        calcAge--;
-                    }
-                    if (calcAge > 0 && calcAge < 100) {
-                        age = calcAge; // Sirf tab set karo jab valid ho (mains ya zero na ho)
-                    }
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) calcAge--;
+                    if (calcAge > 0 && calcAge < 100) age = calcAge; 
                 }
             }
 
-            // GENDER & AGE FIX
             const genderContainer = document.getElementById('fpv-gender-age');
             if(d.gender === 'female') {
                 genderContainer.innerHTML = `<i class="fa-solid fa-venus"></i> ${age}`;
@@ -4922,11 +5461,9 @@ window.sitDown = async (sid, def) => {
                 genderContainer.className = "bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-bold border border-blue-300/50 shadow-sm";
             }
 
-            // OFFICIAL BADGES FIX (Text badge + DP V-Badge)
             const offTextBadge = document.getElementById('fpv-official');
             const vBadgeDp = document.getElementById('fpv-v-badge-dp');
             
-            // FIX: Using Number() to safely match 10005
             if(d.isOfficial || Number(d.customId) === 10005) {
                 offTextBadge.classList.remove('hidden');
                 vBadgeDp.classList.remove('hidden');
@@ -4935,27 +5472,57 @@ window.sitDown = async (sid, def) => {
                 vBadgeDp.classList.add('hidden');
             }
 
-            // LEVEL FIX
             let exp = d.userExp || 0;
             let lvl = getUserLevel(exp);
             document.getElementById('fpv-level-text').innerText = `Lv.${lvl}`;
             document.getElementById('fpv-medal-img').src = getMedalImage(lvl);
 
-            // Followers
-            let followersCount = document.getElementById('stat-fans') ? document.getElementById('stat-fans').innerText : "0";
+            // Followers - Calculate correctly from data if possible, else fallback
+            let followersCount = d.friends ? Object.keys(d.friends).length : 0;
             document.getElementById('fpv-followers').innerText = followersCount;
 
-            // Render Grids
             renderFPVFrames(d.currentFrame, d.unlockedFrames);
             renderFPVMedals(lvl);
             
-            // Intimacy / CP Setup
-            loadCPData(d);
+            loadCPData(d); // CP Load Function
 
-            // Default to profile tab
             window.switchProfileTab('profile');
         };
 
+        // --- NEW HELPER FUNCTIONS FOR OTHER PROFILES ---
+        window.followUserFromFPV = async (uid) => {
+            const followBtn = document.getElementById('fpv-btn-follow');
+            await set(ref(db, `users/${uid}/inbox/requests/${currentUser.uid}`), {fromName: currentUser.displayName, fromUid: currentUser.uid, type: 'req'});
+            
+            followBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Requested`;
+            followBtn.className = "flex-1 border-2 border-gray-400 text-gray-500 font-bold py-3 rounded-full flex items-center justify-center gap-2 transition bg-white text-sm";
+            followBtn.onclick = null;
+        }
+
+        window.unfollowUserFromFPV = async (uid) => {
+            await remove(ref(db, `users/${currentUser.uid}/friends/${uid}`));
+            await remove(ref(db, `users/${uid}/friends/${currentUser.uid}`));
+            openFullProfileView(uid); // Refresh
+        }
+
+        window.openUserOptionsMenu = () => {
+            Swal.fire({
+                title: 'User Options',
+                html: `<button onclick="blockUserFromFPV('${viewingProfileUid}')" style="width:100%; padding:12px; background:#ef4444; color:white; border-radius:10px; font-weight:bold; border:none;">Block This User</button>`,
+                showConfirmButton: false,
+                showCloseButton: true,
+                background: '#111',
+                color: '#fff'
+            });
+        }
+
+        window.blockUserFromFPV = async (uid) => {
+            Swal.close();
+            // فی الحال یہ صرف Visual ہے، اگر آپ کو Block کا مکمل لاجک بنانا ہو تو یہاں DB میں Save کروا سکتے ہیں۔
+            Swal.fire({icon: 'success', title: 'Blocked', text: 'This user has been blocked and cannot interact with you.', background: '#111', color: '#fff'});
+            closeFullProfileView();
+        }
+        // ------------------------------------------------
         window.closeFullProfileView = () => {
             const view = document.getElementById('full-profile-view');
             view.classList.add('translate-x-full');
@@ -5000,14 +5567,15 @@ window.sitDown = async (sid, def) => {
 
         // ================= CP (INTIMACY) FUNCTIONS =================
 
-// CP Level Load Karne Ka Function (OLD WALA LEKIN FIXED)
+// CP Level Load Karne Ka Function (اب دوسروں کے لیے Read-Only ہو گیا ہے)
 function loadCPData(userData) {
     document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
     document.getElementById('cp-user-name').innerText = userData.username || 'User';
 
+    let isMe = (viewingProfileUid === currentUser.uid); // چیک کریں کہ یہ میرا پروفائل ہے یا کسی اور کا
+
     const partnerContainer = document.getElementById('cp-partner-container');
     
-    // CP Level Calculation based on Gifts
     let cpGiftAmount = (userData.cp && userData.cp.cpGiftAmount) ? userData.cp.cpGiftAmount : 0;
     let cpLevel = 1;
     
@@ -5015,14 +5583,13 @@ function loadCPData(userData) {
     else if(cpGiftAmount >= 8000000) { cpLevel = 3; }
     else if(cpGiftAmount >= 3000000) { cpLevel = 2; }
 
-    // Update UI Images dynamically
     document.getElementById('fpv-tab-intimacy').style.backgroundImage = `url('./cp_bg${cpLevel}.png')`;
     document.getElementById('cp-heart-icon').src = `./cp_heart${cpLevel}.png`;
 
     if (userData.cp && userData.cp.partnerUid) {
         // Partner Found
         partnerContainer.innerHTML = `
-            <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] cursor-pointer">
+            <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] ${isMe ? 'cursor-pointer' : ''}">
                 <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover pointer-events-none">
             </div>
             <span class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">${userData.cp.partnerName}</span>
@@ -5033,32 +5600,45 @@ function loadCPData(userData) {
         cpText.style.display = 'block';
         cpText.innerText = `LV ${cpLevel}`;
 
-        // Long Press Logic to Remove CP Partner
-        let pressTimer;
-        const partnerDiv = document.getElementById('my-cp-partner');
-        
-        const startPress = () => { 
-            pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
-        };
-        const cancelPress = () => { clearTimeout(pressTimer); };
-        
-        partnerDiv.addEventListener('touchstart', startPress);
-        partnerDiv.addEventListener('touchend', cancelPress);
-        partnerDiv.addEventListener('touchmove', cancelPress);
-        partnerDiv.addEventListener('mousedown', startPress);
-        partnerDiv.addEventListener('mouseup', cancelPress);
-        partnerDiv.addEventListener('mouseleave', cancelPress);
+        // صرف اس صورت میں کلک اور ریموو کا آپشن دیں اگر یوزر اپنی پروفائل دیکھ رہا ہو
+        if (isMe) {
+            let pressTimer;
+            const partnerDiv = document.getElementById('my-cp-partner');
+            
+            const startPress = () => { 
+                pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
+            };
+            const cancelPress = () => { clearTimeout(pressTimer); };
+            
+            partnerDiv.addEventListener('touchstart', startPress);
+            partnerDiv.addEventListener('touchend', cancelPress);
+            partnerDiv.addEventListener('touchmove', cancelPress);
+            partnerDiv.addEventListener('mousedown', startPress);
+            partnerDiv.addEventListener('mouseup', cancelPress);
+            partnerDiv.addEventListener('mouseleave', cancelPress);
+        }
 
     } else {
-        // No Partner - YEHA PE PLUS BUTTON HAI JO INVITECP() CALL KAREGA
         document.getElementById('cp-level-text').style.display = 'none';
         document.getElementById('cp-empty-text').style.display = 'block';
-        partnerContainer.innerHTML = `
-            <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
-                <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
-            </div>
-            <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
-        `;
+        
+        if (isMe) {
+            // اپنی پروفائل میں پلس کا بٹن
+            partnerContainer.innerHTML = `
+                <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                    <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
+                </div>
+                <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
+            `;
+        } else {
+            // دوسروں کی پروفائل میں صرف لاک کا نشان، کلک نہیں ہوگا
+            partnerContainer.innerHTML = `
+                <div class="w-20 h-20 rounded-full border-[3px] border-dashed border-gray-400 flex items-center justify-center bg-white/50 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
+                    <i class="fa-solid fa-lock text-gray-400 text-2xl drop-shadow-md"></i>
+                </div>
+                <span class="text-xs text-gray-700 mt-2 bg-white/70 px-3 py-0.5 rounded-full font-bold">Single</span>
+            `;
+        }
     }
 }
 
@@ -5403,8 +5983,124 @@ window.leaveRoomFull = () => {
 
         window.switchTab = (vid, el) => { const views = document.querySelectorAll('.view-section'); views.forEach(v => { v.style.display = 'none'; v.classList.remove('view-active'); }); if(vid !== 'view-room' && currentRoomId) { document.getElementById('floating-room-btn').style.display='flex'; } else { document.getElementById('floating-room-btn').style.display='none'; } const targetView = document.getElementById(vid); if (targetView) { targetView.style.display = 'flex'; targetView.classList.add('view-active'); } if (vid === 'view-room') { document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden'); } else { document.getElementById('app-header').style.display = 'flex'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('header-home-content').classList.add('hidden'); document.getElementById('header-inbox-content').classList.add('hidden'); document.getElementById('header-profile-content').classList.add('hidden'); if (vid === 'view-home') { document.getElementById('header-home-content').classList.remove('hidden'); } else if (vid === 'view-inbox') { document.getElementById('header-inbox-content').classList.remove('hidden'); } else if (vid === 'view-profile') { document.getElementById('header-profile-content').classList.remove('hidden'); } } if(el){ document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); el.classList.add('active'); } };
 
-        window.toggleSearch = () => document.getElementById('search-overlay').classList.toggle('open');
-        window.searchUser = async () => { const i = document.getElementById('search-input').value.trim(); if(!i)return; const s = await get(ref(db, `idToUid/${i}`)); const r = document.getElementById('search-result'); if(!s.exists()){r.innerHTML="<span class='text-red-500'>ID Not Found</span>";return;} const u = s.val(); if(u===currentUser.uid){r.innerHTML="<span class='text-yellow-500'>This is you!</span>";return;} const ud = (await get(ref(db, `users/${u}`))).val(); const friendCheck = await get(ref(db, `users/${currentUser.uid}/friends/${u}`)); let btnHtml = "FOLLOW"; let btnClass = "bg-blue-600"; let btnDisabled = ""; if (friendCheck.exists()) { btnHtml = "FOLLOWING"; btnClass = "bg-gray-600 cursor-not-allowed"; btnDisabled = "disabled"; } r.innerHTML=`<div class='flex bg-gray-900 p-3 rounded-xl items-center justify-between border border-gray-700 shadow-lg'><div class='flex gap-3 items-center'><img src="${ud.photoURL}" class="w-10 h-10 rounded-full border border-gray-600"><span class="text-white font-bold text-sm">${ud.username}</span></div><button onclick="sendReq('${u}', this)" class='${btnClass} text-xs px-2 py-1 rounded font-bold text-white' ${btnDisabled}>${btnHtml}</button></div>`; };
+        window.openGlobalSearch = () => {
+        const view = document.getElementById('global-search-view');
+        view.classList.remove('hidden');
+        view.style.display = 'flex';
+        setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
+        
+        document.getElementById('global-search-results').classList.add('hidden');
+        document.getElementById('search-history-container').classList.remove('hidden');
+        loadSearchHistory();
+        
+        setTimeout(() => { document.getElementById('global-search-input').focus(); }, 300);
+    };
+
+    window.closeGlobalSearch = () => {
+        const view = document.getElementById('global-search-view');
+        view.classList.add('translate-x-full');
+        setTimeout(() => { 
+            view.classList.add('hidden'); 
+            view.style.display = 'none'; 
+        }, 300);
+    };
+
+    document.getElementById('global-search-input').addEventListener('input', function() {
+        const clearBtn = document.getElementById('global-search-clear');
+        if(this.value.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+    });
+
+    window.clearGlobalSearchInput = () => {
+        document.getElementById('global-search-input').value = '';
+        document.getElementById('global-search-clear').classList.add('hidden');
+        document.getElementById('global-search-results').classList.add('hidden');
+        document.getElementById('search-history-container').classList.remove('hidden');
+        loadSearchHistory();
+    };
+
+    function loadSearchHistory() {
+        let history = JSON.parse(localStorage.getItem('yaraan_search_history') || '[]');
+        const list = document.getElementById('search-history-list');
+        list.innerHTML = '';
+        history.forEach(item => {
+            list.innerHTML += `<div onclick="document.getElementById('global-search-input').value='${item}'; executeGlobalSearch();" class="bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer active:bg-gray-200 transition">${item}</div>`;
+        });
+    }
+
+    window.clearSearchHistory = () => {
+        localStorage.removeItem('yaraan_search_history');
+        loadSearchHistory();
+    };
+
+ window.executeGlobalSearch = async () => {
+            const inputVal = document.getElementById('global-search-input').value.trim();
+            if(!inputVal) return;
+
+            // 1. Save to history (یہاں کٹ گیا تھا)
+            let history = JSON.parse(localStorage.getItem('yaraan_search_history') || '[]');
+            history = history.filter(item => item !== inputVal); // پرانا والا ہٹا کر
+            history.unshift(inputVal); // نیا والا سب سے اوپر ڈالیں
+            if(history.length > 10) history.pop(); // صرف آخری 10 سرچ یاد رکھیں
+            localStorage.setItem('yaraan_search_history', JSON.stringify(history));
+
+            // 2. Hide history, show results area
+            document.getElementById('search-history-container').classList.add('hidden');
+            const resultArea = document.getElementById('global-search-results');
+            resultArea.classList.remove('hidden');
+            resultArea.innerHTML = '<div class="text-center text-gray-500 mt-10 font-bold">Searching...</div>';
+
+            try {
+                // 3. Find User by ID
+                const uidSnap = await get(ref(db, `idToUid/${inputVal}`));
+                if(!uidSnap.exists()) {
+                    resultArea.innerHTML = '<div class="text-center text-red-500 mt-10 font-bold">User not found!</div>';
+                    return;
+                }
+
+                const u = uidSnap.val();
+                if(u === currentUser.uid) {
+                    resultArea.innerHTML = '<div class="text-center text-yellow-500 mt-10 font-bold">This is you!</div>';
+                    return;
+                }
+
+                // 4. Get User Data
+                const udSnap = await get(ref(db, `users/${u}`));
+                const ud = udSnap.val() || {};
+
+                // 5. Check Following Status
+                const friendCheck = await get(ref(db, `users/${currentUser.uid}/friends/${u}`));
+                let isFollowing = friendCheck.exists();
+                
+                // V-Badge for Officials
+                let vBadgeHtml = (ud.isOfficial || ud.customId === window.SUPER_ADMIN_ID) ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full p-[2px] shadow-sm">` : '';
+                let genderIcon = ud.gender === 'female' ? '<i class="fa-solid fa-venus text-pink-500"></i>' : '<i class="fa-solid fa-mars text-blue-500"></i>';
+
+                // 6. Modern Search Result UI (Clickable to open Full Profile)
+                resultArea.innerHTML = `
+                <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-2 cursor-pointer active:bg-gray-50 transition" onclick="closeGlobalSearch(); setTimeout(() => openFullProfileView('${u}'), 200);">
+                    <div class="flex items-center gap-3 pointer-events-none">
+                        <div class="relative">
+                            <img src="${ud.photoURL || 'https://placehold.co/100'}" class="w-12 h-12 rounded-full border border-gray-200 object-cover">
+                            ${vBadgeHtml}
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-gray-900 font-bold text-sm flex items-center gap-1">${ud.username} ${genderIcon}</span>
+                            <span class="text-xs text-gray-500">ID: ${inputVal}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${isFollowing ? 
+                            `<button class="bg-gray-100 text-gray-500 text-xs px-4 py-1.5 rounded-full font-bold">Following</button>` : 
+                            `<button onclick="event.stopPropagation(); sendReq('${u}', this)" class="bg-purple-100 text-purple-600 text-xs px-4 py-1.5 rounded-full font-bold border border-purple-200">Follow</button>`
+                        }
+                    </div>
+                </div>`;
+                
+            } catch (error) {
+                resultArea.innerHTML = '<div class="text-center text-red-500 mt-10">Error fetching data</div>';
+            }
+        };
         window.sendReq = async(u, btn)=>{ await set(ref(db,`users/${u}/inbox/requests/${currentUser.uid}`),{fromName:currentUser.displayName,fromUid:currentUser.uid,type:'req'}); btn.innerText = "FOLLOWING"; btn.classList.remove('bg-blue-600'); btn.classList.add('bg-gray-600'); btn.disabled = true; };
         window.acceptFriend = async(fid,fn)=>{ await update(ref(db),{[`users/${currentUser.uid}/friends/${fid}`]:fn, [`users/${fid}/friends/${currentUser.uid}`]:currentUser.displayName, [`users/${currentUser.uid}/inbox/requests/${fid}`]:null}); };
         window.delNotif=(p)=>remove(ref(db,`users/${currentUser.uid}/inbox/${p}`));
@@ -7059,7 +7755,8 @@ async function loadCPRankingData() {
                     <div class="w-10 font-black italic ${rankTextClass}">${rank}</div>
                     
                     <div class="flex-1 flex items-center justify-center gap-2">
-                        <div class="flex flex-col items-center">
+                        <!-- یوزر 1 پر کلک (نئی تبدیلی) -->
+                        <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="openFullProfileView('${couple.u1Uid}')">
                             <img src="${couple.u1Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(couple.u1Name)}'">
                             <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate ${u1ColorClass}">${couple.u1Name}</span>
                         </div>
@@ -7068,7 +7765,8 @@ async function loadCPRankingData() {
                             <img src="./cp_heart_final.png" class="w-8 h-8 object-contain animate-pulse drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
                         </div>
 
-                        <div class="flex flex-col items-center">
+                        <!-- یوزر 2 پر کلک (نئی تبدیلی) -->
+                        <div class="flex flex-col items-center cursor-pointer active:scale-95 transition" onclick="openFullProfileView('${couple.u2Uid}')">
                             <img src="${couple.u2Pic}" class="w-12 h-12 rounded-full border-2 ${rank===1 ? 'border-yellow-400' : 'border-pink-500'} object-cover shadow-md" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(couple.u2Name)}'">
                             <span class="text-white text-[10px] font-bold mt-1 max-w-[50px] truncate ${u2ColorClass}">${couple.u2Name}</span>
                         </div>
