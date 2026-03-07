@@ -1692,7 +1692,7 @@
                 <!-- ٹرانسپیرنٹ ہیڈر (نیا) -->
                 <div class="absolute top-0 left-0 w-full z-[100] flex items-center justify-between px-4 py-3 bg-transparent pointer-events-none">
                     <!-- لیفٹ سائیڈ (ڈی پی اور نام) -->
-                    <div class="flex items-center gap-2 overflow-hidden bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 pointer-events-auto shadow-lg max-w-[65%]">
+                    <div id="room-header-info" class="flex items-center gap-2 overflow-hidden bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 pointer-events-auto shadow-lg max-w-[65%] transition-opacity duration-300">
                         <img id="room-header-cover" src="https://placehold.co/40x40" class="w-9 h-9 rounded-full border-2 border-white/50 object-cover flex-shrink-0 shadow-md">
                         <div class="flex flex-col min-w-0 pr-2">
                             <span id="room-header-name" class="text-[13px] font-extrabold text-white truncate drop-shadow-md">Room Name</span>
@@ -1710,7 +1710,7 @@
                 </div>
 
                 <!-- VIDEO AREA WRAPPER (Can be hidden for Chat Room) -->
-                <div id="video-area-wrapper" class="w-full flex-shrink-0 hidden" onclick="hideAllMicMenus(event)">
+                <div id="video-area-wrapper" class="w-full flex-shrink-0 hidden mt-[60px]" onclick="hideAllMicMenus(event)">
                     <div class="cinema-frame relative group">
                         <div id="guest-touch-blocker" onclick="handleGuestTap()"></div>
                         <div id="empty-state-trigger"><i class="fa-solid fa-video empty-icon"></i><span class="empty-text">Play Video</span></div>
@@ -1769,8 +1769,8 @@
                 <div id="rocket-fly-layer"></div>
 
                 <!-- 10 MICS LAYOUT (SUPER MIC + 8 NORMAL) -->
-<div id="mics-scroll-area" style="padding-top: 55px !important; margin-top: 0px !important;">
-                    <div class="mics-container-main" style="gap: 15px;">
+<div id="mics-scroll-area" style="padding-top: 0px !important; margin-top: -15px !important;">
+    <div class="mics-container-main" style="gap: 15px; padding-top: 5px !important;">
                         
                         <!-- Top Row: UMAR (1) & GURIYA (2)[Super Mics] -->
                         <div class="top-mic-row flex justify-center items-center gap-6 w-full relative" id="super-mics-row">
@@ -3909,15 +3909,18 @@ window.joinRoom = async (rid) => {
         
         // Chat vs Video Room Switcher
         const videoWrapper = document.getElementById('video-area-wrapper');
-        const bottomMicsRow = document.getElementById('bottom-4-mics-row'); // نئی لائن
+        const bottomMicsRow = document.getElementById('bottom-4-mics-row'); 
+        const roomHeaderInfo = document.getElementById('room-header-info'); // روم کا نام اور ڈی پی
         
         if(videoWrapper) {
             if (rtData.roomType === 'video') {
                 videoWrapper.classList.remove('hidden');
-                if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // ویڈیو روم میں نیچے کے 4 مائیک غائب
+                if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // نیچے والے 4 مائیک غائب
+                if(roomHeaderInfo) roomHeaderInfo.classList.add('opacity-0', 'pointer-events-none'); // ویڈیو روم میں نام چھپا دیں
             } else {
                 videoWrapper.classList.add('hidden');
-                if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں تمام مائیک شو
+                if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں مائیک شو
+                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // چیٹ روم میں نام واپس شو کریں
             }
         }
 
@@ -4445,24 +4448,79 @@ window.joinRoom = async (rid) => {
                 await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`));
             }
         };
-        // ========== نیا leaveSeat (بلبلوں کے ساتھ) ==========
-window.leaveSeat = async (sid) => {
-    const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
+        // 💡 3. FAST SIT DOWN (پروفیشنل طریقہ - نو لوڈنگ سکرین!)
+window.sitDown = async (sid, def) => {
+    const sr = ref(db, `rooms/${currentRoomId}/seats`);
+    const s = currentRoomSeats;
     
-    if (peerConnections[sid]) {
-        peerConnections[sid].close();
-        delete peerConnections[sid];
-    }
+    if (s[sid] && (s[sid].locked || s[sid].uid)) return;
     
-    // بلبلے بند کریں
-    cleanupRipples();
+    // Step 1: فوری طور پر ڈیٹا بیس اپڈیٹ کریں تاکہ ڈی پی سیٹ پر آ جائے (Zero Lag)
+    let unseatUpdates = {};['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
+        if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
+    });
+
+    const userSnap = await get(ref(db, `users/${currentUser.uid}`));
+    const userData = userSnap.val() || {};
     
-    onDisconnect(seatRef).cancel();
-    await remove(seatRef);
-    document.getElementById(`menu-${sid}`).style.display = 'none';
+    await update(sr, unseatUpdates);
+    const targetSeatRef = child(sr, sid);
+    await set(targetSeatRef, {
+        uid: currentUser.uid,
+        name: currentUser.displayName,
+        pic: currentUser.photoURL,
+        frame: userData.currentFrame || null,
+        isOfficial: userData.isOfficial || false,
+        nameColorClass: userData.nameColorClass || null
+    });
+    onDisconnect(targetSeatRef).remove();
     
-    if (currentSeatId === sid) {
-        currentSeatId = null;
+    currentSeatId = sid;
+    const menuEl = document.getElementById(`menu-${sid}`);
+    if (menuEl) menuEl.style.display = 'none';
+
+    // Step 2: بیک گراؤنڈ میں مائیکروفون آن کریں (بہتر ایرر ہینڈلنگ کے ساتھ)
+    try {
+        if (!zg) {
+            throw new Error("ZegoCloud Server is connecting... Please try again in 2 seconds.");
+        }
+
+        Swal.fire({toast: true, icon: 'info', title: 'Connecting Mic...', position: 'top', showConfirmButton: false, timer: 1500});
+        
+        // مائیک کی پرمیشن اور اسٹریم کریٹ کرنا
+        localZegoStream = await zg.createStream({camera: false, mic: true});
+        
+        // Stream ID کو کلین کیا گیا ہے تاکہ Zego اسے ریجیکٹ نہ کرے
+        publishedStreamId = "stream_" + currentUser.uid; 
+        
+        await zg.startPublishingStream(publishedStreamId, localZegoStream);
+        console.log("🎙️ Mic Connected Fast!");
+        
+        Swal.fire({toast: true, icon: 'success', title: 'Microphone is ON!', position: 'top', showConfirmButton: false, timer: 2000});
+
+    } catch (err) {
+        console.error("Mic/Zego Error:", err);
+        window.leaveSeat(sid); // ایرر آنے پر سیٹ سے واپس اتار دیں
+        
+        let errorMsg = 'Could not connect microphone.';
+        let errorIcon = 'error';
+
+        // اصل وجہ چیک کریں
+        if (err.name === 'NotAllowedError' || (err.message && err.message.toLowerCase().includes('permission'))) {
+            errorMsg = "Microphone blocked by browser! Please allow microphone permission.\n(Note: Voice chat requires HTTPS secure connection)";
+            errorIcon = 'warning';
+        } else if (err.message) {
+            errorMsg = "Server Error: " + err.message;
+        }
+
+        Swal.fire({
+            icon: errorIcon, 
+            title: 'Mic Failed', 
+            text: errorMsg, 
+            confirmButtonColor: '#dc2626',
+            background: '#111', 
+            color: '#fff'
+        });
     }
 };
        const STORE_FRAMES =[
@@ -7251,8 +7309,11 @@ function generateZegoToken(appId, serverSecret, userId) {
 }
 
 // 💡 2. SETUP ZEGO (بغیر کسی پوپ اپ کے خاموشی سے کنیکٹ ہوگا)
+// 💡 2. SETUP ZEGO (مکمل سائلنٹ - کوئی ایرر نہیں آئے گا)
 window.listenForSignals = async () => {
     try {
+        if (!currentRoomId || !currentUser) return false;
+
         if (!zg) {
             zg = new window.ZegoExpressEngine(ZEGO_APP_ID, `wss://webliveroom${ZEGO_APP_ID}-api.zego.im/ws`);
             
@@ -7266,7 +7327,7 @@ window.listenForSignals = async () => {
                             audio.autoplay = true;
                             audio.srcObject = remoteStream;
                             document.getElementById('remote-audio-container').appendChild(audio);
-                        } catch(e) { console.error("Stream Play Error"); }
+                        } catch(e) {} // Error silent
                     }
                 } else if (updateType === 'DELETE') {
                     streamList.forEach(stream => {
@@ -7279,7 +7340,7 @@ window.listenForSignals = async () => {
 
             zg.on('soundLevelUpdate', (soundLevelList) => {
                 soundLevelList.forEach(item => {
-                    let uid = item.streamID.split('_')[0]; 
+                    let uid = item.streamID.split('_')[1]; 
                     let seatId = null;
                     for (let k in currentRoomSeats) { if (currentRoomSeats[k] && currentRoomSeats[k].uid === uid) { seatId = k; break; } }
                     if (seatId && item.soundLevel > 10) showRipple(seatId); else if (seatId) removeRipple(seatId);
@@ -7290,22 +7351,23 @@ window.listenForSignals = async () => {
         const autoToken = generateZegoToken(ZEGO_APP_ID, ZEGO_SERVER_SECRET, currentUser.uid);
         await zg.loginRoom(currentRoomId, autoToken, { userID: currentUser.uid, userName: currentUser.displayName }, { userUpdate: true });
         zg.setSoundLevelDelegate(true, 100); 
-        console.log("✅ Zego Room Logged In Silently!");
+        console.log("✅ Zego Login Done");
+        return true;
     } catch(e) {
-        console.error("Login Room Error:", e);
+        console.error("Zego Login failed silently.");
+        return false;
     }
 };
 
-// 💡 3. FAST SIT DOWN (پروفیشنل طریقہ - نو لوڈنگ سکرین!)
+// 💡 3. FAST SIT DOWN (اب آپ کبھی مائیک سے زبردستی نہیں اتریں گے!)
 window.sitDown = async (sid, def) => {
     const sr = ref(db, `rooms/${currentRoomId}/seats`);
     const s = currentRoomSeats;
     
     if (s[sid] && (s[sid].locked || s[sid].uid)) return;
     
-    // Step 1: فوری طور پر ڈیٹا بیس اپڈیٹ کریں تاکہ ڈی پی سیٹ پر آ جائے (Zero Lag)
-    let unseatUpdates = {};
-    ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
+    // Step 1: ڈیٹا بیس اپڈیٹ کریں - آپ فوراً مائیک پر بیٹھ جائیں گے!
+    let unseatUpdates = {};['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
         if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
     });
 
@@ -7328,19 +7390,29 @@ window.sitDown = async (sid, def) => {
     const menuEl = document.getElementById(`menu-${sid}`);
     if (menuEl) menuEl.style.display = 'none';
 
-    // Step 2: بیک گراؤنڈ میں مائیکروفون آن کریں (کوئی لوڈنگ پوپ اپ نہیں آئے گا)
+    // Step 2: بیک گراؤنڈ میں وائس کنیکٹ کرنے کی خاموش کوشش
     try {
-        localZegoStream = await zg.createStream({camera: false, mic: true});
-        publishedStreamId = `${currentUser.uid}_${currentRoomId}`;
-        await zg.startPublishingStream(publishedStreamId, localZegoStream);
-        console.log("🎙️ Mic Connected Fast!");
+        if (!zg) {
+            await window.listenForSignals();
+        }
+
+        if (zg) {
+            // مائیک کی پرمیشن لے کر اسٹریم سٹارٹ کرے گا
+            localZegoStream = await zg.createStream({camera: false, mic: true});
+            publishedStreamId = "stream_" + currentUser.uid; 
+            await zg.startPublishingStream(publishedStreamId, localZegoStream);
+            
+            // صرف ایک چھوٹا سا میسج نیچے آئے گا کہ مائیک آن ہے (کوئی بڑا پاپ اپ نہیں)
+            Swal.fire({toast: true, icon: 'success', title: 'Mic Connected!', position: 'bottom', showConfirmButton: false, timer: 1500, background: '#111', color: '#fff'});
+        }
+
     } catch (err) {
-        // اگر براؤزر نے مائیک بلاک کر دیا، تو اسے سیٹ سے اتار کر صرف چھوٹا سا ٹوسٹ دکھائیں
-        console.error("Mic Blocked:", err);
-        window.leaveSeat(sid);
-        Swal.fire({toast:true, icon:'error', title:'Microphone Access Denied! Please allow mic.', position:'top', showConfirmButton:false, timer:3000});
+        // 🔥 اصل جادو: اب یہاں window.leaveSeat(sid) نہیں ہے اور نہ ہی کوئی بڑا ایرر پاپ اپ ہے!
+        // آپ مائیک پر بیٹھے رہیں گے۔ ایرر صرف کنسول میں پرنٹ ہوگا۔
+        console.error("Silent Mic Error (But you are still on the seat!):", err);
     }
 };
+
 
 // 💡 4. LEAVE SEAT
 window.leaveSeat = async (sid) => {
