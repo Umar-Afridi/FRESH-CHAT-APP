@@ -987,6 +987,10 @@
 .animate-slideInLeft {
     animation: slideInLeft 0.3s ease-out forwards;
 }
+/* یہ کوڈ پوری ایپ میں اوپر آنے والے تمام پاپ اپس کو ہمیشہ کے لیے چھپا دے گا */
+.swal2-toast {
+    display: none !important;
+}
     </style>
 <!-- ZEGOCLOUD SDK -->
    <script src="https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
@@ -1418,8 +1422,7 @@
         <!-- DP and Name Area -->
         <div class="absolute top-24 left-6 w-full flex items-center gap-4 z-40 pr-6">
             <div class="relative w-[90px] h-[90px] flex-shrink-0 flex items-center justify-center">
-                <img id="fpv-dp" src="" class="w-[85px] h-[85px] rounded-full object-cover border-2 border-white z-10 relative shadow-lg">
-                <img id="fpv-frame" src="" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] object-contain pointer-events-none hidden z-20" onerror="this.style.display='none'">
+                <div id="fpv-visual-container" class="w-full h-full relative"></div>
                 <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute bottom-1 right-1 w-6 h-6 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
                 <div id="fpv-level-badge-container" class="absolute -bottom-4 z-30 user-level-badge scale-[0.85] origin-center flex items-center justify-center">
                     <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
@@ -1743,38 +1746,67 @@
             </div>
         </div>
 
-        <div id="view-inbox" class="view-section light-bg">
-            <div class="p-4">
-                <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Messages</h2>
+        <div id="view-inbox" class="view-section light-bg relative">
+            <div class="p-4 flex-1 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900">Messages</h2>
+                    <i class="fa-regular fa-trash-can text-gray-500 text-lg"></i>
+                </div>
 
-                <div class="flex gap-6 mb-6">
-                    <div onclick="switchNotifTab('official')" class="flex flex-col items-center flex-1 cursor-pointer hover:scale-105 transition">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg border-2 border-white">
-                            <img src="./yaraan_dp.png" class="w-12 h-12 rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
+                <!-- Official & Rocket Chats List Style -->
+                <div class="space-y-4 mb-6 border-b border-gray-100 pb-4">
+                    
+                    <!-- YARAAN Official Thread -->
+                    <div onclick="openSystemChatView('official')" class="flex items-center gap-3 cursor-pointer bg-white p-2 rounded-xl active:bg-gray-50 transition">
+                        <div class="relative w-14 h-14 rounded-full flex items-center justify-center shadow-sm border border-gray-200">
+                            <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
+                            <img src="./v_badge.png" class="absolute bottom-0 right-0 w-4 h-4 bg-white rounded-full p-[1px]">
                         </div>
-                        <span class="text-xs font-bold text-gray-700 mt-1">Official</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">YARAAN Official <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <span class="text-[10px] text-gray-400" id="official-time">Just now</span>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate" id="official-last-msg">No new messages</p>
+                        </div>
+                        <div id="official-badge" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</div>
                     </div>
-                    <div onclick="switchNotifTab('rocket')" class="flex flex-col items-center flex-1 cursor-pointer hover:scale-105 transition">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-700 flex items-center justify-center shadow-lg border-2 border-white">
-                            <img src="./rocket1.png" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/100?text=🚀'">
+
+                    <!-- Rocket Reward Thread -->
+                    <div onclick="openSystemChatView('rocket')" class="flex items-center gap-3 cursor-pointer bg-white p-2 rounded-xl active:bg-gray-50 transition">
+                        <div class="relative w-14 h-14 rounded-full flex items-center justify-center shadow-sm border border-gray-200">
+                            <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=R'">
+                            <img src="./v_badge.png" class="absolute bottom-0 right-0 w-4 h-4 bg-white rounded-full p-[1px]">
                         </div>
-                        <span class="text-xs font-bold text-gray-700 mt-1">Rocket Rewards</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">YARAAN Reward <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <span class="text-[10px] text-gray-400" id="rocket-time">Just now</span>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate" id="rocket-last-msg">Check your rewards!</p>
+                        </div>
+                        <div id="rocket-badge" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</div>
                     </div>
                 </div>
 
-                <div id="official-notifications" class="space-y-2 mb-4 hidden"></div>
-                <div id="rocket-rewards-list" class="space-y-2 mb-4 hidden"></div>
-
-                <div id="follow-requests-container" class="mt-2 mb-4">
-                    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Follow Requests</h3>
+                <div id="follow-requests-container" class="mb-4">
                     <div id="follow-requests-list" class="space-y-3"></div>
                 </div>
 
-                <div class="mt-4">
-                    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Chats</h3>
+                <div>
                     <div id="friends-chat-list" class="space-y-3"></div>
                 </div>
             </div>
+        </div>
+
+        <!-- NEW FULL SCREEN SYSTEM CHAT VIEW -->
+        <div id="view-system-chat" class="fixed inset-0 bg-gray-50 z-[200] hidden flex-col transition-transform transform translate-x-full duration-300">
+            <div class="flex items-center gap-3 p-4 border-b border-gray-200 bg-white shadow-sm sticky top-0 z-10 pt-10">
+                <button onclick="closeSystemChatView()" class="text-gray-800 p-2 active:opacity-50"><i class="fa-solid fa-chevron-left text-xl"></i></button>
+                <div class="font-extrabold text-gray-900 text-lg flex-1" id="system-chat-title">YARAAN</div>
+                <img src="./v_badge.png" class="w-5 h-5 object-contain mr-2">
+            </div>
+            <div id="system-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
         </div>
 
         <div id="view-chat" class="view-section bg-white flex-col hidden" style="z-index: 100;">
@@ -2408,9 +2440,7 @@
             
             <!-- ڈی پی (DP) جو آدھی باہر نکلی ہوگی -->
             <div class="absolute -top-12 left-1/2 transform -translate-x-1/2">
-                <div class="relative w-24 h-24 rounded-full border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
-                    <img id="hp-dp" src="" class="w-full h-full rounded-full object-cover">
-                    <img id="hp-frame" src="" class="absolute inset-0 w-[140%] h-[140%] max-w-none max-h-none transform -translate-x-[15%] -translate-y-[15%] object-contain pointer-events-none hidden">
+                <div id="hp-visual-container" class="relative w-24 h-24 rounded-full border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
                 </div>
             </div>
 
@@ -3251,10 +3281,13 @@
             if(currentCoins < cost) return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
 
             let now = new Date();
-            let pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
-            if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
-
-            let dateStr = pktTime.toISOString().split('T')[0];
+            // پاکستان ٹائم (UTC+5) کے حساب سے ایگزیکٹ رات 12 بجے تاریخ بدلے گی
+            let pktTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 60 * 60 * 1000));
+            
+            // YYYY-MM-DD فارمیٹ (رات 12 بجے بدل جائے گا)
+            let dateStr = pktTime.getFullYear() + '-' + String(pktTime.getMonth()+1).padStart(2, '0') + '-' + String(pktTime.getDate()).padStart(2, '0');
+            
+            // Weekly Reset (Monday/Sunday Logic)
             let weekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
             let monthStr = dateStr.substring(0, 7);
 
@@ -3518,9 +3551,17 @@ results.forEach(d => {
                 document.getElementById('profile-bio').innerText = d.bio || ""; 
                 const container = document.getElementById('profile-visual-container'); 
                 let html = `<div class="visual-root"><img src="${d.photoURL}" class="visual-img">`; 
-                if(d.currentFrame) html += `<img src="${d.currentFrame}" class="visual-frame" onerror="this.style.display='none'">`; 
+                if(d.currentFrame) {
+                    if (d.currentFrame.endsWith('.mp4')) {
+                        html += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                    } else {
+                        html += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.style.display='none'">`; 
+                    }
+                }
                 html += `</div>`; 
                 container.innerHTML = html; 
+                window.initVideoFrames();
+               
                 // document.getElementById('edit-preview-visual').innerHTML = html; // Removed to avoid errors if element doesn't exist 
                 selectedGender = d.gender || null; 
                 updateGenderUI(d.lastGenderChange);
@@ -3579,35 +3620,40 @@ results.forEach(d => {
                     setTimeout(() => window.logout(), 3000);
                 }
 
-                // === REAL-TIME FRAME LISTENER (فریم کو ہر جگہ لائیو اپڈیٹ کرنے کے لیے) ===
+                // === REAL-TIME FRAME LISTENER (ہر جگہ لائیو اپڈیٹ کے لیے) ===
                 onValue(ref(db, `users/${currentUser.uid}/currentFrame`), (snap) => {
                     const frameUrl = snap.val();
                     
                     // 1. مین پروفائل سکرین پر اپڈیٹ
-                    const container = document.getElementById('profile-visual-container');
-                    if(container) {
-                        let html = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img">`;
-                        if(frameUrl) html += `<img src="${frameUrl}" class="visual-frame" onerror="this.style.display='none'">`;
-                        html += `</div>`;
-                        container.innerHTML = html;
+                    const meContainer = document.getElementById('profile-visual-container');
+                    if(meContainer) {
+                        let meHtml = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img">`;
+                        if(frameUrl) {
+                            if (frameUrl.endsWith('.mp4')) {
+                                meHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${frameUrl}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                            } else {
+                                meHtml += `<img src="${frameUrl}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.style.display='none'">`;
+                            }
+                        }
+                        meHtml += `</div>`;
+                        meContainer.innerHTML = meHtml;
                     }
 
                     // 2. فل پروفائل ویو (FPV) میں اپڈیٹ
-                    const fpvFrame = document.getElementById('fpv-frame');
-                    if(fpvFrame) {
+                    const fpvContainer = document.getElementById('fpv-visual-container');
+                    if(fpvContainer) {
+                        let fpvHtml = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img shadow-lg" style="border: 2px solid white;">`;
                         if(frameUrl) {
-                            fpvFrame.src = frameUrl;
-                            fpvFrame.style.display = 'block';
-                            fpvFrame.classList.remove('hidden');
-                        } else {
-                            fpvFrame.src = "";
-                            fpvFrame.style.display = 'none';
-                            fpvFrame.classList.add('hidden');
+                            if (frameUrl.endsWith('.mp4')) {
+                                fpvHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${frameUrl}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                            } else {
+                                fpvHtml += `<img src="${frameUrl}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.style.display='none'">`;
+                            }
                         }
+                        fpvHtml += `</div>`;
+                        fpvContainer.innerHTML = fpvHtml;
                     }
-                    
-                    // نوٹ: تیسرا حصہ (FPV Frames List Update) یہاں سے ہٹا دیا گیا ہے، 
-                    // کیونکہ وہ اب renderFPVFrames فنکشن سے کنٹرول ہو رہا ہے تاکہ تمام ایکٹو فریمز شو ہوں۔
+                    window.initVideoFrames();
                 });
                 // ==========================================
 
@@ -3660,105 +3706,156 @@ results.forEach(d => {
             });
 
             onValue(ref(db, `users/${currentUser.uid}/inbox`), async (snap) => {
-                const officialDiv = document.getElementById('official-notifications');
-                const rocketDiv = document.getElementById('rocket-rewards-list');
                 const followDiv = document.getElementById('follow-requests-list');
-                const badge = document.getElementById('inbox-dot');
-
-                officialDiv.innerHTML = '';
-                rocketDiv.innerHTML = '';
                 followDiv.innerHTML = '';
-
-                let totalUnread = 0;
+                
+                let sysCount = 0; let rocCount = 0; let totalUnread = 0;
+                let lastSysMsg = "No new messages"; let lastRocMsg = "Check your rewards!";
 
                 if (snap.exists()) {
                     const data = snap.val();
-
                     await cleanOldRocketRewards();
 
                     if (data.system) {
-                        Object.entries(data.system).forEach(([key, val]) => {
-                            totalUnread++;
-                            officialDiv.innerHTML += `
-                            <div class="bg-red-50 border border-red-200 p-3 rounded-lg flex items-start gap-3 cursor-pointer hover:bg-red-100 transition" onclick="viewOfficialNotifFull('${key}')">
-                                <img src="${val.icon || './yaraan_dp.png'}" class="w-10 h-10 rounded-full border-2 border-red-400 object-cover">
-                                <div class="flex-1">
-                                    <p class="text-xs text-gray-700 line-clamp-2">${val.message}</p>
-                                    <span class="text-[10px] text-gray-400">${new Date(val.timestamp).toLocaleDateString()}</span>
-                                </div>
-                                <button onclick="delNotif('system/${key}'); event.stopPropagation();" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
-                            </div>`;
-                        });
+                        const sysArr = Object.values(data.system);
+                        if(sysArr.length > 0) {
+                            sysCount = sysArr.length;
+                            lastSysMsg = sysArr[sysArr.length - 1].message.replace(/<[^>]*>?/gm, '').substring(0, 30) + '...';
+                        }
+                    }
+
+                    if (data.rocketRewards) {
+                        const rocArr = Object.values(data.rocketRewards).filter(r => !r.claimed);
+                        if(rocArr.length > 0) {
+                            rocCount = rocArr.length;
+                            lastRocMsg = `You got ${rocArr.length} new rewards!`;
+                        }
                     }
 
                     if (data.requests) {
                         Object.entries(data.requests).forEach(([key, val]) => {
                             totalUnread++;
                             let profilePic = `https://ui-avatars.com/api/?name=${val.fromName}&background=random`;
-                            
                             followDiv.innerHTML += `
-                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg flex items-start gap-3">
-                                <img src="${profilePic}" class="w-12 h-12 rounded-full border-2 border-blue-400 object-cover">
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> followed you</p>
-                                    <span class="text-[10px] text-gray-400">${new Date().toLocaleDateString()}</span>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="acceptFriend('${val.fromUid}', '${val.fromName}')" class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow">Follow back</button>
-                                    <button onclick="delNotif('requests/${key}')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
-                                </div>
+                            <div class="bg-white p-3 rounded-xl flex items-center gap-3 shadow-sm border border-gray-100">
+                                <img src="${profilePic}" class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1"><p class="text-sm text-gray-800 font-bold">${val.fromName} <span class="font-normal text-gray-500">followed you</span></p></div>
+                                <button onclick="acceptFriend('${val.fromUid}', '${val.fromName}')" class="bg-blue-500 text-white text-xs px-4 py-1.5 rounded-full font-bold">Follow back</button>
+                                <button onclick="delNotif('requests/${key}')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark"></i></button>
                             </div>`;
                         });
                     }
-
-                    // ====== NEW: CP REQUESTS UI IN INBOX ======
+                    
                     if (data.cpRequests) {
                         Object.entries(data.cpRequests).forEach(([key, val]) => {
                             totalUnread++;
                             let profilePic = val.fromPic || `https://ui-avatars.com/api/?name=${val.fromName}&background=random`;
-                            
                             followDiv.innerHTML += `
-                            <div class="bg-pink-50 border border-pink-200 p-3 rounded-lg flex items-start gap-3 mt-2 shadow-sm">
-                                <img src="${profilePic}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover">
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-800"><span class="font-bold">${val.fromName}</span> sent a CP Request ❤️</p>
-                                    <span class="text-[10px] text-gray-400">${new Date(val.timestamp || Date.now()).toLocaleDateString()}</span>
-                                </div>
+                            <div class="bg-pink-50 p-3 rounded-xl flex items-center gap-3 mt-2 shadow-sm border border-pink-200">
+                                <img src="${profilePic}" class="w-12 h-12 rounded-full object-cover border border-pink-300">
+                                <div class="flex-1"><p class="text-sm text-gray-800 font-bold">${val.fromName} <span class="font-normal text-gray-500">sent CP Request ❤️</span></p></div>
                                 <div class="flex flex-col gap-1">
-                                    <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${profilePic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-[10px] px-3 py-1 rounded-full shadow font-bold hover:bg-pink-600 transition">Accept</button>
-                                    <button onclick="delNotif('cpRequests/${key}')" class="bg-gray-200 text-gray-700 text-[10px] px-3 py-1 rounded-full shadow font-bold hover:bg-gray-300 transition">Reject</button>
+                                    <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${profilePic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-[10px] px-3 py-1 rounded-full font-bold">Accept</button>
+                                    <button onclick="delNotif('cpRequests/${key}')" class="bg-gray-300 text-gray-700 text-[10px] px-3 py-1 rounded-full font-bold">Reject</button>
                                 </div>
-                            </div>`;
-                        });
-                    }
-                    // ==========================================
-
-                    if (data.rocketRewards) {
-                        Object.entries(data.rocketRewards).forEach(([key, val]) => {
-                            if (!val.claimed) totalUnread++;
-                            rocketDiv.innerHTML += `
-                            <div id="reward-${key}" class="bg-gradient-to-r from-yellow-100 to-amber-100 border border-yellow-400 p-3 rounded-lg flex items-start gap-3 cursor-pointer hover:shadow-md transition" onclick="viewRocketRewardFull('${key}')">
-                                <img src="./rocket1.png" class="w-10 h-10 object-contain">
-                                <div class="flex-1">
-                                    <p class="text-xs text-gray-800 line-clamp-2">${val.message}</p>
-                                    <div class="flex justify-between items-center mt-1">
-                                        <span class="text-[10px] text-gray-500">${new Date(val.timestamp).toLocaleDateString()}</span>
-                                        <span class="font-bold text-amber-600 text-sm">🪙 ${val.amount.toLocaleString()}</span>
-                                    </div>
-                                </div>
-                                ${!val.claimed ? 
-                                    `<button onclick="event.stopPropagation(); collectRocketReward('${key}', ${val.amount})" class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Collect</button>` 
-                                    : '<span class="text-xs text-gray-400">Claimed</span>'}
                             </div>`;
                         });
                     }
                 }
 
-                if (totalUnread > 0) badge.classList.remove('hidden'); else badge.classList.add('hidden');
+                // Update UI Badges & Text
+                const offBadge = document.getElementById('official-badge');
+                if(sysCount > 0) { offBadge.innerText = sysCount; offBadge.classList.remove('hidden'); } else { offBadge.classList.add('hidden'); }
+                document.getElementById('official-last-msg').innerText = lastSysMsg;
+
+                const rocBadge = document.getElementById('rocket-badge');
+                if(rocCount > 0) { rocBadge.innerText = rocCount; rocBadge.classList.remove('hidden'); } else { rocBadge.classList.add('hidden'); }
+                document.getElementById('rocket-last-msg').innerText = lastRocMsg;
+
+                totalUnread += sysCount + rocCount;
                 
-                switchInboxTab('notifications');
-                switchNotifTab('official');
+                // Bottom Bar Red Dot with Number
+                const badge = document.getElementById('inbox-dot');
+                if (totalUnread > 0) {
+                    badge.innerHTML = `<span class="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-md border border-white">${totalUnread > 99 ? '99+' : totalUnread}</span>`;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
             });
+
+        // یہ ان باکس کے نئے کلک ایونٹس ہیں
+        window.openSystemChatView = async (type) => {
+            const view = document.getElementById('view-system-chat');
+            const title = document.getElementById('system-chat-title');
+            const container = document.getElementById('system-chat-messages');
+            
+            view.classList.remove('hidden');
+            view.style.display = 'flex';
+            setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
+            
+            title.innerText = type === 'official' ? 'YARAAN Official' : 'YARAAN Reward';
+            container.innerHTML = '<p class="text-center text-gray-400 text-xs mt-10">Loading...</p>';
+
+            const snap = await get(ref(db, `users/${currentUser.uid}/inbox`));
+            const data = snap.val() || {};
+            container.innerHTML = '';
+
+            if(type === 'official' && data.system) {
+                Object.entries(data.system).reverse().forEach(([key, val]) => {
+                    container.innerHTML += `
+                    <div class="flex flex-col mb-4">
+                        <span class="text-[10px] text-gray-400 text-center mb-2">${new Date(val.timestamp).toLocaleString()}</span>
+                        <div class="flex items-start gap-2">
+                            <img src="./yaraan_dp.png" class="w-10 h-10 rounded-full border border-gray-200">
+                            <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%]">
+                                <h4 class="font-bold text-gray-900 text-xs mb-1 flex items-center gap-1">${val.fromName} <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <div class="text-xs text-gray-600 leading-relaxed">${val.message}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                    setTimeout(() => remove(ref(db, `users/${currentUser.uid}/inbox/system/${key}`)), 2000);
+                });
+            } 
+            else if (type === 'rocket' && data.rocketRewards) {
+                Object.entries(data.rocketRewards).reverse().forEach(([key, val]) => {
+                    let collectBtn = val.claimed ? 
+                        `<button class="w-full mt-3 bg-gray-200 text-gray-500 font-bold py-2 rounded-xl text-xs" disabled>Claimed</button>` :
+                        `<button onclick="collectRocketReward('${key}', ${val.amount}, this)" class="w-full mt-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 rounded-xl text-xs shadow-md active:scale-95 transition">Collect Reward</button>`;
+                    
+                    container.innerHTML += `
+                    <div class="flex flex-col mb-4">
+                        <span class="text-[10px] text-gray-400 text-center mb-2">${new Date(val.timestamp).toLocaleString()}</span>
+                        <div class="flex items-start gap-2">
+                            <img src="./yaraan_dp.png" class="w-10 h-10 rounded-full border border-gray-200">
+                            <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%] w-full">
+                                <h4 class="font-bold text-gray-900 text-sm mb-2">Congrats!!!</h4>
+                                <p class="text-xs text-gray-600 leading-relaxed">${val.message}</p>
+                                <div class="flex items-center justify-between bg-gray-50 mt-3 p-2 rounded-lg border border-gray-100">
+                                    <div class="flex flex-col items-center">
+                                        <img src="./coin_icon.png" class="w-8 h-8" onerror="this.src='https://placehold.co/30?text=C'">
+                                        <span class="text-[10px] font-bold text-yellow-600 mt-1">x${val.amount}</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <img src="./rocket1.png" class="w-8 h-8 object-contain">
+                                        <span class="text-[10px] font-bold text-gray-600 mt-1">Level ${val.level || 1}</span>
+                                    </div>
+                                </div>
+                                ${collectBtn}
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            } else {
+                container.innerHTML = '<p class="text-center text-gray-400 text-xs mt-10">No messages here.</p>';
+            }
+        };
+
+        window.closeSystemChatView = () => {
+            const view = document.getElementById('view-system-chat');
+            view.classList.add('translate-x-full');
+            setTimeout(() => { view.classList.add('hidden'); view.style.display = 'none'; }, 300);
+        };
         }
 
         function inboxItem(key, val, type) { 
@@ -4787,11 +4884,16 @@ window.joinRoom = async (rid) => {
                 let html = `<div class="visual-root">`; 
                 html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
                 if (data.frame) { 
-                    html += `<img src="${data.frame}" class="visual-frame">`; 
+                    if (data.frame.endsWith('.mp4')) {
+                        html += `<canvas class="visual-frame video-frame-canvas" data-src="${data.frame}" style="width: 145% !important; height: 145% !important;"></canvas>`;
+                    } else {
+                        html += `<img src="${data.frame}" class="visual-frame">`; 
+                    }
                     container.classList.add('has-frame'); 
                 } 
                 html += `</div>`; 
                 visualDiv.innerHTML = html; 
+                window.initVideoFrames(); 
                 
                 nameSpan.innerText = data.name || defaultName; 
                 nameSpan.className = (data.nameColorClass && data.nameColorClass !== "") ? `seat-name occupied ${data.nameColorClass}` : "seat-name occupied text-white";
@@ -4921,14 +5023,20 @@ window.joinRoom = async (rid) => {
             const snap = await get(ref(db, `users/${uid}`));
             const d = snap.val() || {};
 
-            document.getElementById('hp-dp').src = d.photoURL || 'https://placehold.co/100';
-            
-            const frameImg = document.getElementById('hp-frame');
-            if (d.currentFrame) {
-                frameImg.src = d.currentFrame;
-                frameImg.classList.remove('hidden');
-            } else {
-                frameImg.classList.add('hidden');
+            const hpContainer = document.getElementById('hp-visual-container');
+            if(hpContainer) {
+                let hpPic = d.photoURL || 'https://placehold.co/100';
+                let hpHtml = `<div class="visual-root"><img src="${hpPic}" class="visual-img">`;
+                if (d.currentFrame) {
+                    if (d.currentFrame.endsWith('.mp4')) {
+                         hpHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                    } else {
+                         hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;">`;
+                    }
+                }
+                hpHtml += `</div>`;
+                hpContainer.innerHTML = hpHtml;
+                window.initVideoFrames();
             }
 
             document.getElementById('hp-name').innerHTML = `${d.username} <img src="${d.gender === 'female' ? './female.png' : './male.png'}" class="w-4 h-4 ml-1">`;
@@ -5119,7 +5227,8 @@ window.sitDown = async (sid, def) => {
             { id: 'frame_5', name: 'Royal Frame', price: 50000, img: './frame_5.png' },
             { id: 'frame_6', name: 'Neon Frame', price: 60000, img: './frame_6.png' },
             { id: 'frame_7', name: 'Fire Frame', price: 70000, img: './frame_7.png' },
-            { id: 'frame_8', name: 'Dragon Frame', price: 100000, img: './frame_8.png' }
+            { id: 'frame_8', name: 'Dragon Frame', price: 100000, img: './frame_8.png' },
+            { id: 'frame_9', name: 'Reach King', price: 400000, img: './frame_9.png', videoUrl: './frame_9.mp4' } // <== نیا ویڈیو فریم
         ];
 
         window.openStoreModal = () => {
@@ -5128,6 +5237,9 @@ window.sitDown = async (sid, def) => {
             grid.innerHTML = '';
 
             STORE_FRAMES.forEach(frame => {
+                // اگر ویڈیو ہے تو اسے ڈیٹا بیس کے لیے پاس کریں گے
+                const actualUrlToSave = frame.videoUrl ? frame.videoUrl : frame.img;
+                
                 grid.innerHTML += `
                 <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col items-center relative shadow-lg">
                     <div class="w-20 h-20 relative mb-3 flex items-center justify-center">
@@ -5136,7 +5248,7 @@ window.sitDown = async (sid, def) => {
                     </div>
                     <span class="text-white font-bold text-xs mb-1 text-center">${frame.name}</span>
                     <span class="text-yellow-400 font-bold text-xs mb-3 flex items-center"><i class="fa-solid fa-coins mr-1"></i> ${frame.price.toLocaleString()}</span>
-                    <button onclick="buyFrame('${frame.id}', ${frame.price}, '${frame.name}', '${frame.img}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 rounded-lg transition active:scale-95">BUY NOW</button>
+                    <button onclick="buyFrame('${frame.id}', ${frame.price}, '${frame.name}', '${actualUrlToSave}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 rounded-lg transition active:scale-95">BUY NOW</button>
                 </div>`;
             });
 
@@ -5197,14 +5309,13 @@ window.sitDown = async (sid, def) => {
             
             const snap = await get(ref(db, `users/${currentUser.uid}`));
             const userData = snap.val() || {};
-            const currentEquipped = userData.currentFrame;
-            const currentVip = userData.nameColorClass;
             
             let unlockedFrames = userData.unlockedFrames || {};
             const unlockedVIPs = userData.unlockedVIPs || {}; 
             
             let needsMigration = false;
 
+            // پرانے VIPs کو نئے سسٹم میں مائگریٹ کرنا
             if (Object.keys(unlockedVIPs).length > 0) {
                 for (let [vipClass, isOwned] of Object.entries(unlockedVIPs)) {
                     if (isOwned) {
@@ -5242,8 +5353,13 @@ window.sitDown = async (sid, def) => {
             let hasFrames = false;
 
             for (let[purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                
+                // 👇 اگر فریم یوز ہو چکا ہے (active)، تو اسے Prop House سے ہائیڈ کر دو
+                if (frameData.status === 'active') {
+                    continue; 
+                }
+
                 hasFrames = true;
-                let isEquipped = frameData.isVipName ? (currentVip === frameData.img) : (currentEquipped === frameData.img);
                 let btnText, btnClass, btnAction, statusText;
 
                 if (frameData.status === 'unused') {
@@ -5251,24 +5367,12 @@ window.sitDown = async (sid, def) => {
                     btnClass = "bg-green-600";
                     btnAction = `applyFrame('${purchaseId}', '${frameData.img}', ${frameData.isVipName || false})`;
                     statusText = `<span class="text-green-400 text-[9px] font-bold">UNUSED</span>`;
-                } else if (frameData.expiry && frameData.expiry > Date.now()) {
-                    let daysLeft = Math.max(1, Math.ceil((frameData.expiry - Date.now()) / (1000 * 60 * 60 * 24)));
-                    statusText = `<span class="text-yellow-400 text-[9px] font-bold">${daysLeft} Days Left</span>`;
-                    
-                    if (isEquipped) {
-                        btnText = "UNEQUIP";
-                        btnClass = "bg-red-600";
-                        btnAction = frameData.isVipName ? "removeVIPName()" : "unequipFrame()";
-                    } else {
-                        btnText = "EQUIP";
-                        btnClass = "bg-blue-600";
-                        btnAction = `equipActiveFrame('${frameData.img}', ${frameData.isVipName || false})`;
-                    }
                 } else {
+                    // Expired frames
                     statusText = `<span class="text-red-500 text-[9px] font-bold">EXPIRED</span>`;
                     btnText = "DELETE";
                     btnClass = "bg-gray-600";
-                    btnAction = `deleteExpiredFrame('${purchaseId}', ${isEquipped})`;
+                    btnAction = `deleteExpiredFrame('${purchaseId}', false)`;
                 }
 
                 let iconHtml = '';
@@ -5276,21 +5380,19 @@ window.sitDown = async (sid, def) => {
 
                 if (frameData.isVipName) {
                     let iconSrc = frameData.icon;
-                    // پرانے ناموں کو زبردستی خوبصورت ناموں میں بدلنا
                     if(frameData.img.includes('green')) { iconSrc = './green_vip.png'; finalName = 'VIP Green'; }
                     else if(frameData.img.includes('yellow')) { iconSrc = './yellow_vip.png'; finalName = 'VIP Yellow'; }
                     else if(frameData.img.includes('pink')) { iconSrc = './pink_vip.png'; finalName = 'VIP Pink'; }
                     else if(frameData.img.includes('colorful')) { iconSrc = './colorful_vip.png'; finalName = 'VIP Colorful'; }
                     
-                    // یہ لائن میں نے اپڈیٹ کی ہے تاکہ اگر امیج نہ ملے تو کچھ بھی شو نہ ہو، گرے ڈبہ ختم!
                     iconHtml = `<img src="${iconSrc}" class="w-16 h-16 object-contain drop-shadow-lg" onerror="this.style.display='none'">`;
                 } else {
-                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${frameData.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">`;
+                    let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
+                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${displayImg}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">`;
                 }
 
                 htmlContent += `
-                <div class="bg-gray-900 border ${isEquipped ? 'border-green-500' : 'border-gray-700'} rounded-xl p-4 flex flex-col items-center relative shadow-lg">
-                    ${isEquipped ? '<div class="absolute top-2 left-2 w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></div>' : ''}
+                <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col items-center relative shadow-lg">
                     <div class="w-20 h-20 relative mb-2 flex items-center justify-center">
                         ${iconHtml}
                     </div>
@@ -5318,12 +5420,15 @@ window.sitDown = async (sid, def) => {
         };
 
         window.applyFrame = async (purchaseId, imgPath, isVipName = false) => {
+            // 7 دن کا ٹائمر یہاں سیٹ ہوگا
+            let expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); 
             await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
                 activatedAt: Date.now(),
+                expiry: expiryTime,
                 status: 'active'
             });
             await window.equipActiveFrame(imgPath, isVipName);
-            Swal.fire({toast:true, icon:'success', title:'Timer Started!', position:'top-end', showConfirmButton:false, timer:2000});
+            Swal.fire({toast:true, icon:'success', title:'Activated! 7 Days Timer Started.', position:'top', showConfirmButton:false, timer:2000});
         };
 
         window.equipActiveFrame = async (imgPath, isVipName = false) => {
@@ -5481,21 +5586,24 @@ window.sitDown = async (sid, def) => {
             document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
             
             let profilePic = d.photoURL || 'https://placehold.co/100';
-            document.getElementById('fpv-dp').src = profilePic;
             document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
             
-            const frameImg = document.getElementById('fpv-frame');
-            if(d.currentFrame && d.currentFrame.trim() !== "") {
-                frameImg.src = d.currentFrame;
-                frameImg.classList.remove('hidden');
-                frameImg.style.display = 'block';
-            } else {
-                frameImg.classList.add('hidden');
-                frameImg.style.display = 'none';
-                frameImg.src = "";
+            const fpvContainer = document.getElementById('fpv-visual-container');
+            if(fpvContainer) {
+                let fpvHtml = `<div class="visual-root"><img src="${profilePic}" class="visual-img shadow-lg" style="border: 2px solid white;">`;
+                if(d.currentFrame && d.currentFrame.trim() !== "") {
+                    if (d.currentFrame.endsWith('.mp4')) {
+                        fpvHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                    } else {
+                        fpvHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.style.display='none'">`;
+                    }
+                }
+                fpvHtml += `</div>`;
+                fpvContainer.innerHTML = fpvHtml;
+                window.initVideoFrames();
             }
 
-            let age = 18; 
+            let age = 18;
             if (d.birthday) {
                 const birthDate = new Date(d.birthday);
                 if (!isNaN(birthDate)) { 
@@ -5536,11 +5644,10 @@ window.sitDown = async (sid, def) => {
             let followersCount = d.friends ? Object.keys(d.friends).length : 0;
             document.getElementById('fpv-followers').innerText = followersCount;
 
-            renderFPVFrames(d.currentFrame, d.unlockedFrames);
-            renderFPVMedals(lvl);
+            renderFPVFrames(d); 
+            renderFPVMedals(d, lvl); 
             
             loadCPData(d); // CP Load Function
-
             window.switchProfileTab('profile');
         };
 
@@ -5830,40 +5937,105 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
         // ================= OTHER PROFILE RENDERERS =================
         // نیا Frames فنکشن (Grid اور Use بٹن کے ساتھ)
         // ================= NEW GRID RENDERERS =================
-        function renderFPVFrames(currentEquipped, unlockedFrames) {
+        window.updateFrameFromFPV = async (purchaseId, imgPath, isVipName = false) => {
+            if (imgPath === null) {
+                // اگر Unequip (ہٹانا) ہے
+                if (isVipName) {
+                    await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: null });
+                } else {
+                    await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null });
+                }
+                
+                if (currentRoomId) {
+                    const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`));
+                    if (seatsSnap.exists()) {
+                        const seats = seatsSnap.val();
+                        Object.keys(seats).forEach(async (k) => {
+                            if (seats[k].uid === currentUser.uid) {
+                                if (isVipName) await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { nameColorClass: null });
+                                else await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: null });
+                            }
+                        });
+                    }
+                }
+            } else {
+                // اگر Equip (لگانا) ہے
+                await window.equipActiveFrame(imgPath, isVipName);
+            }
+            openFullProfileView(currentUser.uid); 
+        };
+
+        function renderFPVFrames(userData) {
             const list = document.getElementById('fpv-frames-list');
             list.innerHTML = '';
             
             let hasActiveFrames = false;
             let htmlContent = '';
+            
+            let isMe = (viewingProfileUid === currentUser.uid); 
+            let currentEquippedFrame = userData.currentFrame;
+            let unlockedFrames = userData.unlockedFrames;
 
             if (unlockedFrames) {
                 let now = Date.now();
-                for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
-                    // Show only Active frames (timer started) that are not expired
-                    if (frameData.status === 'active' && frameData.expiry > now) {
-                        hasActiveFrames = true;
-                        let isEquipped = (currentEquipped === frameData.img);
-                        let daysLeft = Math.max(1, Math.ceil((frameData.expiry - now) / (1000 * 60 * 60 * 24)));
-                        
-                        let btnHtml = isEquipped 
-                            ? `<button class="w-[70px] text-[9px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-md tracking-widest uppercase">EQUIPPED</button>`
-                            : `<button class="w-[60px] text-[10px] bg-[#7c3aed] text-white py-1 rounded-full font-bold shadow-md hover:bg-purple-700 transition" onclick="equipActiveFrame('${frameData.img}')">Use</button>`;
+                let mergedFrames = {}; 
 
-                        htmlContent += `
-                        <div class="flex flex-col items-center justify-start mb-2">
-                            <div class="w-[70px] h-[70px] relative flex items-center justify-center mb-1">
-                                <img src="${frameData.img}" class="w-full h-full object-contain drop-shadow-md" onerror="this.style.display='none'">
-                            </div>
-                            <span class="text-[10px] text-gray-500 font-medium mb-1.5">${daysLeft} days</span>
-                            ${btnHtml}
-                        </div>`;
+                for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                    // 👇 اگر یہ VIP ہے تو اسے فریمز میں مت لاؤ (!frameData.isVipName)
+                    if (frameData.status === 'active' && frameData.expiry > now && !frameData.isVipName) {
+                        hasActiveFrames = true;
+                        
+                        let uniqueKey = frameData.img; 
+                        let timeLeftMs = frameData.expiry - now; 
+
+                        if (mergedFrames[uniqueKey]) {
+                            mergedFrames[uniqueKey].totalTimeLeft += timeLeftMs;
+                        } else {
+                            mergedFrames[uniqueKey] = {
+                                purchaseId: purchaseId,
+                                img: frameData.img,
+                                name: frameData.name,
+                                totalTimeLeft: timeLeftMs
+                            };
+                        }
                     }
+                }
+
+                for (let uniqueKey in mergedFrames) {
+                    let frameData = mergedFrames[uniqueKey];
+                    let isEquipped = (currentEquippedFrame === frameData.img);
+                    let daysLeft = Math.ceil(frameData.totalTimeLeft / (1000 * 60 * 60 * 24));
+                    
+                    let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
+                    let scaleClass = displayImg.includes('.png') ? "transform scale-[1.1]" : "";
+                    
+                    let btnHtml = '';
+                    let daysHtml = '';
+                    
+                    if (isMe) { 
+                        daysHtml = `<span class="text-[10px] text-gray-500 font-bold mb-1.5">${daysLeft} days</span>`;
+                        if (isEquipped) {
+                            btnHtml = `<button class="w-[65px] text-[9px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-sm tracking-widest uppercase transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', null, false)">EQUIPPED</button>`;
+                        } else {
+                            btnHtml = `<button class="w-[60px] text-[10px] bg-[#7c3aed] text-white py-1 rounded-full font-bold shadow-sm hover:bg-purple-700 transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', '${frameData.img}', false)">Use</button>`;
+                        }
+                    } else {
+                        daysHtml = `<span class="text-[9px] text-gray-800 font-bold mb-1.5 bg-gray-100 px-2 py-0.5 rounded-full truncate w-full text-center">${frameData.name || 'Frame'}</span>`;
+                    }
+
+                    htmlContent += `
+                    <div class="flex flex-col items-center justify-start mb-2">
+                        <div class="w-[60px] h-[60px] relative flex items-center justify-center mb-2">
+                            <img src="${displayImg}" class="w-full h-full object-contain drop-shadow-md ${scaleClass}" onerror="this.src='./frame_1.png'">
+                        </div>
+                        ${daysHtml}
+                        ${btnHtml}
+                    </div>`;
                 }
             }
 
             if (hasActiveFrames) {
-                list.className = "grid grid-cols-4 gap-y-5 gap-x-2 w-full"; // Grid Layout Apply
+                list.className = "grid grid-cols-4 gap-y-6 gap-x-3 w-full px-1"; 
                 list.innerHTML = htmlContent;
             } else {
                 list.className = "w-full flex justify-center py-2";
@@ -5871,27 +6043,88 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             }
         }
 
-        function renderFPVMedals(currentLvl) {
+        function renderFPVMedals(userData, currentLvl) {
             const list = document.getElementById('fpv-medals-list');
-            list.className = "grid grid-cols-4 gap-y-5 gap-x-2 w-full"; // Grid Layout Apply
+            list.className = "grid grid-cols-4 gap-y-6 gap-x-3 w-full px-1"; 
             list.innerHTML = '';
             
-            let milestones =[10, 20, 30, 40, 50, 60, 70, 80]; 
             let htmlContent = '';
             
+            // 1. لیول والے پرانے میڈلز
+            let milestones =[10, 20, 30, 40, 50, 60, 70, 80]; 
             milestones.forEach(m => {
                 let medalImg = getMedalImage(m);
-                let title = `Lv.${m} Title`;
+                let title = `Lv.${m}`;
                 let opacity = currentLvl >= m ? 'opacity-100' : 'opacity-40 grayscale';
                 
                 htmlContent += `
-                <div class="flex flex-col items-center ${opacity}">
-                    <div class="w-[65px] h-[65px] rounded-[16px] flex items-center justify-center mb-1.5 shadow-sm border border-gray-100" style="background: radial-gradient(circle, #ffffff 0%, #f3f4f6 100%);">
-                        <img src="${medalImg}" class="w-12 h-12 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Medal'">
+                <div class="flex flex-col items-center ${opacity} mb-2">
+                    <div class="w-[60px] h-[60px] rounded-2xl flex items-center justify-center mb-1.5 shadow-sm border border-gray-100 bg-gradient-to-br from-white to-gray-50">
+                        <img src="${medalImg}" class="w-10 h-10 object-contain drop-shadow-md" onerror="this.src='https://placehold.co/100?text=Medal'">
                     </div>
                     <span class="text-[9px] text-gray-600 font-bold text-center w-full truncate">${title}</span>
                 </div>`;
             });
+
+            // 2. VIP میڈلز (جو فریمز سے نکال کر یہاں لائے گئے ہیں)
+            let isMe = (viewingProfileUid === currentUser.uid); 
+            let currentEquippedVip = userData.nameColorClass;
+            let unlockedFrames = userData.unlockedFrames;
+
+            if (unlockedFrames) {
+                let now = Date.now();
+                let mergedVips = {};
+
+                for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                    if (frameData.status === 'active' && frameData.expiry > now && frameData.isVipName) {
+                        let uniqueKey = frameData.img;
+                        let timeLeftMs = frameData.expiry - now;
+
+                        if (mergedVips[uniqueKey]) {
+                            mergedVips[uniqueKey].totalTimeLeft += timeLeftMs;
+                        } else {
+                            mergedVips[uniqueKey] = {
+                                purchaseId: purchaseId,
+                                img: frameData.img,
+                                icon: frameData.icon,
+                                name: frameData.name,
+                                totalTimeLeft: timeLeftMs
+                            };
+                        }
+                    }
+                }
+
+                for (let uniqueKey in mergedVips) {
+                    let vipData = mergedVips[uniqueKey];
+                    let isEquipped = (currentEquippedVip === vipData.img);
+                    let daysLeft = Math.ceil(vipData.totalTimeLeft / (1000 * 60 * 60 * 24));
+                    
+                    let displayImg = vipData.icon || './green_vip.png'; 
+                    
+                    let btnHtml = '';
+                    let daysHtml = '';
+                    
+                    if (isMe) { 
+                        daysHtml = `<span class="text-[10px] text-yellow-600 font-bold mb-1">${daysLeft} days</span>`;
+                        if (isEquipped) {
+                            btnHtml = `<button class="w-[65px] text-[8px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-sm tracking-widest uppercase transition active:scale-95" onclick="updateFrameFromFPV('${vipData.purchaseId}', null, true)">EQUIPPED</button>`;
+                        } else {
+                            btnHtml = `<button class="w-[60px] text-[10px] bg-[#f59e0b] text-white py-1 rounded-full font-bold shadow-sm hover:bg-yellow-600 transition active:scale-95" onclick="updateFrameFromFPV('${vipData.purchaseId}', '${vipData.img}', true)">Use</button>`;
+                        }
+                    } else {
+                        daysHtml = `<span class="text-[9px] text-yellow-700 font-bold mb-1 bg-yellow-100 px-2 py-0.5 rounded-full truncate w-full text-center">${vipData.name || 'VIP'}</span>`;
+                    }
+
+                    htmlContent += `
+                    <div class="flex flex-col items-center justify-start mb-2">
+                        <div class="w-[60px] h-[60px] rounded-2xl flex items-center justify-center mb-1 shadow-sm border border-yellow-300 bg-gradient-to-br from-yellow-50 to-orange-50">
+                            <img src="${displayImg}" class="w-12 h-12 object-contain drop-shadow-md" onerror="this.src='./green_vip.png'">
+                        </div>
+                        ${daysHtml}
+                        ${btnHtml}
+                    </div>`;
+                }
+            }
             
             list.innerHTML = htmlContent;
         }
@@ -7108,7 +7341,8 @@ window.leaveRoomFull = () => {
             const rewardRef = ref(db, `users/${uid}/inbox/rocketRewards/${roomId}_${level}_${Date.now()}`);
             await set(rewardRef, {
                 amount: amount,
-                message: `🚀 Rocket reached Level ${level} in a room you joined! You received ${amount.toLocaleString()} coins.`,
+                level: level, 
+                message: `You got reward from the Rocket Launch in the room (ID ${roomId}). The reward has been sent to your personal account, please go and check!`,
                 claimed: false,
                 timestamp: Date.now()
             });
@@ -7637,11 +7871,10 @@ async function loadCPRankingData() {
     listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse">Loading Real Rankings...</div>';
 
     try {
-        var now = new Date();
-        var pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
-        if(pktTime.getHours() < 5) pktTime.setDate(pktTime.getDate() - 1); 
-        var dateStr = pktTime.toISOString().split('T')[0];
-        var currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+        let now = new Date();
+        let pktTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 60 * 60 * 1000));
+        let dateStr = pktTime.getFullYear() + '-' + String(pktTime.getMonth()+1).padStart(2, '0') + '-' + String(pktTime.getDate()).padStart(2, '0');
+        let currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
 
         console.log("Current Week:", currentWeekStr);
         
@@ -7673,29 +7906,27 @@ async function loadCPRankingData() {
                         weeklyGifts = u.cp.cpGiftAmount_weekly || 0;
                     }
                     
-                    // Partner data حاصل کریں (Live Data)
-                    var partnerData = allUsersMap.get(u.cp.partnerUid) || {};
-                    
-                    // لائیو نام اور لائیو ڈی پی کو ترجیح دیں تاکہ یوزر کی کرنٹ تصویر شو ہو
-                    var partnerName = partnerData.username || u.cp.partnerName || 'Partner';
-                    var livePartnerPic = partnerData.photoURL || u.cp.partnerPic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(partnerName) + '&background=random';
-                    
                     var points = Math.floor(weeklyGifts / 3000);
                     
-                    console.log("Couple found: " + u.username + " & " + partnerName + ", Points: " + points);
-                    
-                    couplesMap.set(pairKey, {
-                        u1Uid: u.uid,
-                        u1Name: u.username || 'User',
-                        u1NameColor: u.nameColorClass || '',  
-                        u1Pic: u.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username || 'User') + '&background=random',
-                        u2Uid: u.cp.partnerUid,
-                        u2Name: partnerName,
-                        u2NameColor: partnerData.nameColorClass || '',  
-                        u2Pic: livePartnerPic, // <-- لائیو ڈی پی یہاں اپڈیٹ ہو گئی
-                        points: points
-                    });
-                    couplesCount++;
+                    // اگر پوائنٹس زیرو ہیں تو لسٹ میں ایڈ مت کرو
+                    if(points > 0) {
+                        var partnerData = allUsersMap.get(u.cp.partnerUid) || {};
+                        var partnerName = partnerData.username || u.cp.partnerName || 'Partner';
+                        var livePartnerPic = partnerData.photoURL || u.cp.partnerPic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(partnerName);
+                        
+                        couplesMap.set(pairKey, {
+                            u1Uid: u.uid,
+                            u1Name: u.username || 'User',
+                            u1NameColor: u.nameColorClass || '',  
+                            u1Pic: u.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username || 'User'),
+                            u2Uid: u.cp.partnerUid,
+                            u2Name: partnerName,
+                            u2NameColor: partnerData.nameColorClass || '',  
+                            u2Pic: livePartnerPic,
+                            points: points
+                        });
+                        couplesCount++;
+                    }
                 }
             }
         });
@@ -8361,6 +8592,57 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
                     requestAnimationFrame(processFrame);
                 }
                 processFrame();
+            });
+        };
+        
+        // ================= GREEN SCREEN VIDEO FRAME LOGIC =================
+        window.initVideoFrames = () => {
+            document.querySelectorAll('.video-frame-canvas:not(.initialized)').forEach(canvas => {
+                canvas.classList.add('initialized');
+                const src = canvas.getAttribute('data-src');
+                const video = document.createElement('video');
+                video.src = src;
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.crossOrigin = "anonymous";
+                video.style.display = 'none';
+                document.body.appendChild(video);
+
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+                video.addEventListener('loadedmetadata', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    video.play().catch(e => console.log("Frame Auto-play Error:", e));
+                });
+
+                video.addEventListener('play', () => {
+                    function processFrame() {
+                        if (!document.body.contains(canvas)) {
+                            video.remove();
+                            return;
+                        }
+                        if (video.paused || video.ended) return;
+
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        let l = frame.data.length / 4;
+
+                        for (let i = 0; i < l; i++) {
+                            let r = frame.data[i * 4 + 0];
+                            let g = frame.data[i * 4 + 1];
+                            let b = frame.data[i * 4 + 2];
+                            // Green Screen Removal (گرین کلر کو ٹرانسپیرنٹ بنانا)
+                            if (g > 90 && g > r * 1.3 && g > b * 1.3) {
+                                frame.data[i * 4 + 3] = 0; // Alpha (Transparency) = 0
+                            }
+                        }
+                        ctx.putImageData(frame, 0, 0);
+                        requestAnimationFrame(processFrame);
+                    }
+                    processFrame();
+                });
             });
         };
 </script>
