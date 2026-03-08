@@ -2301,9 +2301,15 @@
             <div class="reward-list-container" id="level-rewards-list"></div>
         </div>
     </div>
-<<!-- ================= CP STAR RANKING MODAL (FULLY SCROLLABLE - FIXED STRUCTURE) ================= -->
-<div id="cp-ranking-modal" class="fixed inset-0 cp-ferris-bg z-[4000] hidden flex-col" style="display: none; overflow: hidden;">
+<!-- ================= CP STAR RANKING MODAL (FULLY SCROLLABLE - FIXED STRUCTURE) ================= -->
+<div id="cp-ranking-modal" class="fixed inset-0 bg-black z-[4000] hidden flex-col" style="display: none; overflow: hidden;">
     
+    <!-- Video Background for CP Star -->
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-80" poster="./cp_star_bg.png">
+        <source src="./cp_star_bg.mp4" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-gradient-to-b from-purple-900/60 to-black/90 z-0"></div>
+
     <!-- Top Bar (fixed) -->
     <div class="absolute top-0 w-full flex justify-between items-center p-4 pt-10 z-50">
         <button onclick="closeCPRankingModal()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm"><i class="fa-solid fa-arrow-left"></i></button>
@@ -5974,64 +5980,80 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             
             let isMe = (viewingProfileUid === currentUser.uid); 
             let currentEquippedFrame = userData.currentFrame;
-            let unlockedFrames = userData.unlockedFrames;
+            let unlockedFrames = userData.unlockedFrames || {};
 
-            if (unlockedFrames) {
-                let now = Date.now();
-                let mergedFrames = {}; 
+            let now = Date.now();
+            let mergedFrames = {}; 
 
-                for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
-                    // 👇 اگر یہ VIP ہے تو اسے فریمز میں مت لاؤ (!frameData.isVipName)
-                    if (frameData.status === 'active' && frameData.expiry > now && !frameData.isVipName) {
-                        hasActiveFrames = true;
-                        
-                        let uniqueKey = frameData.img; 
-                        let timeLeftMs = frameData.expiry - now; 
+            // 🔥 نیا سسٹم: اگر یوزر آفیشل ہے تو خودکار پرماننٹ MP4 فریم دے دو
+            if (userData.isOfficial === true || Number(userData.customId) === 10005) {
+                hasActiveFrames = true;
+                mergedFrames['./official_frame.mp4'] = {
+                    purchaseId: 'official_permanent_id',
+                    img: './official_frame.mp4',
+                    name: 'Official Frame',
+                    isOfficialPermanent: true
+                };
+            }
 
-                        if (mergedFrames[uniqueKey]) {
+            // باقی عام فریمز کا سسٹم
+            for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                if (frameData && frameData.status === 'active' && frameData.expiry > now && !frameData.isVipName) {
+                    hasActiveFrames = true;
+                    let uniqueKey = frameData.img; 
+                    let timeLeftMs = frameData.expiry - now; 
+
+                    if (mergedFrames[uniqueKey]) {
+                        if (!mergedFrames[uniqueKey].isOfficialPermanent) {
                             mergedFrames[uniqueKey].totalTimeLeft += timeLeftMs;
-                        } else {
-                            mergedFrames[uniqueKey] = {
-                                purchaseId: purchaseId,
-                                img: frameData.img,
-                                name: frameData.name,
-                                totalTimeLeft: timeLeftMs
-                            };
-                        }
-                    }
-                }
-
-                for (let uniqueKey in mergedFrames) {
-                    let frameData = mergedFrames[uniqueKey];
-                    let isEquipped = (currentEquippedFrame === frameData.img);
-                    let daysLeft = Math.ceil(frameData.totalTimeLeft / (1000 * 60 * 60 * 24));
-                    
-                    let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
-                    let scaleClass = displayImg.includes('.png') ? "transform scale-[1.1]" : "";
-                    
-                    let btnHtml = '';
-                    let daysHtml = '';
-                    
-                    if (isMe) { 
-                        daysHtml = `<span class="text-[10px] text-gray-500 font-bold mb-1.5">${daysLeft} days</span>`;
-                        if (isEquipped) {
-                            btnHtml = `<button class="w-[65px] text-[9px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-sm tracking-widest uppercase transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', null, false)">EQUIPPED</button>`;
-                        } else {
-                            btnHtml = `<button class="w-[60px] text-[10px] bg-[#7c3aed] text-white py-1 rounded-full font-bold shadow-sm hover:bg-purple-700 transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', '${frameData.img}', false)">Use</button>`;
                         }
                     } else {
-                        daysHtml = `<span class="text-[9px] text-gray-800 font-bold mb-1.5 bg-gray-100 px-2 py-0.5 rounded-full truncate w-full text-center">${frameData.name || 'Frame'}</span>`;
+                        mergedFrames[uniqueKey] = {
+                            purchaseId: purchaseId,
+                            img: frameData.img,
+                            name: frameData.name,
+                            totalTimeLeft: timeLeftMs
+                        };
                     }
-
-                    htmlContent += `
-                    <div class="flex flex-col items-center justify-start mb-2">
-                        <div class="w-[60px] h-[60px] relative flex items-center justify-center mb-2">
-                            <img src="${displayImg}" class="w-full h-full object-contain drop-shadow-md ${scaleClass}" onerror="this.src='./frame_1.png'">
-                        </div>
-                        ${daysHtml}
-                        ${btnHtml}
-                    </div>`;
                 }
+            }
+
+            for (let uniqueKey in mergedFrames) {
+                let frameData = mergedFrames[uniqueKey];
+                let isEquipped = (currentEquippedFrame === frameData.img);
+                
+                let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
+                let scaleClass = displayImg.includes('.png') ? "transform scale-[1.1]" : "";
+                
+                let btnHtml = '';
+                let timeHtml = '';
+                
+                // دن یا پرماننٹ شو کرنے کا لاجک
+                if (frameData.isOfficialPermanent) {
+                    timeHtml = `<span class="text-[9px] text-red-500 font-bold mb-1.5 uppercase tracking-wider bg-red-100 px-2 py-0.5 rounded-full">Permanent</span>`;
+                } else {
+                    let daysLeft = Math.ceil(frameData.totalTimeLeft / (1000 * 60 * 60 * 24));
+                    timeHtml = `<span class="text-[10px] text-gray-500 font-bold mb-1.5">${daysLeft} days</span>`;
+                }
+
+                if (isMe) { 
+                    if (isEquipped) {
+                        btnHtml = `<button class="w-[65px] text-[9px] bg-[#10b981] text-white py-1.5 rounded-full font-black shadow-sm tracking-widest uppercase transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', null, false)">EQUIPPED</button>`;
+                    } else {
+                        btnHtml = `<button class="w-[60px] text-[10px] bg-[#7c3aed] text-white py-1 rounded-full font-bold shadow-sm hover:bg-purple-700 transition active:scale-95" onclick="updateFrameFromFPV('${frameData.purchaseId}', '${frameData.img}', false)">Use</button>`;
+                    }
+                } else {
+                    timeHtml = `<span class="text-[9px] text-gray-800 font-bold mb-1.5 bg-gray-100 px-2 py-0.5 rounded-full truncate w-full text-center">${frameData.name || 'Frame'}</span>`;
+                }
+
+                htmlContent += `
+                <div class="flex flex-col items-center justify-start mb-2">
+                    <div class="w-[60px] h-[60px] relative flex items-center justify-center mb-2">
+                        <img src="${displayImg}" class="w-full h-full object-contain drop-shadow-md ${scaleClass}" onerror="this.src='./frame_1.png'">
+                    </div>
+                    ${timeHtml}
+                    ${btnHtml}
+                </div>`;
             }
 
             if (hasActiveFrames) {
@@ -7152,10 +7174,31 @@ window.leaveRoomFull = () => {
             }
             
             const newOfficialStatus = !targetData.isOfficial;
-            await update(ref(db, `users/${adminTargetUid}`), { 
+            const officialFrameFile = './official_frame.mp4';
+            
+            // سمپل اپڈیٹ: آفیشل سٹیٹس اور ڈی پی پر ویڈیو فریم
+            let updates = {
                 isOfficial: newOfficialStatus,
-                currentFrame: newOfficialStatus ? './frame_official.png' : null
-            });
+                currentFrame: newOfficialStatus ? officialFrameFile : null
+            };
+
+            await update(ref(db, `users/${adminTargetUid}`), updates);
+            
+            // لائیو روم میں بھی اپڈیٹ کریں تاکہ چلتی ہوئی محفل میں فریم آ جائے یا ہٹ جائے
+            if (currentRoomId) {
+                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`));
+                if (seatsSnap.exists()) {
+                    const seats = seatsSnap.val();
+                    for (let k in seats) {
+                        if (seats[k].uid === adminTargetUid) {
+                            await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { 
+                                isOfficial: newOfficialStatus,
+                                frame: newOfficialStatus ? officialFrameFile : null 
+                            });
+                        }
+                    }
+                }
+            }
             
             Swal.fire('Success', `User is now ${newOfficialStatus ? 'an Official' : 'a regular user'}.`, 'success');
         }
