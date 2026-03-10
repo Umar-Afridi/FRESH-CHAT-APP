@@ -2445,17 +2445,34 @@
         <div id="half-profile-content" class="bg-white w-full rounded-t-3xl pt-10 pb-6 px-6 flex flex-col items-center relative transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
             
             <!-- ڈی پی (DP) جو آدھی باہر نکلی ہوگی -->
-            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2">
-                <div id="hp-visual-container" class="relative w-24 h-24 rounded-full border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
+            <!-- سکرین شاٹ کے مطابق نیا ٹاپ لے آؤٹ (Report, @, DP, Follow) -->
+            <div class="w-full flex justify-between items-start px-2 mt-1">
+                <!-- Left Side Buttons -->
+                <div class="flex gap-2 z-10 pt-2">
+                    <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95"><i class="fa-solid fa-triangle-exclamation"></i> Report</button>
+                    <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[10px] font-bold shadow-sm active:scale-95">@</button>
+                </div>
+                
+                <!-- Center DP (Clickable for Full Profile) -->
+                <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 cursor-pointer transition active:scale-95 z-50" onclick="openFullProfileView(targetHPUid); closeHalfProfile(event);">
+                    <div id="hp-visual-container" class="relative flex items-center justify-center"></div>
+                </div>
+
+                <!-- Right Side Follow Button -->
+                <div id="hp-follow-btn-container" class="z-10 pt-2 hidden">
+                    <button id="hp-follow-action-btn" class="bg-purple-600 text-white px-4 py-1.5 rounded-full text-[11px] font-bold shadow-md active:scale-95 transition">
+                        <i class="fa-solid fa-plus mr-1"></i> Follow
+                    </button>
                 </div>
             </div>
 
-            <div class="mt-2 text-center w-full">
-                <h2 id="hp-name" class="text-xl font-black text-gray-900 flex justify-center items-center gap-1">User Name <img id="hp-gender" src="./male.png" class="w-4 h-4 ml-1"></h2>
+            <div class="mt-8 text-center w-full">
+                <!-- نام اور ID -->
+                <h2 id="hp-name" class="text-xl font-black text-gray-900 flex justify-center items-center gap-1.5">User Name</h2>
                 <p class="text-xs text-gray-500 font-bold tracking-widest mt-1">ID: <span id="hp-id" class="text-gray-800">000000</span> <span class="mx-1">|</span> <span id="hp-followers">0</span> followers</p>
                 
                 <!-- لیول اور میڈلز -->
-                <div class="flex flex-col items-center gap-2 mt-4 mb-5">
+                <div class="flex flex-col items-center gap-2 mt-3 mb-4">
                     <div id="hp-level-badge" class="user-level-badge scale-110 shadow-md">
                         <img id="hp-medal-img" src="" class="level-medal-img"> <span id="hp-level-text">Lv.1</span>
                     </div>
@@ -2463,19 +2480,23 @@
                     <div id="hp-medals-list" class="flex justify-center gap-2 mt-1"></div>
                 </div>
 
-                <!-- مین بٹنز (Chat, Gift, Follow) -->
-                <div class="flex items-center gap-3 w-full">
+                <!-- مین بٹنز (دوسروں کے لیے: Chat, Gift) -->
+                <div class="w-full flex items-center gap-3" id="hp-main-buttons">
                     <button onclick="openDirectChatFromHP()" class="flex-1 bg-white border border-gray-300 text-gray-800 font-bold py-3 rounded-full shadow-sm flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-regular fa-comment-dots text-lg"></i> Chat</button>
-                    
-                    <button onclick="openGiftFromHP()" class="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 rounded-full shadow-lg flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-gift text-lg"></i> Send Gift</button>
-                    
-                    <button id="hp-follow-btn" class="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition"><i class="fa-solid fa-plus text-xl"></i></button>
+                    <button onclick="openGiftFromHP()" class="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold py-3 rounded-full shadow-lg flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-gift text-lg"></i> Send Gift</button>
+                </div>
+                <!-- اپنی پروفائل کے لیے (Leave Seat Button) -->
+                <div class="w-full mt-2 hidden" id="hp-self-actions">
+                    <button id="hp-leave-seat-btn" class="w-full bg-red-600 text-white font-bold py-3.5 rounded-full shadow-lg flex items-center justify-center gap-2 active:scale-95 transition">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i> Leave Seat
+                    </button>
                 </div>
 
-                <!-- Kick Out اور Invite بٹنز (صرف روم اونر کے لیے) -->
-                <div id="hp-owner-actions" class="flex gap-3 w-full mt-4 hidden">
-                    <button id="hp-invite-btn" class="flex-1 bg-gray-100 text-gray-800 font-bold py-3 rounded-full active:scale-95 transition">Invite</button>
-                    <button id="hp-kick-btn" class="flex-1 bg-red-50 text-red-600 font-bold py-3 rounded-full active:scale-95 transition">Kick Out</button>
+                <!-- روم اونر کے لیے ایکشنز (Unseat, Mute Mic, Kick Out) -->
+                <div id="hp-owner-actions" class="grid grid-cols-3 gap-2 w-full mt-4 hidden">
+                    <button id="hp-remove-seat-btn" class="bg-gray-100 text-gray-800 text-[11px] font-bold py-2.5 rounded-full active:scale-95 transition"><i class="fa-solid fa-microphone-lines-slash mr-1"></i> Unseat</button>
+                    <button id="hp-mute-mic-btn" class="bg-orange-50 text-orange-600 text-[11px] font-bold py-2.5 rounded-full active:scale-95 transition"><i class="fa-solid fa-volume-xmark mr-1"></i> Block Mic</button>
+                    <button id="hp-kick-btn" class="bg-red-50 text-red-600 text-[11px] font-bold py-2.5 rounded-full active:scale-95 transition"><i class="fa-solid fa-ban mr-1"></i> Kick Out</button>
                 </div>
             </div>
         </div>
@@ -4484,84 +4505,7 @@ window.joinRoom = async (rid) => {
     currentRoomId = rid; 
     currentUserJoinTime = Date.now(); 
     
-    get(ref(db, `rooms/${rid}`)).then(snap => { 
-        currentRoomData = snap.val(); 
-        currentRoomOwner = currentRoomData.owner; 
-        const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
-        document.getElementById('room-header-cover').src = rCover; 
-        document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
-        document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
-        document.getElementById('guest-touch-blocker').style.display = 'none'; 
-        document.getElementById('empty-state-trigger').style.display = 'flex'; 
-        
-        const theme = currentRoomData.theme; 
-        const area = document.getElementById('room-lower-half'); 
-        const videoBg = document.getElementById('theme-video-bg');
-        
-        if(theme) { 
-            if(theme.endsWith('.mp4')) { 
-                area.style.backgroundImage = 'none'; 
-                videoBg.src = `./${theme}`; 
-                videoBg.classList.remove('hidden'); 
-                videoBg.play().catch(e => console.log("Auto-play prevented")); 
-            } else { 
-                videoBg.classList.add('hidden'); 
-                videoBg.pause(); 
-                area.style.backgroundImage = `url('./${theme}')`; 
-            } 
-        } else { 
-            area.style.backgroundImage = 'none'; 
-            videoBg.classList.add('hidden'); 
-            videoBg.pause(); 
-        }
-        
-        if(rid === currentUser.uid) { 
-            update(ref(db, `rooms/${rid}`), { isLive: true }); 
-            onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
-        } 
-    });
-    
-    get(ref(db, `rooms/${rid}`)).then(snap => { 
-        currentRoomData = snap.val(); 
-        currentRoomOwner = currentRoomData.owner; 
-        const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
-        document.getElementById('room-header-cover').src = rCover; 
-        document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
-        document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
-        document.getElementById('guest-touch-blocker').style.display = 'none'; 
-        document.getElementById('empty-state-trigger').style.display = 'flex'; 
-        
-        const theme = currentRoomData.theme; 
-        const imgBg = document.getElementById('theme-image-bg'); 
-        const videoBg = document.getElementById('theme-video-bg');
-        
-        if(theme) { 
-            if(theme.endsWith('.mp4')) { 
-                if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
-                if(videoBg) {
-                    videoBg.src = `./${theme}`; 
-                    videoBg.classList.remove('hidden'); 
-                    videoBg.play().catch(e => console.log("Auto-play prevented")); 
-                }
-            } else { 
-                if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
-                if(imgBg) {
-                    imgBg.style.backgroundImage = `url('./${theme}')`; 
-                    imgBg.classList.remove('hidden');
-                }
-            } 
-        } else { 
-            if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
-            if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
-        }
-        
-        if(rid === currentUser.uid) { 
-            update(ref(db, `rooms/${rid}`), { isLive: true }); 
-            onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
-        } 
-    });
-    
-    // --- NEW ROOM DATA LOGIC ---
+    // --- SINGLE CLEAN ROOM DATA LOGIC ---
     currentRoomData = roomDataTemp; 
     currentRoomOwner = currentRoomData.owner; 
     const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
@@ -4570,6 +4514,11 @@ window.joinRoom = async (rid) => {
     document.getElementById('room-header-id').innerText = currentRoomData.ownerCustomId || '...'; 
     document.getElementById('guest-touch-blocker').style.display = 'none'; 
     document.getElementById('empty-state-trigger').style.display = 'flex'; 
+    
+    if(rid === currentUser.uid) { 
+        update(ref(db, `rooms/${rid}`), { isLive: true }); 
+        onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
+    } 
 
     // REALTIME LISTENER FOR ROOM SETTINGS (Type & Super Mic)
     onValue(ref(db, `rooms/${rid}`), (s) => {
@@ -4794,7 +4743,7 @@ window.joinRoom = async (rid) => {
                     } 
                     else if (m.type === 'entry') {
                         let nameHtml = m.uid 
-                            ? `<span onclick="viewFriendProfile('${m.uid}')" class="font-extrabold ${colorClass} cursor-pointer hover:underline">${m.name}</span>`
+                            ? `<span onclick="openHalfProfile('${m.uid}', null)" class="font-extrabold ${colorClass} cursor-pointer hover:underline">${m.name}</span>`
                             : `<span class="font-extrabold ${colorClass}">${m.name}</span>`;
 
                         chatArea.innerHTML += `
@@ -4807,7 +4756,7 @@ window.joinRoom = async (rid) => {
                     }
                     else { 
                         let userDp = m.pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=random`;
-                        let clickableAction = m.uid ? `onclick="viewFriendProfile('${m.uid}')"` : '';
+                        let clickableAction = m.uid ? `onclick="openHalfProfile('${m.uid}', null)"` : '';
                         
                         chatArea.innerHTML += `
                         <div class="flex flex-col mb-3">
@@ -4937,7 +4886,7 @@ window.joinRoom = async (rid) => {
             const uid = (seatData && seatData.uid) ? seatData.uid : null;
 
             if (seatClickTimers[seatId]) {
-                // ڈبل کلک (فل پروفائل اوپن کرے گا)
+                // ڈبل کلک (ہمیشہ فل پروفائل اوپن کرے گا)
                 clearTimeout(seatClickTimers[seatId]);
                 delete seatClickTimers[seatId];
                 if(uid) {
@@ -4948,12 +4897,14 @@ window.joinRoom = async (rid) => {
                 // سنگل کلک ٹائمر
                 seatClickTimers[seatId] = setTimeout(() => {
                     delete seatClickTimers[seatId];
-                    if (uid && uid !== currentUser.uid) {
-                        openHalfProfile(uid, seatId); // ہاف پروفائل کھولیں
+                    if (uid) {
+                        // چاہے اپنی پروفائل ہو یا کسی اور کی، بھری ہوئی سیٹ پر Half Profile ہی کھلے گی
+                        openHalfProfile(uid, seatId); 
                     } else {
-                        openMicMenuSheet(seatId, defName); // وائٹ مینو کھولیں
+                        // اگر سیٹ خالی ہے تب چھوٹا وائٹ مینو کھلے گا (Sit/Lock کے لیے)
+                        openMicMenuSheet(seatId, defName); 
                     }
-                }, 300); // 300ms کے اندر دوسرا کلک آیا تو ڈبل کلک مانا جائے گا
+                }, 300); 
             }
         };
 
@@ -5032,20 +4983,42 @@ window.joinRoom = async (rid) => {
             const hpContainer = document.getElementById('hp-visual-container');
             if(hpContainer) {
                 let hpPic = d.photoURL || 'https://placehold.co/100';
-                let hpHtml = `<div class="visual-root"><img src="${hpPic}" class="visual-img">`;
+                
+                // === اصل جادو یہاں ہے: گلوبل سکیلنگ کا استعمال ===
+               // DP کو کلک ایبل بنانے کے لیے onclick ڈائریکٹ اس کے اندر لگا دیا ہے
+                let hpHtml = `<div class="visual-root cursor-pointer" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
+                                <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
                 if (d.currentFrame) {
                     if (d.currentFrame.endsWith('.mp4')) {
-                         hpHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important;"></canvas>`;
+                         hpHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important; z-index: 20;"></canvas>`;
                     } else {
-                         hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;">`;
+                         hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;">`;
                     }
                 }
                 hpHtml += `</div>`;
+
+                // === CP PARTNER LOGIC FOR HALF PROFILE (Clickable) ===
+                if (d.cp && d.cp.partnerUid) {
+                    let cpPts = d.cp.cpGiftAmount || 0;
+                    let cpLvl = cpPts >= 15000000 ? 4 : (cpPts >= 8000000 ? 3 : (cpPts >= 3000000 ? 2 : 1));
+                    let pPic = d.cp.partnerPic || 'https://placehold.co/100';
+                    
+                    hpHtml += `
+                    <div class="absolute -right-8 top-1/2 transform -translate-y-1/2 flex items-center z-40 scale-[0.80] cursor-pointer" onclick="event.stopPropagation(); openFullProfileView('${d.cp.partnerUid}'); closeHalfProfile(event);">
+                        <div class="relative flex items-center justify-center -mr-2 z-10">
+                            <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 drop-shadow-md" onerror="this.src='./cp_heart_final.png'">
+                            <span class="absolute text-[8px] text-white font-bold" style="text-shadow: 1px 1px 0 #000;">L.${cpLvl}</span>
+                        </div>
+                        <img src="${pPic}" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover shadow-md z-0">
+                    </div>`;
+                }
+                // =========================================
+
                 hpContainer.innerHTML = hpHtml;
                 window.initVideoFrames();
             }
 
-            document.getElementById('hp-name').innerHTML = `${d.username} <img src="${d.gender === 'female' ? './female.png' : './male.png'}" class="w-4 h-4 ml-1">`;
+            document.getElementById('hp-name').innerHTML = `${d.username} <img src="${d.gender === 'female' ? './female.png' : './male.png'}" class="w-4 h-4">`;
             document.getElementById('hp-id').innerText = d.customId || '000000';
 
             // Level Logic
@@ -5068,40 +5041,86 @@ window.joinRoom = async (rid) => {
             });
             if(recentMedals.length === 0) medalsList.innerHTML = `<span class="text-[10px] text-gray-400">No medals yet</span>`;
 
-            // Follow Button
-            const followBtn = document.getElementById('hp-follow-btn');
-            const fCheck = await get(ref(db, `users/${currentUser.uid}/friends/${uid}`)); 
-            if(fCheck.exists()) {
-                followBtn.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                followBtn.className = "w-14 h-14 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center shadow-md active:scale-95 transition";
-                followBtn.onclick = null; // Unfollow is done from full profile
-            } else {
-                followBtn.innerHTML = `<i class="fa-solid fa-plus text-xl"></i>`;
-                followBtn.className = "w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition";
-                followBtn.onclick = () => followUser(uid, followBtn);
-            }
-
-            // Room Owner Actions (Kick / Invite-Remove)
+            // ===== SELF vs OTHERS LOGIC FOR HALF PROFILE =====
+            const isMe = (uid === currentUser.uid);
+            const mainBtns = document.getElementById('hp-main-buttons');
+            const selfActions = document.getElementById('hp-self-actions');
             const ownerActions = document.getElementById('hp-owner-actions');
-            const amIOwner = currentUser.uid === currentRoomOwner; 
-            
-            if (amIOwner && uid !== currentUser.uid) {
-                ownerActions.classList.remove('hidden');
-                document.getElementById('hp-kick-btn').onclick = () => {
-                    kickUserFromRoom(seatId, uid);
-                    closeHalfProfile();
-                };
-                document.getElementById('hp-invite-btn').onclick = () => {
-                    unseatUser(seatId); 
-                    closeHalfProfile();
-                };
-                document.getElementById('hp-invite-btn').innerText = "Remove from Seat";
-            } else {
+            const amIOwner = (currentUser.uid === currentRoomOwner);
+
+            if (isMe) {
+                // اگر اپنی پروفائل پر کلک کیا ہے تو Follow/Chat چھپا دو اور Leave Seat دکھاؤ
+                mainBtns.style.display = 'none';
+                selfActions.style.display = 'block';
                 ownerActions.classList.add('hidden');
+
+                document.getElementById('hp-leave-seat-btn').onclick = () => {
+                    leaveSeat(seatId);
+                    closeHalfProfile();
+                };
+            } else {
+                // اگر کسی اور کی پروفائل ہے تو Follow/Chat دکھاؤ
+                mainBtns.style.display = 'flex';
+                selfActions.style.display = 'none';
+
+                // === NEW RIGHT SIDE FOLLOW BUTTON LOGIC ===
+                const followContainer = document.getElementById('hp-follow-btn-container');
+                const followBtn = document.getElementById('hp-follow-action-btn');
+                
+                if (followContainer && followBtn) {
+                    followContainer.style.display = 'block';
+                    const fCheck = await get(ref(db, `users/${currentUser.uid}/friends/${uid}`)); 
+                    
+                    if(fCheck.exists()) {
+                        // Following Status
+                        followBtn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Following`;
+                        followBtn.className = "bg-gray-200 text-gray-700 px-4 py-1.5 rounded-full text-[11px] font-bold shadow-sm active:scale-95 transition";
+                        // ان-فالو کرنے کا آپشن
+                        followBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            unfollowUserFromHP(uid, d.username);
+                        };
+                    } else {
+                        // Not Following Status (Purple)
+                        followBtn.innerHTML = `<i class="fa-solid fa-plus mr-1"></i> Follow`;
+                        followBtn.className = "bg-purple-600 text-white px-4 py-1.5 rounded-full text-[11px] font-bold shadow-md active:scale-95 transition";
+                        // فالو کرنے کا آپشن
+                        followBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            followUserFromHP(uid, d.username, d.photoURL);
+                        };
+                    }
+                }
+
+                // Room Owner Actions Logic
+                if (amIOwner) {
+                    ownerActions.classList.remove('hidden');
+                    
+                    document.getElementById('hp-remove-seat-btn').onclick = () => {
+                        unseatUser(seatId); 
+                        closeHalfProfile();
+                    };
+                    
+                    document.getElementById('hp-kick-btn').onclick = () => {
+                        kickUserFromRoom(seatId, uid);
+                        closeHalfProfile();
+                    };
+                    
+                    document.getElementById('hp-mute-mic-btn').onclick = async () => {
+                        // Firebase Update for Mute Mic (Block Mic)
+                        await update(ref(db, `rooms/${currentRoomId}/seats/${seatId}`), { forceMute: true });
+                        Swal.fire({toast:true, icon:'success', title:'Mic Blocked', position:'top', timer:1500, showConfirmButton:false});
+                        closeHalfProfile();
+                    };
+                } else {
+                    ownerActions.classList.add('hidden');
+                }
             }
         };
 
         window.closeHalfProfile = (e) => {
+            
+            
             if(e) e.stopPropagation();
             const sheet = document.getElementById('half-profile-sheet');
             const content = document.getElementById('half-profile-content');
@@ -5127,6 +5146,43 @@ window.joinRoom = async (rid) => {
             openGiftModal(); 
         };
 
+        // ================= NEW FOLLOW / UNFOLLOW FUNCTIONS =================
+        // نیا فالو فنکشن جو ڈائریکٹ میسج میں نوٹیفکیشن بھیجے گا
+        window.followUserFromHP = async (targetUid, targetName, targetPic) => {
+            // 1. اپنی لسٹ میں ایڈ کریں
+            await update(ref(db, `users/${currentUser.uid}/friends/${targetUid}`), targetName);
+            
+            // 2. ان باکس میں ایک سسٹم میسج بھیجیں
+            const chatId = [currentUser.uid, targetUid].sort().join('_'); 
+            await push(ref(db, `direct_messages/${chatId}`), { 
+                uid: currentUser.uid, 
+                text: "Started following you ❤️", 
+                type: 'system', 
+                timestamp: Date.now() 
+            });
+
+            Swal.fire({toast:true, icon:'success', title:`Following ${targetName}`, position:'top', timer:1500, showConfirmButton:false});
+            
+            // ہاف پروفائل کو ریفریش کریں تاکہ بٹن گرے ہو جائے
+            openHalfProfile(targetUid, null);
+        };
+
+        window.unfollowUserFromHP = async (targetUid, targetName) => {
+            await remove(ref(db, `users/${currentUser.uid}/friends/${targetUid}`));
+            Swal.fire({toast:true, icon:'info', title:`Unfollowed ${targetName}`, position:'top', timer:1500, showConfirmButton:false});
+            
+            // ہاف پروفائل کو ریفریش کریں تاکہ بٹن پرپل ہو جائے
+            openHalfProfile(targetUid, null);
+        };
+
+        // چیٹ کے اندر سے Follow Back دینے کا فنکشن
+        window.followBackFromChat = async (targetUid, targetName) => {
+            await update(ref(db, `users/${currentUser.uid}/friends/${targetUid}`), targetName);
+            Swal.fire({toast:true, icon:'success', title:'Followed Back!', position:'top', timer:1500, showConfirmButton:false});
+            openDirectChat(targetUid, targetName); // Refresh chat header
+        };
+        // ===================================================================
+
         window.kickUserFromRoom = async (seatId, targetUid) => {
             const res = await Swal.fire({ title: 'Kick User?', text: 'They will be kicked out of the room.', icon: 'warning', showCancelButton: true, background: '#111', color: '#fff' });
             if(res.isConfirmed) {
@@ -5150,81 +5206,7 @@ window.joinRoom = async (rid) => {
                 await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`));
             }
         };
-        // 💡 3. FAST SIT DOWN (پروفیشنل طریقہ - نو لوڈنگ سکرین!)
-window.sitDown = async (sid, def) => {
-    const sr = ref(db, `rooms/${currentRoomId}/seats`);
-    const s = currentRoomSeats;
-    
-    if (s[sid] && (s[sid].locked || s[sid].uid)) return;
-    
-    // Step 1: فوری طور پر ڈیٹا بیس اپڈیٹ کریں تاکہ ڈی پی سیٹ پر آ جائے (Zero Lag)
-    let unseatUpdates = {};['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
-        if (s[k] && s[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
-    });
-
-    const userSnap = await get(ref(db, `users/${currentUser.uid}`));
-    const userData = userSnap.val() || {};
-    
-    await update(sr, unseatUpdates);
-    const targetSeatRef = child(sr, sid);
-    await set(targetSeatRef, {
-        uid: currentUser.uid,
-        name: currentUser.displayName,
-        pic: currentUser.photoURL,
-        frame: userData.currentFrame || null,
-        isOfficial: userData.isOfficial || false,
-        nameColorClass: userData.nameColorClass || null
-    });
-    onDisconnect(targetSeatRef).remove();
-    
-    currentSeatId = sid;
-    const menuEl = document.getElementById(`menu-${sid}`);
-    if (menuEl) menuEl.style.display = 'none';
-
-    // Step 2: بیک گراؤنڈ میں مائیکروفون آن کریں (بہتر ایرر ہینڈلنگ کے ساتھ)
-    try {
-        if (!zg) {
-            throw new Error("ZegoCloud Server is connecting... Please try again in 2 seconds.");
-        }
-
-        Swal.fire({toast: true, icon: 'info', title: 'Connecting Mic...', position: 'top', showConfirmButton: false, timer: 1500});
         
-        // مائیک کی پرمیشن اور اسٹریم کریٹ کرنا
-        localZegoStream = await zg.createStream({camera: false, mic: true});
-        
-        // Stream ID کو کلین کیا گیا ہے تاکہ Zego اسے ریجیکٹ نہ کرے
-        publishedStreamId = "stream_" + currentUser.uid; 
-        
-        await zg.startPublishingStream(publishedStreamId, localZegoStream);
-        console.log("🎙️ Mic Connected Fast!");
-        
-        Swal.fire({toast: true, icon: 'success', title: 'Microphone is ON!', position: 'top', showConfirmButton: false, timer: 2000});
-
-    } catch (err) {
-        console.error("Mic/Zego Error:", err);
-        window.leaveSeat(sid); // ایرر آنے پر سیٹ سے واپس اتار دیں
-        
-        let errorMsg = 'Could not connect microphone.';
-        let errorIcon = 'error';
-
-        // اصل وجہ چیک کریں
-        if (err.name === 'NotAllowedError' || (err.message && err.message.toLowerCase().includes('permission'))) {
-            errorMsg = "Microphone blocked by browser! Please allow microphone permission.\n(Note: Voice chat requires HTTPS secure connection)";
-            errorIcon = 'warning';
-        } else if (err.message) {
-            errorMsg = "Server Error: " + err.message;
-        }
-
-        Swal.fire({
-            icon: errorIcon, 
-            title: 'Mic Failed', 
-            text: errorMsg, 
-            confirmButtonColor: '#dc2626',
-            background: '#111', 
-            color: '#fff'
-        });
-    }
-};
        const STORE_FRAMES =[
             { id: 'frame_1', name: 'Starter Frame', price: 10000, img: './frame_1.png' },
             { id: 'frame_2', name: 'Silver Frame', price: 20000, img: './frame_2.png' },
@@ -5580,6 +5562,8 @@ window.sitDown = async (sid, def) => {
 
             // Basic Info & VIP COLOR LOGIC APPLIED HERE
             const fpvNameEl = document.getElementById('fpv-name');
+            const fpvTextContainer = fpvNameEl.parentElement.parentElement; // Text Container
+            
             fpvNameEl.innerText = d.username || 'User';
             
             if (d.nameColorClass && d.nameColorClass !== "") {
@@ -5587,6 +5571,14 @@ window.sitDown = async (sid, def) => {
             } else {
                 fpvNameEl.className = "text-xl font-extrabold text-white drop-shadow-md"; 
             }
+
+            // === CP کی وجہ سے نام کو تھوڑا آگے (Right) شفٹ کرنے کا لاجک ===
+            if (d.cp && d.cp.partnerUid) {
+                fpvTextContainer.classList.add('ml-8'); // تصویر کے لیے جگہ بنانا
+            } else {
+                fpvTextContainer.classList.remove('ml-8');
+            }
+            // ==============================================================
 
             document.getElementById('fpv-id').innerText = d.customId || '0000';
             document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
@@ -5605,6 +5597,25 @@ window.sitDown = async (sid, def) => {
                     }
                 }
                 fpvHtml += `</div>`;
+
+                // === CP PARTNER LOGIC FOR FULL PROFILE (Clickable) ===
+                if (d.cp && d.cp.partnerUid) {
+                    let cpPts = d.cp.cpGiftAmount || 0;
+                    let cpLvl = cpPts >= 15000000 ? 4 : (cpPts >= 8000000 ? 3 : (cpPts >= 3000000 ? 2 : 1));
+                    let pPic = d.cp.partnerPic || 'https://placehold.co/100';
+                    
+                    // Onclick Event Add کر دیا گیا ہے
+                    fpvHtml += `
+                    <div class="absolute -right-10 top-1/2 transform -translate-y-1/2 flex items-center z-40 scale-[0.85] cursor-pointer active:scale-75 transition" onclick="openFullProfileView('${d.cp.partnerUid}')">
+                        <div class="relative flex items-center justify-center -mr-2 z-10">
+                            <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 drop-shadow-md" onerror="this.src='./cp_heart_final.png'">
+                            <span class="absolute text-[8px] text-white font-bold" style="text-shadow: 1px 1px 0 #000;">L.${cpLvl}</span>
+                        </div>
+                        <img src="${pPic}" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover shadow-md z-0">
+                    </div>`;
+                }
+                // =========================================
+
                 fpvContainer.innerHTML = fpvHtml;
                 window.initVideoFrames();
             }
@@ -5633,12 +5644,13 @@ window.sitDown = async (sid, def) => {
             const offTextBadge = document.getElementById('fpv-official');
             const vBadgeDp = document.getElementById('fpv-v-badge-dp');
             
-            if(d.isOfficial || Number(d.customId) === 10005) {
-                offTextBadge.classList.remove('hidden');
-                vBadgeDp.classList.remove('hidden');
+            // یہاں display = 'block' کا اضافہ کیا گیا ہے تاکہ onerror کی وجہ سے چھپا ہوا بیج بھی واپس آ جائے
+            if(d.isOfficial === true || Number(d.customId) === 10005 || Number(d.customId) === window.SUPER_ADMIN_ID) {
+                if(offTextBadge) { offTextBadge.classList.remove('hidden'); offTextBadge.style.display = 'block'; }
+                if(vBadgeDp) { vBadgeDp.classList.remove('hidden'); vBadgeDp.style.display = 'block'; }
             } else {
-                offTextBadge.classList.add('hidden');
-                vBadgeDp.classList.add('hidden');
+                if(offTextBadge) { offTextBadge.classList.add('hidden'); offTextBadge.style.display = 'none'; }
+                if(vBadgeDp) { vBadgeDp.classList.add('hidden'); vBadgeDp.style.display = 'none'; }
             }
 
             let exp = d.userExp || 0;
@@ -6502,14 +6514,26 @@ window.leaveRoomFull = () => {
                 }
             }
 
+            // چیک کریں کہ کیا آپ نے اس بندے کو فالو کیا ہوا ہے؟
+            const myFollowCheck = await get(ref(db, `users/${currentUser.uid}/friends/${friendUid}`));
+            let followBackBtnHtml = '';
+            
+            if(!myFollowCheck.exists()) {
+                // اگر آپ نے فالو نہیں کیا تو Follow Back بٹن دکھائیں
+                followBackBtnHtml = `<button onclick="event.stopPropagation(); followBackFromChat('${friendUid}', '${friendName}')" class="bg-purple-600 text-white text-[10px] px-3 py-1.5 rounded-full font-bold ml-auto shadow-sm active:scale-95 transition">Follow Back</button>`;
+            }
+
             document.getElementById('dm-header-content').innerHTML = `
-                <div class="chat-header-dp-wrapper">
-                    <img src="${pic}" class="chat-header-dp">
-                    ${vBadgeHtml}
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-extrabold text-gray-900 text-sm">${friendName}</span>
-                    <span class="text-[10px] text-gray-500 font-normal flex items-center gap-1">${statusHtml}</span>
+                <div class="flex items-center gap-3 w-full">
+                    <div class="chat-header-dp-wrapper">
+                        <img src="${pic}" class="chat-header-dp">
+                        ${vBadgeHtml}
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <span class="font-extrabold text-gray-900 text-sm">${friendName}</span>
+                        <span class="text-[10px] text-gray-500 font-normal flex items-center gap-1">${statusHtml}</span>
+                    </div>
+                    ${followBackBtnHtml}
                 </div>
             `;
             
@@ -6534,8 +6558,66 @@ window.leaveRoomFull = () => {
             chatView.classList.remove('hidden'); chatView.classList.add('flex', 'view-active'); chatView.style.display = 'flex'; 
             document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden'); 
         };
-        window.closeDirectChat = () => { document.getElementById('view-chat').classList.add('hidden'); document.getElementById('view-chat').classList.remove('flex'); document.getElementById('view-chat').style.display = 'none'; switchTab('view-inbox', document.getElementById('btn-inbox')); };
-        document.getElementById('dm-form').addEventListener('submit', (e) => { e.preventDefault(); const input = document.getElementById('dm-input'); const text = input.value.trim(); if(text && currentChatFriendId) { const chatId = [currentUser.uid, currentChatFriendId].sort().join('_'); push(ref(db, `direct_messages/${chatId}`), { uid: currentUser.uid, text: text, timestamp: Date.now() }); input.value = ''; } });
+        window.closeDirectChat = () => {
+            const chatView = document.getElementById('view-chat');
+            if(chatView) {
+                chatView.classList.remove('flex', 'view-active');
+                chatView.classList.add('hidden');
+                chatView.style.display = 'none';
+            }
+            const appHeader = document.getElementById('app-header');
+            if(appHeader) appHeader.style.display = 'flex';
+            const bottomNav = document.getElementById('bottom-nav');
+            if(bottomNav) bottomNav.classList.remove('hidden');
+            currentChatFriendId = null;
+        };
+
+        // ================= DM FORM SUBMIT LOGIC (5 MESSAGE LIMIT) =================
+        document.getElementById('dm-form').addEventListener('submit', async (e) => { 
+            e.preventDefault(); 
+            const input = document.getElementById('dm-input'); 
+            const text = input.value.trim(); 
+            
+            if(text && currentChatFriendId) { 
+                const chatId =[currentUser.uid, currentChatFriendId].sort().join('_'); 
+                
+                // === 5 MESSAGE LIMIT LOGIC ===
+                const myFollowCheck = await get(ref(db, `users/${currentUser.uid}/friends/${currentChatFriendId}`));
+                const theirFollowCheck = await get(ref(db, `users/${currentChatFriendId}/friends/${currentUser.uid}`));
+                
+                // اگر دونوں نے ایک دوسرے کو فالو نہیں کیا ہوا (Mutual نہیں ہے)
+                if (!myFollowCheck.exists() || !theirFollowCheck.exists()) {
+                    const msgsSnap = await get(ref(db, `direct_messages/${chatId}`));
+                    let myMsgCount = 0;
+                    
+                    if(msgsSnap.exists()) {
+                        Object.values(msgsSnap.val()).forEach(m => {
+                            if(m.uid === currentUser.uid && m.type !== 'system') {
+                                myMsgCount++;
+                            }
+                        });
+                    }
+                    
+                    // اگر 5 میسج پورے ہو چکے ہیں تو ایرر دکھائیں اور میسج نہ بھیجیں
+                    if(myMsgCount >= 5) {
+                        input.value = '';
+                        return Swal.fire({
+                            icon: 'warning', 
+                            title: 'Limit Reached!', 
+                            text: 'You can only send 5 messages until you both follow each other (Mutual Follow).', 
+                            background: '#111', 
+                            color: '#fff'
+                        });
+                    }
+                }
+                // ==============================
+
+                // اگر لمٹ کراس نہیں ہوئی تو میسج سینڈ کریں
+                push(ref(db, `direct_messages/${chatId}`), { uid: currentUser.uid, text: text, type: 'chat', timestamp: Date.now() }); 
+                input.value = ''; 
+            } 
+        });
+        
         
         window.viewFriendProfile = async (uid) => { 
             if(!uid) return; 
