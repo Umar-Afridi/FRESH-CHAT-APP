@@ -653,9 +653,42 @@
         .gift-target-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .gift-target-name { font-size: 9px; color: #ccc; max-width: 50px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Level Badge */
-        .user-level-badge { display: inline-flex; items-center; gap: 3px; background: linear-gradient(90deg, #ff8c00, #ff0080); padding: 2px 8px; border-radius: 12px; color: white; font-size: 10px; font-weight: 900; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid #ffda44; }
-        .level-medal-img { width: 14px; height: 14px; object-fit: contain; }
+        /* Level Badge (PERFECT SMALL TEXT FOR PNG CENTER) */
+        .user-level-badge { 
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important;
+            min-width: 110px !important;  /* پی این جی کا سائز وہی رکھا ہے تاکہ فریم بڑا نظر آئے */
+            height: 40px !important;      
+            background-size: 100% 100% !important; 
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-color: transparent !important; 
+            border: none !important; 
+            box-shadow: none !important;
+            flex-shrink: 0 !important; 
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+        }
+
+        .user-level-badge span {
+            color: #ffeb3b !important; 
+            font-size: 8.5px !important; /* 🔴 ٹیکسٹ کا سائز مزید چھوٹا کر دیا (8.5px) تاکہ فریم کے اندر فٹ آئے */
+            font-weight: 900 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            text-transform: uppercase !important; 
+            letter-spacing: 0.5px !important;
+            text-shadow: 
+                -1px -1px 0 #794000,  
+                 1px -1px 0 #794000,
+                -1px  1px 0 #794000,
+                 1px  1px 0 #794000,
+                 0px  2px 3px rgba(0,0,0,0.8) !important; /* شیڈو کو بھی تھوڑا باریک کیا ہے */
+            margin-top: -1px !important; /* پرفیکٹ سینٹر کے لیے */
+            z-index: 10 !important;
+        }
+
+        .level-medal-img { display: none !important; }
 
         /* Gift Modal Styles */
         .gift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; }
@@ -1419,16 +1452,23 @@
             </div>
         </div>
 
-        <!-- DP and Name Area -->
-        <div class="absolute top-24 left-6 w-full flex items-center gap-4 z-40 pr-6">
-            <div class="relative w-[90px] h-[90px] flex-shrink-0 flex items-center justify-center">
-                <div id="fpv-visual-container" class="w-full h-full relative"></div>
-                <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute bottom-1 right-1 w-6 h-6 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
-                <div id="fpv-level-badge-container" class="absolute -bottom-4 z-30 user-level-badge scale-[0.85] origin-center flex items-center justify-center">
+        <!-- DP, Level and Name Area -->
+        <div class="absolute top-24 left-6 w-full flex items-start gap-4 z-40 pr-6">
+            
+            <!-- Left Column: DP اور Level Badge (ریڈ سرکل والی جگہ) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <div class="relative w-[90px] h-[90px] flex items-center justify-center">
+                    <div id="fpv-visual-container" class="w-full h-full relative"></div>
+                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute -bottom-1 -right-1 w-7 h-7 z-30 hidden bg-white rounded-full p-[2px] shadow-md object-contain" onerror="this.style.display='none'">
+                </div>
+                
+                <!-- 🔴 نیا لیول بیج جو اب ڈی پی کے بالکل نیچے شو ہوگا -->
+                <div id="fpv-level-badge-container" class="mt-4 user-level-badge flex items-center justify-center">
                     <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
                 </div>
             </div>
 
+            <!-- Right Column: نام اور آئی ڈی وغیرہ -->
             <div class="flex flex-col justify-center flex-1 relative z-40 mt-2">
                 <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
                     <h2 id="fpv-name" class="text-xl font-extrabold text-white drop-shadow-md">User Name</h2>
@@ -2556,20 +2596,6 @@
         let isRocketFlying = false;
         let isFirstRocketLoad = true; 
 
-        const LEVEL_COLORS =[
-            "",
-            "linear-gradient(to right, #22c55e, #16a34a)",
-            "linear-gradient(to right, #3b82f6, #2563eb)",
-            "linear-gradient(to right, #ec4899, #db2777)",
-            "linear-gradient(to right, #1e3a8a, #172554)",
-            "linear-gradient(to right, #ca8a04, #a16207)",
-            "linear-gradient(to right, #be185d, #9d174d)",
-            "linear-gradient(to right, #ef4444, #dc2626)",
-            "linear-gradient(to right, #7f1d1d, #450a0a)",
-            "linear-gradient(to right, #d1d5db, #9ca3af)",
-            "linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff)"
-        ];
-
         function getExpForLevel(lvl) {
             if(lvl <= 1) return 0;
             return Math.floor(Math.pow(lvl, 2.5) * 2000); 
@@ -2583,23 +2609,41 @@
         }
 
         function getLevelTier(lvl) {
-            return Math.min(10, Math.ceil(lvl / 10));
+            return Math.min(10, Math.ceil(lvl / 10)); // 1-10=1, 11-20=2...
         }
 
+        // نیا فنکشن جو پی این جی امیج اٹھائے گا
+        function getLevelBgImage(lvl) {
+            return `./level_bg_${getLevelTier(lvl)}.png`;
+        }
+
+        // پرانا فنکشن رکھا ہے تاکہ ایپ کریش نہ ہو
         function getMedalImage(lvl) {
-            return `./medal${getLevelTier(lvl)}.png`;
+            return `./medal${getLevelTier(lvl)}.png`; 
         }
 
         function renderLevelHTML(exp) {
             let lvl = getUserLevel(exp);
-            let tier = getLevelTier(lvl);
-            let medal = getMedalImage(lvl);
-            let bgStyle = LEVEL_COLORS[tier] || LEVEL_COLORS[1];
+            let bgImage = getLevelBgImage(lvl);
             
-            return `<div class="user-level-badge" style="background: ${bgStyle}; border-color: rgba(255,255,255,0.4); box-shadow: 0 2px 5px rgba(0,0,0,0.5);">
-                        <img src="${medal}" class="level-medal-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135692.png'">
-                        <span style="text-shadow: 1px 1px 2px black;">Lv.${lvl}</span>
+            // صرف background-image دی ہے تاکہ CSS والی 100% 100% کی سیٹنگ خراب نہ ہو
+            return `<div class="user-level-badge" style="background-image: url('${bgImage}') !important;">
+                        <span>LV.${lvl}</span>
                     </div>`;
+        }
+
+        function updateLevelBadgeUI(badgeId, exp) {
+            let lvl = getUserLevel(exp);
+            let bgImage = getLevelBgImage(lvl);
+            let badgeEl = document.getElementById(badgeId);
+            
+            if(badgeEl) {
+                badgeEl.style.backgroundImage = `url('${bgImage}')`;
+                badgeEl.style.backgroundColor = 'transparent';
+                badgeEl.style.border = 'none';
+                badgeEl.style.boxShadow = 'none';
+                badgeEl.innerHTML = `<span>LV.${lvl}</span>`;
+            }
         }
 
         window.openLevelModal = async () => {
@@ -2740,7 +2784,13 @@
 
         async function fetchAllLeaderboardsVIP() {
             const contentArea = document.getElementById('lb-content-area');
-            contentArea.innerHTML = '<div class="text-center text-white mt-20 font-bold">Loading Data...</div>';
+            
+            // 🔴 Smooth Fix: "Loading Data..." ٹیکسٹ کو مکمل ختم کر دیا گیا ہے۔
+            // اگر لیڈر بورڈ بالکل پہلی بار کھل رہا ہے (خالی ہے) تو صرف ایک ہلکا سا گول گھومنے والا آئیکن آئے گا۔
+            // ٹیب تبدیل کرنے پر کوئی لوڈنگ نہیں آئے گی، ڈیٹا خاموشی سے بیک گراؤنڈ میں اپڈیٹ ہوگا۔
+            if(contentArea.innerHTML.trim() === '') {
+                contentArea.innerHTML = '<div class="flex justify-center mt-20"><i class="fa-solid fa-spinner fa-spin text-yellow-400 text-3xl"></i></div>';
+            }
 
             const usersSnap = await get(ref(db, 'users'));
             const roomsSnap = await get(ref(db, 'rooms'));
@@ -2931,9 +2981,28 @@
             container.innerHTML = html;
         }
 
+        // === NEW COIN FORMATTER FUNCTION (M, B, T, K) ===
+        window.formatCoinNumber = (num) => {
+            if (!num || isNaN(num)) return "0";
+            if (num >= 1000000000000) return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T'; // کھرب
+            if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B'; // ارب
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'; // ملین
+            if (num >= 10000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K'; // ہزار
+            return num.toLocaleString();
+        };
+
+        window.updateAllCoinUI = () => {
+            let formatted = window.formatCoinNumber(currentCoins || 0);
+            let d_formatted = window.formatCoinNumber(currentDiamonds || 0);
+            if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = formatted;
+            if(document.getElementById('wallet-diamonds-display')) document.getElementById('wallet-diamonds-display').innerText = d_formatted;
+            if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = formatted;
+            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = formatted;
+            if(document.getElementById('store-coins-display')) document.getElementById('store-coins-display').innerText = formatted;
+        };
+
         window.openRechargeModal = () => {
-            document.getElementById('wallet-balance-display').innerText = (currentCoins || 0).toLocaleString();
-            document.getElementById('wallet-diamonds-display').innerText = (currentDiamonds || 0).toLocaleString();
+            window.updateAllCoinUI();
             document.getElementById('recharge-modal').classList.remove('hidden');
             document.getElementById('recharge-modal').classList.add('flex');
         };
@@ -2951,11 +3020,7 @@
             currentDiamonds = 0;
             
             await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins, diamonds: 0 });
-            
-            document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
-            document.getElementById('wallet-diamonds-display').innerText = "0";
-            if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = currentCoins.toLocaleString();
-            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
+            window.updateAllCoinUI();
             
             Swal.fire({toast:true, icon:'success', title:'Converted to Live Coins!', position:'top', showConfirmButton:false, timer:2000});
         }
@@ -2964,7 +3029,7 @@
             if(!currentUser) return Swal.fire('Error', 'Please login first', 'error');
             Swal.fire({
                 title: 'Confirm Purchase',
-                text: `Pay Rs. ${pkr} to get ${coins.toLocaleString()} coins?`,
+                text: `Pay Rs. ${pkr} to get ${window.formatCoinNumber(coins)} coins?`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, Buy Now',
@@ -2977,10 +3042,8 @@
                     setTimeout(async () => {
                         currentCoins += coins;
                         await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
-                        document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
-                        if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = currentCoins.toLocaleString();
-                        if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-                        Swal.fire({ icon: 'success', title: 'Purchase Successful!', text: `You received ${coins.toLocaleString()} coins!`, background: '#111', color: '#fff' });
+                        window.updateAllCoinUI();
+                        Swal.fire({ icon: 'success', title: 'Purchase Successful!', text: `You received ${window.formatCoinNumber(coins)} coins!`, background: '#111', color: '#fff' });
                     }, 1500);
                 }
             });
@@ -3335,8 +3398,7 @@
             });
 
             if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-            document.getElementById('profile-level-text').innerText = `Lv.${getUserLevel(currentUserExp)}`;
-            document.getElementById('profile-medal-img').src = getMedalImage(getUserLevel(currentUserExp));
+            updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
             const rSnap = await get(ref(db, `users/${selectedGiftTargetUid}`));
             let rData = rSnap.val() || {};
@@ -3492,7 +3554,19 @@ document.addEventListener('touchend', e => {
         window.switchHomeTab = (tabName) => { currentHomeTab = tabName; document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active')); document.getElementById(`tab-${tabName}`).classList.add('active'); refreshHomeRooms(); }
 
         window.refreshHomeRooms = async () => {
-            if(!currentUser) return; const homeList = document.getElementById('home-room-list'); homeList.innerHTML = '<p class="text-center text-gray-400 text-xs mt-4 col-span-2">Loading...</p>'; const roomsSnap = await get(ref(db, 'rooms')); if(!roomsSnap.exists()) { homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms found.</p>`; return; } const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : []; let history = JSON.parse(localStorage.getItem('room_history') || '[]'); homeList.innerHTML = ''; let hasLive = false; const promises = [];
+            if(!currentUser) return; 
+            const homeList = document.getElementById('home-room-list'); 
+            
+            // Smooth Loading Fix: Only show spinner if screen is completely empty
+            if(homeList.innerHTML.trim() === '') {
+                homeList.innerHTML = '<div class="col-span-2 flex justify-center py-10"><i class="fa-solid fa-spinner fa-spin text-purple-500 text-2xl"></i></div>'; 
+            }
+            
+            const roomsSnap = await get(ref(db, 'rooms')); 
+            if(!roomsSnap.exists()) { 
+                homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms found.</p>`; 
+                return; 
+            } const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : []; let history = JSON.parse(localStorage.getItem('room_history') || '[]'); homeList.innerHTML = ''; let hasLive = false; const promises = [];
             roomsSnap.forEach(r => { const d = r.val(); const roomId = r.key; const isOwnerPresent = d.activeUsers && Object.keys(d.activeUsers).includes(d.owner); if (d.isLocked === true) return; if (d.isLive === true && isOwnerPresent) { let shouldShow = false; if (currentHomeTab === 'following') { if (friendIds.includes(d.owner) || d.owner === currentUser.uid) shouldShow = true; } else if (currentHomeTab === 'popular') shouldShow = true; else if (currentHomeTab === 'recent') { if (history.includes(roomId)) shouldShow = true; } if (shouldShow) { hasLive = true; const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { const uData = uSnap.exists() ? uSnap.val() : {}; return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '', liveUserName: uData.username || d.ownerName }; }); promises.push(p); } } }); 
 const results = await Promise.all(promises);
 
@@ -3597,8 +3671,7 @@ results.forEach(d => {
                 currentDiamonds = d.diamonds || 0; 
                 currentUserExp = d.userExp || 0; 
 
-                document.getElementById('profile-level-text').innerText = `Lv.${getUserLevel(currentUserExp)}`;
-                document.getElementById('profile-medal-img').src = getMedalImage(getUserLevel(currentUserExp));
+                updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
                 if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
                 if(document.getElementById('gift-modal-coins')) { document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString(); }
@@ -4986,6 +5059,10 @@ window.joinRoom = async (rid) => {
                 
                 // === اصل جادو یہاں ہے: گلوبل سکیلنگ کا استعمال ===
                // DP کو کلک ایبل بنانے کے لیے onclick ڈائریکٹ اس کے اندر لگا دیا ہے
+                // --- NEW V-BADGE LOGIC ADDED HERE ---
+                let isOff = (d.isOfficial === true || d.isOfficial === "true" || Number(d.customId) === 10005 || Number(d.customId) === window.SUPER_ADMIN_ID);
+                let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full p-[2px] shadow-lg z-50 object-contain">` : '';
+
                 let hpHtml = `<div class="visual-root cursor-pointer" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
                                 <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
                 if (d.currentFrame) {
@@ -4995,6 +5072,7 @@ window.joinRoom = async (rid) => {
                          hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;">`;
                     }
                 }
+                hpHtml += vBadgeHTML; // V-Badge injected here
                 hpHtml += `</div>`;
 
                 // === CP PARTNER LOGIC FOR HALF PROFILE (Clickable) ===
@@ -5023,9 +5101,7 @@ window.joinRoom = async (rid) => {
 
             // Level Logic
             let exp = d.userExp || 0;
-            let lvl = getUserLevel(exp);
-            document.getElementById('hp-level-text').innerText = `Lv.${lvl}`;
-            document.getElementById('hp-medal-img').src = getMedalImage(lvl);
+            updateLevelBadgeUI('hp-level-badge', exp);
 
             // 5 Medals Logic
             const medalsList = document.getElementById('hp-medals-list');
@@ -5221,7 +5297,7 @@ window.joinRoom = async (rid) => {
 
         window.openStoreModal = () => {
             const grid = document.getElementById('store-grid');
-            document.getElementById('store-coins-display').innerText = currentCoins.toLocaleString();
+            if(window.updateAllCoinUI) { window.updateAllCoinUI(); } else { document.getElementById('store-coins-display').innerText = currentCoins.toLocaleString(); }
             grid.innerHTML = '';
 
             STORE_FRAMES.forEach(frame => {
@@ -5481,17 +5557,6 @@ window.joinRoom = async (rid) => {
             window.openPropHouse();
         };
 
-        window.closePropHouse = () => {
-    const modal = document.getElementById('prophouse-modal');
-    if(modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('open');
-        modal.style.display = 'none';
-    }
-};
-        
-        
-
     // ================= گیلری سے تصویر اپلوڈ کرنے کا لاجک =================
         window.triggerImageUpload = () => {
             document.getElementById('image-upload').click();
@@ -5654,9 +5719,7 @@ window.joinRoom = async (rid) => {
             }
 
             let exp = d.userExp || 0;
-            let lvl = getUserLevel(exp);
-            document.getElementById('fpv-level-text').innerText = `Lv.${lvl}`;
-            document.getElementById('fpv-medal-img').src = getMedalImage(lvl);
+            updateLevelBadgeUI('fpv-level-badge-container', exp);
 
             // Followers - Calculate correctly from data if possible, else fallback
             let followersCount = d.friends ? Object.keys(d.friends).length : 0;
@@ -6646,8 +6709,7 @@ window.leaveRoomFull = () => {
             document.getElementById('fp-gender').src = d.gender === 'female' ? './female.png' : './male.png'; 
             
             let exp = d.userExp || 0;
-            document.getElementById('fp-level-text').innerText = `Lv.${getUserLevel(exp)}`;
-            document.getElementById('fp-medal-img').src = getMedalImage(getUserLevel(exp));
+            updateLevelBadgeUI('fp-level-badge', exp);
 
             let vBadge = document.getElementById('fp-v-badge');
             if(d.isOfficial || d.customId === window.SUPER_ADMIN_ID) {
@@ -7993,7 +8055,10 @@ async function loadCPRankingData() {
         return;
     }
     
-    listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse">Loading Real Rankings...</div>';
+    // Smooth Loading Fix: Keep old data visible while fetching new data in background
+    if(listContainer.innerHTML.trim() === '') {
+        listContainer.innerHTML = '<div class="text-center text-pink-400 mt-10 font-bold animate-pulse"><i class="fa-solid fa-heart fa-bounce mr-2"></i>Updating CP Stars...</div>';
+    }
 
     try {
         let now = new Date();
@@ -8261,40 +8326,7 @@ function startCPCountdown() {
         }
     }, 1000);
 }
-// CP Modal کھلتے ہی کاؤنٹ ڈاؤن شروع کر دیں
-window.openCPRankingModal = function() {
-    console.log("Opening CP Ranking Modal...");
-    var modal = document.getElementById('cp-ranking-modal');
-    if (!modal) {
-        console.error("Modal not found!");
-        return;
-    }
-    
-    modal.classList.remove('hidden');
-    modal.style.display = 'flex';
-    
-    setTimeout(function() { 
-        modal.classList.remove('translate-y-full'); 
-    }, 10);
-    
-    // کاؤنٹ ڈاؤن شروع کریں
-    startCPCountdown();  // <-- یہ لائن شامل کریں
-    
-    currentCPTab = 'ranking';
-    
-    var tabRanking = document.getElementById('cp-tab-ranking');
-    var tabRewards = document.getElementById('cp-tab-rewards');
-    var tabWeekly = document.getElementById('cp-tab-weekly');
-    
-    if (tabRanking) tabRanking.classList.add('active');
-    if (tabRewards) tabRewards.classList.remove('active');
-    if (tabWeekly) tabWeekly.classList.remove('active');
-    
-    var titleEl = document.getElementById('cp-list-title');
-    if (titleEl) titleEl.innerText = 'This Week Ranking';
-    
-    loadCPRankingData();
-};
+
 
 let isCPVideoPlaying = false;
 
