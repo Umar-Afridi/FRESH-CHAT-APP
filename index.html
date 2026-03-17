@@ -6959,10 +6959,8 @@ window.leaveRoomFull = () => {
 
   
 
-        window.openCustomerSupport = async () => {
-            Swal.fire({title: 'Connecting to Support...', background: '#111', color: '#fff', showConfirmButton: false});
-            
-            const usersSnap = await get(ref(db, 'users'));
+window.openCustomerSupport = async () => {
+            const usersSnap = await window.get(window.ref(window.db, 'users'));
             let selectedOfficial = null;
             let fallbackAdmin = null;
             
@@ -6970,9 +6968,11 @@ window.leaveRoomFull = () => {
                 const users = usersSnap.val();
                 for (let uid in users) {
                     let u = users[uid];
-                    if(u.customId === window.SUPER_ADMIN_ID) fallbackAdmin = {uid: uid, name: u.username, status: u.status};
+                    if(Number(u.customId) === window.SUPER_ADMIN_ID || Number(u.customId) === 10005) {
+                        fallbackAdmin = {uid: uid, name: u.username, status: u.status};
+                    }
                     
-                    if((u.isOfficial || u.customId === window.SUPER_ADMIN_ID) && uid !== currentUser.uid) {
+                    if((u.isOfficial || Number(u.customId) === window.SUPER_ADMIN_ID || Number(u.customId) === 10005) && uid !== window.currentUser.uid) {
                         if(u.status === 'online') {
                             selectedOfficial = {uid: uid, name: u.username, status: 'online'};
                             break;
@@ -6984,51 +6984,21 @@ window.leaveRoomFull = () => {
             let targetSupport = selectedOfficial || fallbackAdmin;
             
             if(targetSupport) {
-                currentChatFriendId = targetSupport.uid; 
-                
-                let dotClass = targetSupport.status === 'online' ? 'bg-green-500' : 'bg-gray-500';
-                let statusText = targetSupport.status === 'online' ? 'Online' : 'Offline';
+                // ڈائریکٹ چیٹ اوپن کرے گا
                 let displayName = targetSupport.status === 'online' ? targetSupport.name : 'YARAAN Support';
+                window.openDirectChat(targetSupport.uid, displayName);
                 
-                document.getElementById('dm-header-content').innerHTML = `
-                    <div class="chat-header-dp-wrapper">
-                        <img src="./yaraan_dp.png" class="chat-header-dp" onerror="this.src='https://placehold.co/100'">
-                        <img src="./v_badge.png" class="chat-header-v-badge" onerror="this.style.display='none'">
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-gray-900 text-sm">${displayName}</span>
-                        <span class="text-[10px] text-gray-500 font-normal flex items-center gap-1"><span class="w-2 h-2 rounded-full ${dotClass}"></span> ${statusText}</span>
-                    </div>
-                `; 
-                
-                const chatId = [currentUser.uid, targetSupport.uid].sort().join('_'); 
-                const chatRef = ref(db, `direct_messages/${chatId}`); 
-                
-                document.getElementById('dm-messages').innerHTML = '<p class="text-center text-gray-500 text-xs mt-10">Connecting to Secure Chat...</p>'; 
-                
-                onValue(chatRef, (snap) => { 
-                    const div = document.getElementById('dm-messages'); 
-                    div.innerHTML = ''; 
-                    
-                    div.innerHTML += `<div class="p-2 text-xs text-center text-gray-400 mb-2 mt-4 bg-gray-100 rounded mx-10">Welcome to YARAAN Customer Service. How can we help you today?</div>`;
-                    
-                    if(snap.exists()) { 
-                        Object.values(snap.val()).forEach(msg => { 
-                            const isMe = msg.uid === currentUser.uid; 
-                            div.innerHTML += `<div class="p-2 text-sm max-w-[70%] mb-1 ${isMe ? 'chat-bubble-me' : 'chat-bubble-friend'} shadow-sm">${msg.text}</div>`; 
-                        }); 
-                        setTimeout(() => div.scrollTop = div.scrollHeight, 100); 
-                    } 
-                }); 
-                
-                document.querySelectorAll('.view-section').forEach(e => { e.classList.remove('view-active'); e.style.display = 'none'; }); 
-                const chatView = document.getElementById('view-chat'); 
-                chatView.classList.remove('hidden'); chatView.classList.add('flex', 'view-active'); chatView.style.display = 'flex'; 
-                document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden');
-                
-                Swal.close();
+                // ویلکم میسج کو چیٹ کے اوپر شو کرنے کا لاجک
+                setTimeout(() => {
+                    const msgList = document.getElementById('dm-message-list');
+                    if (msgList && !msgList.innerHTML.includes('Welcome to YARAAN')) {
+                        const welcomeHTML = `<div class="p-2 text-[10px] text-center text-gray-500 font-bold mb-4 mt-2 bg-[#e2e8f0] border border-gray-300 rounded-xl mx-8 shadow-sm">Welcome to YARAAN Customer Service. How can we help you today?</div>`;
+                        msgList.insertAdjacentHTML('afterbegin', welcomeHTML);
+                    }
+                }, 500);
+
             } else {
-                Swal.fire('Error', 'Support center is currently unavailable.', 'error');
+                Swal.fire({icon: 'error', title: 'Error', text: 'Support center is currently unavailable.', background: '#111', color: '#fff'});
             }
         };
 
