@@ -445,8 +445,7 @@
         .frame-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; overflow-y: auto; padding-bottom: 50px; }
         .frame-card { background: #080808; border: 1px solid #222; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; position: relative; transition: transform 0.2s; }
         
-        .chat-bubble-me { background: #dc2626; color: white; align-self: flex-end; border-radius: 12px 12px 0 12px; } 
-        .chat-bubble-friend { background: #333; color: white; align-self: flex-start; border-radius: 12px 12px 12px 0; }
+     
         
         #guest-touch-blocker { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 500; display: none; cursor: pointer; }
         #pull-refresh-indicator { height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: transparent; color: #dc2626; font-size: 20px; transition: height 0.2s; }
@@ -1849,20 +1848,7 @@
             <div id="system-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
         </div>
 
-        <div id="view-chat" class="view-section bg-white flex-col hidden" style="z-index: 100;">
-            <div class="flex items-center gap-3 p-3 border-b border-gray-200 bg-gray-50 shadow-sm sticky top-0 z-10" id="dm-header">
-                <button onclick="closeDirectChat(); event.stopPropagation();" class="text-gray-600 p-2"><i class="fa-solid fa-arrow-left text-lg"></i></button>
-                
-                <div class="flex-1 flex items-center gap-3 cursor-pointer" onclick="viewFriendProfile(currentChatFriendId)" id="dm-header-content"></div>
-                
-                <i class="fa-solid fa-chevron-right text-gray-300 text-sm pr-2"></i>
-            </div>
-            <div id="dm-messages" class="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-100"></div>
-            <form id="dm-form" class="p-3 bg-white border-t border-gray-200 flex gap-2 sticky bottom-0 z-20 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-                <input type="text" id="dm-input" placeholder="Message..." class="flex-1 bg-gray-100 border border-gray-300 rounded-full px-4 text-black focus:outline-none focus:border-blue-400">
-                <button type="submit" class="text-blue-600 px-3"><i class="fa-solid fa-paper-plane text-xl"></i></button>
-            </form>
-        </div>
+        
 
         <div id="friend-profile-modal">
             <div class="bg-white p-6 rounded-2xl w-11/12 max-w-sm border border-gray-200 relative shadow-2xl flex flex-col items-center">
@@ -2535,6 +2521,8 @@
         window.ref = ref;
         window.update = update;
         window.set = set;
+        window.push = push;
+        window.onValue = onValue;
 
         let currentUser = null;
         let currentRoomId = null;
@@ -6547,128 +6535,7 @@ window.leaveRoomFull = () => {
         window.closeRoomUsers = () => document.getElementById('room-users-modal').classList.remove('open');
         window.clearScreen = () => { set(ref(db, `rooms/${currentRoomId}/videoId`), null); document.getElementById('local-video-player').classList.add('hidden'); document.getElementById('local-video-player').src = ""; document.getElementById('screen-placeholder').classList.remove('hidden'); document.getElementById('video-iframe').classList.add('hidden'); document.getElementById('video-iframe').src = ""; };
         
-        window.openDirectChat = async (friendUid, friendName) => { 
-            currentChatFriendId = friendUid; 
-            
-            const uSnap = await get(ref(db, `users/${friendUid}`));
-            let pic = 'https://placehold.co/100';
-            let vBadgeHtml = '';
-            let statusHtml = '<span class="w-2 h-2 rounded-full bg-gray-400"></span> Offline';
-            
-            if(uSnap.exists()) {
-                let uData = uSnap.val();
-                pic = uData.photoURL || pic;
-                if(uData.isOfficial || uData.customId === window.SUPER_ADMIN_ID) {
-                    vBadgeHtml = `<img src="./v_badge.png" class="chat-header-v-badge" onerror="this.style.display='none'">`;
-                }
-                if(uData.status === 'online') {
-                    statusHtml = '<span class="w-2 h-2 rounded-full bg-green-500"></span> Online';
-                }
-            }
-
-            // چیک کریں کہ کیا آپ نے اس بندے کو فالو کیا ہوا ہے؟
-            const myFollowCheck = await get(ref(db, `users/${currentUser.uid}/friends/${friendUid}`));
-            let followBackBtnHtml = '';
-            
-            if(!myFollowCheck.exists()) {
-                // اگر آپ نے فالو نہیں کیا تو Follow Back بٹن دکھائیں
-                followBackBtnHtml = `<button onclick="event.stopPropagation(); followBackFromChat('${friendUid}', '${friendName}')" class="bg-purple-600 text-white text-[10px] px-3 py-1.5 rounded-full font-bold ml-auto shadow-sm active:scale-95 transition">Follow Back</button>`;
-            }
-
-            document.getElementById('dm-header-content').innerHTML = `
-                <div class="flex items-center gap-3 w-full">
-                    <div class="chat-header-dp-wrapper">
-                        <img src="${pic}" class="chat-header-dp">
-                        ${vBadgeHtml}
-                    </div>
-                    <div class="flex flex-col flex-1">
-                        <span class="font-extrabold text-gray-900 text-sm">${friendName}</span>
-                        <span class="text-[10px] text-gray-500 font-normal flex items-center gap-1">${statusHtml}</span>
-                    </div>
-                    ${followBackBtnHtml}
-                </div>
-            `;
-            
-            const chatId = [currentUser.uid, friendUid].sort().join('_'); 
-            const chatRef = ref(db, `direct_messages/${chatId}`); 
-            document.getElementById('dm-messages').innerHTML = '<p class="text-center text-gray-500 text-xs">Loading...</p>'; 
-            
-            onValue(chatRef, (snap) => { 
-                const div = document.getElementById('dm-messages'); 
-                div.innerHTML = ''; 
-                if(snap.exists()) { 
-                    Object.values(snap.val()).forEach(msg => { 
-                        const isMe = msg.uid === currentUser.uid; 
-                        div.innerHTML += `<div class="p-2 text-sm max-w-[70%] mb-1 ${isMe ? 'chat-bubble-me' : 'chat-bubble-friend'} shadow-sm">${msg.text}</div>`; 
-                    }); 
-                    div.scrollTop = div.scrollHeight; 
-                } else div.innerHTML = '<p class="text-center text-gray-500 text-xs mt-4">Start messaging...</p>'; 
-            }); 
-            
-            document.querySelectorAll('.view-section').forEach(e => { e.classList.remove('view-active'); e.style.display = 'none'; }); 
-            const chatView = document.getElementById('view-chat'); 
-            chatView.classList.remove('hidden'); chatView.classList.add('flex', 'view-active'); chatView.style.display = 'flex'; 
-            document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden'); 
-        };
-        window.closeDirectChat = () => {
-            const chatView = document.getElementById('view-chat');
-            if(chatView) {
-                chatView.classList.remove('flex', 'view-active');
-                chatView.classList.add('hidden');
-                chatView.style.display = 'none';
-            }
-            const appHeader = document.getElementById('app-header');
-            if(appHeader) appHeader.style.display = 'flex';
-            const bottomNav = document.getElementById('bottom-nav');
-            if(bottomNav) bottomNav.classList.remove('hidden');
-            currentChatFriendId = null;
-        };
-
-        // ================= DM FORM SUBMIT LOGIC (5 MESSAGE LIMIT) =================
-        document.getElementById('dm-form').addEventListener('submit', async (e) => { 
-            e.preventDefault(); 
-            const input = document.getElementById('dm-input'); 
-            const text = input.value.trim(); 
-            
-            if(text && currentChatFriendId) { 
-                const chatId =[currentUser.uid, currentChatFriendId].sort().join('_'); 
-                
-                // === 5 MESSAGE LIMIT LOGIC ===
-                const myFollowCheck = await get(ref(db, `users/${currentUser.uid}/friends/${currentChatFriendId}`));
-                const theirFollowCheck = await get(ref(db, `users/${currentChatFriendId}/friends/${currentUser.uid}`));
-                
-                // اگر دونوں نے ایک دوسرے کو فالو نہیں کیا ہوا (Mutual نہیں ہے)
-                if (!myFollowCheck.exists() || !theirFollowCheck.exists()) {
-                    const msgsSnap = await get(ref(db, `direct_messages/${chatId}`));
-                    let myMsgCount = 0;
-                    
-                    if(msgsSnap.exists()) {
-                        Object.values(msgsSnap.val()).forEach(m => {
-                            if(m.uid === currentUser.uid && m.type !== 'system') {
-                                myMsgCount++;
-                            }
-                        });
-                    }
-                    
-                    // اگر 5 میسج پورے ہو چکے ہیں تو ایرر دکھائیں اور میسج نہ بھیجیں
-                    if(myMsgCount >= 5) {
-                        input.value = '';
-                        return Swal.fire({
-                            icon: 'warning', 
-                            title: 'Limit Reached!', 
-                            text: 'You can only send 5 messages until you both follow each other (Mutual Follow).', 
-                            background: '#111', 
-                            color: '#fff'
-                        });
-                    }
-                }
-                // ==============================
-
-                // اگر لمٹ کراس نہیں ہوئی تو میسج سینڈ کریں
-                push(ref(db, `direct_messages/${chatId}`), { uid: currentUser.uid, text: text, type: 'chat', timestamp: Date.now() }); 
-                input.value = ''; 
-            } 
-        });
+        
         
         
         window.viewFriendProfile = async (uid) => { 
@@ -8496,5 +8363,6 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 </script>
 <!-- New Admin Panel Link -->
 <script src="./admin_panel.js"></script>
+<script src="./chat_view.js"></script>
 </body>
 </html>
