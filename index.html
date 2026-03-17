@@ -1395,67 +1395,7 @@
             </div>
         </div>
 
-        <div id="recharge-modal" class="hidden fixed inset-0 bg-black/90 z-[2500] flex-col items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-gray-900 w-full max-w-sm rounded-2xl border border-yellow-500 overflow-hidden shadow-2xl relative">
-                <button onclick="closeRechargeModal()" class="absolute top-3 right-3 text-gray-900 hover:text-white bg-yellow-400 rounded-full w-6 h-6 flex items-center justify-center z-10"><i class="fa-solid fa-xmark text-sm"></i></button>
-                
-                <div class="bg-gradient-to-r from-yellow-600 to-yellow-400 p-4 text-center">
-                    <h2 class="text-2xl font-black text-black tracking-wider">WALLET</h2>
-                </div>
-
-                <div class="p-4">
-                    <div class="flex justify-around bg-gray-800 p-3 rounded-xl border border-gray-700 mb-4 shadow-inner">
-                        <div class="text-center">
-                            <div class="text-[10px] text-gray-400 font-bold uppercase">Live Coins</div>
-                            <div class="text-yellow-400 font-black text-lg" id="wallet-balance-display">0</div>
-                        </div>
-                        <div class="w-px bg-gray-600"></div>
-                        <div class="text-center">
-                            <div class="text-[10px] text-gray-400 font-bold uppercase">Diamonds</div>
-                            <div class="text-pink-400 font-black text-lg" id="wallet-diamonds-display">0</div>
-                        </div>
-                    </div>
-                    
-                    <button onclick="convertDiamonds()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 rounded-xl mb-4 shadow-lg text-sm transition active:scale-95">
-                        EXCHANGE DIAMONDS TO COINS
-                    </button>
-
-                    <div class="space-y-3">
-                        <div onclick="buyCoins(300, 300000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md">
-                            <div class="flex items-center gap-3">
-                                <img src="./coins_small.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-8 h-8 object-contain">
-                                <div class="flex flex-col">
-                                    <span class="text-white font-bold text-sm">300,000 Coins</span>
-                                    <span class="text-[9px] text-gray-400">Basic Package</span>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-500 text-black font-black px-3 py-1 rounded-full text-xs shadow-sm">Rs. 300</div>
-                        </div>
-                        <div onclick="buyCoins(1400, 1000000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md relative overflow-hidden">
-                            <div class="absolute -left-4 top-2 bg-red-600 text-white text-[8px] font-bold px-4 py-0.5 rotate-[-45deg] z-0">HOT</div>
-                            <div class="flex items-center gap-3 z-10 pl-2">
-                                <img src="./coins_medium.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-10 h-10 object-contain">
-                                <div class="flex flex-col">
-                                    <span class="text-yellow-400 font-black text-sm">1,000,000 Coins</span>
-                                    <span class="text-[9px] text-gray-400">Popular Package</span>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-500 text-black font-black px-3 py-1 rounded-full text-xs shadow-sm z-10">Rs. 1400</div>
-                        </div>
-                        <div onclick="buyCoins(3000, 2000000)" class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700 cursor-pointer hover:border-yellow-400 transition active:scale-95 shadow-md">
-                            <div class="flex items-center gap-3">
-                                <img src="./coins_large.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135673.png'" class="w-12 h-12 object-contain">
-                                <div class="flex flex-col">
-                                    <span class="text-white font-bold text-sm">2,000,000 Coins</span>
-                                    <span class="text-[9px] text-gray-400">Mega Package</span>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-500 text-black font-black px-3 py-1 rounded-full text-xs shadow-sm">Rs. 3000</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  
 
         <!-- NEW VIP LEADERBOARD MODAL -->
         <div id="leaderboard-modal">
@@ -2785,73 +2725,7 @@
 
      
 
-        // === NEW COIN FORMATTER FUNCTION (M, B, T, K) ===
-        window.formatCoinNumber = (num) => {
-            if (!num || isNaN(num)) return "0";
-            if (num >= 1000000000000) return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T'; // کھرب
-            if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B'; // ارب
-            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'; // ملین
-            if (num >= 10000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K'; // ہزار
-            return num.toLocaleString();
-        };
-
-        window.updateAllCoinUI = () => {
-            let formatted = window.formatCoinNumber(currentCoins || 0);
-            let d_formatted = window.formatCoinNumber(currentDiamonds || 0);
-            if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = formatted;
-            if(document.getElementById('wallet-diamonds-display')) document.getElementById('wallet-diamonds-display').innerText = d_formatted;
-            if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = formatted;
-            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = formatted;
-            if(document.getElementById('store-coins-display')) document.getElementById('store-coins-display').innerText = formatted;
-        };
-
-        window.openRechargeModal = () => {
-            window.updateAllCoinUI();
-            document.getElementById('recharge-modal').classList.remove('hidden');
-            document.getElementById('recharge-modal').classList.add('flex');
-        };
         
-        window.closeRechargeModal = () => {
-            document.getElementById('recharge-modal').classList.add('hidden');
-            document.getElementById('recharge-modal').classList.remove('flex');
-        };
-
-        window.convertDiamonds = async () => {
-            if(!currentUser) return;
-            if(currentDiamonds < 100) return Swal.fire({toast:true, icon:'error', title:'Need at least 100 Diamonds to convert!', position:'top', showConfirmButton:false, timer:1500});
-            
-            currentCoins += currentDiamonds;
-            currentDiamonds = 0;
-            
-            await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins, diamonds: 0 });
-            window.updateAllCoinUI();
-            
-            Swal.fire({toast:true, icon:'success', title:'Converted to Live Coins!', position:'top', showConfirmButton:false, timer:2000});
-        }
-        
-        window.buyCoins = (pkr, coins) => {
-            if(!currentUser) return Swal.fire('Error', 'Please login first', 'error');
-            Swal.fire({
-                title: 'Confirm Purchase',
-                text: `Pay Rs. ${pkr} to get ${window.formatCoinNumber(coins)} coins?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Buy Now',
-                cancelButtonText: 'Cancel',
-                background: '#111',
-                color: '#fff'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({title: 'Processing...', text: 'Connecting to payment gateway', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
-                    setTimeout(async () => {
-                        currentCoins += coins;
-                        await update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
-                        window.updateAllCoinUI();
-                        Swal.fire({ icon: 'success', title: 'Purchase Successful!', text: `You received ${window.formatCoinNumber(coins)} coins!`, background: '#111', color: '#fff' });
-                    }, 1500);
-                }
-            });
-        };
 
         function initRocketListener(rid) {
             document.getElementById('rocket-trigger-btn').classList.remove('hidden');
@@ -8063,10 +7937,39 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
         };
 </script>
 <!-- New Admin Panel Link -->
+<script src="./wallet_system.js"></script>
 <script src="./refresh_system.js"></script>
 <script src="./cp_rewards.js"></script> <!-- یہ لائن ہم نے ایڈ کی ہے -->
 <script src="./leaderboard.js"></script>
 <script src="./admin_panel.js"></script>
 <script src="./chat_view.js"></script>
+<!-- Universal Slim Notification Strip -->
+<div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
+    <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
+</div>
+
+<style>
+@keyframes toastIn { 
+    from { opacity: 0; transform: translate(-50%, 20%); } 
+    to { opacity: 1; transform: translate(-50%, -50%); } 
+}
+.animate-uni-toast { animation: toastIn 0.3s ease-out forwards; }
+</style>
+
+<script>
+// Global Function for Slim Notice
+window.showNotice = function(text) {
+    const toast = document.getElementById('uni-slim-toast');
+    const textEl = document.getElementById('uni-toast-text');
+    if(!toast || !textEl) return;
+    textEl.innerText = text;
+    toast.classList.remove('hidden');
+    toast.classList.add('animate-uni-toast');
+    setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('animate-uni-toast');
+    }, 2500);
+};
+</script>
 </body>
 </html>
