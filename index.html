@@ -3324,6 +3324,12 @@ document.addEventListener('touchend', e => {
                 document.getElementById('bottom-nav').classList.add('flex'); 
                 document.getElementById('app-header').style.display = 'flex'; 
                 loadData(); 
+                
+                // ===== INITIATE BACKGROUND CP REWARDS CHECKER =====
+                if (typeof window.initCPRewardsSystem === 'function') {
+                    window.initCPRewardsSystem();
+                }
+                // ================================================== 
 
             const userRef = ref(db, `users/${currentUser.uid}`);
             onValue(userRef, (snap) => {
@@ -7279,139 +7285,7 @@ async function checkAndRemoveExpiredFrames() {
 setInterval(checkAndRemoveExpiredFrames, 60 * 60 * 1000);
 
 
-// ================= GIVE WEEKLY REWARDS TO TOP 10 COUPLES =================
-async function giveWeeklyRewardsToTop10() {
-    if (!currentUser) return;
-    
-    try {
-        // Get current week
-        var now = new Date();
-        var pktTime = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60000));
-        var dateStr = pktTime.toISOString().split('T')[0];
-        var currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
-        
-        var usersSnap = await get(ref(db, 'users'));
-        var couples = [];
-        
-        // Collect all couples with their weekly gift points
-        usersSnap.forEach(function(snap) {
-            var u = snap.val();
-            if (u.cp && u.cp.partnerUid) {
-                var weeklyGifts = (u.cp.lastCpWeek === currentWeekStr) ? (u.cp.cpGiftAmount_weekly || 0) : 0;
-                if (weeklyGifts > 0) {
-                    couples.push({
-                        uid: u.uid,
-                        partnerUid: u.cp.partnerUid,
-                        points: Math.floor(weeklyGifts / 3000)
-                    });
-                }
-            }
-        });
-        
-        // Sort by points (highest first)
-        couples.sort(function(a, b) { return b.points - a.points; });
-        
-        // Give rewards to top 10 couples
-        for (var i = 0; i < Math.min(10, couples.length); i++) {
-            var rank = i + 1;
-            var couple = couples[i];
-            
-            // Give reward to both users in the couple
-            await giveFrameToUser(couple.uid, rank);
-            await giveFrameToUser(couple.partnerUid, rank);
-        }
-        
-        console.log("Weekly rewards given to top 10 couples!");
-        
-    } catch (error) {
-        console.error("Error giving weekly rewards:", error);
-    }
-}
 
-// Give frame to a single user based on rank (With Notification)
-async function giveFrameToUser(uid, rank) {
-    var userRef = ref(db, `users/${uid}`);
-    var userSnap = await get(userRef);
-    var userData = userSnap.val() || {};
-    
-    var coins = 0;
-    var frameFile = "";
-    var frameDisplayIcon = "";
-    
-    // ہم نے کسٹم نام جو اوپر دیے تھے وہی یہاں لگائے ہیں
-    if (rank === 1) {
-        coins = 100000;
-        frameFile = "./frame_gold.png";
-        frameDisplayIcon = "./frame_gold.png";
-    } else if (rank === 2) {
-        coins = 50000;
-        frameFile = "./frame_silver.png";
-        frameDisplayIcon = "./frame_silver.png";
-    } else if (rank === 3) {
-        coins = 25000;
-        frameFile = "./frame_bronze.png";
-        frameDisplayIcon = "./frame_bronze.png";
-    } else if (rank >= 4 && rank <= 10) {
-        coins = 0;
-        frameFile = "./frame_purple.png";
-        frameDisplayIcon = "./frame_purple.png";
-    }
-    
-    // Add coins
-    if (coins > 0) {
-        var currentCoins = userData.coins || 0;
-        await update(userRef, { coins: currentCoins + coins });
-    }
-    
-    // Add frame to Prop House (unlockedFrames) with 7 Days expiry
-    if (frameFile) {
-        var expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
-        
-        var unlockedFrames = userData.unlockedFrames || {};
-        unlockedFrames[frameFile] = {
-            img: frameFile,
-            expiry: expiryTime,
-            status: 'active', // Direct Prop House mein activate ho jayega 7 din ke liye
-            name: getFrameName(rank)
-        };
-        await update(userRef, { unlockedFrames: unlockedFrames });
-    }
-
-    // Official Inbox System Notification bhejna jisme HTML aur Icons shamil hain
-    let notifMessage = `<div style="text-align:center;">
-        <h3 style="color:#facc15; font-size:18px; font-weight:bold; margin-bottom:10px;">Congratulations!</h3>
-        <p style="color:#d1d5db; font-size:14px; margin-bottom:15px;">You ranked <b>TOP ${rank}</b> in CP Star this week.</p>`;
-    
-    if(coins > 0) {
-        notifMessage += `<div style="display:flex; align-items:center; justify-content:center; gap:8px; background:#1f2937; padding:8px; border-radius:8px; margin-bottom:10px; border:1px solid #facc15;">
-            <img src="./coin_icon.png" style="width:25px; height:25px; object-fit:contain;" onerror="this.src='https://placehold.co/25?text=C'"> 
-            <span style="font-size:16px; font-weight:bold; color:#facc15;">${coins.toLocaleString()} Coins</span>
-        </div>`;
-    }
-
-    notifMessage += `<div style="display:flex; align-items:center; justify-content:center; gap:8px; background:#1f2937; padding:8px; border-radius:8px; border:1px solid #c084fc;">
-        <img src="${frameDisplayIcon}" style="width:35px; height:35px; object-fit:contain;" onerror="this.src='https://placehold.co/35?text=F'"> 
-        <span style="font-size:14px; font-weight:bold; color:#e9d5ff;">${getFrameName(rank)} (7 Days)</span>
-    </div>
-    <p style="color:#9ca3af; font-size:12px; margin-top:15px;">Rewards have been added to your Wallet & Prop House.</p>
-    </div>`;
-
-    await set(ref(db, `users/${uid}/inbox/system/${Date.now()}`), {
-        fromName: 'YARAAN Official',
-        icon: './yaraan_dp.png',
-        message: notifMessage,
-        type: 'sys',
-        timestamp: Date.now()
-    });
-}
-
-// Get frame name based on rank
-function getFrameName(rank) {
-    if (rank === 1) return "Gold CP Frame";
-    if (rank === 2) return "Silver CP Frame";
-    if (rank === 3) return "Bronze CP Frame";
-    return "Purple CP Frame";
-}
 
 
 
@@ -7662,20 +7536,7 @@ function startCPCountdown() {
         
         let diff = targetDate - pktNow;
         
-        // ===== نیا حصہ - ہفتہ ختم ہونے پر ریوارڈ =====
-        if (diff <= 0) {
-            console.log("🎁 Week ended - Giving weekly rewards to top 10 couples!");
-            
-            // Give rewards to top 10 couples
-            if (typeof giveWeeklyRewardsToTop10 === 'function') {
-                giveWeeklyRewardsToTop10();
-            }
-            
-            // Reset for next week
-            targetDate = getNextSunday5AM();
-            diff = targetDate - pktNow;
-        }
-        // ============================================
+        
         
         let days = Math.floor(diff / (1000 * 60 * 60 * 24));
         let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -8173,6 +8034,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
         };
 </script>
 <!-- New Admin Panel Link -->
+<script src="./cp_rewards.js"></script> <!-- یہ لائن ہم نے ایڈ کی ہے -->
 <script src="./leaderboard.js"></script>
 <script src="./admin_panel.js"></script>
 <script src="./chat_view.js"></script>
