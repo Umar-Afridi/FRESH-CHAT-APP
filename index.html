@@ -1023,6 +1023,61 @@
 .swal2-toast {
     display: none !important;
 }
+/* ================= HOME LEADERBOARD SLIDER & EMPTY SLOTS CSS ================= */
+.lb-slider-wrapper {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 35px; /* DP height */
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+}
+.lb-slide-track {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+}
+.lb-slide-item {
+    height: 35px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.lb-time-tag {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: #facc15; /* Yellow text */
+    font-size: 7px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    z-index: 10;
+    font-weight: 900;
+    border: 1px solid rgba(250,204,21,0.5);
+    text-transform: uppercase;
+    transition: transform 0.2s ease;
+}
+/* Empty Slot Styles */
+.home-empty-dp {
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    border: 1px dashed rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.8);
+    font-weight: 900;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8);
+}
+.home-empty-dp.dp-rank-2 { width: 22px; height: 22px; z-index: 2; margin-right: -8px; margin-bottom: 2px; font-size: 10px; }
+.home-empty-dp.dp-rank-1 { width: 30px; height: 30px; z-index: 3; font-size: 14px; }
+.home-empty-dp.dp-rank-3 { width: 22px; height: 22px; z-index: 1; margin-left: -8px; margin-bottom: 2px; font-size: 10px; }
     </style>
 <!-- ZEGOCLOUD SDK -->
    <script src="https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
@@ -2717,232 +2772,7 @@
             }
         };
 
-        let currentLbMainTab = 0;
-        let currentLbSubTab = 'daily';
-
-        window.openLeaderboard = async (tabIndex = 0) => {
-            document.getElementById('leaderboard-modal').style.display = 'flex';
-            document.getElementById('my-rank-dp').src = currentUser.photoURL || 'https://placehold.co/100';
-            document.getElementById('my-rank-name').innerText = currentUser.displayName || 'User';
-            switchMainTab(tabIndex);
-        };
-
-        window.closeLeaderboard = () => { document.getElementById('leaderboard-modal').style.display = 'none'; };
-
-        window.switchMainTab = (index) => {
-            currentLbMainTab = index;
-            document.querySelectorAll('.lb-m-tab').forEach((t, i) => {
-                if(i === index) t.classList.add('active'); else t.classList.remove('active');
-            });
-            fetchAllLeaderboardsVIP();
-        };
-
-        window.switchSubTab = (type) => {
-            currentLbSubTab = type;
-            document.querySelectorAll('.lb-s-tab').forEach(t => {
-                if(t.innerText.toLowerCase() === type) t.classList.add('active'); else t.classList.remove('active');
-            });
-            fetchAllLeaderboardsVIP();
-        };
-
-        async function fetchAllLeaderboardsVIP() {
-            const contentArea = document.getElementById('lb-content-area');
-            
-            // 🔴 Smooth Fix: "Loading Data..." ٹیکسٹ کو مکمل ختم کر دیا گیا ہے۔
-            // اگر لیڈر بورڈ بالکل پہلی بار کھل رہا ہے (خالی ہے) تو صرف ایک ہلکا سا گول گھومنے والا آئیکن آئے گا۔
-            // ٹیب تبدیل کرنے پر کوئی لوڈنگ نہیں آئے گی، ڈیٹا خاموشی سے بیک گراؤنڈ میں اپڈیٹ ہوگا۔
-            if(contentArea.innerHTML.trim() === '') {
-                contentArea.innerHTML = '<div class="flex justify-center mt-20"><i class="fa-solid fa-spinner fa-spin text-yellow-400 text-3xl"></i></div>';
-            }
-
-            const usersSnap = await get(ref(db, 'users'));
-            const roomsSnap = await get(ref(db, 'rooms'));
-            
-            let uArr = [], rArr =[];
-            let timeKey = currentLbSubTab;
-
-            if(usersSnap.exists()) {
-                usersSnap.forEach(s => { 
-                    let u = s.val(); u.uid = s.key;
-                    u.exp_score = Number(u[`userExp_${timeKey}`]) || 0; 
-                    u.charm_score = Number(u[`charm_${timeKey}`]) || 0;
-                    uArr.push(u); 
-                });
-            }
-            
-            if(roomsSnap.exists()) {
-                roomsSnap.forEach(s => { 
-                    let r = s.val(); r.id = s.key;
-                    r.wealth_score = Number(r[`wealth_${timeKey}`]) || 0;
-                    rArr.push(r); 
-                });
-            }
-
-            let sortedData =[]; let icon = '🪙'; let myScore = 0; let myRank = "No ranking";
-
-            if (currentLbMainTab === 0) {
-                sortedData =[...uArr].sort((a,b) => b.exp_score - a.exp_score); icon = '🪙';
-                let me = sortedData.findIndex(u => u.uid === currentUser.uid);
-                if(me !== -1 && sortedData[me].exp_score > 0) { myRank = me + 1; myScore = sortedData[me].exp_score; }
-            } else if (currentLbMainTab === 1) {
-                sortedData = [...uArr].sort((a,b) => b.charm_score - a.charm_score); icon = '💎';
-                let me = sortedData.findIndex(u => u.uid === currentUser.uid);
-                if(me !== -1 && sortedData[me].charm_score > 0) { myRank = me + 1; myScore = sortedData[me].charm_score; }
-            } else {
-                sortedData = [...rArr].sort((a,b) => b.wealth_score - a.wealth_score); icon = '🎁';
-                let me = sortedData.findIndex(r => r.owner === currentUser.uid);
-                if(me !== -1 && sortedData[me].wealth_score > 0) { myRank = me + 1; myScore = sortedData[me].wealth_score; }
-            }
-
-            document.getElementById('my-rank-text').innerText = myRank !== "No ranking" ? `No. ${myRank}` : myRank;
-            document.getElementById('my-rank-score').innerText = myScore.toLocaleString();
-
-            renderVIPLeaderboard(sortedData.filter(d => (d.exp_score > 0 || d.charm_score > 0 || d.wealth_score > 0)), currentLbMainTab, icon);
-        }
-
-        function renderVIPLeaderboard(dataList, tabType, icon) {
-            const contentArea = document.getElementById('lb-content-area');
-            if(dataList.length === 0) {
-                contentArea.innerHTML = '<div class="text-center text-gray-400 mt-20 font-bold">No ranking for this period.</div>'; return;
-            }
-
-            let top1 = dataList[0], top2 = dataList[1], top3 = dataList[2];
-            
-            let podiumHTML = `<div class="lb-stage-bg">`;
-            if(top2) podiumHTML += createVIPPodiumUser(top2, 2, tabType, icon);
-            if(top1) podiumHTML += createVIPPodiumUser(top1, 1, tabType, icon);
-            if(top3) podiumHTML += createVIPPodiumUser(top3, 3, tabType, icon);
-            podiumHTML += `</div>`;
-
-            let listHTML = `<div class="pb-5 pt-2">`;
-            for(let i = 3; i < dataList.length; i++) {
-                let d = dataList[i];
-                let name = d.username || d.roomName;
-                let pic = tabType === 2 ? d.roomCover : d.photoURL;
-                if(!pic) pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-                let score = tabType === 0 ? d.exp_score : (tabType === 1 ? d.charm_score : d.wealth_score);
-                
-                // یہاں نیا لاجک ہے: اگر روم ہے تو جوائن روم، ورنہ فل پروفائل اوپن کرو
-                let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : `onclick="openFullProfileView('${d.uid}')"`;
-
-                let isOfficial = d.isOfficial || d.customId === 10005;
-                let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full p-[2px] shadow-md z-10 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
-
-                listHTML += `
-                <div class="vip-list-item cursor-pointer active:opacity-70 transition" ${clickAct}>
-                    <div class="flex items-center gap-4 pointer-events-none">
-                        <span class="text-gray-400 font-bold w-4 text-center">${i+1}</span>
-                        <div class="relative flex-shrink-0">
-                            <img src="${pic}" class="w-12 h-12 rounded-full object-cover border-2 border-gray-600 shadow-md">
-                            ${vBadgeHTML}
-                        </div>
-                        <div class="max-w-[120px]">
-                            <span class="text-white font-bold text-sm truncate block">${name}</span>
-                        </div>
-                    </div>
-                    <div class="text-yellow-400 font-bold text-xs pointer-events-none">${score.toLocaleString()} ${icon}</div>
-                </div>`;
-            }
-            listHTML += `</div>`;
-            contentArea.innerHTML = podiumHTML + listHTML;
-        }
-
-        function createVIPPodiumUser(d, rank, tabType, icon) {
-            let name = d.username || d.roomName;
-            let pic = tabType === 2 ? d.roomCover : d.photoURL;
-            if(!pic) pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-            let score = tabType === 0 ? d.exp_score : (tabType === 1 ? d.charm_score : d.wealth_score);
-            let crown = rank === 1 ? '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135692.png" class="vip-crown">' : '';
-            let badgeClass = rank === 1 ? 'bg-gold' : (rank === 2 ? 'bg-silver' : 'bg-bronze');
-            
-            // ٹاپ 3 یوزرز پر بھی پروفائل کلک اپلائی کیا ہے
-            let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : `onclick="openFullProfileView('${d.uid}')"`;
-            
-            let isOfficial = d.isOfficial || d.customId === 10005;
-            let badgeSize = rank === 1 ? 'w-[26px] h-[26px]' : 'w-[22px] h-[22px]';
-            let badgePos = rank === 1 ? 'bottom-2 -right-2' : 'bottom-1 -right-2';
-            let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute ${badgePos} ${badgeSize} bg-white rounded-full p-[2px] shadow-lg z-20 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
-
-            return `
-            <div class="vip-podium-item cursor-pointer active:scale-95 transition" ${clickAct}>
-                ${crown}
-                <div class="relative flex justify-center pointer-events-none">
-                    <img src="${pic}" class="vip-podium-dp rank-${rank}-dp">
-                    ${vBadgeHTML}
-                </div>
-                <div class="vip-rank-badge ${badgeClass} relative z-30 pointer-events-none">${rank}</div>
-                <div class="mt-2 max-w-[80px] text-center pointer-events-none">
-                    <span class="${d.nameColorClass || 'text-white'} font-bold text-[10px] truncate block">${name}</span>
-                </div>
-                <span class="text-yellow-400 font-bold text-[9px] drop-shadow-md pointer-events-none">${score.toLocaleString()} ${icon}</span>
-            </div>`;
-        }
-
-        function getRealAvatar(d, isRoom) {
-            if(!d) return 'https://ui-avatars.com/api/?name=?&background=random';
-            let name = d.username || d.roomName || 'User';
-            let pic = isRoom ? d.roomCover : d.photoURL;
-            
-            if(!pic || pic.trim() === '') {
-                let safeName = encodeURIComponent(name);
-                pic = `https://ui-avatars.com/api/?name=${safeName}&background=random&color=fff&bold=true`;
-            }
-            return pic;
-        }
-
-        window.updateHomeTopDPs = async () => {
-            const usersSnap = await get(ref(db, 'users'));
-            const roomsSnap = await get(ref(db, 'rooms'));
-            
-            let uArr = [], rArr =[];
-            if(usersSnap.exists()) {
-                usersSnap.forEach(s => { 
-                    let u = s.val(); 
-                    u.uid = s.key;
-                    u.userExp = Number(u.userExp) || 0; 
-                    u.charm = Number(u.charm) || 0;
-                    uArr.push(u); 
-                });
-            }
-            if(roomsSnap.exists()) {
-                roomsSnap.forEach(s => { 
-                    let r = s.val(); 
-                    r.id = s.key;
-                    r.wealth = Number(r.wealth) || 0;
-                    rArr.push(r); 
-                });
-            }
-            
-            let topContrib = [...uArr].sort((a,b) => b.userExp - a.userExp).slice(0,3);
-            let topCharm   = [...uArr].sort((a,b) => b.charm - a.charm).slice(0,3);
-            let topRoom    = [...rArr].sort((a,b) => b.wealth - a.wealth).slice(0,3);
-
-            renderHomeDPs('home-top-contrib', topContrib, false, "0s");
-            renderHomeDPs('home-top-charm', topCharm, false, "1s");
-            renderHomeDPs('home-top-room', topRoom, true, "2s");
-        };
-
-        function renderHomeDPs(elementId, top3Array, isRoom, animDelay) {
-            const container = document.getElementById(elementId);
-            if(!container) return;
-            container.innerHTML = '';
-            
-            if(top3Array.length === 0) return; 
-
-            let html = '';
-            
-            if(top3Array[1]) {
-                html += `<img src="${getRealAvatar(top3Array[1], isRoom)}" class="home-top-dp dp-rank-2" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
-            }
-            if(top3Array[0]) {
-                html += `<img src="${getRealAvatar(top3Array[0], isRoom)}" class="home-top-dp dp-rank-1" style="animation-delay: ${animDelay};" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
-            }
-            if(top3Array[2]) {
-                html += `<img src="${getRealAvatar(top3Array[2], isRoom)}" class="home-top-dp dp-rank-3" onerror="this.src='https://placehold.co/100/333/FFF?text=?'">`;
-            }
-            
-            container.innerHTML = html;
-        }
+     
 
         // === NEW COIN FORMATTER FUNCTION (M, B, T, K) ===
         window.formatCoinNumber = (num) => {
@@ -3333,16 +3163,17 @@
             if(!selectedGiftTargetUid) return Swal.fire({toast:true, icon:'warning', title:'No user selected!', position:'center', timer:1500, showConfirmButton:false});
             if(currentCoins < cost) return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
 
-            let now = new Date();
-            // پاکستان ٹائم (UTC+5) کے حساب سے ایگزیکٹ رات 12 بجے تاریخ بدلے گی
-            let pktTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 60 * 60 * 1000));
+            // ====== نیا ٹائم لاجک (رات 12 سے صبح 5 بجے تک ڈیڈ زون) ======
+            let timeKeys = typeof window.getLeaderboardTimeKeys === 'function' ? window.getLeaderboardTimeKeys() : {
+                daily: new Date().toISOString().split('T')[0],
+                weekly: new Date().toISOString().split('T')[0].substring(0, 7) + '-W1',
+                monthly: new Date().toISOString().split('T')[0].substring(0, 7)
+            };
             
-            // YYYY-MM-DD فارمیٹ (رات 12 بجے بدل جائے گا)
-            let dateStr = pktTime.getFullYear() + '-' + String(pktTime.getMonth()+1).padStart(2, '0') + '-' + String(pktTime.getDate()).padStart(2, '0');
-            
-            // Weekly Reset (Monday/Sunday Logic)
-            let weekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
-            let monthStr = dateStr.substring(0, 7);
+            let dateStr = timeKeys.daily; // یہ رات 12 سے 5 بجے کے درمیان "DEAD_ZONE" دے گا
+            let weekStr = timeKeys.weekly;
+            let monthStr = timeKeys.monthly;
+            // =========================
 
             const sSnap = await get(ref(db, `users/${currentUser.uid}`));
             let sData = sSnap.val() || {};
@@ -3419,6 +3250,9 @@
 
             let targetPic = document.querySelector('.gift-target-avatar.selected').src;
             broadcastGift(currentUser.displayName, currentUser.photoURL, selectedGiftTargetName, targetPic, giftName, giftImgSrc, cost);
+            
+            // ہوم پیج ٹاپ 3 فوراً اپڈیٹ کروانا
+            if(typeof window.updateHomeTopDPs === 'function') window.updateHomeTopDPs();
             
             document.getElementById('gift-modal').classList.add('hidden'); 
             Swal.fire({ toast: true, icon: 'success', title: `${giftName} Sent!`, position: 'bottom', timer: 1500, showConfirmButton: false, background: '#111', color: '#fff' });
@@ -8332,6 +8166,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
         };
 </script>
 <!-- New Admin Panel Link -->
+<script src="./leaderboard.js"></script>
 <script src="./admin_panel.js"></script>
 <script src="./chat_view.js"></script>
 </body>

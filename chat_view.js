@@ -124,15 +124,16 @@ window.openDirectChat = async (friendUid, friendName) => {
     chatView.style.display = 'flex'; 
     setTimeout(() => { chatView.classList.remove('translate-x-full'); }, 10);
 
-    // Fetch Friend Data for Header
+    // Fetch Friend Data for Header (Safe Mode)
     const uSnap = await window.get(window.ref(window.db, `users/${friendUid}`));
     let pic = 'https://placehold.co/100';
     let vBadgeHtml = '';
+    let fData = {}; // ہم نے اسے لوکل کر دیا ہے تاکہ کریش نہ ہو
     
     if(uSnap.exists()) {
-        friendDataCache = uSnap.val();
-        pic = friendDataCache.photoURL || pic;
-        if(friendDataCache.isOfficial || friendDataCache.customId === 10005) {
+        fData = uSnap.val();
+        pic = fData.photoURL || pic;
+        if(fData.isOfficial || fData.customId === 10005) {
             vBadgeHtml = `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full p-[1px] shadow-sm">`;
         }
     }
@@ -147,7 +148,14 @@ window.openDirectChat = async (friendUid, friendName) => {
         followStatusHtml = `<button onclick="event.stopPropagation(); followBackFromChat('${friendUid}', '${friendName}')" class="bg-purple-100 text-purple-600 text-[10px] px-2 py-0.5 rounded-md font-bold">Follow</button>`;
     }
 
-    // Inject Header HTML (With click event to open full profile)
+    // ================= نیا جینڈر (Gender) لاجک =================
+    let genderIconHtml = '<i class="fa-solid fa-mars text-blue-500 text-[10px]"></i>'; // Default Male
+    if (fData.gender === 'female') {
+        genderIconHtml = '<i class="fa-solid fa-venus text-pink-500 text-[10px]"></i>'; // Female
+    }
+    // =========================================================
+
+    // Inject Header HTML
     document.getElementById('dm-top-profile-area').innerHTML = `
         <div class="flex items-center gap-3 w-full" onclick="openFullProfileView('${friendUid}')">
             <div class="relative flex-shrink-0">
@@ -156,8 +164,8 @@ window.openDirectChat = async (friendUid, friendName) => {
             </div>
             <div class="flex flex-col min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
-                    <span class="font-extrabold text-gray-900 text-base truncate ${friendDataCache?.nameColorClass || ''}">${friendName}</span>
-                    <i class="fa-solid fa-venus text-pink-500 text-[10px]"></i>
+                    <span class="font-extrabold text-gray-900 text-base truncate ${fData.nameColorClass || ''}">${friendName}</span>
+                    ${genderIconHtml}
                 </div>
                 ${followStatusHtml}
             </div>
@@ -165,7 +173,7 @@ window.openDirectChat = async (friendUid, friendName) => {
     `;
     
     // Set up Realtime Listener for Messages
-    const chatId = [window.currentUser.uid, friendUid].sort().join('_'); 
+    const chatId =[window.currentUser.uid, friendUid].sort().join('_'); 
     const chatRef = window.ref(window.db, `direct_messages/${chatId}`); 
     const msgList = document.getElementById('dm-message-list');
     msgList.innerHTML = '<p class="text-center text-gray-400 text-xs mt-10">Loading messages...</p>'; 
