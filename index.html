@@ -1628,7 +1628,7 @@
 </div> <!-- END FULL PROFILE VIEW -->
   
 <!-- ================= UPDATED EDIT PROFILE SCREEN ================= -->
-<div id="edit-profile-view" class="fixed inset-0 bg-white z-[6000] hidden flex-col overflow-y-auto transition-transform transform translate-x-full duration-300 ease-in-out">
+<div id="edit-profile-view" class="fixed inset-0 bg-white hidden flex-col overflow-y-auto transition-transform transform translate-x-full duration-300 ease-in-out" style="z-index: 999999 !important;">
     <div class="flex justify-between items-center p-4 border-b border-gray-100 pt-6">
         <i class="fa-solid fa-chevron-left text-2xl text-gray-800 cursor-pointer" onclick="closeEditProfileScreen()"></i>
         <h2 class="font-black text-lg text-gray-900">Edit</h2>
@@ -5303,7 +5303,7 @@ window.joinRoom = async (rid) => {
             Swal.fire({toast:true, icon:'success', title:'Activated! 7 Days Timer Started.', position:'top', showConfirmButton:false, timer:2000});
         };
 
-        window.equipActiveFrame = async (imgPath, isVipName = false) => {
+        window.equipActiveFrame = async (imgPath, isVipName = false, showPropHouse = true) => {
             if (isVipName) {
                 await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: imgPath }); 
             } else {
@@ -5325,7 +5325,12 @@ window.joinRoom = async (rid) => {
                     }); 
                 } 
             } 
-            window.openPropHouse();
+            
+            // نیا لاجک: اگر Prop House سے کلک ہوا ہے تو اسے اوپن کرو، ورنہ نہیں
+            if (showPropHouse) {
+                window.openPropHouse();
+            }
+            
             Swal.fire({toast:true, icon:'success', title:'Equipped!', position:'top', showConfirmButton:false, timer:1500});
         };
 
@@ -5850,10 +5855,12 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                         });
                     }
                 }
+                Swal.fire({toast:true, icon:'info', title:'Unequipped', position:'top', showConfirmButton:false, timer:1500});
             } else {
-                // اگر Equip (لگانا) ہے
-                await window.equipActiveFrame(imgPath, isVipName);
+                // اگر Equip (لگانا) ہے - یہاں false پاس کر دیا تاکہ Prop House اوپن نہ ہو
+                await window.equipActiveFrame(imgPath, isVipName, false);
             }
+            // پروفائل واپس اوپن کریں
             openFullProfileView(currentUser.uid); 
         };
 
