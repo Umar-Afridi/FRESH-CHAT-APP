@@ -3254,6 +3254,9 @@
             // ہوم پیج ٹاپ 3 فوراً اپڈیٹ کروانا
             if(typeof window.updateHomeTopDPs === 'function') window.updateHomeTopDPs();
             
+            // 🔥 یہ لائن ایڈ کی گئی ہے: گفٹ ہوتے ہی ہوم پیج پر CP Star کارڈ فوراً اپڈیٹ ہوگا
+            if(typeof window.loadCPRankingData === 'function') window.loadCPRankingData();
+            
             document.getElementById('gift-modal').classList.add('hidden'); 
             Swal.fire({ toast: true, icon: 'success', title: `${giftName} Sent!`, position: 'bottom', timer: 1500, showConfirmButton: false, background: '#111', color: '#fff' });
         };
@@ -7304,12 +7307,16 @@ async function loadCPRankingData() {
     }
 
     try {
-        let now = new Date();
-        let pktTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 60 * 60 * 1000));
-        let dateStr = pktTime.getFullYear() + '-' + String(pktTime.getMonth()+1).padStart(2, '0') + '-' + String(pktTime.getDate()).padStart(2, '0');
-        let currentWeekStr = dateStr.substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+        // 🔥 پرفیکٹ ٹائم لاجک: یہ وہی ٹائم لے گا جو گفٹ سینڈ کرتے وقت یوز ہوتا ہے
+        let currentWeekStr = "";
+        if (typeof window.getLeaderboardTimeKeys === 'function') {
+            currentWeekStr = window.getLeaderboardTimeKeys().weekly;
+        } else {
+            let pktTime = new Date(Date.now() + (5 * 60 * 60 * 1000) + (new Date().getTimezoneOffset() * 60000));
+            currentWeekStr = pktTime.toISOString().split('T')[0].substring(0, 7) + '-W' + Math.ceil(pktTime.getDate() / 7);
+        }
 
-        console.log("Current Week:", currentWeekStr);
+        console.log("Current Week Loading:", currentWeekStr);
         
         var usersSnap = await get(ref(db, 'users'));
         if(!usersSnap.exists()) {
