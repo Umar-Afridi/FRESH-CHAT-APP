@@ -2539,6 +2539,15 @@
         window.push = push;
         window.onValue = onValue;
 
+        // --- MISSING HELPERS RE-ADDED TO FIX CP & MEDALS CRASH ---
+        window.getMedalImage = function(lvl) { return './medal' + Math.min(10, Math.ceil(lvl / 10)) + '.png'; };
+        const getMedalImage = window.getMedalImage;
+        const getUserLevel = (exp) => window.getUserLevel ? window.getUserLevel(exp) : 1;
+        const getExpForLevel = (lvl) => window.getExpForLevel ? window.getExpForLevel(lvl) : 0;
+        const renderLevelHTML = (exp) => window.renderLevelHTML ? window.renderLevelHTML(exp) : '';
+        const updateLevelBadgeUI = (id, exp) => { if(window.updateLevelBadgeUI) window.updateLevelBadgeUI(id, exp); };
+        // ---------------------------------------------------------
+
         let currentUser = null;
         let currentRoomId = null;
         let currentRoomOwner = null;
@@ -4617,6 +4626,16 @@ window.joinRoom = async (rid) => {
             const snap = await get(ref(db, `users/${uid}`));
             const d = snap.val() || {};
 
+            // 🔥 لائیو پارٹنر ڈی پی فکس (LIVE PARTNER DATA FETCH) 🔥
+            if (d.cp && d.cp.partnerUid) {
+                const pSnap = await get(ref(db, `users/${d.cp.partnerUid}`));
+                if (pSnap.exists()) {
+                    const pData = pSnap.val();
+                    d.cp.partnerPic = pData.photoURL || d.cp.partnerPic;
+                    d.cp.partnerName = pData.username || d.cp.partnerName;
+                }
+            }
+
             const hpContainer = document.getElementById('hp-visual-container');
             if(hpContainer) {
                 let hpPic = d.photoURL || 'https://placehold.co/100';
@@ -4685,19 +4704,19 @@ window.joinRoom = async (rid) => {
             // Level Logic
             let exp = d.userExp || 0;
             updateLevelBadgeUI('hp-level-badge', exp);
-            let currentLvl = getUserLevel(exp); // <-- Error was here (Missing Variable)
+            let currentLvl = getUserLevel(exp); 
 
             // 5 Medals Logic
             const medalsList = document.getElementById('hp-medals-list');
             medalsList.innerHTML = '';
-            let milestones =[10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+            let milestones =[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
             let achievedMedals =[];
             for (let m of milestones) {
-                if (lvl >= m) achievedMedals.push(getMedalImage(m));
+                if (currentLvl >= m) achievedMedals.push(getMedalImage(m));
             }
             let recentMedals = achievedMedals.slice(-5);
             recentMedals.forEach(src => {
-                medalsList.innerHTML += `<img src="${src}" class="w-6 h-6 object-contain drop-shadow-sm">`;
+                medalsList.innerHTML += `<img src="${src}" class="w-6 h-6 object-contain drop-shadow-sm" onerror="this.src='https://placehold.co/100?text=M'">`;
             });
             if(recentMedals.length === 0) medalsList.innerHTML = `<span class="text-[10px] text-gray-400">No medals yet</span>`;
 
@@ -5180,6 +5199,17 @@ window.joinRoom = async (rid) => {
 
             const snap = await get(ref(db, `users/${viewingProfileUid}`));
             const d = snap.val() || {};
+
+            // 🔥 لائیو پارٹنر ڈی پی فکس (LIVE PARTNER DATA FETCH) 🔥
+            if (d.cp && d.cp.partnerUid) {
+                const pSnap = await get(ref(db, `users/${d.cp.partnerUid}`));
+                if (pSnap.exists()) {
+                    const pData = pSnap.val();
+                    // پارٹنر کی تازہ ترین ڈی پی اور نام اپڈیٹ کر دے گا
+                    d.cp.partnerPic = pData.photoURL || d.cp.partnerPic;
+                    d.cp.partnerName = pData.username || d.cp.partnerName;
+                }
+            }
 
             // --- UI LOGIC FOR ME vs OTHERS ---
             if (isMe) {
@@ -5743,8 +5773,8 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             
             let htmlContent = '';
             
-            // 1. لیول والے پرانے میڈلز
-            let milestones =[10, 20, 30, 40, 50, 60, 70, 80]; 
+            // 1. لیول والے پرانے میڈلز (150 تک)
+            let milestones =[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]; 
             milestones.forEach(m => {
                 let medalImg = getMedalImage(m);
                 let title = `Lv.${m}`;
