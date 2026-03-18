@@ -134,7 +134,7 @@ window.openDirectChat = async (friendUid, friendName) => {
         fData = uSnap.val();
         pic = fData.photoURL || pic;
         if(fData.isOfficial || fData.customId === 10005) {
-            vBadgeHtml = `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full p-[1px] shadow-sm">`;
+            vBadgeHtml = `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10 drop-shadow-md">`;
         }
     }
 

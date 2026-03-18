@@ -148,7 +148,7 @@ function renderVIPLeaderboard(dataList, tabType, icon) {
         let clickAct = tabType === 2 ? `onclick="joinRoom('${d.id}'); closeLeaderboard();"` : `onclick="openFullProfileView('${d.uid}')"`;
 
         let isOfficial = d.isOfficial || Number(d.customId) === 10005;
-        let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full p-[2px] shadow-md z-10 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
+        let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent drop-shadow-md z-10 object-contain" onerror="this.style.display='none'">` : '';
 
         listHTML += `
         <div class="vip-list-item cursor-pointer active:opacity-70 transition" ${clickAct}>
@@ -180,8 +180,8 @@ function createVIPPodiumUser(d, rank, tabType, icon) {
     
     let isOfficial = d.isOfficial || Number(d.customId) === 10005;
     let badgeSize = rank === 1 ? 'w-[26px] h-[26px]' : 'w-[22px] h-[22px]';
-    let badgePos = rank === 1 ? 'bottom-2 -right-2' : 'bottom-1 -right-2';
-    let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute ${badgePos} ${badgeSize} bg-white rounded-full p-[2px] shadow-lg z-20 object-contain border border-gray-200" onerror="this.style.display='none'">` : '';
+    let badgePos = rank === 1 ? 'bottom-0 -right-1' : 'bottom-0 -right-1';
+    let vBadgeHTML = isOfficial ? `<img src="./v_badge.png" class="absolute ${badgePos} ${badgeSize} bg-transparent drop-shadow-md z-20 object-contain" onerror="this.style.display='none'">` : '';
 
     return `
     <div class="vip-podium-item cursor-pointer active:scale-95 transition" ${clickAct}>
