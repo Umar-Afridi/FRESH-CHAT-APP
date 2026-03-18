@@ -5822,7 +5822,14 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                     let isEquipped = (currentEquippedVip === vipData.img);
                     let daysLeft = Math.ceil(vipData.totalTimeLeft / (1000 * 60 * 60 * 24));
                     
+                    // 🔥 VIP IMAGE FIX: Force the correct PNG based on the VIP class 🔥
                     let displayImg = vipData.icon || './green_vip.png'; 
+                    if (vipData.img) {
+                        if (vipData.img.includes('yellow')) displayImg = './yellow_vip.png';
+                        else if (vipData.img.includes('pink')) displayImg = './pink_vip.png';
+                        else if (vipData.img.includes('colorful')) displayImg = './colorful_vip.png';
+                        else if (vipData.img.includes('green')) displayImg = './green_vip.png';
+                    }
                     
                     let btnHtml = '';
                     let daysHtml = '';

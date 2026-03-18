@@ -62,6 +62,13 @@ const adminPanelHTML = `
                     <div class="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-certificate text-purple-500 text-lg"></i></div>
                     <span class="text-purple-500 font-bold text-[10px] uppercase tracking-wide text-center">Toggle Official</span>
                 </div>
+                
+                <!-- 🔥 نیا GIVE VIP بٹن 🔥 -->
+                <div id="btn-give-vip" class="bg-yellow-500/10 border border-yellow-500/30 p-3.5 rounded-xl flex flex-col items-center justify-center cursor-pointer active:scale-95 transition hover:bg-yellow-500/20 hidden" onclick="adminAction('give_vip')">
+                    <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-crown text-yellow-500 text-lg"></i></div>
+                    <span class="text-yellow-500 font-bold text-[10px] uppercase tracking-wide text-center">Give VIP</span>
+                </div>
+
                 <div id="btn-ban-user" class="bg-red-500/10 border border-red-500/30 p-3.5 rounded-xl flex flex-col items-center justify-center cursor-pointer active:scale-95 transition hover:bg-red-500/20" onclick="adminAction('ban')">
                     <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-ban text-red-500 text-lg"></i></div>
                     <span class="text-red-500 font-bold text-[10px] uppercase tracking-wide">Ban User</span>
@@ -105,9 +112,15 @@ window.openAdminPanel = async function() {
     try {
         const userSnap = await window.get(window.ref(window.db, `users/${window.currentUser.uid}`));
         const userData = userSnap.val();
-        const isHeadOfficial = (userData.customId === 10005);
+        const isHeadOfficial = (Number(userData.customId) === 10005 || Number(userData.customId) === window.SUPER_ADMIN_ID);
+        
         const makeOfficialBtn = document.getElementById('btn-make-official');
         if (makeOfficialBtn) makeOfficialBtn.style.display = isHeadOfficial ? 'flex' : 'none';
+
+        // نیا VIP بٹن بھی صرف ہیڈ آفیشل کو شو ہوگا
+        const giveVipBtn = document.getElementById('btn-give-vip');
+        if (giveVipBtn) giveVipBtn.style.display = isHeadOfficial ? 'flex' : 'none';
+        
     } catch(e) { console.error(e); }
 };
 
@@ -230,6 +243,76 @@ window.adminAction = async function(action) {
                 currentFrame: newStatus ? officialFrameFile : null
             });
             window.showNotice("Official Status Updated");
+        }
+        
+        // 🔥 نیا: GIVE VIP LOGIC 🔥
+        else if(action === 'give_vip') {
+            if(!isHeadOfficial) return window.showNotice("Denied: Head Admin Only");
+
+            // VIP آپشنز کا مینو (Select)
+            const vipOptions = {
+                'green': 'VIP Green (7 Days)',
+                'yellow': 'VIP Yellow (30 Days)',
+                'pink': 'VIP Pink (14 Days)',
+                'colorful': 'VIP Supreme (30 Days)'
+            };
+
+            const { value: selectedVip } = await Swal.fire({
+                title: 'Select VIP to Give',
+                input: 'select',
+                inputOptions: vipOptions,
+                inputPlaceholder: 'Choose VIP',
+                showCancelButton: true,
+                confirmButtonText: 'Give Gift',
+                background: '#111', color: '#fff'
+            });
+
+            if (selectedVip) {
+                Swal.fire({title: 'Sending VIP...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
+                
+                let days = 7, iconPath = '', valClass = '', vipName = '';
+                
+                if (selectedVip === 'green') { days = 7; iconPath = './green_vip.png'; valClass = 'name-vip-green'; vipName = 'VIP Green'; }
+                else if (selectedVip === 'yellow') { days = 30; iconPath = './yellow_vip.png'; valClass = 'name-vip-yellow'; vipName = 'VIP Yellow'; }
+                else if (selectedVip === 'pink') { days = 14; iconPath = './pink_vip.png'; valClass = 'name-vip-pink'; vipName = 'VIP Pink'; }
+                else if (selectedVip === 'colorful') { days = 30; iconPath = './colorful_vip.png'; valClass = 'name-vip-colorful'; vipName = 'VIP Supreme'; }
+
+                let expiryTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+                let uniqueId = 'vip_gift_' + Date.now();
+
+                // 1. Save to Target User's Prop Warehouse
+                await window.update(window.ref(window.db, `users/${adminTargetUid}/unlockedFrames/${uniqueId}`), {
+                    name: vipName, 
+                    img: valClass, 
+                    icon: iconPath, 
+                    isVipName: true,
+                    purchasedAt: Date.now(),
+                    expiry: expiryTime,
+                    status: 'unused'
+                });
+
+                // 2. Send Inbox Message from YARAAN Official
+                let msgHtml = `
+                <div style="background:#111827; padding:12px; border-radius:12px; border:1px solid #facc15; margin-top:8px;">
+                    <p style="color:#facc15; font-weight:bold; font-size:12px; text-align:center; margin-bottom:8px;">🎁 Special Gift from YARAAN Official! 🎁</p>
+                    <div style="display:flex; align-items:center; gap:8px; background:#1f2937; padding:6px; border-radius:8px; justify-content:center;">
+                        <img src="${iconPath}" style="width:30px; height:30px; object-fit:contain;">
+                        <span style="color:#d946ef; font-weight:bold; font-size:12px;">${vipName} (${days} Days)</span>
+                    </div>
+                    <p style="color:#9ca3af; font-size:10px; text-align:center; margin-top:8px;">This VIP has been added to your Prop Warehouse. Go and equip it now!</p>
+                </div>`;
+
+                await window.set(window.ref(window.db, `users/${adminTargetUid}/inbox/system/${Date.now()}`), {
+                    fromName: 'YARAAN Official',
+                    icon: './v_badge.png',
+                    message: msgHtml,
+                    type: 'sys',
+                    timestamp: Date.now()
+                });
+
+                Swal.close();
+                window.showNotice(vipName + " Sent Successfully!");
+            }
         }
         else if(action === 'delete') {
             const result = await Swal.fire({
