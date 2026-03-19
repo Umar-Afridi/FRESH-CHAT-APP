@@ -1482,7 +1482,7 @@
             <div class="flex flex-col items-center flex-shrink-0">
                 <div class="relative w-[90px] h-[90px] flex items-center justify-center">
                     <div id="fpv-visual-container" class="w-full h-full relative"></div>
-                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 18px; right: -2px;" onerror="this.style.display='none'">
+                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 4px; right: 4px;" onerror="this.style.display='none'">
                 </div>
                 
                 <!-- 🔴 نیا لیول بیج جو اب ڈی پی کے بالکل نیچے شو ہوگا -->
@@ -4706,13 +4706,8 @@ window.joinRoom = async (rid) => {
             if(hpContainer) {
                 let hpPic = d.photoURL || 'https://placehold.co/100';
                 
-                // === اصل جادو یہاں ہے: گلوبل سکیلنگ کا استعمال ===
-                // 🔥 V-Badge Position Fixed (Bottom-Right edge with white border) 🔥
-// 🔥 V-Badge White Area Removed - Pure Transparent & Clear 🔥
-// 🔥 V-Badge Position Fixed (Half Inside, Half Outside on the edge) 🔥
-// 🔥 V-Badge Position Fixed (بالکل اسی جگہ جہاں آپ نے لال دائرہ لگایا ہے) 🔥
-let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 22px; right: -2px;">` : '';
-
+                // 🔥 V-Badge Position Fixed (بالکل ریڈ سرکل کی جگہ، آدھا تصویر پر اور آدھا باہر) 🔥
+                let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 10px; right: 2px;">` : '';
                 // NEW: مین کنٹینر کو Flex کر دیا تاکہ دونوں ڈی پیز اور دل ایک سیدھی لائن میں اور درمیان میں آ جائیں
                 let hpHtml = `<div class="flex items-center justify-center">`;
 
@@ -4737,7 +4732,8 @@ let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-trans
                     
                     hpHtml += `
                     <!-- درمیان میں دل (Center Heart) -->
-                    <div class="flex flex-col items-center justify-center z-[110] -mx-3">
+                    <!-- یہاں -ml-6 اور -mr-3 لگایا ہے تاکہ دل بالکل پرفیکٹ دونوں ڈی پیز کے سینٹر میں آ جائے -->
+                    <div class="flex flex-col items-center justify-center z-[110] -ml-6 -mr-3">
                         <div class="relative flex items-center justify-center drop-shadow-md animate-pulse">
                             <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 object-contain" onerror="this.src='./cp_heart_final.png'">
                             <span class="absolute text-[8px] text-white font-black" style="text-shadow: 1px 1px 1px #000;">L.${cpLvl}</span>
