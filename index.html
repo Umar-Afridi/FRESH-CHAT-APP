@@ -22,6 +22,23 @@
             --seat-size: 68px;
             --bottom-bar-height: 45px; 
         }
+        
+        /* ====== NEW SVIP CHAT BUBBLES (DIFFERENT COLORS) ====== */
+/* SVIP 1 - Silver / Platinum */
+.svip-bubble-1 { background: linear-gradient(135deg, #f1f5f9, #94a3b8) !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(148, 163, 184, 0.4) !important; }
+/* SVIP 2 - Emerald Green */
+.svip-bubble-2 { background: linear-gradient(135deg, #a7f3d0, #059669) !important; color: #ffffff !important; border: 1px solid #10b981 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4) !important; text-shadow: 1px 1px 1px rgba(0,0,0,0.3) !important; }
+/* SVIP 3 - Deep Blue */
+.svip-bubble-3 { background: linear-gradient(135deg, #93c5fd, #2563eb) !important; color: #ffffff !important; border: 1px solid #3b82f6 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4) !important; }
+/* SVIP 4 - Royal Purple */
+.svip-bubble-4 { background: linear-gradient(135deg, #e9d5ff, #9333ea) !important; color: #ffffff !important; border: 1px solid #a855f7 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(147, 51, 234, 0.4) !important; }
+/* SVIP 5 - Gold & Red */
+.svip-bubble-5 { background: linear-gradient(135deg, #fca5a5, #dc2626) !important; color: #ffffff !important; border: 1px solid #ef4444 !important; font-weight: 800 !important; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.6) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important; }
+
+/* چیٹ روم کے ببل کو زبردستی ٹرانسپیرنٹ کلاس ہٹانے کے لیے */
+.svip-bubble-1, .svip-bubble-2, .svip-bubble-3, .svip-bubble-4, .svip-bubble-5 {
+    background-color: transparent !important;
+}
         /* ====== NEW SEAT NAME FIX (PROFESSIONAL & ALIGNED) ====== */
 .seat-name {
     font-size: 10px !important; /* نام کا سائز چھوٹا اور پروفیشنل */
@@ -1485,9 +1502,13 @@
                     <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 4px; right: 4px;" onerror="this.style.display='none'">
                 </div>
                 
-                <!-- 🔴 نیا لیول بیج جو اب ڈی پی کے بالکل نیچے شو ہوگا -->
-                <div id="fpv-level-badge-container" class="mt-4 user-level-badge flex items-center justify-center">
-                    <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
+                <!-- 🔴 نیا لیول بیج اور SVIP بیج -->
+                <div class="flex items-center justify-center mt-[25px] z-[60] gap-3">
+                    <div id="fpv-level-badge-container" class="user-level-badge flex items-center justify-center relative m-0">
+                        <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
+                    </div>
+                    <!-- SVIP BADGE -->
+                    <img id="fpv-svip-badge" src="" class="h-[24px] object-contain hidden drop-shadow-md" onerror="this.style.display='none'">
                 </div>
             </div>
 
@@ -1733,87 +1754,77 @@
             </div>
             <!-- ============================== -->
 
-            <div class="px-4 mt-2">
-                <div class="modern-carousel" id="main-banner-carousel">
-                    <div class="carousel-track" id="banner-track">
-                        <div class="carousel-slide"><img src="./banner1.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+1'"></div>
-                        <div class="carousel-slide"><img src="./banner2.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+2'"></div>
-                        <div class="carousel-slide"><img src="./banner3.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+3'"></div>
+            <!-- یہ نیا گروپ ہے تاکہ ریسنٹ اور فالونگ پر اسے غائب کیا جا سکے -->
+            <div id="home-top-widgets">
+                <div class="px-4 mt-2">
+                    <div class="modern-carousel" id="main-banner-carousel">
+                        <div class="carousel-track" id="banner-track">
+                            <div class="carousel-slide"><img src="./banner1.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+1'"></div>
+                            <div class="carousel-slide"><img src="./banner2.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+2'"></div>
+                            <div class="carousel-slide"><img src="./banner3.png" class="carousel-img" onerror="this.src='https://placehold.co/600x200?text=Banner+3'"></div>
+                        </div>
+                        <div class="carousel-dots" id="banner-dots"></div>
                     </div>
-                    <div class="carousel-dots" id="banner-dots"></div>
                 </div>
-            </div>
-            <div class="mid-menu-container">
-                <div class="mid-menu-item" onclick="openLeaderboard(0)">
-                    <img src="./icon_contribution.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Contrib'">
-                    <div class="home-top3-container" id="home-top-contrib"></div>
+                <div class="mid-menu-container">
+                    <div class="mid-menu-item" onclick="openLeaderboard(0)">
+                        <img src="./icon_contribution.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Contrib'">
+                        <div class="home-top3-container" id="home-top-contrib"></div>
+                    </div>
+                    <div class="mid-menu-item" onclick="openLeaderboard(1)">
+                        <img src="./icon_charm.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Charm'">
+                        <div class="home-top3-container" id="home-top-charm"></div>
+                    </div>
+                    <div class="mid-menu-item" onclick="openLeaderboard(2)">
+                        <img src="./icon_room.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Room'">
+                        <div class="home-top3-container" id="home-top-room"></div>
+                    </div>
                 </div>
-                <div class="mid-menu-item" onclick="openLeaderboard(1)">
-                    <img src="./icon_charm.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Charm'">
-                    <div class="home-top3-container" id="home-top-charm"></div>
-                </div>
-                <div class="mid-menu-item" onclick="openLeaderboard(2)">
-                    <img src="./icon_room.png" class="mid-menu-img" onerror="this.src='https://placehold.co/100x70?text=Room'">
-                    <div class="home-top3-container" id="home-top-room"></div>
-                </div>
-            </div>
-            <div id="home-content-container">
-                <!-- NEW: CP Star & Family Cards -->
-                <div class="px-4 mt-4 mb-4 flex gap-3 w-full">
-                    <!-- 1. CP Star Card -->
-                    <div onclick="openCPRankingModal()" class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-pink-200" style="background-image: url('./cp_star_card_bg.png');">
-                        <div class="absolute inset-0 bg-black/50"></div>
-                        
-                        <div class="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
-                            <i class="fa-solid fa-heart text-yellow-300 mr-1"></i> CP Star
-                        </div>
-                        
-                        <!-- Empty State -->
-                        <div id="cp-home-empty" class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
-                            <i class="fa-solid fa-heart-crack text-white/50 text-2xl mb-1"></i>
-                            <span class="text-white/70 font-bold text-[10px]">No Rankings</span>
-                        </div>
-
-                        <!-- Top 1 Couple -->
-                        <div id="cp-home-top1" class="absolute inset-0 hidden flex-col items-center justify-center z-10 pt-4 pb-2">
-                            <div class="flex items-center justify-center gap-2 w-full px-2 mt-2">
-                                <div class="flex flex-col items-center">
-                                    <img src="" id="cp-banner-main" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
-                                    <span id="cp-banner-main-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name1</span>
-                                </div>
-                                
-                                <!-- New Heart Name -->
-                                <img src="./cp_heart_final.png" class="w-6 h-6 object-contain animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,0.8)] -mt-4" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
-                                
-                                <div class="flex flex-col items-center">
-                                    <img src="" id="cp-banner-partner" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
-                                    <span id="cp-banner-partner-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name2</span>
+                <div id="home-content-container">
+                    <div class="px-4 mt-4 mb-4 flex gap-3 w-full">
+                        <div onclick="openCPRankingModal()" class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-pink-200" style="background-image: url('./cp_star_card_bg.png');">
+                            <div class="absolute inset-0 bg-black/50"></div>
+                            <div class="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
+                                <i class="fa-solid fa-heart text-yellow-300 mr-1"></i> CP Star
+                            </div>
+                            <div id="cp-home-empty" class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
+                                <i class="fa-solid fa-heart-crack text-white/50 text-2xl mb-1"></i>
+                                <span class="text-white/70 font-bold text-[10px]">No Rankings</span>
+                            </div>
+                            <div id="cp-home-top1" class="absolute inset-0 hidden flex-col items-center justify-center z-10 pt-4 pb-2">
+                                <div class="flex items-center justify-center gap-2 w-full px-2 mt-2">
+                                    <div class="flex flex-col items-center">
+                                        <img src="" id="cp-banner-main" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
+                                        <span id="cp-banner-main-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name1</span>
+                                    </div>
+                                    <img src="./cp_heart_final.png" class="w-6 h-6 object-contain animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,0.8)] -mt-4" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
+                                    <div class="flex flex-col items-center">
+                                        <img src="" id="cp-banner-partner" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover shadow-[0_0_10px_rgba(236,72,153,0.8)]">
+                                        <span id="cp-banner-partner-name" class="text-white text-[9px] font-bold mt-1 max-w-[50px] truncate drop-shadow-md">Name2</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- 2. Family Card (New Background Name) -->
-                    <div class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-blue-200" style="background-image: url('./family_star_bg.png');">
-                        <div class="absolute inset-0 bg-black/50"></div>
-                        
-                        <div class="absolute top-2 left-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
-                            <i class="fa-solid fa-users text-yellow-300 mr-1"></i> Family
-                        </div>
-                        
-                        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
-                            <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 mb-2">
-                                <i class="fa-solid fa-shield-heart text-3xl text-white drop-shadow-lg"></i>
+                        <div class="relative flex-1 aspect-[1/1.1] rounded-[16px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-pointer bg-cover bg-center transition transform active:scale-95 border border-blue-200" style="background-image: url('./family_star_bg.png');">
+                            <div class="absolute inset-0 bg-black/50"></div>
+                            <div class="absolute top-2 left-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 shadow-md">
+                                <i class="fa-solid fa-users text-yellow-300 mr-1"></i> Family
                             </div>
-                            <span class="text-white font-bold text-xs drop-shadow-md">Top Families</span>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pt-4">
+                                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 mb-2">
+                                    <i class="fa-solid fa-shield-heart text-3xl text-white drop-shadow-lg"></i>
+                                </div>
+                                <span class="text-white font-bold text-xs drop-shadow-md">Top Families</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div> <!-- End of home-top-widgets -->
 
-                <h3 class="text-sm font-extrabold px-4 mt-2 mb-1 text-gray-800 tracking-wider">ROOMS</h3>
-                <div id="home-room-list"></div>
-            </div>
+            <h3 id="home-dynamic-title" class="text-sm font-extrabold px-4 mt-2 mb-1 text-gray-800 tracking-wider uppercase">ROOMS</h3>
+            <div id="home-room-list"></div>
         </div>
+     
 
         <div id="view-inbox" class="view-section light-bg relative">
             <div class="p-4 flex-1 overflow-y-auto">
@@ -1889,7 +1900,7 @@
                 
                 <h3 id="fp-name" class="text-2xl font-black text-gray-900 mb-1">User Name</h3>
                 
-                <div id="fp-level-badge" class="user-level-badge mb-3 shadow-md">
+                <div id="fp-level-badge" class="user-level-badge mb-3 shadow-md relative z-[60] mt-[15px]">
                     <img id="fp-medal-img" src="" class="level-medal-img"> 
                     <span id="fp-level-text">Lv.1</span>
                 </div>
@@ -1915,9 +1926,13 @@
         
         <div class="flex justify-between items-center w-full pr-4">
             <div>
-                <div id="profile-level-badge" class="user-level-badge mb-1 w-max">
-                    <img id="profile-medal-img" src="" class="level-medal-img" onerror="this.style.display='none'"> 
-                    <span id="profile-level-text">Lv.1</span>
+                <div class="flex items-center gap-1.5 mb-1 z-[60] mt-[15px] w-max">
+                    <div id="profile-level-badge" class="user-level-badge relative m-0">
+                        <img id="profile-medal-img" src="" class="level-medal-img" onerror="this.style.display='none'"> 
+                        <span id="profile-level-text">Lv.1</span>
+                    </div>
+                    <!-- SVIP BADGE -->
+                    <img id="profile-svip-badge" src="" class="h-[16px] object-contain hidden drop-shadow-md" onerror="this.style.display='none'">
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -1939,8 +1954,17 @@
             </div>
             <div class="bg-white flex flex-col pb-10">
                 <div class="menu-list-container">
+                    
+                    <!-- 1. Recharge & Wallet -->
                     <div class="menu-item" onclick="openRechargeModal()"><div class="menu-icon-box"><i class="fa-solid fa-wallet text-yellow-500 text-lg"></i></div><div class="menu-text">Recharge & Wallet</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     
+                    <!-- 2. Invite Friends (Moved below Recharge) -->
+                    <div class="menu-item" onclick="showInviteModal()"><div class="menu-icon-box"><i class="fa-solid fa-user-plus text-green-500 text-lg"></i></div><div class="menu-text">Invite friends</div><span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full mr-2">Invite</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 3. NEW: SVIP Button (For Future Logic) -->
+                    <div class="menu-item" onclick="openSVIPModal()"><div class="menu-icon-box"><i class="fa-solid fa-gem text-yellow-600 text-lg"></i></div><div class="menu-text font-extrabold text-yellow-600">SVIP Privileges</div><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[9px] font-black px-2 py-0.5 rounded-full mr-2">NEW</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+
+                    <!-- 4. Official Panel -->
                     <!-- OFFICIAL PANEL BUTTON - FIXED -->
                     <div class="menu-item" id="btn-super-admin" onclick="openAdminPanel()">
                         <div class="menu-icon-box">
@@ -1950,12 +1974,22 @@
                         <i class="fa-solid fa-chevron-right menu-arrow"></i>
                     </div>
                     
-                    <div class="menu-item" onclick="openCustomerSupport()"><div class="menu-icon-box"><i class="fa-solid fa-headset text-blue-500 text-lg"></i></div><div class="menu-text">Customer Service</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
-                    <div class="menu-item" onclick="showInviteModal()"><div class="menu-icon-box"><i class="fa-solid fa-user-plus text-green-500 text-lg"></i></div><div class="menu-text">Invite friends</div><span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full mr-2">Invite</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    <!-- 5. Store -->
                     <div class="menu-item" onclick="openStoreModal()"><div class="menu-icon-box"><i class="fa-solid fa-store text-blue-500 text-lg"></i></div><div class="menu-text">Store</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
-                    <div class="menu-item" onclick="showCharmBoard()"><div class="menu-icon-box"><i class="fa-solid fa-heart text-pink-500 text-lg"></i></div><div class="menu-text">Love House (Charm)</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
-                    <div class="menu-item" onclick="openLevelModal()"><div class="menu-icon-box"><i class="fa-solid fa-crown text-purple-500 text-lg"></i></div><div class="menu-text">Level Center</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 6. Prop Warehouse (Moved below Store) -->
                     <div class="menu-item" onclick="openPropHouse()"><div class="menu-icon-box"><i class="fa-solid fa-warehouse text-green-600 text-lg"></i></div><div class="menu-text">Prop Warehouse</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 7. Love House -->
+                    <div class="menu-item" onclick="showCharmBoard()"><div class="menu-icon-box"><i class="fa-solid fa-heart text-pink-500 text-lg"></i></div><div class="menu-text">Love House (Charm)</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 8. Level Center -->
+                    <div class="menu-item" onclick="openLevelModal()"><div class="menu-icon-box"><i class="fa-solid fa-crown text-purple-500 text-lg"></i></div><div class="menu-text">Level Center</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 9. Customer Service (Moved above Logout) -->
+                    <div class="menu-item" onclick="openCustomerSupport()"><div class="menu-icon-box"><i class="fa-solid fa-headset text-blue-500 text-lg"></i></div><div class="menu-text">Customer Service</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    
+                    <!-- 10. Logout -->
                     <div class="menu-item" onclick="logout()"><div class="menu-icon-box"><i class="fa-solid fa-power-off text-red-600 text-lg"></i></div><div class="menu-text text-red-600">Logout</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                 </div>
             </div>
@@ -2501,7 +2535,7 @@
                 
                 <!-- لیول اور میڈلز -->
                 <div class="flex flex-col items-center gap-2 mt-3 mb-4">
-                    <div id="hp-level-badge" class="user-level-badge scale-110 shadow-md">
+                    <div id="hp-level-badge" class="user-level-badge scale-110 shadow-md relative z-[60] mt-[15px]">
                         <img id="hp-medal-img" src="" class="level-medal-img"> <span id="hp-level-text">Lv.1</span>
                     </div>
                     <!-- 5 میڈلز یہاں شو ہوں گے -->
@@ -3183,64 +3217,237 @@
     });
 
         window.logout = () => { localStorage.removeItem('lastRoomId'); localStorage.removeItem('user_logged_in'); signOut(auth).then(()=> window.location.reload()); };
-        window.switchHomeTab = (tabName) => { currentHomeTab = tabName; document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active')); document.getElementById(`tab-${tabName}`).classList.add('active'); refreshHomeRooms(); }
+        window.switchHomeTab = (tabName) => { 
+            currentHomeTab = tabName; 
+            document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active')); 
+            document.getElementById(`tab-${tabName}`).classList.add('active'); 
+            
+            const topWidgets = document.getElementById('home-top-widgets');
+            const titleEl = document.getElementById('home-dynamic-title');
+            
+            if(tabName === 'popular') {
+                if(topWidgets) topWidgets.style.display = 'block';
+                if(titleEl) { titleEl.classList.add('hidden'); } // پاپولر رومز کا ٹائٹل چھپا دیا گیا ہے تاکہ سکرین صاف رہے
+            } else if (tabName === 'recent') {
+                if(topWidgets) topWidgets.style.display = 'none';
+                if(titleEl) { titleEl.innerText = 'RECENT VISITS'; titleEl.classList.remove('hidden'); }
+            } else if (tabName === 'following') {
+                if(topWidgets) topWidgets.style.display = 'none';
+                if(titleEl) { titleEl.classList.add('hidden'); } 
+            }
+            
+            refreshHomeRooms(); 
+        }
 
-        window.refreshHomeRooms = async () => {
+// ===== نیا فاسٹ ٹچ (Fast Tap) لاجک تاکہ روم کلک کرنے پر ریفریش نہ ہو =====
+        window.roomCardTouchStartY = 0;
+        window.roomCardTouchStartX = 0;
+        window.isJoiningRoomLock = false;
+
+        window.fastJoinRoom = (rid) => {
+            if(window.isJoiningRoomLock) return;
+            window.isJoiningRoomLock = true;
+            window.joinRoom(rid);
+            setTimeout(() => { window.isJoiningRoomLock = false; }, 1000); // ڈبل کلک سے بچانے کے لیے 1 سیکنڈ کا لاک
+        };
+
+        window.cardTouchStart = (e) => {
+            window.roomCardTouchStartY = e.touches ? e.touches[0].clientY : e.clientY;
+            window.roomCardTouchStartX = e.touches ? e.touches[0].clientX : e.clientX;
+        };
+
+        window.cardTouchEnd = (e, rid) => {
+            let touchEndY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+            let touchEndX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+            
+            // اگر یوزر نے سکرول نہیں کیا، بس کلک (Tap) کیا ہے تو فوراً روم میں انٹر ہو جائیں
+            if (Math.abs(touchEndY - window.roomCardTouchStartY) < 15 && Math.abs(touchEndX - window.roomCardTouchStartX) < 15) {
+                if(e.cancelable) e.preventDefault(); // ریفریش کو روکنے کے لیے
+                window.fastJoinRoom(rid); 
+            }
+        };
+        // ===============================================================
+
+     window.refreshHomeRooms = async () => {
             if(!currentUser) return; 
+            
+            // 🔥 Race Condition Lock (یہ تیزی سے ٹیب بدلنے پر ڈبل رومز نہیں بننے دے گا)
+            window.homeRenderCounter = (window.homeRenderCounter || 0) + 1;
+            const currentRenderId = window.homeRenderCounter;
+
             const homeList = document.getElementById('home-room-list'); 
             
-            // Smooth Loading Fix: Only show spinner if screen is completely empty
-            if(homeList.innerHTML.trim() === '') {
-                homeList.innerHTML = '<div class="col-span-2 flex justify-center py-10"><i class="fa-solid fa-spinner fa-spin text-purple-500 text-2xl"></i></div>'; 
+            // 🔥 INSTANT CLEAR: کلک کرتے ہی سکرین صاف تاکہ پرانے رومز بڑے نہ ہوں
+            homeList.innerHTML = '<div class="col-span-2 w-full flex justify-center py-10"><i class="fa-solid fa-spinner fa-spin text-purple-500 text-2xl"></i></div>'; 
+            
+            // کنٹینر کا ڈیزائن سیٹ کرنا (Grid vs List)
+            if (currentHomeTab === 'following') {
+                homeList.style.display = 'flex';
+                homeList.style.flexDirection = 'column';
+                homeList.style.gap = '12px';
+                homeList.style.padding = '10px 15px 80px 15px';
+            } else {
+                homeList.style.display = 'grid';
+                homeList.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                homeList.style.gap = '15px';
+                homeList.style.padding = '0 15px 80px 15px';
             }
             
             const roomsSnap = await get(ref(db, 'rooms')); 
+            
+            // 🔥 چیک: اگر یوزر نے ڈیٹا آنے سے پہلے ٹیب بدل لیا ہے، تو یہیں رک جاؤ (نو ڈبلنگ)
+            if (currentRenderId !== window.homeRenderCounter) return;
+
             if(!roomsSnap.exists()) { 
-                homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms found.</p>`; 
+                homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm w-full">No live rooms found.</p>`; 
                 return; 
-            } const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : []; let history = JSON.parse(localStorage.getItem('room_history') || '[]'); homeList.innerHTML = ''; let hasLive = false; const promises = [];
-            roomsSnap.forEach(r => { const d = r.val(); const roomId = r.key; const isOwnerPresent = d.activeUsers && Object.keys(d.activeUsers).includes(d.owner); if (d.isLocked === true) return; if (d.isLive === true && isOwnerPresent) { let shouldShow = false; if (currentHomeTab === 'following') { if (friendIds.includes(d.owner) || d.owner === currentUser.uid) shouldShow = true; } else if (currentHomeTab === 'popular') shouldShow = true; else if (currentHomeTab === 'recent') { if (history.includes(roomId)) shouldShow = true; } if (shouldShow) { hasLive = true; const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { const uData = uSnap.exists() ? uSnap.val() : {}; return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '', liveUserName: uData.username || d.ownerName }; }); promises.push(p); } } }); 
-const results = await Promise.all(promises);
+            } 
+            
+            const friendsSnap = await get(ref(db, `users/${currentUser.uid}/friends`)); 
+            const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) :[]; 
+            
+            // 24-hour Recent History Logic
+            let historyObj = JSON.parse(localStorage.getItem('room_history') || '[]'); 
+            const now = Date.now();
+            historyObj = historyObj.filter(item => typeof item === 'object' && (now - item.time < 24 * 60 * 60 * 1000));
+            let historyIds = historyObj.map(h => h.id);
 
-results.forEach(d => { 
-    // یہاں ہم یوزر کا بالکل تازہ (Live) نام استعمال کر رہے ہیں
-    const currentUserName = d.liveUserName || 'User';
-    const roomNameDisplay = d.roomName || (currentUserName + "'s Room"); 
-    const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${encodeURIComponent(roomNameDisplay)}&background=random&size=200`; 
-    
-    // جینڈر کا ایشو یہاں فکس کر دیا ہے (لڑکے کے لیے male.png اور لڑکی کے لیے female.png)
-    const genderIcon = d.gender === 'female' ? './female.png' : './male.png'; 
-    const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
-    
-    // Owner Name Color Class (VIP names)
-    const ownerNameColorClass = d.nameColorClass || '';
-    const ownerNameDisplay = `<span class="${ownerNameColorClass}">${currentUserName}</span>`;
+            let hasLive = false; 
+            const promises =[];
+            
+            roomsSnap.forEach(r => { 
+                const d = r.val(); 
+                const roomId = r.key; 
+                
+                // روم میں موجود یوزرز کی تعداد چیک کریں
+                const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
+                const hasAnyUser = userCount > 0; // اگر کوئی ایک بندہ بھی ہے تو true ہوگا
 
-    let rExp = d.roomExp || 0;
-    let nextRocket = './rocket1.png';
-    let rLvl = 1;
-    if(rExp >= 2000000) { nextRocket = "./rocket4.png"; rLvl = 4; }
-    else if(rExp >= 500000) { nextRocket = "./rocket3.png"; rLvl = 3; }
-    else if(rExp >= 300000) { nextRocket = "./rocket2.png"; rLvl = 2; }
-    else { nextRocket = "./rocket1.png"; rLvl = 1; }
-    let rocketTagHTML = `<div class="room-target-tag"><img src="${nextRocket}" onerror="this.style.display='none'"><span>Lv.${rLvl}</span></div>`;
+                if (d.isLocked === true) return; 
+                
+                let shouldShow = false; 
+                
+                if (currentHomeTab === 'following') { 
+                    let friendInRoom = false;
+                    if (friendIds.includes(d.owner) || d.owner === currentUser.uid) {
+                        friendInRoom = true;
+                    } else if (d.activeUsers) {
+                        for(let uid in d.activeUsers) {
+                            if(friendIds.includes(uid)) { friendInRoom = true; break; }
+                        }
+                    }
+                    if (friendInRoom && hasAnyUser) shouldShow = true; 
+                    
+                } else if (currentHomeTab === 'popular') { 
+                    // پاپولر: اگر روم میں کوئی بھی یوزر موجود ہے (اونر ہو یا نہ ہو) تو روم شو ہوگا
+                    if (hasAnyUser) shouldShow = true; 
+                } else if (currentHomeTab === 'recent') { 
+                    // ریسنٹ: 24 گھنٹے میں وزٹ کیا ہے تو شو ہوگا (چاہے روم میں کوئی ہو یا نہ ہو)
+                    if (historyIds.includes(roomId)) shouldShow = true; 
+                } 
+                
+                if (shouldShow) { 
+                    hasLive = true; 
+                    const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { 
+                        const uData = uSnap.exists() ? uSnap.val() : {}; 
+                        return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '', liveUserName: uData.username || d.ownerName }; 
+                    }); 
+                    promises.push(p); 
+                } 
+            }); 
+            
+            let results = await Promise.all(promises);
+            
+            // 🔥 چیک: ڈیٹا آنے کے بعد دوبارہ چیک کریں (نو ڈبلنگ)
+            if (currentRenderId !== window.homeRenderCounter) return;
 
-    homeList.innerHTML += `<div onclick="joinRoom('${d.id}')" class="room-card-wrapper cursor-pointer">
-        <div class="room-card-new">
-            <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
-            <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
-            ${rocketTagHTML}
-            <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
-            <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
-        </div>
-        <!-- Owner Info Section (UPDATED) -->
-        <div class="room-info-bottom">
-            <img src="${genderIcon}" class="room-gender-icon" onerror="this.style.display='none'">
-            <div class="room-owner-name">${ownerNameDisplay}</div>
-        </div>
-    </div>`;
-});
-            if(!hasLive) homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm col-span-2">No live rooms.</p>`;
+            // ڈپلی کیٹ ریموور
+            const uniqueResults =[];
+            const seenIds = new Set();
+            for (const res of results) {
+                if (!seenIds.has(res.id)) {
+                    seenIds.add(res.id);
+                    uniqueResults.push(res);
+                }
+            }
+
+            homeList.innerHTML = ''; 
+
+            uniqueResults.forEach(d => { 
+                const currentUserName = d.liveUserName || 'User';
+                const roomNameDisplay = d.roomName || (currentUserName + "'s Room"); 
+                const roomCoverDisplay = d.roomCover || `https://ui-avatars.com/api/?name=${encodeURIComponent(roomNameDisplay)}&background=random&size=200`; 
+                const genderIcon = d.gender === 'female' ? './female.png' : './male.png'; 
+                const userCount = d.activeUsers ? Object.keys(d.activeUsers).length : 0; 
+                const ownerNameColorClass = d.nameColorClass || '';
+                const ownerNameDisplay = `<span class="${ownerNameColorClass}">${currentUserName}</span>`;
+
+                if (currentHomeTab === 'following') {
+                    homeList.innerHTML += `
+                    <div ontouchstart="window.cardTouchStart(event)" ontouchend="window.cardTouchEnd(event, '${d.id}')" onclick="window.fastJoinRoom('${d.id}')" class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.04)] border border-gray-100 cursor-pointer active:scale-95 transition-transform w-full">
+                        <div class="relative w-[55px] h-[55px] rounded-full flex-shrink-0">
+                            <img src="${roomCoverDisplay}" class="w-full h-full rounded-full object-cover border border-purple-200 p-[2px]" onerror="this.src='https://placehold.co/100'">
+                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full z-10 flex items-center justify-center">
+                                <div class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0 flex flex-col justify-center">
+                            <h4 class="text-gray-900 font-extrabold text-[15px] truncate drop-shadow-sm">${roomNameDisplay}</h4>
+                            <div class="flex items-center gap-1 mt-1">
+                                <img src="${genderIcon}" class="w-3.5 h-3.5 object-contain" onerror="this.style.display='none'">
+                                <p class="text-[11px] text-gray-500 truncate font-bold">${ownerNameDisplay}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end justify-center pl-2">
+                            <div class="flex items-center gap-1.5 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-100">
+                                <i class="fa-solid fa-fire text-orange-500 text-[10px] animate-pulse"></i>
+                                <span class="text-[11px] font-black text-purple-700">${userCount}</span>
+                            </div>
+                            <span class="text-[9px] font-bold text-gray-400 mt-1 uppercase tracking-wider">Join</span>
+                        </div>
+                    </div>`;
+                } else {
+                    let rExp = d.roomExp || 0;
+                    let nextRocket = './rocket1.png';
+                    let rLvl = 1;
+                    if(rExp >= 2000000) { nextRocket = "./rocket4.png"; rLvl = 4; }
+                    else if(rExp >= 500000) { nextRocket = "./rocket3.png"; rLvl = 3; }
+                    else if(rExp >= 300000) { nextRocket = "./rocket2.png"; rLvl = 2; }
+                    else { nextRocket = "./rocket1.png"; rLvl = 1; }
+                    let rocketTagHTML = `<div class="room-target-tag"><img src="${nextRocket}" onerror="this.style.display='none'"><span>Lv.${rLvl}</span></div>`;
+
+                    homeList.innerHTML += `<div ontouchstart="window.cardTouchStart(event)" ontouchend="window.cardTouchEnd(event, '${d.id}')" onclick="window.fastJoinRoom('${d.id}')" class="room-card-wrapper cursor-pointer">
+                        <div class="room-card-new">
+                            <img src="${roomCoverDisplay}" class="room-card-cover" onerror="this.src='https://placehold.co/200x200?text=Room'">
+                            <div class="room-live-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> LIVE</div>
+                            ${rocketTagHTML}
+                            <div class="room-user-badge"><i class="fa-solid fa-user text-[8px]"></i><span>${userCount}</span></div>
+                            <div class="room-card-overlay"><div class="room-card-title">${roomNameDisplay}</div></div>
+                        </div>
+                        <div class="room-info-bottom">
+                            <img src="${genderIcon}" class="room-gender-icon" onerror="this.style.display='none'">
+                            <div class="room-owner-name">${ownerNameDisplay}</div>
+                        </div>
+                    </div>`;
+                }
+            });
+            
+            if(!hasLive) {
+                let emptyMsg = '';
+                if(currentHomeTab === 'following') {
+                    emptyMsg = 'No friends are currently live.';
+                } else if(currentHomeTab === 'recent') {
+                    emptyMsg = 'No recent visits found.';
+                } else {
+                    emptyMsg = ''; // Popular کے لیے ٹیکسٹ ختم کر دیا گیا، بالکل وائٹ سکرین رہے گی
+                }
+
+                if (emptyMsg !== '') {
+                    homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm w-full">${emptyMsg}</p>`;
+                } else {
+                    homeList.innerHTML = ''; // وائٹ سکرین
+                }
+            }
         }
 
         async function loadData() {
@@ -3304,6 +3511,17 @@ results.forEach(d => {
                 currentUserExp = d.userExp || 0; 
 
                 updateLevelBadgeUI('profile-level-badge', currentUserExp);
+
+                // For My Profile SVIP Badge
+                let mySvipBadge = document.getElementById('profile-svip-badge');
+                if (mySvipBadge) {
+                    if (d.svipLevel && d.svipLevel > 0) {
+                        mySvipBadge.src = `./svip${d.svipLevel}_badge.png`;
+                        mySvipBadge.classList.remove('hidden');
+                    } else {
+                        mySvipBadge.classList.add('hidden');
+                    }
+                }
 
                 if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
                 if(document.getElementById('gift-modal-coins')) { document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString(); }
@@ -4177,17 +4395,18 @@ results.forEach(d => {
         // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی کے ساتھ) =================
 // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی، 10 سیٹس، اور پاسورڈ کے ساتھ) =================
 window.joinRoom = async (rid) => { 
-    // پرانے کنکشن صاف کریں
-    if (typeof cleanupWebRTC === 'function') {
-        cleanupWebRTC();  // پہلے والے کنکشن بند کریں
-    }
+    if (typeof cleanupWebRTC === 'function') cleanupWebRTC();
     
+    // ===== نیا ہسٹری لاجک (24 گھنٹے والا ٹائم اسٹیمپ) =====
     let history = JSON.parse(localStorage.getItem('room_history') || '[]'); 
-    history = history.filter(id => id !== rid); 
-    history.unshift(rid); 
+    const now = Date.now();
+    // پرانے فارمیٹ کو کلین کریں اور جو 24 گھنٹے سے پرانے ہیں انہیں نکال دیں
+    history = history.filter(item => typeof item === 'object' && item.id !== rid && (now - item.time < 24 * 60 * 60 * 1000)); 
+    history.unshift({id: rid, time: now}); 
     if(history.length > 20) history.pop(); 
     localStorage.setItem('room_history', JSON.stringify(history)); 
     localStorage.setItem('lastRoomId', rid);
+    // ======================================================
     
     const kickSnap = await get(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`)); 
     if (kickSnap.exists()) { 
@@ -4476,7 +4695,7 @@ window.joinRoom = async (rid) => {
                             </div>
                             
                             <!-- نیچے والی لائن: Message Text -->
-                            <div style="margin-left: 36px;" class="bg-black/40 backdrop-blur-[2px] rounded-b-2xl rounded-tr-2xl rounded-tl-sm px-3 py-1.5 w-fit border border-white/10 text-white text-[12.5px] shadow-md leading-relaxed">
+                            <div style="margin-left: 36px;" class="rounded-b-2xl rounded-tr-2xl rounded-tl-sm px-3 py-1.5 w-fit border text-[12.5px] shadow-md leading-relaxed ${m.bubbleClass ? m.bubbleClass : 'bg-black/40 backdrop-blur-[2px] border-white/10 text-white'}">
                                 ${m.text}
                             </div>
                         </div>`; 
@@ -5120,7 +5339,11 @@ window.joinRoom = async (rid) => {
                 if (frameData.status === 'unused') {
                     btnText = "USE NOW";
                     btnClass = "bg-green-600";
-                    btnAction = `applyFrame('${purchaseId}', '${frameData.img}', ${frameData.isVipName || false})`;
+                    if(frameData.isBubble) {
+                        btnAction = `applyFrame('${purchaseId}', null, false, true, '${frameData.bubbleClass}')`;
+                    } else {
+                        btnAction = `applyFrame('${purchaseId}', '${frameData.img}', ${frameData.isVipName || false})`;
+                    }
                     statusText = `<span class="text-green-400 text-[9px] font-bold">UNUSED</span>`;
                 } else {
                     // Expired frames
@@ -5174,16 +5397,28 @@ window.joinRoom = async (rid) => {
             modal.style.display = 'none';
         };
 
-        window.applyFrame = async (purchaseId, imgPath, isVipName = false) => {
-            // 7 دن کا ٹائمر یہاں سیٹ ہوگا
+        window.applyFrame = async (purchaseId, imgPath, isVipName = false, isBubble = false, bubbleClass = null) => {
             let expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); 
+            // اگر ببل ہے تو اسے پرماننٹ (یا 30 دن) کے لیے سیٹ کر سکتے ہیں، فی الحال 7 دن ہی رکھا ہے
             await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
                 activatedAt: Date.now(),
                 expiry: expiryTime,
                 status: 'active'
             });
-            await window.equipActiveFrame(imgPath, isVipName);
-            Swal.fire({toast:true, icon:'success', title:'Activated! 7 Days Timer Started.', position:'top', showConfirmButton:false, timer:2000});
+            
+            if (isBubble) {
+                await update(ref(db, `users/${currentUser.uid}`), { currentBubbleClass: bubbleClass });
+                Swal.fire({toast:true, icon:'success', title:'Chat Bubble Activated!', position:'top', showConfirmButton:false, timer:2000});
+                window.openPropHouse();
+            } else {
+                await window.equipActiveFrame(imgPath, isVipName);
+                Swal.fire({toast:true, icon:'success', title:'Activated! 7 Days Timer Started.', position:'top', showConfirmButton:false, timer:2000});
+            }
+        };
+
+        window.unequipBubble = async () => {
+            await update(ref(db, `users/${currentUser.uid}`), { currentBubbleClass: null });
+            window.openPropHouse();
         };
 
         window.equipActiveFrame = async (imgPath, isVipName = false, showPropHouse = true) => {
@@ -5429,6 +5664,17 @@ window.joinRoom = async (rid) => {
 
             let exp = d.userExp || 0;
             updateLevelBadgeUI('fpv-level-badge-container', exp);
+
+            // For Full Profile SVIP Badge
+            let fpvSvipBadge = document.getElementById('fpv-svip-badge');
+            if (fpvSvipBadge) {
+                if (d.svipLevel && d.svipLevel > 0) {
+                    fpvSvipBadge.src = `./svip${d.svipLevel}_badge.png`;
+                    fpvSvipBadge.classList.remove('hidden');
+                } else {
+                    fpvSvipBadge.classList.add('hidden');
+                }
+            }
 
             // Followers - Calculate correctly from data if possible, else fallback
             let followersCount = d.friends ? Object.keys(d.friends).length : 0;
@@ -6262,7 +6508,8 @@ window.leaveRoomFull = () => {
                     text: text, 
                     type: 'chat',
                     userExp: currentUserExp || 0,
-                    nameColorClass: uData.nameColorClass || null, 
+                    nameColorClass: uData.nameColorClass || null,
+                    bubbleClass: uData.currentBubbleClass || null, // <--- NEW SVIP BUBBLE
                     timestamp: Date.now()
                 });
                 input.value=''; 
@@ -7942,6 +8189,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./admin_panel.js"></script>
 <script src="./chat_view.js"></script>
 <script src="./level_system.js"></script>
+<script src="./svip_system.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>

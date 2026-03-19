@@ -204,18 +204,21 @@ window.openDirectChat = async (friendUid, friendName) => {
                     contentHtml = msg.text;
                 }
 
-                // Render Bubble
+                // Render Bubble (With SVIP Support)
+                let meClass = msg.bubbleClass ? `dm-bubble-me ${msg.bubbleClass}` : "dm-bubble-me";
+                let friendClass = msg.bubbleClass ? `dm-bubble-friend ${msg.bubbleClass}` : "dm-bubble-friend";
+
                 if (isMe) {
                     msgList.innerHTML += `
                     <div class="flex justify-end items-end gap-2 mb-3">
-                        <div class="dm-bubble-me">${contentHtml}</div>
+                        <div class="${meClass}">${contentHtml}</div>
                         <img src="${window.currentUser.photoURL}" class="w-8 h-8 rounded-full object-cover shadow-sm flex-shrink-0 border border-gray-200">
                     </div>`;
                 } else {
                     msgList.innerHTML += `
                     <div class="flex justify-start items-end gap-2 mb-3">
                         <img src="${pic}" class="w-8 h-8 rounded-full object-cover shadow-sm flex-shrink-0 border border-gray-200 cursor-pointer" onclick="openFullProfileView('${friendUid}')">
-                        <div class="dm-bubble-friend">${contentHtml}</div>
+                        <div class="${friendClass}">${contentHtml}</div>
                     </div>`;
                 }
             }); 
@@ -278,11 +281,16 @@ window.sendDirectMessage = async (e) => {
         }
         // ------------------------------
 
+        // Fetch user data to get the active SVIP bubble
+        const uSnap = await window.get(window.ref(window.db, `users/${window.currentUser.uid}`));
+        const uData = uSnap.val() || {};
+
         window.push(window.ref(window.db, `direct_messages/${chatId}`), { 
             uid: window.currentUser.uid, 
             text: text, 
             type: 'chat', 
             msgType: 'text',
+            bubbleClass: uData.currentBubbleClass || null, // <--- NEW SVIP BUBBLE FOR INBOX
             timestamp: Date.now() 
         }); 
         
@@ -321,11 +329,16 @@ window.sendDirectImage = (e) => {
             const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
 
             const chatId =[window.currentUser.uid, window.currentChatFriendId].sort().join('_'); 
+            
+            const uSnap = await window.get(window.ref(window.db, `users/${window.currentUser.uid}`));
+            const uData = uSnap.val() || {};
+
             await window.push(window.ref(window.db, `direct_messages/${chatId}`), { 
                 uid: window.currentUser.uid, 
                 text: compressedBase64, 
                 type: 'chat', 
                 msgType: 'image',
+                bubbleClass: uData.currentBubbleClass || null, // <--- NEW SVIP BUBBLE FOR INBOX
                 timestamp: Date.now() 
             });
 

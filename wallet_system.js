@@ -213,6 +213,13 @@ window.initiatePurchase = function(amount, price) {
         if (confirmed) {
             const newTotal = (window.currentCoins || 0) + amount;
             await window.update(window.ref(window.db, `users/${window.currentUser.uid}`), { coins: newTotal });
+            
+            // ===== SVIP RECHARGE UPDATE LINE =====
+            if(window.addRechargeToSVIP) {
+                window.addRechargeToSVIP(price); // یہ یوزر کے ریچارج (PKR) کو SVIP لائن میں جمع کر دے گا
+            }
+            // =====================================
+
             window.showNotice("Recharge Successful");
         }
     };
