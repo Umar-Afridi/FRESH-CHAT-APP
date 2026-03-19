@@ -4713,7 +4713,11 @@ window.joinRoom = async (rid) => {
 // 🔥 V-Badge Position Fixed (بالکل اسی جگہ جہاں آپ نے لال دائرہ لگایا ہے) 🔥
 let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 22px; right: -2px;">` : '';
 
-                let hpHtml = `<div class="visual-root cursor-pointer" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
+                // NEW: مین کنٹینر کو Flex کر دیا تاکہ دونوں ڈی پیز اور دل ایک سیدھی لائن میں اور درمیان میں آ جائیں
+                let hpHtml = `<div class="flex items-center justify-center">`;
+
+                // 1. مین یوزر کی ڈی پی (Main User DP)
+                hpHtml += `<div class="visual-root cursor-pointer flex-shrink-0" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
                                 <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
                 if (d.currentFrame) {
                     if (d.currentFrame.endsWith('.mp4')) {
@@ -4725,23 +4729,28 @@ let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-trans
                 hpHtml += vBadgeHTML; 
                 hpHtml += `</div>`;
 
-                // === CP PARTNER LOGIC FOR HALF PROFILE (Clickable) ===
+                // 2. سی پی پارٹنر اور دل کا حصہ (CP Partner & Heart)
                 if (d.cp && d.cp.partnerUid) {
                     let cpPts = d.cp.cpGiftAmount || 0;
                     let cpLvl = cpPts >= 15000000 ? 4 : (cpPts >= 8000000 ? 3 : (cpPts >= 3000000 ? 2 : 1));
                     let pPic = d.cp.partnerPic || 'https://placehold.co/100';
                     
-                    // پوزیشن کو top-1/2 سے ہٹا کر top-2 کر دیا گیا ہے اور z-index 50 کر دیا ہے
                     hpHtml += `
-                    <div class="absolute -right-8 top-2 flex items-center z-50 scale-[0.85] cursor-pointer" onclick="event.stopPropagation(); openFullProfileView('${d.cp.partnerUid}'); closeHalfProfile(event);">
-                        <div class="relative flex items-center justify-center -mr-2 z-10">
-                            <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 drop-shadow-md" onerror="this.src='./cp_heart_final.png'">
-                            <span class="absolute text-[8px] text-white font-bold" style="text-shadow: 1px 1px 0 #000;">L.${cpLvl}</span>
+                    <!-- درمیان میں دل (Center Heart) -->
+                    <div class="flex flex-col items-center justify-center z-[110] -mx-3">
+                        <div class="relative flex items-center justify-center drop-shadow-md animate-pulse">
+                            <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 object-contain" onerror="this.src='./cp_heart_final.png'">
+                            <span class="absolute text-[8px] text-white font-black" style="text-shadow: 1px 1px 1px #000;">L.${cpLvl}</span>
                         </div>
-                        <img src="${pPic}" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover shadow-md z-0">
+                    </div>
+
+                    <!-- پارٹنر کی ڈی پی (Partner DP on Right) -->
+                    <div class="relative cursor-pointer z-[90] flex-shrink-0" onclick="event.stopPropagation(); openFullProfileView('${d.cp.partnerUid}'); closeHalfProfile(event);">
+                        <img src="${pPic}" class="w-[56px] h-[56px] rounded-full border-2 border-pink-400 object-cover shadow-lg bg-white">
                     </div>`;
                 }
 
+                hpHtml += `</div>`; // Wrapper close
                 hpContainer.innerHTML = hpHtml;
                 window.initVideoFrames();
             }
