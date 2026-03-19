@@ -22,6 +22,24 @@
             --seat-size: 68px;
             --bottom-bar-height: 45px; 
         }
+        /* ====== NEW SEAT NAME FIX (PROFESSIONAL & ALIGNED) ====== */
+.seat-name {
+    font-size: 10px !important; /* نام کا سائز چھوٹا اور پروفیشنل */
+    font-weight: 800;
+    text-align: center !important; /* نام بالکل درمیان میں */
+    width: 100%;
+    max-width: 65px; /* لمبا نام کٹ جائے گا */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block !important;
+    margin-top: 5px !important;
+    line-height: 1.2;
+}
+
+.seat-name.occupied {
+    font-size: 11px !important; /* بیٹھے ہوئے یوزر کا نام تھوڑا سا واضح */
+}
         /* Full Profile View - SECURE SCROLLING & OVERLAP */
 /* ========== فل پروفائل اسکرول فکس (نیا) ========== */
 #full-profile-view {
@@ -886,7 +904,7 @@
 
         .fp-dp-wrapper { position: relative; display: inline-block; margin-bottom: 15px; }
         .fp-dp { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #dc2626; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .fp-v-badge { position: absolute; bottom: -2px; right: 0px; width: 26px; height: 26px; background: transparent; z-index: 50; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+        .fp-v-badge { position: absolute; bottom: 18px; right: -2px; width: 26px; height: 26px; background: transparent; z-index: 50; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
    /* ================= CP STAR FERRIS WHEEL CSS (FIXED 100% UPRIGHT) ================= */
 /* بیک گراؤنڈ کا نام: cp_bg_city.png */
 .cp-ferris-bg { background: url('./cp_bg_city.png') center/cover no-repeat; position: relative; } 
@@ -1464,7 +1482,7 @@
             <div class="flex flex-col items-center flex-shrink-0">
                 <div class="relative w-[90px] h-[90px] flex items-center justify-center">
                     <div id="fpv-visual-container" class="w-full h-full relative"></div>
-                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 5px; right: 5px;" onerror="this.style.display='none'">
+                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 18px; right: -2px;" onerror="this.style.display='none'">
                 </div>
                 
                 <!-- 🔴 نیا لیول بیج جو اب ڈی پی کے بالکل نیچے شو ہوگا -->
@@ -3027,31 +3045,72 @@
         window.loginWithGoogle = async () => { const provider = new GoogleAuthProvider(); try { const result = await signInWithPopup(auth, provider); const user = result.user; const userRef = ref(db, `users/${user.uid}`); const snap = await get(userRef); if(!snap.exists()) { await generateAndSaveId(user.uid, user.displayName, user.email, user.photoURL); } localStorage.setItem('user_logged_in', 'true'); } catch (error) { Swal.fire('Login Error', error.message, 'error'); } };
 
         let touchStartX = 0; let touchStartY = 0; 
-document.addEventListener('touchstart', e => { 
-    // FULL PROFILE VIEW CHECK - AGAR KHUla Hai TO KAM NA KARE
-    const fullProfileView = document.getElementById('full-profile-view');
-    if (fullProfileView && !fullProfileView.classList.contains('hidden') && !fullProfileView.classList.contains('translate-x-full')) {
-        return; // FULL PROFILE VIEW MEIN SWIPE NA KARE
-    }
-    
-    if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
-    touchStartX = e.changedTouches[0].screenX; 
-    touchStartY = e.changedTouches[0].screenY; 
-}, {passive: false}); 
+        document.addEventListener('touchstart', e => { 
+            // .fpv-scroll-area کو ہٹا دیا گیا ہے تاکہ وائٹ ایریا پر بھی سوائپ کام کرے
+            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+            touchStartX = e.changedTouches[0].screenX; 
+            touchStartY = e.changedTouches[0].screenY; 
+        }, {passive: false}); 
 
-document.addEventListener('touchend', e => { 
-    // FULL PROFILE VIEW CHECK - AGAR KHUla Hai TO KAM NA KARE
-    const fullProfileView = document.getElementById('full-profile-view');
-    if (fullProfileView && !fullProfileView.classList.contains('hidden') && !fullProfileView.classList.contains('translate-x-full')) {
-        return; // FULL PROFILE VIEW MEIN SWIPE NA KARE
-    }
-    
-    if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
-    let touchEndX = e.changedTouches[0].screenX; 
-    let touchEndY = e.changedTouches[0].screenY; 
-    handleGesture(touchStartX, touchStartY, touchEndX, touchEndY); 
-}, {passive: false});
-        function handleGesture(sX, sY, eX, eY) { const diffX = eX - sX; const diffY = eY - sY; if (Math.abs(diffX) < 50) return; const roomView = document.getElementById('view-room'); const profileView = document.getElementById('view-profile'); const propModal = document.getElementById('prophouse-modal'); const homeView = document.getElementById('view-home'); if (diffX < -50 && Math.abs(diffX) > Math.abs(diffY)) { if (roomView.style.display === 'flex') { window.toggleExitMenu(); return; } if (profileView.style.display === 'flex') { switchTab('view-home', document.getElementById('btn-home')); return; } if (propModal.classList.contains('open')) { closePropHouse(); return; } } if (homeView.style.display === 'flex' && Math.abs(diffX) > Math.abs(diffY)) { let tabs = ['following', 'popular', 'recent']; let currentIndex = tabs.indexOf(currentHomeTab); if (diffX < -50 && currentIndex < tabs.length - 1) switchHomeTab(tabs[currentIndex + 1]); else if (diffX > 50 && currentIndex > 0) switchHomeTab(tabs[currentIndex - 1]); return; } }
+        document.addEventListener('touchend', e => { 
+            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+            let touchEndX = e.changedTouches[0].screenX; 
+            let touchEndY = e.changedTouches[0].screenY; 
+            handleGesture(touchStartX, touchStartY, touchEndX, touchEndY); 
+        }, {passive: false});
+     function handleGesture(sX, sY, eX, eY) { 
+            const diffX = eX - sX; 
+            const diffY = eY - sY; 
+            
+            if (Math.abs(diffX) < 50 || Math.abs(diffX) <= Math.abs(diffY)) return; 
+
+            // 1. فل پروفائل سوائپ
+            const fpv = document.getElementById('full-profile-view');
+            if (fpv && !fpv.classList.contains('hidden') && !fpv.classList.contains('translate-x-full')) {
+                const isProfileActive = document.getElementById('fpv-tab-profile').classList.contains('block');
+                if (diffX < -50 && isProfileActive) { window.switchProfileTab('intimacy'); } 
+                else if (diffX > 50 && !isProfileActive) { window.switchProfileTab('profile'); } 
+                return;
+            }
+
+            // 2. لیڈر بورڈ سوائپ
+            const lb = document.getElementById('leaderboard-modal');
+            if (lb && lb.style.display === 'flex') {
+                let tabs = document.querySelectorAll('.lb-m-tab');
+                let activeIndex = 0;
+                tabs.forEach((t, i) => { if(t.classList.contains('active')) activeIndex = i; });
+                if (diffX < -50 && activeIndex < 2) { window.switchMainTab(activeIndex + 1); } 
+                else if (diffX > 50 && activeIndex > 0) { window.switchMainTab(activeIndex - 1); } 
+                return;
+            }
+
+            // 3. ہوم ٹیب سوائپ
+            const homeView = document.getElementById('view-home');
+            if (homeView && homeView.style.display === 'flex') {
+                let tabs =['following', 'popular', 'recent']; 
+                let currentIndex = tabs.indexOf(currentHomeTab); 
+                if (diffX < -50 && currentIndex < tabs.length - 1) window.switchHomeTab(tabs[currentIndex + 1]); 
+                else if (diffX > 50 && currentIndex > 0) window.switchHomeTab(tabs[currentIndex - 1]); 
+                return;
+            }
+            
+            // 4. روم ایگزٹ / منیمائز سوائپ (اب دوسری سائیڈ پر شفٹ کر دیا گیا ہے)
+            const roomView = document.getElementById('view-room'); 
+            if (roomView && roomView.style.display === 'flex') { 
+                if (diffX < -50) { // دائیں سے بائیں سوائپ (Right to Left)
+                    window.toggleExitMenu(); 
+                }
+                return; 
+            }
+
+            // 5. بیک سوائپ (باقی پیجز بند کرنے کے لیے - بائیں سے دائیں)
+            if (diffX > 50) { 
+                const profileView = document.getElementById('view-profile'); 
+                const propModal = document.getElementById('prophouse-modal'); 
+                if (profileView && profileView.style.display === 'flex') { window.switchTab('view-home', document.getElementById('btn-home')); return; } 
+                if (propModal && propModal.classList.contains('open')) { window.closePropHouse(); return; } 
+            }
+        }
 
         
         function forceScrollBottom() { const chatArea = document.getElementById('chat-display-area'); if (chatArea) { chatArea.scrollTop = chatArea.scrollHeight; } } window.addEventListener('resize', () => { if(currentRoomId) setTimeout(forceScrollBottom, 100); });
@@ -4505,6 +4564,9 @@ window.joinRoom = async (rid) => {
                     badge.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>'; 
                     container.appendChild(badge); 
                 }
+                
+                // 🔥 V-Badge on Mic removed as per request 🔥
+                /*
                 if (data.isOfficial) {
                     const vbadge = document.createElement('img');
                     vbadge.src = './v_badge.png'; 
@@ -4512,6 +4574,7 @@ window.joinRoom = async (rid) => {
                     vbadge.onerror = function() { this.style.display='none'; };
                     container.appendChild(vbadge);
                 }
+                */
             } 
             else { 
                 // پلس کی جگہ ایک خوبصورت گول شیڈو والا مائیک آئیکن لگا دیا گیا ہے
@@ -4636,15 +4699,19 @@ window.joinRoom = async (rid) => {
                 }
             }
 
+            // 🔥 بگ فکس: isOff کو باہر نکالا گیا ہے تاکہ نام اور آئی ڈی اپڈیٹ ہوتے وقت ایپ کریش نہ ہو 🔥
+            let isOff = (d.isOfficial === true || d.isOfficial === "true" || Number(d.customId) === 10005 || Number(d.customId) === window.SUPER_ADMIN_ID);
+            
             const hpContainer = document.getElementById('hp-visual-container');
             if(hpContainer) {
                 let hpPic = d.photoURL || 'https://placehold.co/100';
                 
                 // === اصل جادو یہاں ہے: گلوبل سکیلنگ کا استعمال ===
-               // DP کو کلک ایبل بنانے کے لیے onclick ڈائریکٹ اس کے اندر لگا دیا ہے
-                // --- NEW V-BADGE LOGIC ADDED HERE ---
-                let isOff = (d.isOfficial === true || d.isOfficial === "true" || Number(d.customId) === 10005 || Number(d.customId) === window.SUPER_ADMIN_ID);
-                let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 8px; right: 8px;">` : '';
+                // 🔥 V-Badge Position Fixed (Bottom-Right edge with white border) 🔥
+// 🔥 V-Badge White Area Removed - Pure Transparent & Clear 🔥
+// 🔥 V-Badge Position Fixed (Half Inside, Half Outside on the edge) 🔥
+// 🔥 V-Badge Position Fixed (بالکل اسی جگہ جہاں آپ نے لال دائرہ لگایا ہے) 🔥
+let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 22px; right: -2px;">` : '';
 
                 let hpHtml = `<div class="visual-root cursor-pointer" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
                                 <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
@@ -4655,7 +4722,7 @@ window.joinRoom = async (rid) => {
                          hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;">`;
                     }
                 }
-                hpHtml += vBadgeHTML; // V-Badge injected here
+                hpHtml += vBadgeHTML; 
                 hpHtml += `</div>`;
 
                 // === CP PARTNER LOGIC FOR HALF PROFILE (Clickable) ===
@@ -4664,8 +4731,9 @@ window.joinRoom = async (rid) => {
                     let cpLvl = cpPts >= 15000000 ? 4 : (cpPts >= 8000000 ? 3 : (cpPts >= 3000000 ? 2 : 1));
                     let pPic = d.cp.partnerPic || 'https://placehold.co/100';
                     
+                    // پوزیشن کو top-1/2 سے ہٹا کر top-2 کر دیا گیا ہے اور z-index 50 کر دیا ہے
                     hpHtml += `
-                    <div class="absolute -right-8 top-1/2 transform -translate-y-1/2 flex items-center z-40 scale-[0.80] cursor-pointer" onclick="event.stopPropagation(); openFullProfileView('${d.cp.partnerUid}'); closeHalfProfile(event);">
+                    <div class="absolute -right-8 top-2 flex items-center z-50 scale-[0.85] cursor-pointer" onclick="event.stopPropagation(); openFullProfileView('${d.cp.partnerUid}'); closeHalfProfile(event);">
                         <div class="relative flex items-center justify-center -mr-2 z-10">
                             <img src="./cp_heart${cpLvl}.png" class="w-8 h-8 drop-shadow-md" onerror="this.src='./cp_heart_final.png'">
                             <span class="absolute text-[8px] text-white font-bold" style="text-shadow: 1px 1px 0 #000;">L.${cpLvl}</span>
@@ -4673,7 +4741,6 @@ window.joinRoom = async (rid) => {
                         <img src="${pPic}" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover shadow-md z-0">
                     </div>`;
                 }
-                // =========================================
 
                 hpContainer.innerHTML = hpHtml;
                 window.initVideoFrames();
@@ -4689,11 +4756,18 @@ window.joinRoom = async (rid) => {
                     if (calcAge > 0 && calcAge < 100) age = calcAge; 
                 }
             }
-            let offNameImg = isOff ? `<img src="./verify_official.png" class="h-[20px] object-contain mx-1 drop-shadow-sm flex-shrink-0">` : '';
-            let genderClass = d.gender === 'female' ? 'bg-pink-400 text-white' : 'bg-blue-400 text-white';
-            let genderIcon = d.gender === 'female' ? '<i class="fa-solid fa-venus"></i>' : '<i class="fa-solid fa-mars"></i>';
             
-            document.getElementById('hp-name').innerHTML = `<span class="truncate max-w-[150px]">${d.username}</span> ${offNameImg} <span class="${genderClass} text-[10px] px-1.5 py-0.5 rounded-full flex items-center justify-center gap-1 shadow-sm flex-shrink-0 border border-white/40">${genderIcon} ${age}</span>`;
+            // 🔥 Verify Official Badge & Name UI (Fixed) 🔥
+            // آفیشل بیج کا سائز h-[18px] سے بڑھا کر h-[24px] کر دیا گیا ہے تاکہ واضح نظر آئے
+            let offNameImg = isOff ? `<img src="./verify_official.png" class="h-[24px] object-contain mx-1 drop-shadow-sm flex-shrink-0">` : '';
+            let genderClass = d.gender === 'female' ? 'bg-pink-400 text-white' : 'bg-blue-400 text-white';
+            
+            // جینڈر آئیکن کا سائز بھی چھوٹا کر دیا گیا ہے
+            let genderIcon = d.gender === 'female' ? '<i class="fa-solid fa-venus text-[8px]"></i>' : '<i class="fa-solid fa-mars text-[8px]"></i>';
+            let nameColor = d.nameColorClass || 'text-gray-900'; // VIP Name support
+            
+            // جینڈر ٹیگ کو سلم اور سمارٹ کر دیا گیا ہے (h-[16px], text-[9px])
+            document.getElementById('hp-name').innerHTML = `<span class="truncate max-w-[150px] ${nameColor}">${d.username || 'User'}</span> ${offNameImg} <span class="${genderClass} text-[9px] px-1.5 py-0 h-[16px] rounded-full flex items-center justify-center gap-0.5 shadow-sm flex-shrink-0 border border-white/40 leading-none">${genderIcon} ${age}</span>`;
             
             // ID and Followers Logic Fixed
             document.getElementById('hp-id').innerText = d.customId || uid || '000000';
@@ -4898,9 +4972,18 @@ window.joinRoom = async (rid) => {
             { id: 'frame_9', name: 'Reach King', price: 400000, img: './frame_9.png', videoUrl: './frame_9.mp4' } // <== نیا ویڈیو فریم
         ];
 
+        // شارٹ فارمیٹ کے لیے نیا فنکشن
+        function formatNumberShort(num) {
+            if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 10000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return num.toLocaleString();
+        }
+
         window.openStoreModal = () => {
             const grid = document.getElementById('store-grid');
-            if(window.updateAllCoinUI) { window.updateAllCoinUI(); } else { document.getElementById('store-coins-display').innerText = currentCoins.toLocaleString(); }
+            // اب کوائنز شارٹ فارمیٹ (M, B) میں شو ہوں گے
+            document.getElementById('store-coins-display').innerText = formatNumberShort(currentCoins);
             grid.innerHTML = '';
 
             STORE_FRAMES.forEach(frame => {
