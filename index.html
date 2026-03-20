@@ -3495,7 +3495,7 @@
                     if (d.currentFrame.endsWith('.mp4')) {
                         html += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important;"></canvas>`;
                     } else {
-                        html += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.style.display='none'">`; 
+                        html += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">`; 
                     }
                 }
                 html += `</div>`; 
@@ -4937,7 +4937,7 @@ window.joinRoom = async (rid) => {
                     if (d.currentFrame.endsWith('.mp4')) {
                          hpHtml += `<canvas class="visual-frame video-frame-canvas" data-src="${d.currentFrame}" style="width: 155% !important; height: 155% !important; z-index: 20;"></canvas>`;
                     } else {
-                         hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;">`;
+                         hpHtml += `<img src="${d.currentFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">`;
                     }
                 }
                 hpHtml += vBadgeHTML; 
@@ -5218,7 +5218,7 @@ window.joinRoom = async (rid) => {
                 <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col items-center relative shadow-lg">
                     <div class="w-20 h-20 relative mb-3 flex items-center justify-center">
                         <img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover">
-                        <img src="${frame.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">
+                        <img src="${frame.img}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">
                     </div>
                     <span class="text-white font-bold text-xs mb-1 text-center">${frame.name}</span>
                     <span class="text-yellow-400 font-bold text-xs mb-3 flex items-center"><i class="fa-solid fa-coins mr-1"></i> ${frame.price.toLocaleString()}</span>
@@ -5366,7 +5366,7 @@ window.joinRoom = async (rid) => {
                     iconHtml = `<img src="${iconSrc}" class="w-16 h-16 object-contain drop-shadow-lg" onerror="this.style.display='none'">`;
                 } else {
                     let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
-                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${displayImg}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.style.display='none'">`;
+                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${displayImg}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">`;
                 }
 
                 htmlContent += `
@@ -6084,7 +6084,7 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                 htmlContent += `
                 <div class="flex flex-col items-center justify-start mb-2">
                     <div class="w-[60px] h-[60px] relative flex items-center justify-center mb-2">
-                        <img src="${displayImg}" class="w-full h-full object-contain drop-shadow-md ${scaleClass}" onerror="this.src='./frame_1.png'">
+                        <img src="${displayImg}" class="w-full h-full object-contain drop-shadow-md ${scaleClass}" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">
                     </div>
                     ${timeHtml}
                     ${btnHtml}
