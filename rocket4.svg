@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-200 -600 1400 2400" width="100%" height="100%" style="overflow: visible;">
+  <defs>
+    <!-- RED GRADIENTS -->
+    <radialGradient id="auraGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFAA00" stop-opacity="0.9" /><stop offset="30%" stop-color="#FF6600" stop-opacity="0.6" /><stop offset="65%" stop-color="#CC2200" stop-opacity="0.2" /><stop offset="100%" stop-color="#000000" stop-opacity="0" /></radialGradient>
+    <linearGradient id="redBody" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4A0000" /><stop offset="15%" stop-color="#AA0000" /><stop offset="50%" stop-color="#FF1A1A" /><stop offset="85%" stop-color="#AA0000" /><stop offset="100%" stop-color="#2A0000" /></linearGradient>
+    <radialGradient id="redGem" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="20%" stop-color="#FF9999" /><stop offset="45%" stop-color="#FF0033" /><stop offset="80%" stop-color="#990000" /><stop offset="100%" stop-color="#330000" /></radialGradient>
+    <!-- STANDARD GRADIENTS -->
+    <linearGradient id="gold3D" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#996600" /><stop offset="20%" stop-color="#FFCC00" /><stop offset="50%" stop-color="#FFF5CC" /><stop offset="80%" stop-color="#FFB300" /><stop offset="100%" stop-color="#664400" /></linearGradient>
+    <radialGradient id="goldRadial" cx="40%" cy="30%" r="60%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="30%" stop-color="#FFD700" /><stop offset="70%" stop-color="#CC9900" /><stop offset="100%" stop-color="#553300" /></radialGradient>
+    <linearGradient id="silverBand" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#333333" /><stop offset="25%" stop-color="#AAAAAA" /><stop offset="50%" stop-color="#FFFFFF" /><stop offset="75%" stop-color="#888888" /><stop offset="100%" stop-color="#111111" /></linearGradient>
+    <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="30%" stop-color="#FFF2B2" /><stop offset="60%" stop-color="#FFD633" /><stop offset="100%" stop-color="#CC9900" /></linearGradient>
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#FFEA00" /><stop offset="40%" stop-color="#FF6600" /><stop offset="80%" stop-color="#CC0000" /><stop offset="100%" stop-color="#000000" stop-opacity="0" /></linearGradient>
+    <!-- FILTERS & COMPONENTS -->
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.8" /></filter>
+    <filter id="heavyShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#000000" flood-opacity="0.95" /></filter>
+    <g id="rivet"><circle cx="0" cy="0" r="4.5" fill="#222" /><circle cx="-1" cy="-1" r="3" fill="url(#goldRadial)" /></g>
+    <g id="fireFlame"><path d="M 0,0 Q 30,60 50,150 Q 0,250 -50,150 Q -30,60 0,0 Z" fill="url(#flameGrad)"><animateTransform attributeName="transform" type="scale" values="1,1; 1.05,1.2; 0.95,0.9; 1,1" dur="0.1s" repeatCount="indefinite" /></path><path d="M 0,20 Q 20,60 30,120 Q 0,180 -30,120 Q -20,60 0,20 Z" fill="#FFB300"><animateTransform attributeName="transform" type="scale" values="1,1; 0.9,1.3; 1.1,0.8; 1,1" dur="0.08s" repeatCount="indefinite" /></path><path d="M 0,40 Q 10,70 15,100 Q 0,140 -15,100 Q -10,70 0,40 Z" fill="#FFFFFF"><animateTransform attributeName="transform" type="scale" values="1,1; 1.2,0.9; 0.8,1.1; 1,1" dur="0.06s" repeatCount="indefinite" /></path></g>
+    <g id="booster"><path d="M -20,60 L -80,40 L -60,0 Z" fill="url(#redBody)" filter="url(#shadow)" /><path d="M 0,-80 Q 35,-30 40,20 L -40,20 Q -35,-30 0,-80 Z" fill="url(#gold3D)" /><circle cx="0" cy="-80" r="5" fill="#FFF" /><path d="M -40,20 L 40,20 L 35,140 C 20,160 -20,160 -35,140 Z" fill="url(#redBody)" /><path d="M -39,30 L 39,30 L 38,50 L -38,50 Z" fill="url(#silverBand)" /><path d="M -36,110 L 36,110 L 35,130 L -35,130 Z" fill="url(#silverBand)" /><path d="M -35,130 L 35,130 L 30,155 C 15,170 -15,170 -30,155 Z" fill="url(#gold3D)" /><circle cx="0" cy="75" r="32" fill="url(#goldRadial)" filter="url(#shadow)" /><circle cx="0" cy="75" r="26" fill="url(#silverBand)" /><circle cx="0" cy="75" r="20" fill="url(#redGem)" /><circle cx="-6" cy="69" r="4" fill="#FFF" /></g>
+    <g id="spark"><circle cx="0" cy="0" r="3" fill="#FFF"><animate attributeName="opacity" values="0; 1; 0" dur="0.5s" repeatCount="indefinite" /><animateTransform attributeName="transform" type="translate" values="0,0; 0,50" dur="0.5s" repeatCount="indefinite" /></circle></g>
+  </defs>
+
+  <path d="M 500,100 C 800,200 900,600 800,900 C 700,1200 500,1300 500,1300 C 500,1300 300,1200 200,900 C 100,600 200,200 500,100 Z" fill="url(#auraGlow)" />
+
+  <g id="masterMovement">
+    <!-- 🚨 NEW TIMING: 9 SECONDS 🚨 -->
+    <animateTransform attributeName="transform" type="translate" from="0,0" to="0,-250" dur="9s" fill="freeze" />
+    <animateTransform attributeName="transform" type="translate" from="0,-250" to="0,-3000" begin="9s" dur="0.4s" fill="freeze" />
+    <animate attributeName="opacity" from="1" to="0" begin="9.1s" dur="0.3s" fill="freeze" />
+    
+    <g id="rocketVibration">
+      <!-- 🚨 VIBRATION STOPS AT 9s 🚨 -->
+      <animateTransform attributeName="transform" type="translate" values="0,0; -4,3; 5,-2; -3,-5; 4,2; -2,0; 0,0" dur="0.08s" repeatCount="indefinite" end="9s" />
+      <g id="sparksGroup">
+        <animate attributeName="opacity" to="0" begin="9s" fill="freeze" />
+        <use href="#spark" x="250" y="900" /><use href="#spark" x="220" y="950" /><use href="#spark" x="280" y="880" /><use href="#spark" x="350" y="920" /><use href="#spark" x="320" y="980" /><use href="#spark" x="380" y="950" /><use href="#spark" x="180" y="850" /><use href="#spark" x="150" y="880" /><use href="#spark" x="750" y="900" /><use href="#spark" x="780" y="950" /><use href="#spark" x="720" y="880" /><use href="#spark" x="650" y="920" /><use href="#spark" x="680" y="980" /><use href="#spark" x="620" y="950" /><use href="#spark" x="820" y="850" /><use href="#spark" x="850" y="880" /><use href="#spark" x="450" y="1050" /><use href="#spark" x="500" y="1100" /><use href="#spark" x="550" y="1050" /><use href="#spark" x="480" y="1000" /><use href="#spark" x="520" y="1020" />
+      </g>
+      <g transform="translate(500, 950) scale(1.8)"><use href="#fireFlame" /></g>
+      <g transform="translate(200, 750) scale(0.85)"><g transform="translate(0, 160) scale(1.3)"><use href="#fireFlame" /></g><use href="#booster" /></g>
+      <g transform="translate(800, 750) scale(0.85)"><g transform="translate(0, 160) scale(1.3)"><use href="#fireFlame" /></g><path d="M 20,60 L 80,40 L 60,0 Z" fill="url(#redBody)" filter="url(#shadow)" /><use href="#booster" /></g>
+      <g transform="translate(330, 700) scale(1.05)"><g transform="translate(0, 160) scale(1.4)"><use href="#fireFlame" /></g><use href="#booster" /></g>
+      <g transform="translate(670, 700) scale(1.05)"><g transform="translate(0, 160) scale(1.4)"><use href="#fireFlame" /></g><path d="M 20,60 L 80,40 L 60,0 Z" fill="url(#redBody)" filter="url(#shadow)" /><use href="#booster" /></g>
+      <g transform="translate(500, 880)">
+        <path d="M -85,0 L 85,0 L 100,50 L -100,50 Z" fill="url(#gold3D)" filter="url(#shadow)" />
+        <rect x="-95" y="50" width="190" height="20" fill="url(#redBody)" />
+        <rect x="-100" y="70" width="200" height="15" fill="url(#silverBand)" />
+        <path d="M -15,-130 L 15,-130 L 15,140 L -15,140 Z" fill="url(#gold3D)" filter="url(#shadow)" />
+        <polygon points="-8,140 8,140 0,180" fill="#FFCC00" />
+      </g>
+      <path d="M 370,450 C 200,500 150,650 200,720 C 230,680 300,600 370,680 Z" fill="url(#gold3D)" filter="url(#heavyShadow)" />
+      <path d="M 370,500 C 250,550 220,630 250,670 C 280,630 330,600 370,630 Z" fill="#FFE680" />
+      <path d="M 630,450 C 800,500 850,650 800,720 C 770,680 700,600 630,680 Z" fill="url(#gold3D)" filter="url(#heavyShadow)" />
+      <path d="M 630,500 C 750,550 780,630 750,670 C 720,630 670,600 630,630 Z" fill="#FFE680" />
+      <path d="M 360,280 L 640,280 L 660,880 Q 500,920 340,880 Z" fill="url(#redBody)" filter="url(#shadow)" />
+      <path d="M 353,350 L 647,350 L 650,420 L 350,420 Z" fill="url(#silverBand)" />
+      <rect x="350" y="420" width="300" height="15" fill="#880000" />
+      <path d="M 345,700 L 655,700 L 658,760 L 342,760 Z" fill="url(#silverBand)" />
+      <use href="#rivet" x="380" y="385" /><use href="#rivet" x="440" y="385" /><use href="#rivet" x="500" y="385" /><use href="#rivet" x="560" y="385" /><use href="#rivet" x="620" y="385" />
+      <use href="#rivet" x="370" y="730" /><use href="#rivet" x="435" y="730" /><use href="#rivet" x="500" y="730" /><use href="#rivet" x="565" y="730" /><use href="#rivet" x="630" y="730" />
+      <path d="M 360,280 L 640,280 C 600,100 550,50 500,50 C 450,50 400,100 360,280 Z" fill="url(#gold3D)" filter="url(#shadow)" />
+      <polygon points="495,50 505,50 500,-10" fill="#FFF" />
+      <path d="M 385,200 L 615,200 Q 500,240 385,200 Z" fill="url(#redBody)" />
+      <use href="#rivet" x="430" y="240" /><use href="#rivet" x="465" y="250" /><use href="#rivet" x="500" y="255" /><use href="#rivet" x="535" y="250" /><use href="#rivet" x="570" y="240" />
+      <g transform="translate(500, 520)">
+        <path d="M -110,-50 C -220,-110 -250,20 -180,60 C -140,80 -100,20 -110,-50 Z" fill="#FFFFFF" filter="url(#shadow)" /><path d="M -120,-10 C -200,-30 -220,40 -150,50 C -130,55 -110,20 -120,-10 Z" fill="#FFEEEE" />
+        <path d="M 110,-50 C 220,-110 250,20 180,60 C 140,80 100,20 110,-50 Z" fill="#FFFFFF" filter="url(#shadow)" /><path d="M 120,-10 C 200,-30 220,40 150,50 C 130,55 110,20 120,-10 Z" fill="#FFEEEE" />
+        <circle cx="0" cy="0" r="160" fill="url(#goldRadial)" filter="url(#heavyShadow)" /><circle cx="0" cy="0" r="130" fill="url(#redBody)" /><circle cx="0" cy="0" r="110" fill="url(#silverBand)" /><circle cx="0" cy="0" r="85" fill="#1A0000" /><circle cx="0" cy="0" r="80" fill="#2A0505" />
+        <polygon points="0,-175 15,-160 0,-140 -15,-160" fill="url(#redGem)" /><polygon points="0,-175 15,-160 0,-160" fill="#FFF" opacity="0.6" />
+        <g filter="url(#shadow)">
+          <polygon points="-55,-55 55,-55 90,-10 0,80 -90,-10" fill="url(#diamondGrad)" stroke="#FFFFFF" stroke-width="3" />
+          <polygon points="-55,-55 55,-55 0,-15" fill="#FFFFFF" opacity="0.8" />
+          <polygon points="-55,-55 -90,-10 0,-15" fill="#FFE680" opacity="0.5" />
+          <polygon points="55,-55 90,-10 0,-15" fill="#FFCC00" opacity="0.5" />
+          <polygon points="-90,-10 0,80 0,-15" fill="#CC9900" opacity="0.7" />
+          <polygon points="90,-10 0,80 0,-15" fill="#FFB300" opacity="0.7" />
+          <path d="M 50,-40 L 55,-25 L 70,-20 L 55,-15 L 50,0 L 45,-15 L 30,-20 L 45,-25 Z" fill="#FFFFFF" />
+        </g>
+        <path d="M -160,110 L 0,180 L 160,110 L 180,150 L 0,230 L -180,150 Z" fill="url(#redBody)" filter="url(#shadow)" />
+        <polygon points="-50,150 50,150 0,210" fill="url(#gold3D)" filter="url(#shadow)" /><polygon points="-30,155 30,155 0,195" fill="#FFF" opacity="0.4" />
+        <rect x="-85" y="210" width="170" height="55" rx="15" fill="url(#gold3D)" filter="url(#shadow)" stroke="#FFF" stroke-width="2" />
+        <text x="0" y="248" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="32" fill="#5C3A21" text-anchor="middle" letter-spacing="2">YARAAN</text>
+        <circle cx="-65" cy="237" r="4" fill="#5C3A21" /><circle cx="65" cy="237" r="4" fill="#5C3A21" />
+        <polygon points="0,170 12,185 0,205 -12,185" fill="url(#redGem)" />
+      </g>
+    </g>
+  </g>
+
+  <!-- TIMER GROUP (1 SE GO TAK) -->
+  <g transform="translate(500, -250)" filter="url(#shadow)">
+    <circle cx="0" cy="0" r="100" fill="#000000" stroke="#FFCC00" stroke-width="6" />
+    <circle cx="0" cy="0" r="85" fill="none" stroke="url(#redBody)" stroke-width="10" />
+    <g font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="110" fill="#FFEA00" text-anchor="middle" dominant-baseline="central" stroke="#000000" stroke-width="3">
+       <g display="inline"><set attributeName="display" to="none" begin="1s" /><text x="0" y="10">9</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="1s" /><set attributeName="display" to="none" begin="2s" /><text x="0" y="10">8</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="2s" /><set attributeName="display" to="none" begin="3s" /><text x="0" y="10">7</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="3s" /><set attributeName="display" to="none" begin="4s" /><text x="0" y="10">6</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="4s" /><set attributeName="display" to="none" begin="5s" /><text x="0" y="10">5</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="5s" /><set attributeName="display" to="none" begin="6s" /><text x="0" y="10">4</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="6s" /><set attributeName="display" to="none" begin="7s" /><text x="0" y="10">3</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="7s" /><set attributeName="display" to="none" begin="8s" /><text x="0" y="10">2</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="8s" /><set attributeName="display" to="none" begin="9s" /><text x="0" y="10">1</text></g>
+       <g display="none"><set attributeName="display" to="inline" begin="9s" /><text x="0" y="10" font-size="85" fill="#FF1A1A">GO</text></g>
+    </g>
+  </g>
+</svg>

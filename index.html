@@ -588,7 +588,21 @@
         .rocket-display-icon { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
         @keyframes floatRocket { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         
-        #rocket-fly-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10%; }
+        #rocket-fly-layer { 
+    position: fixed !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+    width: 100vw !important; 
+    height: 100vh !important; 
+    pointer-events: none !important; 
+    z-index: 99999999 !important; /* سب سے زیادہ پاور فل Z-index */
+    display: none; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-end; 
+    padding-bottom: 10%; 
+    transform: translateZ(9999px) !important; /* یہ کوڈ اسے مائک کے شیڈو سے بھی اوپر لے آئے گا */
+}
         
         .flying-rocket { 
             width: 120vw; 
@@ -1128,6 +1142,9 @@
 <!-- ZEGOCLOUD SDK -->
    <script src="https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<!-- SVGA PLAYER SDK -->
+   <script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.3.1/build/svga.min.js"></script>
 </head>
 <body>
 <!-- WebRTC آڈیو کنٹینرز (چھپے ہوئے) -->
@@ -2097,20 +2114,32 @@
                         </div>
                     </div>
                 </div>
-                <div id="rocket-fly-layer"></div>
+                
 
                 <!-- 10 MICS LAYOUT (SUPER MIC + 8 NORMAL) -->
 <div id="mics-scroll-area" style="padding-top: 48px !important; margin-top: 0px !important;">
     <div class="mics-container-main" style="gap: 10px; padding-top: 0px !important;">
                         
-                        <!-- Top Row: UMAR (1) & GURIYA (2)[Super Mics] -->
-                        <div class="top-mic-row flex justify-center items-center gap-6 w-full relative" id="super-mics-row">
-                            <div class="mic-wrapper" id="wrapper-seat1"><div class="seat-base mic-container-lg" id="cont-seat1" onclick="toggleMicMenu('seat1', 'UMAR', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat1-visual" class="user-dp-visual"></div><div id="menu-seat1" class="action-menu-overlay"></div></div><span id="seat1-name" class="seat-name font-bold mt-1 text-sm text-pink-400 drop-shadow-md">UMAR</span></div>
-                            
-                            <div id="heartbeat-container" class="heartbeat-wrapper absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"><img src="./couple_heart.png" class="hb-img w-8 h-8 drop-shadow-[0_0_10px_pink]" alt="Heart"></div>
-                            
-                            <div class="mic-wrapper" id="wrapper-seat2"><div class="seat-base mic-container-lg" id="cont-seat2" onclick="toggleMicMenu('seat2', 'GURIYA', event)"><img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'"><div id="seat2-visual" class="user-dp-visual"></div><div id="menu-seat2" class="action-menu-overlay"></div></div><span id="seat2-name" class="seat-name font-bold mt-1 text-sm text-pink-400 drop-shadow-md">GURIYA</span></div>
-                        </div>
+                        <!-- Top Row: UMAR (1) & GURIYA (2) [سمپل اور سٹینڈرڈ] -->
+<div class="flex justify-center items-center gap-12 w-full px-4 mb-2 mt-2" id="super-mics-row">
+    <div class="mic-wrapper" id="wrapper-seat1">
+        <div class="seat-base mic-container-sm mx-auto" id="cont-seat1" onclick="handleSeatTap('seat1', 'UMAR', event)">
+            <img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'">
+            <div id="seat1-visual" class="user-dp-visual"></div>
+            <div id="menu-seat1" class="action-menu-overlay"></div>
+        </div>
+        <span id="seat1-name" class="seat-name mt-1 font-bold text-pink-400">UMAR</span>
+    </div>
+
+    <div class="mic-wrapper" id="wrapper-seat2">
+        <div class="seat-base mic-container-sm mx-auto" id="cont-seat2" onclick="handleSeatTap('seat2', 'GURIYA', event)">
+            <img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'">
+            <div id="seat2-visual" class="user-dp-visual"></div>
+            <div id="menu-seat2" class="action-menu-overlay"></div>
+        </div>
+        <span id="seat2-name" class="seat-name mt-1 font-bold text-pink-400">GURIYA</span>
+    </div>
+</div>
                         
                         <!-- Middle Row: 3, 4, 5, 6 -->
                         <div class="bottom-mic-row grid grid-cols-4 gap-4 w-full px-4">
@@ -2623,193 +2652,7 @@
         let selectedGiftTargetUid = null;
         let selectedGiftTargetName = "";
 
-        const ROCKET_LEVELS = [ 
-            { level: 1, cost: 300000, img: './rocket1.png' }, 
-            { level: 2, cost: 500000, img: './rocket2.png' }, 
-            { level: 3, cost: 2000000, img: './rocket3.png' }, 
-            { level: 4, cost: 4000000, img: './rocket4.png' } 
-        ];
-        let currentRoomExp = 0;
-        let lastRocketLevel = 0;
-        let rocketQueue = [];
-        let isRocketFlying = false;
-        let isFirstRocketLoad = true; 
-
-       
-
-        
-
-        function initRocketListener(rid) {
-            document.getElementById('rocket-trigger-btn').classList.remove('hidden');
-            isFirstRocketLoad = true;
-            onValue(ref(db, `rooms/${rid}/roomExp`), (snap) => { currentRoomExp = snap.val() || 0; updateRocketUI(currentRoomExp); });
-        }
-
-        function updateRocketUI(exp) {
-            let targetLevel = 0; 
-            let targetImg = ROCKET_LEVELS[0].img; 
-            let nextThreshold = ROCKET_LEVELS[0].cost; 
-            let prevThreshold = 0;
-
-            for (let i = 0; i < ROCKET_LEVELS.length; i++) {
-                if (exp >= ROCKET_LEVELS[i].cost) {
-                    targetLevel = ROCKET_LEVELS[i].level; 
-                    targetImg = ROCKET_LEVELS[i].img; 
-                    prevThreshold = ROCKET_LEVELS[i].cost;
-                    if (i < ROCKET_LEVELS.length - 1) { 
-                        nextThreshold = ROCKET_LEVELS[i+1].cost; 
-                    } else { 
-                        nextThreshold = exp * 1.5; 
-                    }
-                }
-            }
-            
-            const triggerImg = document.getElementById('main-rocket-icon'); 
-            if (triggerImg) triggerImg.src = targetImg;
-            document.getElementById('modal-big-rocket').src = targetImg;
-            
-            document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
-            if(targetLevel >= 1) document.getElementById('btn-lvl-1').classList.add('active'); 
-            if(targetLevel >= 2) document.getElementById('btn-lvl-2').classList.add('active'); 
-            if(targetLevel >= 3) document.getElementById('btn-lvl-3').classList.add('active'); 
-            if(targetLevel >= 4) document.getElementById('btn-lvl-4').classList.add('active');
-            
-            let percentage = 0;
-            if (targetLevel < 4) { 
-                percentage = ((exp - prevThreshold) / (nextThreshold - prevThreshold)) * 100; 
-            } else { 
-                percentage = 100; 
-            }
-            percentage = Math.max(0, Math.min(100, percentage));
-            document.getElementById('rocket-tube-fill').style.height = `${percentage}%`; 
-            document.getElementById('rocket-tube-text').innerText = `${Math.floor(percentage)}%`;
-
-            if (isFirstRocketLoad) {
-                lastRocketLevel = targetLevel;
-                isFirstRocketLoad = false;
-            } else if (targetLevel > lastRocketLevel) {
-                let startLoop = Math.max(1, lastRocketLevel + 1);
-                if (lastRocketLevel === 0 && targetLevel > 0) startLoop = 1;
-                
-                for(let lvl = startLoop; lvl <= targetLevel; lvl++) {
-                    const rData = ROCKET_LEVELS.find(r => r.level === lvl);
-                    if(rData) {
-                        rocketQueue.push({ 
-                            imgSrc: rData.img, 
-                            targetLevel: lvl, 
-                            isMaxLevel: (lvl === 4) 
-                        });
-                    }
-                }
-                processRocketQueue();
-
-                if (currentRoomId) {
-                    get(ref(db, `rooms/${currentRoomId}/activeUsers`)).then(snap => {
-                        if (snap.exists()) {
-                            Object.keys(snap.val()).forEach(uid => {
-                                addRocketRewardForUser(uid, currentRoomId, targetLevel);
-                            });
-                        }
-                    });
-                }
-            } 
-            else if (targetLevel === 4 && exp >= 3000000) {
-                setTimeout(() => {
-                    set(ref(db, `rooms/${currentRoomId}/roomExp`), 0);
-                    push(ref(db, `rooms/${currentRoomId}/messages`), { 
-                        name: "System", 
-                        text: "✨ Rocket Cycle Reset! Start again! ✨", 
-                        type: 'system', 
-                        timestamp: Date.now() 
-                    });
-                }, 5000);
-            }
-            
-            lastRocketLevel = targetLevel;
-        }
-
-        window.openRocketDetails = () => {
-            document.getElementById('rocket-details-modal').style.display = 'flex';
-        };
-
-        window.closeRocketDetails = () => {
-            document.getElementById('rocket-details-modal').style.display = 'none';
-        };
-
-        function processRocketQueue() {
-            if (isRocketFlying || rocketQueue.length === 0) return;
-            isRocketFlying = true;
-            
-            const nextRocket = rocketQueue.shift(); 
-            playRocketAnimation(nextRocket.imgSrc, nextRocket.targetLevel, nextRocket.isMaxLevel);
-        }
-
-        function playRocketAnimation(imgSrc, targetLevel, isMaxLevel) {
-            const layer = document.getElementById('rocket-fly-layer'); 
-            layer.style.display = 'flex';
-            
-            const audio = document.getElementById('rocket-sound');
-            audio.currentTime = 0;
-            audio.play().catch(e => console.log("Sound play error: ", e));
-
-            let auraClass = 'aura-1';
-            if(targetLevel === 2) auraClass = 'aura-2';
-            if(targetLevel === 3) auraClass = 'aura-3';
-            if(targetLevel === 4) auraClass = 'aura-4';
-
-            layer.innerHTML = `
-                <div class="rocket-aura ${auraClass}"></div>
-                <div id="rocket-countdown-display" class="rocket-countdown">9</div>
-                <img src="${imgSrc}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" id="active-flying-rocket" class="flying-rocket rocket-rumble" style="opacity: 1;">
-            `;
-            
-            let count = 9; 
-            const counterEl = document.getElementById('rocket-countdown-display'); 
-            const rocketEl = document.getElementById('active-flying-rocket'); 
-            const auraEl = layer.querySelector('.rocket-aura');
-            
-            if(typeof broadcastRocketLaunch === "function"){
-                broadcastRocketLaunch(currentRoomId, currentRoomData?.roomName || 'A Room', targetLevel, imgSrc);
-            }
-
-            const interval = setInterval(() => {
-                count--;
-                if (count > 0) { 
-                    counterEl.innerText = count; 
-                } else {
-                    clearInterval(interval); 
-                    counterEl.style.display = 'none'; 
-                    if(auraEl) auraEl.style.display = 'none'; 
-                    
-                    rocketEl.classList.remove('rocket-rumble'); 
-                    rocketEl.classList.add('rocket-launching');
-                    
-                    for(let i=0; i<30; i++) { 
-                        const spark = document.createElement('div'); 
-                        spark.className = 'sparkle-effect'; 
-                        spark.style.left = (Math.random() * 80 + 10) + '%'; 
-                        spark.style.top = (Math.random() * 80 + 10) + '%'; 
-                        spark.style.animationDelay = Math.random() + 's'; 
-                        layer.appendChild(spark); 
-                    }
-                    
-                    if (isMaxLevel) { 
-                        setTimeout(() => { 
-                            set(ref(db, `rooms/${currentRoomId}/roomExp`), 0); 
-                            push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: "✨ Rocket Cycle Reset! Start again! ✨", type: 'system', timestamp: Date.now() }); 
-                        }, 2000); 
-                    }
-                    
-                    setTimeout(() => { 
-                        layer.style.display = 'none'; 
-                        layer.innerHTML = ''; 
-                        
-                        isRocketFlying = false;
-                        processRocketQueue();
-                    }, 2500);
-                }
-            }, 1000);
-        }
+    
 
         let globalBroadcastQueue =[];
         let slots = {
@@ -8126,6 +7969,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./chat_view.js"></script>
 <script src="./level_system.js"></script>
 <script src="./svip_system.js"></script>
+<script src="./rocket_system.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
@@ -8155,5 +7999,7 @@ window.showNotice = function(text) {
 };
 </script>
 
+<!-- ROCKET FLY LAYER (سب ڈبوں سے باہر، فل سکرین کے لیے) -->
+<div id="rocket-fly-layer" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 999999999; pointer-events: none; background: transparent; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10%;"></div>
 </body>
 </html>
