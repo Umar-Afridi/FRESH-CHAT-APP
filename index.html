@@ -3494,7 +3494,7 @@
                 let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
                 let html = `<div class="visual-root"><img src="${d.photoURL}" class="visual-img">`; 
                 if(finalFrame) {
-                    html += `<img src="${finalFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
+                    html += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
                 }
                 html += `</div>`; 
                 container.innerHTML = html;
@@ -3573,14 +3573,14 @@
                     let isOff = (window.currentUserIsOfficial || Number(currentUser.customId) === window.SUPER_ADMIN_ID || Number(currentUser.customId) === 10005);
                     let finalFrame = isOff ? './frames/official_frame.svg' : frameUrl;
                     
-                    let frameErrorLogic = `onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }"`;
+                    let frameErrorLogic = `onload="this.classList.remove('opacity-0')" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }"`;
 
                     // 1. مین پروفائل سکرین پر اپڈیٹ
                     const meContainer = document.getElementById('profile-visual-container');
                     if(meContainer) {
                         let meHtml = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img">`;
                         if(finalFrame) {
-                            meHtml += `<img src="${finalFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" ${frameErrorLogic}>`;
+                            meHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" style="width: 270% !important; height: 270% !important;" ${frameErrorLogic}>`;
                         }
                         meHtml += `</div>`;
                         meContainer.innerHTML = meHtml;
@@ -3591,7 +3591,7 @@
                     if(fpvContainer) {
                         let fpvHtml = `<div class="visual-root"><img src="${currentUser.photoURL}" class="visual-img shadow-lg" style="border: 2px solid white;">`;
                         if(finalFrame) {
-                            fpvHtml += `<img src="${finalFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" ${frameErrorLogic}>`;
+                            fpvHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" style="width: 270% !important; height: 270% !important;" ${frameErrorLogic}>`;
                         }
                         fpvHtml += `</div>`;
                         fpvContainer.innerHTML = fpvHtml;
@@ -4755,10 +4755,10 @@ window.joinRoom = async (rid) => {
                 let html = `<div class="visual-root">`; 
                 html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
                 let finalFrame = (data.isOfficial === true) ? './frames/official_frame.svg' : data.frame;
-                if (finalFrame) { 
-                    html += `<img src="${finalFrame}" class="visual-frame" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
-                    container.classList.add('has-frame'); 
-                } 
+              if (finalFrame) { 
+                html += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
+                container.classList.add('has-frame'); 
+            }
                 html += `</div>`; 
                 visualDiv.innerHTML = html; 
                 
@@ -4923,7 +4923,7 @@ const hpContainer = document.getElementById('hp-visual-container');
                                 <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
                 let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
                 if (finalFrame) {
-                    hpHtml += `<img src="${finalFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
+                    hpHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
                 }
                 hpHtml += vBadgeHTML; 
                 hpHtml += `</div>`;
@@ -5586,7 +5586,7 @@ const hpContainer = document.getElementById('hp-visual-container');
                 let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
                 
                 if(finalFrame && finalFrame.trim() !== "") {
-                    fpvHtml += `<img src="${finalFrame}" class="visual-frame" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
+                    fpvHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
                 }
                 fpvHtml += `</div>`;
 
