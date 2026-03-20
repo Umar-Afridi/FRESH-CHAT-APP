@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="fire-grad" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#7F1D1D"/><stop offset="40%" stop-color="#DC2626"/><stop offset="80%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#FEF08A"/></linearGradient>
+    <filter id="fire-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+  </defs>
+  <!-- Base Ring -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#450A0A" stroke-width="6"/>
+  <!-- Animated Flames Left -->
+  <g filter="url(#fire-glow)">
+    <animateTransform attributeName="transform" type="scale" values="1 1; 1.05 1.1; 1 1" transform-origin="30 150" dur="0.8s" repeatCount="indefinite"/>
+    <path d="M 40 160 Q -5 110 20 40 Q 25 90 40 110 Q 55 70 35 25 Q 60 70 50 130 Z" fill="url(#fire-grad)"/>
+  </g>
+  <!-- Animated Flames Right -->
+  <g filter="url(#fire-glow)">
+    <animateTransform attributeName="transform" type="scale" values="1 1; 1.05 1.1; 1 1" transform-origin="170 150" dur="1s" repeatCount="indefinite"/>
+    <path d="M 160 160 Q 205 110 180 40 Q 175 90 160 110 Q 145 70 165 25 Q 140 70 150 130 Z" fill="url(#fire-grad)"/>
+  </g>
+  <!-- Inner Bright Ring -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#FDE047" stroke-width="3" filter="url(#fire-glow)"/>
+  <!-- Embers -->
+  <circle cx="30" cy="170" r="2.5" fill="#FEF08A" filter="url(#fire-glow)">
+     <animate attributeName="cy" values="170; -10" dur="1.5s" repeatCount="indefinite"/>
+     <animate attributeName="opacity" values="0; 1; 0" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="170" cy="180" r="2" fill="#F59E0B" filter="url(#fire-glow)">
+     <animate attributeName="cy" values="180; -10" dur="1.2s" repeatCount="indefinite" begin="0.5s"/>
+     <animate attributeName="opacity" values="0; 1; 0" dur="1.2s" repeatCount="indefinite" begin="0.5s"/>
+  </circle>
+</svg>

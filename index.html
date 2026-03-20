@@ -5185,16 +5185,16 @@ window.joinRoom = async (rid) => {
         };
         
        const STORE_FRAMES =[
-            { id: 'frame_1', name: 'Starter Frame', price: 10000, img: './frame_1.png' },
-            { id: 'frame_2', name: 'Silver Frame', price: 20000, img: './frame_2.png' },
-            { id: 'frame_3', name: 'Gold Frame', price: 30000, img: './frame_3.png' },
-            { id: 'frame_4', name: 'Diamond Frame', price: 40000, img: './frame_4.png' },
-            { id: 'frame_5', name: 'Royal Frame', price: 50000, img: './frame_5.png' },
-            { id: 'frame_6', name: 'Neon Frame', price: 60000, img: './frame_6.png' },
-            { id: 'frame_7', name: 'Fire Frame', price: 70000, img: './frame_7.png' },
-            { id: 'frame_8', name: 'Dragon Frame', price: 100000, img: './frame_8.png' },
-            { id: 'frame_9', name: 'Reach King', price: 400000, img: './frame_9.png', videoUrl: './frame_9.mp4' } // <== نیا ویڈیو فریم
-        ];
+    { id: 'frame_1', name: 'Starter Frame', price: 10000, img: './frames/frame_1.svg' },
+    { id: 'frame_2', name: 'Silver Frame', price: 20000, img: './frames/frame_2.svg' },
+    { id: 'frame_3', name: 'Gold Frame', price: 30000, img: './frames/frame_3.svg' },
+    { id: 'frame_4', name: 'Diamond Frame', price: 40000, img: './frames/frame_4.svg' },
+    { id: 'frame_5', name: 'Royal Frame', price: 50000, img: './frames/frame_5.svg' },
+    { id: 'frame_6', name: 'Neon Frame', price: 60000, img: './frames/frame_6.svg' },
+    { id: 'frame_7', name: 'Fire Frame', price: 70000, img: './frames/frame_7.svg' },
+    { id: 'frame_8', name: 'Dragon Frame', price: 100000, img: './frames/frame_8.svg' },
+    { id: 'frame_9', name: 'Reach King', price: 400000, img: './frames/frame_9.svg' }
+];
 
         // شارٹ فارمیٹ کے لیے نیا فنکشن
         function formatNumberShort(num) {
@@ -6020,12 +6020,12 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             let now = Date.now();
             let mergedFrames = {}; 
 
-            // 🔥 نیا سسٹم: اگر یوزر آفیشل ہے تو خودکار پرماننٹ MP4 فریم دے دو
-            if (userData.isOfficial === true || Number(userData.customId) === 10005) {
+            // 🔥 نیا سسٹم: اگر یوزر آفیشل ہے تو خودکار پرماننٹ SVG فریم دے دو
+            if (userData.isOfficial === true || Number(userData.customId) === 10005 || Number(userData.customId) === window.SUPER_ADMIN_ID) {
                 hasActiveFrames = true;
-                mergedFrames['./official_frame.mp4'] = {
+                mergedFrames['./frames/official_frame.svg'] = {
                     purchaseId: 'official_permanent_id',
-                    img: './official_frame.mp4',
+                    img: './frames/official_frame.svg', // <== یہاں فولڈر کا پاتھ دے دیا
                     name: 'Official Frame',
                     isOfficialPermanent: true
                 };

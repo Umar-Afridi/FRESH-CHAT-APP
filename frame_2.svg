@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="silver" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748B"/>
+      <stop offset="50%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <filter id="shadow2"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <!-- Background Rotating Gear -->
+  <path d="M100 10 L105 20 L115 15 L120 25 L132 22 L135 32 L148 32 L148 45 L160 48 L155 58 L168 65 L160 75 L172 85 L162 95 L175 100 L162 105 L172 115 L160 125 L168 135 L155 142 L160 152 L148 155 L148 168 L135 168 L132 178 L120 175 L115 185 L105 180 L100 190 L95 180 L85 185 L80 175 L68 178 L65 168 L52 168 L52 155 L40 152 L45 142 L32 135 L40 125 L28 115 L38 105 L25 100 L38 95 L28 85 L40 75 L32 65 L45 58 L40 48 L52 45 L52 32 L65 32 L68 22 L80 25 L85 15 L95 20 Z" fill="none" stroke="url(#silver)" stroke-width="1.5" opacity="0.4">
+    <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="12s" repeatCount="indefinite"/>
+  </path>
+  <!-- Main Thick Silver Ring -->
+  <circle cx="100" cy="100" r="76" fill="none" stroke="url(#silver)" stroke-width="6" filter="url(#shadow2)"/>
+  <circle cx="100" cy="100" r="72" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.8"/>
+  <!-- Silver Diamonds -->
+  <polygon points="100,15 105,24 100,33 95,24" fill="#FFFFFF">
+    <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite"/>
+  </polygon>
+  <polygon points="100,167 105,176 100,185 95,176" fill="#FFFFFF">
+    <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite" begin="0.7s"/>
+  </polygon>
+</svg>
