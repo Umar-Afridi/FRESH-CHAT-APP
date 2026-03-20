@@ -1840,6 +1840,11 @@
 
             <h3 id="home-dynamic-title" class="text-sm font-extrabold px-4 mt-2 mb-1 text-gray-800 tracking-wider uppercase">ROOMS</h3>
             <div id="home-room-list"></div>
+            
+            <!-- NEW: BOTTOM LOADER (Load Success) -->
+            <div id="bottom-load-indicator" class="w-full text-center text-gray-500 text-[11px] font-bold tracking-wider hidden -mt-[60px] pb-[80px] z-10 relative">
+                <span id="bottom-load-text" class="flex items-center justify-center gap-1"></span>
+            </div>
         </div>
      
 
@@ -1855,6 +1860,12 @@
                     
                     <!-- YARAAN Official Thread -->
                     <div onclick="openSystemChatView('official')" class="flex items-center gap-3 cursor-pointer bg-white p-2 rounded-xl active:bg-gray-50 transition">
+                        
+                        <!-- YARAAN OFFICIAL DP (NEWLY ADDED) -->
+                        <div class="relative w-14 h-14 rounded-full flex items-center justify-center shadow-sm border border-gray-200 flex-shrink-0">
+                            <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
+                            <img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
+                        </div>
                         
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-center mb-1">
@@ -2013,10 +2024,13 @@
         </div>
 
         <div id="view-room">
-            <div id="gift-animation-container" class="fixed inset-0 w-full h-full z-[3500] pointer-events-none hidden flex-col items-center justify-center">
-                <video id="gift-animation-player" class="w-full h-full object-contain absolute inset-0" muted playsinline></video>
-                <div id="gift-animation-text" class="absolute bottom-1/4 text-white text-3xl font-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)] text-center animate-bounce z-10" style="text-shadow: 2px 2px 4px #000;"></div>
-            </div>
+        <!-- NEW WEBP GIFT ANIMATION CONTAINER -->
+<div id="gift-animation-container" class="fixed inset-0 w-full h-full z-[3500] pointer-events-none hidden flex-col items-center justify-center">
+    <img id="gift-animation-player" class="w-full h-full object-contain absolute inset-0">
+    <div id="gift-animation-text" class="absolute bottom-1/4 text-white text-3xl font-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)] text-center animate-bounce z-10" style="text-shadow: 2px 2px 4px #000;"></div>
+</div>
+           
+            
             
             <div id="room-exit-bar">
                 <button onclick="minimizeRoom()" class="exit-icon-btn"><img src="./minimize.png" class="icon-img" alt="Minimize"></button>
@@ -2251,35 +2265,35 @@
 
             <div class="gift-grid">
                 <div class="gift-item" onclick="sendGift('Rose', 10000)">
-                    <img src="./gifts/rose.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🌹'">
+                    <img src="./rose.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🌹'">
                     <span class="gift-price">10k</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Ring', 50000)">
-                    <img src="./gifts/ring.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=💍'">
+                    <img src="./ring.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=💍'">
                     <span class="gift-price">50k</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Car', 300000)">
-                    <img src="./gifts/car.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏎️'">
+                    <img src="./car.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏎️'">
                     <span class="gift-price">300k</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Rocket', 500000)">
-                    <img src="./gifts/rocket.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🚀'">
+                    <img src="./rocket_gift.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🚀'">
                     <span class="gift-price">500k</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Crown', 1000000)">
-                    <img src="./gifts/crown.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=👑'">
+                    <img src="./crown.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=👑'">
                     <span class="gift-price">1M</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Castle', 5000000)">
-                    <img src="./gifts/castle.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏰'">
+                    <img src="./castle.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🏰'">
                     <span class="gift-price">5M</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Yacht', 10000000)">
-                    <img src="./gifts/yacht.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🛥️'">
+                    <img src="./yacht.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🛥️'">
                     <span class="gift-price">10M</span>
                 </div>
                 <div class="gift-item" onclick="sendGift('Dragon', 50000000)">
-                    <img src="./gifts/dragon.png" class="gift-img" onerror="this.src='https://placehold.co/50?text=🐉'">
+                    <img src="./dragon.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🐉'">
                     <span class="gift-price">50M</span>
                 </div>
             </div>
@@ -2913,9 +2927,35 @@
         startAutoBanner();
 
         const floatBtn = document.getElementById('floating-room-btn'); let isDragging = false; let dragStartX, dragStartY, btnStartX, btnStartY;
-        floatBtn.addEventListener('touchstart', (e) => { isDragging = false; dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY; const rect = floatBtn.getBoundingClientRect(); btnStartX = rect.left; btnStartY = rect.top; }, {passive: false});
-        floatBtn.addEventListener('touchmove', (e) => { isDragging = true; e.preventDefault(); const currentX = e.touches[0].clientX; const currentY = e.touches[0].clientY; const deltaX = currentX - dragStartX; const deltaY = currentY - dragStartY; floatBtn.style.left = (btnStartX + deltaX) + 'px'; floatBtn.style.top = (btnStartY + deltaY) + 'px'; floatBtn.style.bottom = 'auto'; floatBtn.style.right = 'auto'; }, {passive: false});
-        floatBtn.onclick = (e) => { if(!isDragging) { restoreRoom(); } };
+        floatBtn.addEventListener('touchstart', (e) => { 
+            e.stopPropagation(); // <-- بیک گراؤنڈ سوائپ کو روکے گا
+            isDragging = false; dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY; 
+            const rect = floatBtn.getBoundingClientRect(); btnStartX = rect.left; btnStartY = rect.top; 
+        }, {passive: false});
+        
+        floatBtn.addEventListener('touchmove', (e) => { 
+            e.stopPropagation(); // <-- بیک گراؤنڈ سوائپ کو روکے گا
+            e.preventDefault(); isDragging = true; 
+            const currentX = e.touches[0].clientX; const currentY = e.touches[0].clientY; 
+            let newX = btnStartX + (currentX - dragStartX); 
+            let newY = btnStartY + (currentY - dragStartY); 
+            
+            // --- باؤنڈریز (لمٹس) سیٹ کی گئی ہیں ---
+            const btnW = 65, btnH = 65; 
+            const minX = window.innerWidth / 2.5; // ریڈ لائن سے پیچھے نہیں جائے گا
+            const maxX = window.innerWidth - btnW - 10; // رائٹ سائیڈ سے باہر نہیں جائے گا
+            const minY = 60; // ہیڈر کے اندر نہیں جائے گا
+            const maxY = window.innerHeight - btnH - 80; // نیچے نیویگیشن بار میں نہیں چھپے گا
+            
+            newX = Math.max(minX, Math.min(newX, maxX)); 
+            newY = Math.max(minY, Math.min(newY, maxY)); 
+            
+            floatBtn.style.left = newX + 'px'; floatBtn.style.top = newY + 'px'; 
+            floatBtn.style.bottom = 'auto'; floatBtn.style.right = 'auto'; 
+        }, {passive: false});
+        
+        floatBtn.addEventListener('touchend', (e) => { e.stopPropagation(); });
+        floatBtn.onclick = (e) => { e.stopPropagation(); if(!isDragging) { restoreRoom(); } };
 
         window.showEmailForm = () => { document.getElementById('email-auth-full-page').classList.add('open'); document.getElementById('auth-form').reset(); isSignup = false; document.getElementById('username-field').classList.add('hidden'); document.getElementById('auth-btn').textContent = "LOGIN"; document.getElementById('auth-switch').textContent = "Create an account"; document.getElementById('email-form-title').textContent = "Email Login"; }
         window.hideEmailForm = () => { document.getElementById('email-auth-full-page').classList.remove('open'); }
@@ -3120,8 +3160,8 @@
 
             const homeList = document.getElementById('home-room-list'); 
             
-            // 🔥 INSTANT CLEAR: کلک کرتے ہی سکرین صاف تاکہ پرانے رومز بڑے نہ ہوں
-            homeList.innerHTML = '<div class="col-span-2 w-full flex justify-center py-10"><i class="fa-solid fa-spinner fa-spin text-purple-500 text-2xl"></i></div>'; 
+            // 🔥 INSTANT CLEAR: پرانا پرپل سپنر ہٹا دیا گیا ہے تاکہ ڈبل لوڈنگ شو نہ ہو۔
+            // homeList.innerHTML = ''; 
             
             // کنٹینر کا ڈیزائن سیٹ کرنا (Grid vs List)
             if (currentHomeTab === 'following') {
@@ -3282,16 +3322,68 @@
                 } else if(currentHomeTab === 'recent') {
                     emptyMsg = 'No recent visits found.';
                 } else {
-                    emptyMsg = ''; // Popular کے لیے ٹیکسٹ ختم کر دیا گیا، بالکل وائٹ سکرین رہے گی
+                    emptyMsg = ''; // Popular کے لیے ٹیکسٹ ختم کر دیا گیا
                 }
 
+                // 🔥 فکس: یہاں ہم نے min-h-[70vh] لگا دیا ہے، جس سے سکرین لمبی ہو جائے گی
+                // اور رومز نہ ہونے کے باوجود سکرول (Scroll) کام کرے گا اور نیچے والا لوڈر شو ہوگا!
                 if (emptyMsg !== '') {
-                    homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm w-full">${emptyMsg}</p>`;
+                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[70vh] flex justify-center pt-10"><p class="text-gray-400 text-sm">${emptyMsg}</p></div>`;
                 } else {
-                    homeList.innerHTML = ''; // وائٹ سکرین
+                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[70vh]"></div>`; // وائٹ سکرین (لیکن سکرول ایبل)
+                }
+            }
+
+            // --- BOTTOM LOAD SUCCESS STATE ---
+            if (window.isBottomLoading) {
+                const loadIndicator = document.getElementById('bottom-load-indicator');
+                const loadText = document.getElementById('bottom-load-text');
+                const homeView = document.getElementById('view-home');
+                
+                if (loadIndicator && loadText) {
+                    loadText.innerHTML = "Load Success";
+                    
+                    setTimeout(() => {
+                        if(homeView) {
+                            homeView.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                        
+                        setTimeout(() => {
+                            loadIndicator.classList.add('hidden');
+                            window.isBottomLoading = false;
+                        }, 500);
+                    }, 800); 
+                } else {
+                    window.isBottomLoading = false;
                 }
             }
         }
+
+        // --- SCROLL TO BOTTOM LISTENER (FIXED) ---
+        window.isBottomLoading = false;
+        document.getElementById('view-home').addEventListener('scroll', function() {
+            if (window.isBottomLoading) return;
+            
+            const homeView = document.getElementById('view-home');
+            
+            // 🔥 فکس: ہم نے (homeView.scrollTop > 5) لگا دیا ہے تاکہ جب تک یوزر انگلی سے تھوڑا سا سکرول نہ کرے،
+            // لوڈر خودبخود ایکٹو نہ ہو۔ لیکن رومز نہ ہونے پر بھی نیچے جانے پر اب یہ 100% ٹرگر ہوگا۔
+            if (homeView.scrollTop > 5 && homeView.scrollTop + homeView.clientHeight >= homeView.scrollHeight - 10) {
+
+                const loadIndicator = document.getElementById('bottom-load-indicator');
+                const loadText = document.getElementById('bottom-load-text');
+                
+                if (loadIndicator && loadText) {
+                    window.isBottomLoading = true; 
+                    loadIndicator.classList.remove('hidden');
+                    loadText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-purple-500 text-[14px]"></i> Loading...';
+                    
+                    setTimeout(() => {
+                        window.refreshHomeRooms();
+                    }, 800); 
+                }
+            }
+        });
 
         async function loadData() {
             const mySnap = await get(ref(db, `users/${currentUser.uid}`)); 
@@ -3334,7 +3426,7 @@
                 document.getElementById('profile-bio').innerText = d.bio || ""; 
                 const container = document.getElementById('profile-visual-container'); 
                 let isOff = (d.isOfficial === true || Number(d.customId) === window.SUPER_ADMIN_ID || Number(d.customId) === 10005);
-                let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
+                let finalFrame = d.currentFrame ? d.currentFrame : (isOff ? './frames/official_frame.svg' : null);
                 let html = `<div class="visual-root"><img src="${d.photoURL}" class="visual-img">`; 
                 if(finalFrame) {
                     html += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
@@ -3414,7 +3506,7 @@
                 onValue(ref(db, `users/${currentUser.uid}/currentFrame`), (snap) => {
                     const frameUrl = snap.val();
                     let isOff = (window.currentUserIsOfficial || Number(currentUser.customId) === window.SUPER_ADMIN_ID || Number(currentUser.customId) === 10005);
-                    let finalFrame = isOff ? './frames/official_frame.svg' : frameUrl;
+                    let finalFrame = frameUrl ? frameUrl : (isOff ? './frames/official_frame.svg' : null);
                     
                     let frameErrorLogic = `onload="this.classList.remove('opacity-0')" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }"`;
 
@@ -4475,16 +4567,7 @@ window.joinRoom = async (rid) => {
         }
     }); 
 
-    const giftVideos = {
-        'Rose': './rose.mp4',
-        'Ring': './ring.mp4',
-        'Car': './car.mp4',
-        'Rocket': './rocket_gift.mp4',
-        'Crown': './crown.mp4',
-        'Castle': './castle.mp4',
-        'Yacht': './yacht.mp4',
-        'Dragon': './dragon.mp4'
-    };
+    
 
     onValue(child(rr, 'messages'), s => { 
         const chatArea = document.getElementById('chat-display-area'); 
@@ -4536,27 +4619,10 @@ window.joinRoom = async (rid) => {
                         </div>`; 
                     }
 
-                    if(m.type === 'gift' && m.giftName && (Date.now() - m.timestamp < 3000)) {
-                        let videoSrc = giftVideos[m.giftName];
-                        if(videoSrc) {
-                            let containerEl = document.getElementById('gift-animation-container');
-                            let vidEl = document.getElementById('gift-animation-player');
-                            let textEl = document.getElementById('gift-animation-text');
-                            
-                            if(containerEl && containerEl.classList.contains('hidden')) {
-                                vidEl.src = videoSrc;
-                                textEl.innerHTML = `${m.name} sent <br><span class="text-yellow-400 text-4xl">${m.giftName}</span>!`;
-                                containerEl.classList.remove('hidden');
-                                containerEl.style.display = 'flex';
-                                vidEl.play().catch(e => console.log("Video auto-play prevented:", e));
-                                
-                                setTimeout(() => {
-                                    containerEl.classList.add('hidden');
-                                    containerEl.style.display = 'none';
-                                    vidEl.pause();
-                                    vidEl.currentTime = 0; 
-                                }, 8000);
-                            }
+                    // TRIGGER WEBP GIFT ANIMATION FROM EXTERNAL FILE
+                    if(m.type === 'gift' && m.giftName) {
+                        if(typeof window.playGiftAnimation === 'function') {
+                            window.playGiftAnimation(m.name, m.giftName, m.timestamp);
                         }
                     }
                 } 
@@ -4597,7 +4663,7 @@ window.joinRoom = async (rid) => {
                 container.classList.add('seat-occupied'); 
                 let html = `<div class="visual-root">`; 
                 html += `<img src="${data.pic || 'https://placehold.co/100'}" class="visual-img" onerror="this.src='https://placehold.co/100?text=U'">`; 
-                let finalFrame = (data.isOfficial === true) ? './frames/official_frame.svg' : data.frame;
+                let finalFrame = data.frame ? data.frame : ((data.isOfficial === true) ? './frames/official_frame.svg' : null);
               if (finalFrame) { 
                 html += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`; 
                 container.classList.add('has-frame'); 
@@ -4764,7 +4830,7 @@ const hpContainer = document.getElementById('hp-visual-container');
                 // 1. مین یوزر کی ڈی پی (Main User DP)
                 hpHtml += `<div class="visual-root cursor-pointer flex-shrink-0" style="width: 100px; height: 100px; z-index: 100; pointer-events: auto;" onclick="openFullProfileView('${uid}'); closeHalfProfile();">
                                 <img src="${hpPic}" class="visual-img shadow-md" style="border: 2.5px solid white;">`;
-                let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
+                let finalFrame = d.currentFrame ? d.currentFrame : (isOff ? './frames/official_frame.svg' : null);
                 if (finalFrame) {
                     hpHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important; z-index: 20; object-fit: contain;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
                 }
@@ -5426,7 +5492,7 @@ const hpContainer = document.getElementById('hp-visual-container');
             if(fpvContainer) {
                 let fpvHtml = `<div class="visual-root"><img src="${profilePic}" class="visual-img shadow-lg" style="border: 2px solid white;">`;
                 let isOff = (d.isOfficial === true || Number(d.customId) === window.SUPER_ADMIN_ID || Number(d.customId) === 10005);
-                let finalFrame = isOff ? './frames/official_frame.svg' : d.currentFrame;
+                let finalFrame = d.currentFrame ? d.currentFrame : (isOff ? './frames/official_frame.svg' : null);
                 
                 if(finalFrame && finalFrame.trim() !== "") {
                     fpvHtml += `<img src="${finalFrame}" class="visual-frame opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" style="width: 270% !important; height: 270% !important;" onerror="if(!this.dataset.retried){ this.dataset.retried=true; this.src = this.src.includes('/frames/') ? this.src.replace('/frames/', '/') : this.src.replace(/([^/]+)$/, 'frames/$1'); } else { this.style.display='none'; }">`;
@@ -6116,46 +6182,48 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
         // ================= اپڈیٹڈ لیو روم فنکشن =================
 window.leaveRoomFull = () => { 
     closeExitMenu(); 
-    document.getElementById('rocket-details-modal').style.display='none'; 
-    document.getElementById('rocket-fly-layer').style.display='none'; 
-    currentRoomExp = 0; 
-    lastRocketLevel = 0; 
-    document.getElementById('floating-room-btn').style.display = 'none'; 
-    document.getElementById('view-room').style.display = 'none'; 
-    document.getElementById('view-room').classList.remove('view-active'); 
+    if(document.getElementById('rocket-details-modal')) document.getElementById('rocket-details-modal').style.display='none'; 
+    if(document.getElementById('rocket-fly-layer')) document.getElementById('rocket-fly-layer').style.display='none'; 
+    if(document.getElementById('floating-room-btn')) document.getElementById('floating-room-btn').style.display = 'none'; 
+    if(document.getElementById('view-room')) {
+        document.getElementById('view-room').style.display = 'none'; 
+        document.getElementById('view-room').classList.remove('view-active'); 
+    }
+    
+    // 🔥 فکس: پہلے روم آئی ڈی کو null کر دیا تاکہ فلوٹنگ بٹن واپس نہ آئے
+    let tempRoomId = currentRoomId;
+    currentRoomId = null; 
+    currentRoomData = null; 
+
     switchTab('view-home', document.querySelector('#btn-home')); 
     localStorage.removeItem('lastRoomId'); 
     
-    // ========== نیا: ویب آرٹی سی صاف کریں ==========
     if (typeof cleanupWebRTC === 'function') {
         cleanupWebRTC();
     }
     
-    if(currentRoomId) { 
-        const userRef = ref(db, `rooms/${currentRoomId}/activeUsers/${currentUser.uid}`); 
+    if(tempRoomId) { 
+        const userRef = ref(db, `rooms/${tempRoomId}/activeUsers/${currentUser.uid}`); 
         onDisconnect(userRef).cancel(); 
         remove(userRef); 
         
-        // کالز بھی صاف کریں
         remove(ref(db, `calls/${currentUser.uid}`));
         
         if(currentRoomSeats) { 
             Object.entries(currentRoomSeats).forEach(([key, val]) => { 
                 if(val && val.uid === currentUser.uid) { 
-                    const sRef = ref(db, `rooms/${currentRoomId}/seats/${key}`); 
+                    const sRef = ref(db, `rooms/${tempRoomId}/seats/${key}`); 
                     onDisconnect(sRef).cancel(); 
                     remove(sRef); 
                 } 
             }); 
         } 
-        if(currentRoomId === currentUser.uid) { 
-            update(ref(db, `rooms/${currentRoomId}`), {isLive:false}); 
+        if(tempRoomId === currentUser.uid) { 
+            update(ref(db, `rooms/${tempRoomId}`), {isLive:false}); 
         } 
     } 
-    currentRoomId = null; 
-    currentRoomData = null; 
-    document.getElementById('video-iframe').src = ""; 
-    document.getElementById('local-video-player').classList.add('hidden'); 
+    if(document.getElementById('video-iframe')) document.getElementById('video-iframe').src = ""; 
+    if(document.getElementById('local-video-player')) document.getElementById('local-video-player').classList.add('hidden'); 
 }
 
         window.switchTab = (vid, el) => { const views = document.querySelectorAll('.view-section'); views.forEach(v => { v.style.display = 'none'; v.classList.remove('view-active'); }); if(vid !== 'view-room' && currentRoomId) { document.getElementById('floating-room-btn').style.display='flex'; } else { document.getElementById('floating-room-btn').style.display='none'; } const targetView = document.getElementById(vid); if (targetView) { targetView.style.display = 'flex'; targetView.classList.add('view-active'); } if (vid === 'view-room') { document.getElementById('app-header').style.display = 'none'; document.getElementById('bottom-nav').classList.add('hidden'); } else { document.getElementById('app-header').style.display = 'flex'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('header-home-content').classList.add('hidden'); document.getElementById('header-inbox-content').classList.add('hidden'); document.getElementById('header-profile-content').classList.add('hidden'); if (vid === 'view-home') { document.getElementById('header-home-content').classList.remove('hidden'); } else if (vid === 'view-inbox') { document.getElementById('header-inbox-content').classList.remove('hidden'); } else if (vid === 'view-profile') { document.getElementById('header-profile-content').classList.remove('hidden'); } } if(el){ document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); el.classList.add('active'); } };
@@ -7970,6 +8038,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./level_system.js"></script>
 <script src="./svip_system.js"></script>
 <script src="./rocket_system.js"></script>
+<script src="./gift_animation.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
