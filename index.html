@@ -2674,17 +2674,17 @@
             slot2: { isBusy: false, el: document.getElementById('broadcast-slot-2') }
         };
 
-        function broadcastWin(name, amount, dpUrl) {
+        window.broadcastWin = function(name, amount, dpUrl) {
             push(ref(db, `sys/broadcasts`), { type: 'win', name, amount, dp: dpUrl || 'https://placehold.co/100', time: Date.now() });
-        }
+        };
         
-        function broadcastRocketLaunch(roomId, roomName, level, img) {
-            push(ref(db, `sys/broadcasts`), { type: 'rocket', roomId, roomName, level, img, amount: 9999999, time: Date.now() });
-        }
+        window.broadcastRocketLaunch = function(roomId, displayId, roomName, level, img) {
+            push(ref(db, `sys/broadcasts`), { type: 'rocket', roomId: roomId, displayId: displayId, roomName: roomName, level: level, img: img, amount: 9999999, time: Date.now() });
+        };
 
-        function broadcastGift(senderName, senderDp, receiverName, receiverDp, giftName, img, coins) {
+        window.broadcastGift = function(senderName, senderDp, receiverName, receiverDp, giftName, img, coins) {
             push(ref(db, `sys/broadcasts`), { type: 'gift', senderName, senderDp, receiverName, receiverDp, giftName, img, amount: coins, time: Date.now() });
-        }
+        };
 
         onChildAdded(ref(db, 'sys/broadcasts'), (snap) => {
             const data = snap.val();
@@ -2709,7 +2709,9 @@
             slot.isBusy = true;
             
             let innerHTML = '';
-            
+            let displayDuration = 6000; // عام گفٹ کے لیے 6 سیکنڈ
+            let uniqueTimerId = 'timer_' + Date.now() + Math.floor(Math.random() * 1000); // ٹائمر کے لیے آئی ڈی
+
             if (data.type === 'win') {
                 innerHTML = `
                 <div class="bc-wrapper">
@@ -2720,13 +2722,21 @@
                 </div>`;
             } 
             else if (data.type === 'rocket') {
+                displayDuration = 9500; // راکٹ کے لیے 9.5 سیکنڈ
+                let displayId = data.displayId || data.roomId;
+                let rocketImg = data.img || './rocket1.png'; // تصویر غائب ہونے سے بچانے کا فکس
+                
                 innerHTML = `
-                <div class="rb-wrapper">
-                    <img src="${data.img}" class="rb-png">
-                    <div class="rb-center-col">
-                        <div class="rb-roomname">${data.roomName}</div><div class="text-yellow-400 text-[10px] font-bold">Launched Level ${data.level} Rocket!</div>
+                <div class="rb-wrapper" style="background: linear-gradient(90deg, rgba(30,27,75,0.95) 0%, rgba(139,92,246,0.95) 100%); border: 2px solid #c084fc; box-shadow: 0 0 20px rgba(192,132,252,0.8); pointer-events: auto; padding: 5px 12px; display: flex; align-items: center; justify-content: space-between; border-radius: 35px; width: 100%;">
+                    <img src="${rocketImg}" class="rb-png animate-bounce" style="width: 45px; height: 45px; object-fit: contain;" onerror="this.src='./rocket1.png'">
+                    <div class="rb-center-col" style="flex: 1; padding-left: 10px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="text-[12px] truncate max-w-[130px] text-white font-bold">${data.roomName} <span class="text-gray-300 text-[9px] font-medium ml-1">(ID: ${displayId})</span></div>
+                        <div class="text-yellow-300 text-[11px] font-black drop-shadow-md tracking-wide mt-0.5">Level ${data.level} Rocket Flew! 🚀</div>
                     </div>
-                    <button class="rb-go-btn" onclick="window.joinRoom('${data.roomId}')">GO 🚀</button>
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">
+                        <span id="${uniqueTimerId}" style="color: #facc15; font-size: 11px; font-weight: 900; text-shadow: 1px 1px 2px black; animation: pulse 1s infinite;">9s</span>
+                        <button class="rb-go-btn" style="background: linear-gradient(to bottom, #f59e0b, #b45309); font-size: 11px; padding: 4px 14px; border-radius: 20px; color: white; font-weight: 900; border: 2px solid #facc15; box-shadow: 0 4px 15px rgba(245,158,11,0.6); cursor: pointer; text-transform: uppercase;" onclick="window.joinRoom('${data.roomId}')">GO</button>
+                    </div>
                 </div>`;
             }
             else if (data.type === 'gift') {
@@ -2744,18 +2754,34 @@
 
             slot.el.innerHTML = innerHTML;
             slot.el.classList.remove('bc-hide');
-            void slot.el.offsetWidth;
+            void slot.el.offsetWidth; // ریفریش اینیمیشن
             slot.el.classList.add('bc-show');
 
+            // === 9 سیکنڈ ٹائمر کا لائیو لاجک ===
+            let countdownInterval;
+            if (data.type === 'rocket') {
+                let secondsLeft = 9;
+                countdownInterval = setInterval(() => {
+                    secondsLeft--;
+                    let timerEl = document.getElementById(uniqueTimerId);
+                    if (timerEl) {
+                        timerEl.innerText = secondsLeft + 's';
+                    }
+                    if (secondsLeft <= 0) clearInterval(countdownInterval);
+                }, 1000);
+            }
+
+            // بینر کو ہٹانے کا ٹائمر
             setTimeout(() => {
                 slot.el.classList.remove('bc-show');
                 slot.el.classList.add('bc-hide');
+                if(countdownInterval) clearInterval(countdownInterval); // ٹائمر کو بند کریں
                 
                 setTimeout(() => {
                     slot.isBusy = false;
-                    processBroadcastSlots();
+                    processBroadcastSlots(); // اگلا بینر چلائیں
                 }, 600);
-            }, 6000);
+            }, displayDuration);
         }
 
         window.openGiftModal = async () => {
@@ -3163,7 +3189,12 @@
             // 🔥 INSTANT CLEAR: پرانا پرپل سپنر ہٹا دیا گیا ہے تاکہ ڈبل لوڈنگ شو نہ ہو۔
             // homeList.innerHTML = ''; 
             
-            // کنٹینر کا ڈیزائن سیٹ کرنا (Grid vs List)
+            const roomsSnap = await get(ref(db, 'rooms')); 
+            
+            // 🔥 چیک: اگر یوزر نے ڈیٹا آنے سے پہلے ٹیب بدل لیا ہے، تو یہیں رک جاؤ (نو ڈبلنگ اور نو CSS مکسنگ)
+            if (currentRenderId !== window.homeRenderCounter) return;
+
+            // CSS ڈیزائن ڈیٹا آنے کے بعد اپلائی کریں تاکہ بڑے رومز کا مسئلہ نہ آئے
             if (currentHomeTab === 'following') {
                 homeList.style.display = 'flex';
                 homeList.style.flexDirection = 'column';
@@ -3175,11 +3206,6 @@
                 homeList.style.gap = '15px';
                 homeList.style.padding = '0 15px 80px 15px';
             }
-            
-            const roomsSnap = await get(ref(db, 'rooms')); 
-            
-            // 🔥 چیک: اگر یوزر نے ڈیٹا آنے سے پہلے ٹیب بدل لیا ہے، تو یہیں رک جاؤ (نو ڈبلنگ)
-            if (currentRenderId !== window.homeRenderCounter) return;
 
             if(!roomsSnap.exists()) { 
                 homeList.innerHTML = `<p class="text-gray-400 text-center mt-10 text-sm w-full">No live rooms found.</p>`; 
@@ -3325,12 +3351,11 @@
                     emptyMsg = ''; // Popular کے لیے ٹیکسٹ ختم کر دیا گیا
                 }
 
-                // 🔥 فکس: یہاں ہم نے min-h-[70vh] لگا دیا ہے، جس سے سکرین لمبی ہو جائے گی
-                // اور رومز نہ ہونے کے باوجود سکرول (Scroll) کام کرے گا اور نیچے والا لوڈر شو ہوگا!
+                // 🔥 فکس: min-h کو 70vh سے 20vh کر دیا گیا ہے تاکہ کنٹریب وغیرہ اوپر غائب نہ ہوں اور سکرین فل وائٹ نہ لگے۔
                 if (emptyMsg !== '') {
-                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[70vh] flex justify-center pt-10"><p class="text-gray-400 text-sm">${emptyMsg}</p></div>`;
+                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[20vh] flex justify-center pt-5"><p class="text-gray-400 text-sm">${emptyMsg}</p></div>`;
                 } else {
-                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[70vh]"></div>`; // وائٹ سکرین (لیکن سکرول ایبل)
+                    homeList.innerHTML = `<div class="col-span-2 w-full min-h-[20vh]"></div>`; // وائٹ سکرین (چھوٹی سکرول کے لیے)
                 }
             }
 
@@ -6176,8 +6201,51 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
         window.toggleExitMenu = () => { const bar = document.getElementById('room-exit-bar'); const blocker = document.getElementById('room-exit-blocker'); if(bar.style.display === 'flex') { bar.style.display = 'none'; blocker.style.display = 'none'; } else { bar.style.display = 'flex'; blocker.style.display = 'block'; } };
         window.closeExitMenu = () => { document.getElementById('room-exit-bar').style.display = 'none'; document.getElementById('room-exit-blocker').style.display = 'none'; }
         
-        window.minimizeRoom = () => { closeExitMenu(); document.getElementById('floating-room-btn').style.display = 'flex'; document.getElementById('view-room').style.display = 'none'; document.getElementById('view-room').classList.remove('view-active'); document.getElementById('view-home').style.display = 'flex'; document.getElementById('view-home').classList.add('view-active'); document.getElementById('app-header').style.display = 'flex'; document.getElementById('bottom-nav').classList.remove('hidden'); document.getElementById('bottom-nav').classList.add('flex'); if(currentRoomId) { if(currentRoomData && currentRoomData.roomCover) { document.getElementById('float-btn-img').src = currentRoomData.roomCover; } else { document.getElementById('float-btn-img').src = `https://ui-avatars.com/api/?name=${currentRoomData?.roomName || 'Room'}`; } } }
-        window.restoreRoom = () => { document.getElementById('floating-room-btn').style.display='none'; switchTab('view-room'); };
+        window.minimizeRoom = () => { 
+            closeExitMenu(); 
+            document.getElementById('floating-room-btn').style.display = 'flex'; 
+            document.getElementById('view-room').style.display = 'none'; 
+            document.getElementById('view-room').classList.remove('view-active'); 
+            document.getElementById('view-home').style.display = 'flex'; 
+            document.getElementById('view-home').classList.add('view-active'); 
+            document.getElementById('app-header').style.display = 'flex'; 
+            document.getElementById('bottom-nav').classList.remove('hidden'); 
+            document.getElementById('bottom-nav').classList.add('flex'); 
+            
+            // ==== ROCKET HIDE LOGIC ====
+            const rocketLayer = document.getElementById('rocket-fullscreen-layer');
+            if (rocketLayer) rocketLayer.style.display = 'none';
+            const rocketAudio = document.getElementById('rocket-sound');
+            if (rocketAudio && !rocketAudio.paused) {
+                rocketAudio.pause();
+                window.rocketAudioWasPlaying = true;
+            } else {
+                window.rocketAudioWasPlaying = false;
+            }
+            // ===========================
+
+            if(currentRoomId) { 
+                if(currentRoomData && currentRoomData.roomCover) { 
+                    document.getElementById('float-btn-img').src = currentRoomData.roomCover; 
+                } else { 
+                    document.getElementById('float-btn-img').src = `https://ui-avatars.com/api/?name=${currentRoomData?.roomName || 'Room'}`; 
+                } 
+            } 
+        };
+
+        window.restoreRoom = () => { 
+            document.getElementById('floating-room-btn').style.display='none'; 
+            switchTab('view-room'); 
+            
+            // ==== ROCKET SHOW LOGIC ====
+            const rocketLayer = document.getElementById('rocket-fullscreen-layer');
+            if (rocketLayer) rocketLayer.style.display = 'flex';
+            if (window.rocketAudioWasPlaying) {
+                const rocketAudio = document.getElementById('rocket-sound');
+                if (rocketAudio) rocketAudio.play().catch(e=>console.log(e));
+            }
+            // ===========================
+        };
         
         // ================= اپڈیٹڈ لیو روم فنکشن =================
 window.leaveRoomFull = () => { 
@@ -6189,6 +6257,20 @@ window.leaveRoomFull = () => {
         document.getElementById('view-room').style.display = 'none'; 
         document.getElementById('view-room').classList.remove('view-active'); 
     }
+
+    // ==== ROCKET SOUND & VISUAL STOP ON EXIT ====
+    const rocketAudio = document.getElementById('rocket-sound');
+    if (rocketAudio) {
+        rocketAudio.pause();          // آواز فوراً روکو
+        rocketAudio.currentTime = 0;  // آواز زیرو سے شروع کرنے کے لیے ری سیٹ
+    }
+    const rocketLayer = document.getElementById('rocket-fullscreen-layer');
+    if (rocketLayer) rocketLayer.remove(); // راکٹ سکرین سے غائب کر دو
+    
+    if(typeof window.resetRocketSystemOnExit === 'function') {
+        window.resetRocketSystemOnExit(); // قطار اور ٹائمر کلین کر دو
+    }
+    // ============================================
     
     // 🔥 فکس: پہلے روم آئی ڈی کو null کر دیا تاکہ فلوٹنگ بٹن واپس نہ آئے
     let tempRoomId = currentRoomId;

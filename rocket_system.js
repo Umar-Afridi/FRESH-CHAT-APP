@@ -10,6 +10,7 @@ window.lastRocketLevel = 0;
 window.rocketQueue =[];
 window.isRocketFlying = false;
 window.isFirstRocketLoad = true; 
+window.rocketAnimTimeout = null;
 
 window.initRocketListener = function(rid) {
     document.getElementById('rocket-trigger-btn').classList.remove('hidden');
@@ -125,25 +126,28 @@ window.processRocketQueue = function() {
 };
 
 window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, rid) {
-    // 1. پرانی لیئر کو ریموو کریں
     let oldLayer = document.getElementById('rocket-fullscreen-layer');
     if (oldLayer) oldLayer.remove();
     
-    // 2. نیا کنٹینر بنائیں
     const layer = document.createElement('div');
     layer.id = 'rocket-fullscreen-layer'; 
     
-    document.documentElement.appendChild(layer); 
+    // راکٹ کو روم کے اندر اپینڈ کریں تاکہ باہر نہ جائے
+    const viewRoom = document.getElementById('view-room');
+    if (viewRoom) {
+        viewRoom.appendChild(layer);
+    } else {
+        document.documentElement.appendChild(layer); 
+    }
     
-    // فل سکرین اور مائیکس کے اوپر شو کرنے کی سیٹنگ
     layer.style.cssText = `
-        position: fixed !important; 
+        position: absolute !important; 
         top: 0 !important; 
         bottom: 0 !important; 
         left: 0 !important; 
         right: 0 !important; 
-        width: 100vw !important; 
-        height: 100vh !important; 
+        width: 100% !important; 
+        height: 100% !important; 
         z-index: 2147483647 !important; 
         pointer-events: none !important; 
         background: transparent !important; 
@@ -153,20 +157,22 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
         transform: translateZ(99999px) !important; 
     `;
     
+    // آواز صرف اس صورت میں چلے جب روم اوپن ہو
     const audio = document.getElementById('rocket-sound');
-    if (audio) {
+    if (audio && viewRoom && viewRoom.style.display !== 'none') {
         audio.currentTime = 0;
         let playPromise = audio.play();
         if (playPromise !== undefined) playPromise.catch(e => console.log(e));
     }
 
+    // 🔥 یہ ہے وہ لائن جو گلوبل بینر کو ٹرگر کرتی ہے (باہر اور اندر ہر جگہ) 🔥
     if(typeof window.broadcastRocketLaunch === "function"){
-        window.broadcastRocketLaunch(rid, window.currentRoomData?.roomName || 'A Room', targetLevel, imgSrc);
+        let shortId = window.currentRoomData?.ownerCustomId || rid;
+        window.broadcastRocketLaunch(rid, shortId, window.currentRoomData?.roomName || 'A Room', targetLevel, imgSrc);
     }
 
     const cacheBusterSrc = animSrc + "?t=" + Date.now();
 
-    // 🚨 راکٹ کا سائز یہاں سے بڑا کیا گیا ہے (scale 1.4) 🚨
     layer.innerHTML = `
         <img src="${cacheBusterSrc}" style="
             position: absolute !important; 
@@ -175,26 +181,39 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
             object-fit: contain !important; 
             z-index: 2147483647 !important; 
             pointer-events: none !important;
-            transform: scale(1.4) !important; /* 👈 سائز اور بڑا کر دیا گیا ہے */
+            transform: scale(1.4) !important; 
             transform-origin: center center !important;
         ">
     `;
 
-    // 9.5 سیکنڈ کا ٹائمر
-    setTimeout(() => {
-        if (isMaxLevel) { 
-            window.set(window.ref(window.db, `rooms/${rid}/roomExp`), 0); 
-            window.push(window.ref(window.db, `rooms/${rid}/messages`), { 
+    window.pendingRocketResetParams = isMaxLevel ? { rid: rid } : null;
+
+    window.rocketAnimTimeout = setTimeout(() => {
+        if (window.pendingRocketResetParams) { 
+            window.set(window.ref(window.db, `rooms/${window.pendingRocketResetParams.rid}/roomExp`), 0); 
+            window.push(window.ref(window.db, `rooms/${window.pendingRocketResetParams.rid}/messages`), { 
                 name: "System", 
                 text: "✨ Rocket Cycle Reset! Start again! ✨", 
                 type: 'system', 
                 timestamp: Date.now() 
             }); 
+            window.pendingRocketResetParams = null;
         }
         
-        layer.remove(); 
-        window.isRocketFlying = false;
+        let layerCheck = document.getElementById('rocket-fullscreen-layer');
+        if(layerCheck) layerCheck.remove(); 
         
+        window.isRocketFlying = false;
         window.processRocketQueue();
     }, 9500); 
+};
+
+// ==== ایگزٹ (Leave) یا Minimize پر راکٹ کو مکمل ختم کرنے کا فنکشن ====
+window.resetRocketSystemOnExit = function() {
+    if (window.rocketAnimTimeout) {
+        clearTimeout(window.rocketAnimTimeout);
+        window.rocketAnimTimeout = null;
+    }
+    window.rocketQueue =[]; // لائن صاف کر دی
+    window.isRocketFlying = false; // سٹیٹس ری سیٹ کر دیا
 };
