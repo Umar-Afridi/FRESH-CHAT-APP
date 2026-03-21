@@ -583,116 +583,64 @@
     50% { transform: scale(1.2); opacity: 1; }
 }
 
-        /* ================== HUGE ROCKET SYSTEM STYLES ================== */
-        #rocket-trigger-btn { position: absolute; bottom: 140px; right: 15px; width: 50px; height: 50px; z-index: 50; cursor: pointer; animation: floatRocket 3s ease-in-out infinite; }
-        .rocket-display-icon { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
-        @keyframes floatRocket { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        
-        #rocket-fly-layer { 
-    position: fixed !important; 
-    top: 0 !important; 
-    left: 0 !important; 
-    width: 100vw !important; 
-    height: 100vh !important; 
-    pointer-events: none !important; 
-    z-index: 99999999 !important; /* سب سے زیادہ پاور فل Z-index */
-    display: none; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: flex-end; 
-    padding-bottom: 10%; 
-    transform: translateZ(9999px) !important; /* یہ کوڈ اسے مائک کے شیڈو سے بھی اوپر لے آئے گا */
-}
-        
-        .flying-rocket { 
-            width: 120vw; 
-            max-width: 500px; 
-            height: auto; 
-            position: relative; 
-            z-index: 3002; 
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
-        }
-        
-        .rocket-countdown { 
-            font-size: 150px; 
-            font-weight: 900; 
-            color: #ffda44; 
-            text-shadow: 0 8px 0 #b37700, 0 15px 30px rgba(0,0,0,0.9), 0 0 50px #ffea00; 
-            position: absolute; 
-            top: 25%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            z-index: 3005; 
-            animation: popInNumber 1s infinite; 
-        }
-        
-        @keyframes popInNumber { 
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 
-            30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 
-            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } 
-        }
-        
-        .rocket-aura {
-            position: absolute;
-            top: 55%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150vw; 
-            height: 150vw;
-            max-width: 600px; 
-            max-height: 600px;
-            border-radius: 50%;
-            z-index: 3001; 
-            opacity: 0;
-            animation: pulse-aura 1s infinite alternate;
-            pointer-events: none;
-        }
-        .aura-1 { background: radial-gradient(circle, rgba(34,197,94,0.7) 0%, transparent 70%); } 
-        .aura-2 { background: radial-gradient(circle, rgba(59,130,246,0.7) 0%, transparent 70%); } 
-        .aura-3 { background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%); } 
-        .aura-4 { background: radial-gradient(circle, rgba(250,204,21,0.7) 0%, transparent 70%); } 
+      /* ================== ROCKET SYSTEM (CLEAN & FIXED) ================== */
+        #rocket-trigger-btn { position: absolute; bottom: 140px; right: 15px; width: 50px; height: 50px; z-index: 50; cursor: pointer; }
+        .rocket-display-icon { width: 130%; height: 130%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); margin-left: -15%; margin-top: -15%; animation: floatRocket 2.5s ease-in-out infinite; }
+        @keyframes floatRocket { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        @keyframes pulse-aura {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-        }
-
+        /* Flying Animation CSS */
+        #rocket-fly-layer { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; pointer-events: none !important; z-index: 99999999 !important; display: none; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10%; transform: translateZ(9999px) !important; }
+        .flying-rocket { width: 120vw; max-width: 500px; height: auto; position: relative; z-index: 3002; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8)); }
+        .rocket-countdown { font-size: 150px; font-weight: 900; color: #ffda44; text-shadow: 0 8px 0 #b37700, 0 15px 30px rgba(0,0,0,0.9), 0 0 50px #ffea00; position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%); z-index: 3005; animation: popInNumber 1s infinite; }
+        @keyframes popInNumber { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } }
+        .rocket-aura { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); width: 150vw; height: 150vw; max-width: 600px; max-height: 600px; border-radius: 50%; z-index: 3001; opacity: 0; animation: pulse-aura 1s infinite alternate; pointer-events: none; }
+        .aura-1 { background: radial-gradient(circle, rgba(34,197,94,0.7) 0%, transparent 70%); } .aura-2 { background: radial-gradient(circle, rgba(59,130,246,0.7) 0%, transparent 70%); } .aura-3 { background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%); } .aura-4 { background: radial-gradient(circle, rgba(250,204,21,0.7) 0%, transparent 70%); }
+        @keyframes pulse-aura { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; } 100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } }
         .rocket-rumble { animation: rumble 0.1s infinite ease-in-out; }
-        @keyframes rumble {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-4px, 4px) rotate(-1deg); }
-            40% { transform: translate(4px, -4px) rotate(1deg); }
-            60% { transform: translate(-4px, -4px) rotate(-1deg); }
-            80% { transform: translate(4px, 4px) rotate(1deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        
+        @keyframes rumble { 0% { transform: translate(0, 0) rotate(0deg); } 20% { transform: translate(-4px, 4px) rotate(-1deg); } 40% { transform: translate(4px, -4px) rotate(1deg); } 60% { transform: translate(-4px, -4px) rotate(-1deg); } 80% { transform: translate(4px, 4px) rotate(1deg); } 100% { transform: translate(0, 0) rotate(0deg); } }
         .rocket-launching { animation: bigLaunch 2.5s ease-in-out forwards; }
-        @keyframes bigLaunch {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            15% { transform: translateY(30px) scale(0.95); opacity: 1; filter: drop-shadow(0 0 50px #ff0000); }
-            100% { transform: translateY(-200vh) scale(1.2); opacity: 0; }
-        }
-
+        @keyframes bigLaunch { 0% { transform: translateY(0) scale(1); opacity: 1; } 15% { transform: translateY(30px) scale(0.95); opacity: 1; filter: drop-shadow(0 0 50px #ff0000); } 100% { transform: translateY(-200vh) scale(1.2); opacity: 0; } }
         .sparkle-effect { position: absolute; width: 15px; height: 15px; background: #fff; border-radius: 50%; box-shadow: 0 0 20px #fff, 0 0 40px #ffea00; animation: sparkleAnim 1s ease-out forwards; z-index: 3006; }
         @keyframes sparkleAnim { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
 
-        #rocket-details-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
-        .rocket-modal-card { background: linear-gradient(180deg, #2e0249 0%, #5b0a91 100%); border: 2px solid #d946ef; border-radius: 24px; width: 95%; max-width: 400px; height: 80vh; display: flex; position: relative; padding: 10px; overflow: hidden; box-shadow: 0 0 30px rgba(168, 85, 247, 0.5); }
-        .modal-left-col { width: 25%; display: flex; flex-direction: column; gap: 10px; align-items: center; padding-top: 20px; }
-        .modal-level-btn { width: 50px; height: 50px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: white; cursor: pointer; position: relative; }
-        .modal-level-btn.active { border-color: #facc15; background: rgba(250, 204, 21, 0.2); box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
-        .modal-center-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .big-center-rocket { width: 150px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.5)); }
-        .modal-right-col { width: 15%; display: flex; justify-content: center; padding-top: 20px; padding-bottom: 20px; }
-        .tube-container { width: 30px; height: 100%; background: rgba(255,255,255,0.1); border-radius: 20px; border: 2px solid rgba(255,255,255,0.3); position: relative; overflow: hidden; display: flex; flex-direction: column-reverse; }
-        .tube-fill { width: 100%; background: linear-gradient(to top, #22c55e, #a3e635); transition: height 0.5s ease; }
-        .tube-percent { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); color: white; font-weight: bold; font-size: 12px; text-shadow: 0 1px 2px black; }
-        .rewards-panel { position: absolute; bottom: 20px; left: 0; width: 100%; padding: 0 20px; }
-        .rewards-box { background: rgba(0,0,0,0.5); border: 1px solid #d946ef; border-radius: 12px; padding: 10px; display: flex; justify-content: space-around; align-items: center; }
-        .reward-item { display: flex; flex-direction: column; align-items: center; color: #facc15; font-size: 10px; }
-        .reward-img { width: 30px; height: 30px; object-fit: contain; margin-bottom: 5px; }
+        /* Modal Glassmorphism & Bottom Fixed */
+        #rocket-details-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 3000; align-items: center; justify-content: flex-end; flex-direction: column; padding: 0; }
+        .rocket-modal-card { background: rgba(30, 10, 50, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: 30px 30px 0 0; width: 100%; max-width: 500px; height: auto; min-height: 55vh; padding: 20px 15px 30px 15px; display: flex; flex-direction: column; position: relative; box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5); }
+        
+        .modal-top-section { display: flex; justify-content: space-between; flex: 1; min-height: 250px; margin-bottom: 20px; }
+        .modal-left-col { width: 60px; display: flex; flex-direction: column; gap: 15px; align-items: center; padding-top: 10px; }
+        .modal-level-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(5px); }
+        .modal-level-btn.active { border-color: #facc15; background: rgba(250, 204, 21, 0.25); box-shadow: 0 0 15px rgba(250, 204, 21, 0.6); color: #facc15; transform: scale(1.1); }
+        
+        .modal-center-col { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        /* راکٹ کا سائز بڑا کر دیا گیا ہے اور چمک بڑھا دی گئی ہے */
+        .big-center-rocket { width: 250px; height: 250px; object-fit: contain; filter: drop-shadow(0 0 35px rgba(250, 204, 21, 0.7)); animation: floatRocket 2.5s ease-in-out infinite; }
+        
+        .modal-right-col { width: 50px; display: flex; justify-content: flex-end; padding-top: 10px; padding-bottom: 10px; padding-right: 5px; }
+        
+        /* Tube اور سیدھا Percentage (FIXED POSITION) */
+        .tube-container { width: 18px; height: 100%; background: rgba(0,0,0,0.6); border-radius: 20px; border: 1.5px solid rgba(255,255,255,0.2); position: relative; overflow: visible; display: flex; flex-direction: column-reverse; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .tube-fill { width: 100%; background: linear-gradient(to top, #3b82f6, #d946ef, #facc15); transition: height 0.5s ease; border-radius: 20px; box-shadow: 0 0 15px rgba(236, 72, 153, 0.8); }
+        
+        /* پرسنٹیج اب ٹیوب کے بائیں (Left) جانب ہے، راکٹ اور ٹیوب کے بیچ میں، اور بڑی ہے */
+        .tube-percent { position: absolute; top: 50%; right: 30px; transform: translateY(-50%); color: white; font-weight: 900; font-size: 15px; text-shadow: 0 2px 6px black; letter-spacing: 1px; }
+        
+        /* الگ الگ Coins & Exp Boxes */
+        .rewards-bottom-section { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px 10px; display: flex; justify-content: space-around; align-items: flex-end; backdrop-filter: blur(10px); }
+        .reward-tier { display: flex; flex-direction: column; align-items: center; width: 31%; position: relative; }
+        .reward-tier-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; width: 100%; padding: 12px 5px; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .tier-crown { width: 42px; height: 42px; position: absolute; top: -25px; object-fit: contain; z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
+        
+        .r-item-row { display: flex; align-items: center; gap: 4px; width: 90%; justify-content: center; padding: 3px 0; border-radius: 6px; }
+        .r-bg-coin { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
+        .r-bg-exp { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); }
+        
+        .r-icon { width: 12px; height: 12px; object-fit: contain; }
+        .r-text { font-size: 10px; font-weight: 900; text-shadow: 1px 1px 0px #000; }
+        
+        .tier-1-box { border-color: rgba(250, 204, 21, 0.5); background: rgba(250, 204, 21, 0.1); transform: scale(1.08); z-index: 5; margin-bottom: 5px; }
+        .tier-2-box { border-color: rgba(148, 163, 184, 0.4); }
+        .tier-3-box { border-color: rgba(217, 119, 6, 0.4); }
 
         /* Gift Targets Styling */
         .gift-targets-wrapper { display: flex; overflow-x: auto; gap: 10px; padding: 10px; border-bottom: 1px solid #444; background: rgba(0,0,0,0.3); margin-bottom: 10px; }
@@ -2094,37 +2042,76 @@
                 <video id="theme-video-bg" loop muted playsinline class="fixed-bg-layer hidden"></video>
 
                 <div id="rocket-trigger-btn" onclick="openRocketDetails()">
-                    <img src="./rocket1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="rocket-display-icon" id="main-rocket-icon">
+                    <!-- Flaticon کا لنک ختم کر دیا، اب ڈائریکٹ SVG چلے گا اور اگر لیٹ ہوا تو PNG چلے گا، کوئی عجیب تصویر نہیں آئے گی -->
+                    <img src="./rocket1.svg" onerror="this.src='./rocket1.png'" class="rocket-display-icon" id="main-rocket-icon">
                 </div>
                 
                 <div id="game-trigger-btn" onclick="openGame()" class="absolute bottom-[80px] right-[15px] w-[45px] h-[45px] z-50 cursor-pointer hover:scale-105 transition">
                     <img src="./game_icon.png" onerror="this.src='https://placehold.co/100x100?text=Game'" class="w-full h-full object-cover rounded-lg shadow-[0_0_10px_rgba(250,204,21,0.5)] border border-yellow-400">
                 </div>
                 
-                <div id="rocket-details-modal">
-                    <div class="rocket-modal-card">
-                        <button onclick="closeRocketDetails()" class="absolute top-2 right-3 text-gray-400 z-50"><i class="fa-solid fa-xmark text-xl"></i></button>
-                        <div class="modal-left-col">
-                            <div class="modal-level-btn" id="btn-lvl-4"><span>LV.4</span></div>
-                            <div class="modal-level-btn" id="btn-lvl-3"><span>LV.3</span></div>
-                            <div class="modal-level-btn" id="btn-lvl-2"><span>LV.2</span></div>
-                            <div class="modal-level-btn" id="btn-lvl-1"><span>LV.1</span></div>
-                        </div>
-                        <div class="modal-center-col">
-                            <img id="modal-big-rocket" src="./rocket1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="big-center-rocket">
-                            <div class="rewards-panel">
-                                <div class="rewards-box">
-                                    <div class="reward-item"><img src="https://placehold.co/40?text=F" class="reward-img"><span>Frame x1</span></div>
-                                    <div class="reward-item"><img src="https://placehold.co/40?text=E" class="reward-img"><span>Entry x1</span></div>
-                                    <div class="reward-item"><img src="https://placehold.co/40?text=B" class="reward-img"><span>Badge x1</span></div>
+                <div id="rocket-details-modal" onclick="closeRocketDetails()">
+                    <!-- اندر کلک کرنے سے موڈل بند نہ ہو -->
+                    <div class="rocket-modal-card" onclick="event.stopPropagation()">
+                        <button onclick="closeRocketDetails()" class="absolute top-4 right-5 text-gray-300 hover:text-white z-50 bg-white/10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md"><i class="fa-solid fa-xmark text-lg"></i></button>
+                        
+                        <!-- Top Section: Buttons, Rocket, Tube -->
+                        <div class="modal-top-section">
+                            <div class="modal-left-col">
+                                <div class="modal-level-btn" id="btn-lvl-4" onclick="previewRocketModal(4)">LV.4</div>
+                                <div class="modal-level-btn" id="btn-lvl-3" onclick="previewRocketModal(3)">LV.3</div>
+                                <div class="modal-level-btn" id="btn-lvl-2" onclick="previewRocketModal(2)">LV.2</div>
+                                <div class="modal-level-btn active" id="btn-lvl-1" onclick="previewRocketModal(1)">LV.1</div>
+                            </div>
+                            
+                            <div class="modal-center-col">
+                                <!-- اب یہاں آپ کا اوریجنل SVG لوڈ ہوگا، پلیس ہولڈر ختم کر دیا ہے -->
+                                <img id="modal-big-rocket" src="./rocket1.svg" onerror="this.src='./rocket1.png'" class="big-center-rocket">
+                            </div>
+                            
+                            <div class="modal-right-col">
+                                <div class="tube-container">
+                                    <div id="rocket-tube-fill" class="tube-fill" style="height: 0%;"></div>
+                                    <!-- فیصد اب سیدھا ہے اور ٹیوب کے باہر ہے -->
+                                    <div id="rocket-tube-text" class="tube-percent">0%</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-right-col">
-                            <div class="tube-container">
-                                <div id="rocket-tube-fill" class="tube-fill"></div>
-                                <div id="rocket-tube-text" class="tube-percent">0%</div>
+
+                        <!-- Bottom Section: Top 1, 2, 3 Rewards (Separate Boxes) -->
+                        <h3 class="text-center text-white/70 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Ranking Rewards</h3>
+                        <div class="rewards-bottom-section">
+                            
+                            <!-- TOP 2 -->
+                            <div class="reward-tier">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583319.png" class="tier-crown" style="top: -20px; width: 34px;">
+                                <div class="reward-tier-box tier-2-box mt-3">
+                                    <div class="text-[10px] font-black text-gray-300 mb-1">TOP 2</div>
+                                    <div class="r-item-row r-bg-coin"><img src="./coin_icon.png" onerror="this.src='https://placehold.co/20'" class="r-icon"><span class="r-text text-gray-200" id="r-t2-coins">15,000</span></div>
+                                    <div class="r-item-row r-bg-exp"><span class="text-blue-400 font-black text-[9px] uppercase">EXP</span><span class="r-text text-blue-300" id="r-t2-exp">30,000</span></div>
+                                </div>
                             </div>
+
+                            <!-- TOP 1 (Bigger) -->
+                            <div class="reward-tier">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="tier-crown">
+                                <div class="reward-tier-box tier-1-box">
+                                    <div class="text-[11px] font-black text-yellow-400 mb-1">TOP 1</div>
+                                    <div class="r-item-row r-bg-coin"><img src="./coin_icon.png" onerror="this.src='https://placehold.co/20'" class="r-icon"><span class="r-text text-yellow-400" id="r-t1-coins">20,000</span></div>
+                                    <div class="r-item-row r-bg-exp"><span class="text-blue-400 font-black text-[9px] uppercase">EXP</span><span class="r-text text-blue-300" id="r-t1-exp">30,000</span></div>
+                                </div>
+                            </div>
+
+                            <!-- TOP 3 -->
+                            <div class="reward-tier">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583434.png" class="tier-crown" style="top: -20px; width: 34px;">
+                                <div class="reward-tier-box tier-3-box mt-3">
+                                    <div class="text-[10px] font-black text-orange-300 mb-1">TOP 3</div>
+                                    <div class="r-item-row r-bg-coin"><img src="./coin_icon.png" onerror="this.src='https://placehold.co/20'" class="r-icon"><span class="r-text text-orange-300" id="r-t3-coins">10,000</span></div>
+                                    <div class="r-item-row r-bg-exp"><span class="text-blue-400 font-black text-[9px] uppercase">EXP</span><span class="r-text text-blue-300" id="r-t3-exp">30,000</span></div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

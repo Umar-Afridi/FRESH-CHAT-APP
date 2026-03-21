@@ -1,9 +1,19 @@
 window.ROCKET_LEVELS =[ 
-    { level: 1, cost: 300000, img: './rocket1.png', anim: './rocket1.svg' }, 
-    { level: 2, cost: 500000, img: './rocket2.png', anim: './rocket2.svg' }, 
-    { level: 3, cost: 2000000, img: './rocket3.png', anim: './rocket3.svg' }, 
-    { level: 4, cost: 4000000, img: './rocket4.png', anim: './rocket4.svg' } 
+    { level: 1, cost: 300000, img: './rocket1.png', anim: './rocket1.svg', 
+      rewards: { t1: { coins: '20,000', exp: '30,000' }, t2: { coins: '15,000', exp: '30,000' }, t3: { coins: '10,000', exp: '30,000' } } 
+    }, 
+    { level: 2, cost: 500000, img: './rocket2.png', anim: './rocket2.svg', 
+      rewards: { t1: { coins: '50,000', exp: '60,000' }, t2: { coins: '30,000', exp: '60,000' }, t3: { coins: '20,000', exp: '60,000' } } 
+    }, 
+    { level: 3, cost: 2000000, img: './rocket3.png', anim: './rocket3.svg', 
+      rewards: { t1: { coins: '100,000', exp: '120,000' }, t2: { coins: '80,000', exp: '120,000' }, t3: { coins: '50,000', exp: '120,000' } } 
+    }, 
+    { level: 4, cost: 4000000, img: './rocket4.png', anim: './rocket4.svg', 
+      rewards: { t1: { coins: '200,000', exp: '240,000' }, t2: { coins: '150,000', exp: '240,000' }, t3: { coins: '100,000', exp: '240,000' } } 
+    } 
 ];
+
+window.currentRocketTargetLevel = 1; // For tracking current room level
 
 window.rocket_currentRoomExp = 0;
 window.lastRocketLevel = 0;
@@ -21,16 +31,21 @@ window.initRocketListener = function(rid) {
     });
 };
 
+// راکٹ کو دوبارہ سٹارٹ کرنے کے لیے گلوبل ٹائمر
+// راکٹ کو دوبارہ سٹارٹ کرنے کے لیے گلوبل ٹائمر
+window.rocketLoopTimer = null;
+window.currentRoomRocketAnim = null;
+window.currentModalSvg = null; 
+
 window.updateRocketUI = function(exp, rid) {
     let targetLevel = 0; 
-    let targetImg = window.ROCKET_LEVELS[0].img; 
     let nextThreshold = window.ROCKET_LEVELS[0].cost; 
     let prevThreshold = 0;
 
+    // 1. پہلے چیک کریں کہ کون سا لیول اچیو (Achieve) ہو چکا ہے
     for (let i = 0; i < window.ROCKET_LEVELS.length; i++) {
         if (exp >= window.ROCKET_LEVELS[i].cost) {
             targetLevel = window.ROCKET_LEVELS[i].level; 
-            targetImg = window.ROCKET_LEVELS[i].img; 
             prevThreshold = window.ROCKET_LEVELS[i].cost;
             if (i < window.ROCKET_LEVELS.length - 1) { 
                 nextThreshold = window.ROCKET_LEVELS[i+1].cost; 
@@ -40,16 +55,50 @@ window.updateRocketUI = function(exp, rid) {
         }
     }
     
+    // 2. یہ لاجک طے کرے گا کہ سکرین پر کون سا راکٹ کھڑا نظر آئے گا (Next Target)
+    let displayLevelIndex = 0;
+    for (let i = 0; i < window.ROCKET_LEVELS.length; i++) {
+        if (exp >= window.ROCKET_LEVELS[i].cost) {
+            displayLevelIndex = Math.min(i + 1, window.ROCKET_LEVELS.length - 1);
+        }
+    }
+    
+    let displayData = window.ROCKET_LEVELS[displayLevelIndex];
+    window.currentRocketTargetLevel = displayData.level; 
+    window.currentRoomRocketAnim = displayData.anim; 
+
+    // 3. روم کے چھوٹے آئیکن پر SVG لگائیں (بغیر جھٹکے کے - PRELOAD TECHNIQUE)
     const triggerImg = document.getElementById('main-rocket-icon'); 
-    if (triggerImg) triggerImg.src = targetImg;
-    document.getElementById('modal-big-rocket').src = targetImg;
+    if (triggerImg && !triggerImg.src.includes(displayData.anim)) {
+        let tempRoomImg = new Image();
+        tempRoomImg.onload = function() { triggerImg.src = this.src; };
+        tempRoomImg.src = displayData.anim + "?t=" + Date.now();
+    }
     
-    document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
-    if(targetLevel >= 1) document.getElementById('btn-lvl-1').classList.add('active'); 
-    if(targetLevel >= 2) document.getElementById('btn-lvl-2').classList.add('active'); 
-    if(targetLevel >= 3) document.getElementById('btn-lvl-3').classList.add('active'); 
-    if(targetLevel >= 4) document.getElementById('btn-lvl-4').classList.add('active');
+    // 4. آٹو ری سٹارٹ (Loop) سسٹم تاکہ راکٹ غائب نہ ہو اور کوئی سفید ڈبہ نہ آئے!
+    if(window.rocketLoopTimer) clearInterval(window.rocketLoopTimer);
+    window.rocketLoopTimer = setInterval(() => {
+        let cacheBuster = "?t=" + Date.now(); 
+        
+        // روم کے چھوٹے آئیکن کو بیک گراؤنڈ میں لوڈ کر کے ری سٹارٹ کریں
+        let icon = document.getElementById('main-rocket-icon');
+        if(icon && window.currentRoomRocketAnim) {
+            let tempIcon = new Image();
+            tempIcon.onload = function() { icon.src = this.src; };
+            tempIcon.src = window.currentRoomRocketAnim + cacheBuster;
+        }
+        
+        // موڈل والے بڑے راکٹ کو بھی بیک گراؤنڈ میں لوڈ کر کے ری سٹارٹ کریں
+        let modal = document.getElementById('rocket-details-modal');
+        let modalIcon = document.getElementById('modal-big-rocket');
+        if(modal && modal.style.display !== 'none' && modalIcon && window.currentModalSvg) {
+            let tempModalIcon = new Image();
+            tempModalIcon.onload = function() { modalIcon.src = this.src; };
+            tempModalIcon.src = window.currentModalSvg + cacheBuster;
+        }
+    }, 2800); // 2.8 سیکنڈ بعد لوپ چلے گا
     
+    // 5. پرسنٹیج ٹیوب کا لاجک
     let percentage = 0;
     if (targetLevel < 4) { 
         percentage = ((exp - prevThreshold) / (nextThreshold - prevThreshold)) * 100; 
@@ -57,9 +106,13 @@ window.updateRocketUI = function(exp, rid) {
         percentage = 100; 
     }
     percentage = Math.max(0, Math.min(100, percentage));
-    document.getElementById('rocket-tube-fill').style.height = `${percentage}%`; 
-    document.getElementById('rocket-tube-text').innerText = `${Math.floor(percentage)}%`;
+    
+    let tubeFill = document.getElementById('rocket-tube-fill');
+    let tubeText = document.getElementById('rocket-tube-text');
+    if(tubeFill) tubeFill.style.height = `${percentage}%`; 
+    if(tubeText) tubeText.innerText = `${Math.floor(percentage)}%`;
 
+    // 6. راکٹ اڑانے کی کیو (Queue) کا سسٹم
     if (window.isFirstRocketLoad) {
         window.lastRocketLevel = targetLevel;
         window.isFirstRocketLoad = false;
@@ -98,19 +151,44 @@ window.updateRocketUI = function(exp, rid) {
         setTimeout(() => {
             window.set(window.ref(window.db, `rooms/${rid}/roomExp`), 0);
             window.push(window.ref(window.db, `rooms/${rid}/messages`), { 
-                name: "System", 
-                text: "✨ Rocket Cycle Reset! Start again! ✨", 
-                type: 'system', 
-                timestamp: Date.now() 
+                name: "System", text: "✨ Rocket Cycle Reset! Start again! ✨", type: 'system', timestamp: Date.now() 
             });
         }, 5000);
     }
-    
     window.lastRocketLevel = targetLevel;
+};
+
+// Preview Modal Function (یہاں بھی پری لوڈ ٹیکنیک لگا دی گئی ہے)
+window.previewRocketModal = function(level) {
+    const rData = window.ROCKET_LEVELS.find(r => r.level === level);
+    if(!rData) return;
+
+    window.currentModalSvg = rData.anim; 
+    
+    // موڈل میں SVG لوڈ کریں (بیک گراؤنڈ میں لوڈ ہو کر پھر سکرین پر آئے گا)
+    const bigRocket = document.getElementById('modal-big-rocket');
+    let tempModalLoad = new Image();
+    tempModalLoad.onload = function() { bigRocket.src = this.src; };
+    tempModalLoad.onerror = function() { bigRocket.src = rData.img; }; // اگر SVG فیل ہو تو PNG چلا دے
+    tempModalLoad.src = rData.anim + "?t=" + Date.now();
+    
+    document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
+    let activeBtn = document.getElementById(`btn-lvl-${level}`);
+    if(activeBtn) activeBtn.classList.add('active');
+    
+    if(rData.rewards) {
+        document.getElementById('r-t1-coins').innerText = rData.rewards.t1.coins;
+        document.getElementById('r-t1-exp').innerText = rData.rewards.t1.exp;
+        document.getElementById('r-t2-coins').innerText = rData.rewards.t2.coins;
+        document.getElementById('r-t2-exp').innerText = rData.rewards.t2.exp;
+        document.getElementById('r-t3-coins').innerText = rData.rewards.t3.coins;
+        document.getElementById('r-t3-exp').innerText = rData.rewards.t3.exp;
+    }
 };
 
 window.openRocketDetails = () => {
     document.getElementById('rocket-details-modal').style.display = 'flex';
+    window.previewRocketModal(window.currentRocketTargetLevel || 1);
 };
 
 window.closeRocketDetails = () => {
