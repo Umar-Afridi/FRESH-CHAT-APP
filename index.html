@@ -23,21 +23,48 @@
             --bottom-bar-height: 45px; 
         }
         
-        /* ====== NEW SVIP CHAT BUBBLES (DIFFERENT COLORS) ====== */
-/* SVIP 1 - Silver / Platinum */
-.svip-bubble-1 { background: linear-gradient(135deg, #f1f5f9, #94a3b8) !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(148, 163, 184, 0.4) !important; }
-/* SVIP 2 - Emerald Green */
-.svip-bubble-2 { background: linear-gradient(135deg, #a7f3d0, #059669) !important; color: #ffffff !important; border: 1px solid #10b981 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4) !important; text-shadow: 1px 1px 1px rgba(0,0,0,0.3) !important; }
-/* SVIP 3 - Deep Blue */
-.svip-bubble-3 { background: linear-gradient(135deg, #93c5fd, #2563eb) !important; color: #ffffff !important; border: 1px solid #3b82f6 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4) !important; }
-/* SVIP 4 - Royal Purple */
-.svip-bubble-4 { background: linear-gradient(135deg, #e9d5ff, #9333ea) !important; color: #ffffff !important; border: 1px solid #a855f7 !important; font-weight: 800 !important; box-shadow: 0 4px 10px rgba(147, 51, 234, 0.4) !important; }
-/* SVIP 5 - Gold & Red */
-.svip-bubble-5 { background: linear-gradient(135deg, #fca5a5, #dc2626) !important; color: #ffffff !important; border: 1px solid #ef4444 !important; font-weight: 800 !important; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.6) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important; }
-
-/* چیٹ روم کے ببل کو زبردستی ٹرانسپیرنٹ کلاس ہٹانے کے لیے */
+        /* ====== NEW PURE COLOR CHAT BUBBLES FOR SVIP (NO SVG IN CHAT) ====== */
 .svip-bubble-1, .svip-bubble-2, .svip-bubble-3, .svip-bubble-4, .svip-bubble-5 {
-    background-color: transparent !important;
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 75vw !important;
+    padding: 6px 14px !important;
+    margin: 2px 0 !important;
+    border-radius: 4px 16px 16px 16px !important; /* خوبصورت چیٹ ببل کی شیپ */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2) !important; /* ہلکا سا شیڈو */
+    border: 1px solid rgba(255,255,255,0.2) !important; /* بارڈر شائن کے لیے */
+}
+
+/* SVIP 1: TEAL */
+.svip-bubble-1 { 
+    background: linear-gradient(135deg, #0f766e, #14b8a6) !important; 
+}
+
+/* SVIP 2: GREEN */
+.svip-bubble-2 { 
+    background: linear-gradient(135deg, #16a34a, #22c55e) !important; 
+}
+
+/* SVIP 3: SKY BLUE */
+.svip-bubble-3 { 
+    background: linear-gradient(135deg, #0284c7, #38bdf8) !important; 
+}
+
+/* SVIP 4: PURPLE */
+.svip-bubble-4 { 
+    background: linear-gradient(135deg, #7e22ce, #a855f7) !important; 
+}
+
+/* SVIP 5: BRIGHT RED */
+.svip-bubble-5 { 
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important; 
 }
         /* ====== NEW SEAT NAME FIX (PROFESSIONAL & ALIGNED) ====== */
 .seat-name {
@@ -1663,13 +1690,7 @@
             </div>
         </div>
 
-        <div id="prophouse-modal" class="fixed inset-0 z-[2000] bg-black/95 flex-col p-4 hidden">
-            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4 pt-10">
-                <h2 class="text-2xl font-bold text-white tracking-wider">PROP <span class="text-red-600">WAREHOUSE</span></h2>
-                <button onclick="closePropHouse()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="frame-grid" class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto pb-20 items-start content-start"></div>
-        </div>
+        
 
         <div id="store-modal" class="fixed inset-0 z-[2000] bg-black/95 flex-col p-4 hidden">
             <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4 pt-10">
@@ -5182,217 +5203,7 @@ const hpContainer = document.getElementById('hp-visual-container');
             });
         };
 
-        window.openPropHouse = async () => {
-            const grid = document.getElementById('frame-grid');
-            grid.innerHTML = '<div class="text-white text-center w-full mt-10 col-span-2">Loading Warehouse...</div>';
-            
-            const snap = await get(ref(db, `users/${currentUser.uid}`));
-            const userData = snap.val() || {};
-            
-            let unlockedFrames = userData.unlockedFrames || {};
-            const unlockedVIPs = userData.unlockedVIPs || {}; 
-            
-            let needsMigration = false;
-
-            // پرانے VIPs کو نئے سسٹم میں مائگریٹ کرنا
-            if (Object.keys(unlockedVIPs).length > 0) {
-                for (let [vipClass, isOwned] of Object.entries(unlockedVIPs)) {
-                    if (isOwned) {
-                        let lvl = 20; let days = 7; let iconPath = './green_vip.png'; let vName = 'VIP Green';
-                        
-                        if(vipClass.includes('yellow')) { lvl = 30; days = 30; iconPath = './yellow_vip.png'; vName = 'VIP Yellow'; }
-                        if(vipClass.includes('pink')) { lvl = 50; days = 14; iconPath = './pink_vip.png'; vName = 'VIP Pink'; }
-                        if(vipClass.includes('colorful')) { lvl = 100; days = 30; iconPath = './colorful_vip.png'; vName = 'VIP Colorful'; }
-                        
-                        let expiryTime = Date.now() + (days * 24 * 60 * 60 * 1000);
-                        let uniqueId = 'vip_migrated_' + lvl + '_' + Date.now();
-                        
-                        unlockedFrames[uniqueId] = {
-                            name: vName,
-                            img: vipClass,
-                            icon: iconPath,
-                            isVipName: true,
-                            purchasedAt: Date.now(),
-                            expiry: expiryTime,
-                            status: 'unused'
-                        };
-                        needsMigration = true;
-                    }
-                }
-            }
-
-            if (needsMigration) {
-                await update(ref(db, `users/${currentUser.uid}`), {
-                    unlockedFrames: unlockedFrames,
-                    unlockedVIPs: null 
-                });
-            }
-
-            let htmlContent = '';
-            let hasFrames = false;
-
-            for (let[purchaseId, frameData] of Object.entries(unlockedFrames)) {
-                
-                // 👇 اگر فریم یوز ہو چکا ہے (active)، تو اسے Prop House سے ہائیڈ کر دو
-                if (frameData.status === 'active') {
-                    continue; 
-                }
-
-                hasFrames = true;
-                let btnText, btnClass, btnAction, statusText;
-
-                if (frameData.status === 'unused') {
-                    btnText = "USE NOW";
-                    btnClass = "bg-green-600";
-                    if(frameData.isBubble) {
-                        btnAction = `applyFrame('${purchaseId}', null, false, true, '${frameData.bubbleClass}')`;
-                    } else {
-                        btnAction = `applyFrame('${purchaseId}', '${frameData.img}', ${frameData.isVipName || false})`;
-                    }
-                    statusText = `<span class="text-green-400 text-[9px] font-bold">UNUSED</span>`;
-                } else {
-                    // Expired frames
-                    statusText = `<span class="text-red-500 text-[9px] font-bold">EXPIRED</span>`;
-                    btnText = "DELETE";
-                    btnClass = "bg-gray-600";
-                    btnAction = `deleteExpiredFrame('${purchaseId}', false)`;
-                }
-
-                let iconHtml = '';
-                let finalName = frameData.name;
-
-                if (frameData.isVipName) {
-                    let iconSrc = frameData.icon;
-                    if(frameData.img.includes('green')) { iconSrc = './green_vip.png'; finalName = 'VIP Green'; }
-                    else if(frameData.img.includes('yellow')) { iconSrc = './yellow_vip.png'; finalName = 'VIP Yellow'; }
-                    else if(frameData.img.includes('pink')) { iconSrc = './pink_vip.png'; finalName = 'VIP Pink'; }
-                    else if(frameData.img.includes('colorful')) { iconSrc = './colorful_vip.png'; finalName = 'VIP Colorful'; }
-                    
-                    iconHtml = `<img src="${iconSrc}" class="w-16 h-16 object-contain drop-shadow-lg" onerror="this.style.display='none'">`;
-                } else {
-                    let displayImg = (frameData.img || '').endsWith('.mp4') ? frameData.img.replace('.mp4', '.png') : frameData.img;
-                    iconHtml = `<img src="${currentUser.photoURL}" class="w-14 h-14 rounded-full object-cover"><img src="${displayImg}" class="absolute inset-0 w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; this.src=this.src.replace('/frames/', '/');">`;
-                }
-
-                htmlContent += `
-                <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col items-center relative shadow-lg">
-                    <div class="w-20 h-20 relative mb-2 flex items-center justify-center">
-                        ${iconHtml}
-                    </div>
-                    <span class="text-white font-bold text-[13px] text-center w-full truncate px-1">${finalName}</span>
-                    <div class="mb-3 mt-1">${statusText}</div>
-                    <button onclick="${btnAction}" class="w-full ${btnClass} text-white font-bold text-[10px] py-2 rounded-lg transition active:scale-95 uppercase">${btnText}</button>
-                </div>`;
-            }
-
-            if (!hasFrames) {
-                grid.innerHTML = '<div class="text-gray-500 text-center w-full mt-10 col-span-2 text-sm">Your warehouse is empty.</div>';
-            } else {
-                grid.innerHTML = htmlContent;
-            }
-            
-            const modal = document.getElementById('prophouse-modal');
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-        };
-
-        window.closePropHouse = () => {
-            const modal = document.getElementById('prophouse-modal');
-            modal.classList.add('hidden');
-            modal.style.display = 'none';
-        };
-
-        window.applyFrame = async (purchaseId, imgPath, isVipName = false, isBubble = false, bubbleClass = null) => {
-            let expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000); 
-            // اگر ببل ہے تو اسے پرماننٹ (یا 30 دن) کے لیے سیٹ کر سکتے ہیں، فی الحال 7 دن ہی رکھا ہے
-            await update(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`), {
-                activatedAt: Date.now(),
-                expiry: expiryTime,
-                status: 'active'
-            });
-            
-            if (isBubble) {
-                await update(ref(db, `users/${currentUser.uid}`), { currentBubbleClass: bubbleClass });
-                Swal.fire({toast:true, icon:'success', title:'Chat Bubble Activated!', position:'top', showConfirmButton:false, timer:2000});
-                window.openPropHouse();
-            } else {
-                await window.equipActiveFrame(imgPath, isVipName);
-                Swal.fire({toast:true, icon:'success', title:'Activated! 7 Days Timer Started.', position:'top', showConfirmButton:false, timer:2000});
-            }
-        };
-
-        window.unequipBubble = async () => {
-            await update(ref(db, `users/${currentUser.uid}`), { currentBubbleClass: null });
-            window.openPropHouse();
-        };
-
-        window.equipActiveFrame = async (imgPath, isVipName = false, showPropHouse = true) => {
-            if (isVipName) {
-                await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: imgPath }); 
-            } else {
-                await update(ref(db, `users/${currentUser.uid}`), { currentFrame: imgPath }); 
-            }
-            
-            if(currentRoomId) { 
-                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); 
-                if(seatsSnap.exists()) { 
-                    const seats = seatsSnap.val(); 
-                    Object.keys(seats).forEach(async (k) => { 
-                        if(seats[k].uid === currentUser.uid) { 
-                            if (isVipName) {
-                                await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { nameColorClass: imgPath }); 
-                            } else {
-                                await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: imgPath }); 
-                            }
-                        } 
-                    }); 
-                } 
-            } 
-            
-            // نیا لاجک: اگر Prop House سے کلک ہوا ہے تو اسے اوپن کرو، ورنہ نہیں
-            if (showPropHouse) {
-                window.openPropHouse();
-            }
-            
-            Swal.fire({toast:true, icon:'success', title:'Equipped!', position:'top', showConfirmButton:false, timer:1500});
-        };
-
-        window.unequipFrame = async () => { 
-            await update(ref(db, `users/${currentUser.uid}`), { currentFrame: null }); 
-            if(currentRoomId) { 
-                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`)); 
-                if(seatsSnap.exists()) { 
-                    const seats = seatsSnap.val(); 
-                    Object.keys(seats).forEach(async (k) => { 
-                        if(seats[k].uid === currentUser.uid) { 
-                            await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { frame: null }); 
-                        } 
-                    }); 
-                } 
-            } 
-            window.openPropHouse();
-        };
-
-        window.removeVIPName = async () => {
-            await update(ref(db, `users/${currentUser.uid}`), { nameColorClass: null });
-            if(currentRoomId) {
-                const seatsSnap = await get(ref(db, `rooms/${currentRoomId}/seats`));
-                if(seatsSnap.exists()) {
-                    const seats = seatsSnap.val();
-                    Object.keys(seats).forEach(async (k) => {
-                        if(seats[k].uid === currentUser.uid) { await update(ref(db, `rooms/${currentRoomId}/seats/${k}`), { nameColorClass: null }); }
-                    });
-                }
-            }
-            window.openPropHouse();
-        };
-
-        window.deleteExpiredFrame = async (purchaseId, wasEquipped) => {
-            if (wasEquipped) await unequipFrame();
-            await remove(ref(db, `users/${currentUser.uid}/unlockedFrames/${purchaseId}`));
-            window.openPropHouse();
-        };
-
+  
     // ================= گیلری سے تصویر اپلوڈ کرنے کا لاجک =================
         window.triggerImageUpload = () => {
             document.getElementById('image-upload').click();
@@ -5934,9 +5745,9 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
                 };
             }
 
-            // باقی عام فریمز کا سسٹم
-            for (let [purchaseId, frameData] of Object.entries(unlockedFrames)) {
-                if (frameData && frameData.status === 'active' && frameData.expiry > now && !frameData.isVipName) {
+            for (let[purchaseId, frameData] of Object.entries(unlockedFrames)) {
+                // یہاں ہم نے !frameData.isBubble اور !frameData.isVehicle ایڈ کر دیا ہے
+                if (frameData && frameData.status === 'active' && frameData.expiry > now && !frameData.isVipName && !frameData.isBubble && !frameData.isVehicle) {
                     hasActiveFrames = true;
                     let uniqueKey = frameData.img; 
                     let timeLeftMs = frameData.expiry - now; 
@@ -8108,6 +7919,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./svip_system.js"></script>
 <script src="./rocket_system.js"></script>
 <script src="./gift_animation.js"></script>
+<script src="./prop_house.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>

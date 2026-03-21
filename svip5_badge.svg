@@ -1,0 +1,309 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <!-- Ultra Premium King's Gold Gradient -->
+    <linearGradient id="gold-king" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffde7"/>
+      <stop offset="20%" stop-color="#ffca28"/>
+      <stop offset="50%" stop-color="#ff8f00"/>
+      <stop offset="80%" stop-color="#ffca28"/>
+      <stop offset="100%" stop-color="#fffde7"/>
+    </linearGradient>
+
+    <!-- Deep Shadow Gold for 3D Wing Feathers -->
+    <linearGradient id="gold-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffca28"/>
+      <stop offset="50%" stop-color="#d84315"/>
+      <stop offset="100%" stop-color="#4e342e"/>
+    </linearGradient>
+
+    <!-- Horizontal Bright Gold for SVIP 5 Text -->
+    <linearGradient id="gold-text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#ffe082"/>
+      <stop offset="50%" stop-color="#ffb300"/>
+      <stop offset="70%" stop-color="#ffe082"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+
+    <!-- Royal Crimson Red Gradient for the Badge -->
+    <linearGradient id="red-royal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff1744"/>
+      <stop offset="50%" stop-color="#d50000"/>
+      <stop offset="100%" stop-color="#8e0000"/>
+    </linearGradient>
+
+    <!-- Fire Glow Gradient for the Crown Interior -->
+    <radialGradient id="fire-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#ffea00"/>
+      <stop offset="80%" stop-color="#ff3d00"/>
+      <stop offset="100%" stop-color="#8e0000"/>
+    </radialGradient>
+
+    <!-- Ultimate Drop Shadow for heavy 3D Pop -->
+    <filter id="shadow-heavy" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+
+    <!-- Intense Glow Filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <filter id="glow-extreme" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComponentTransfer in="blur" result="glow">
+        <feFuncA type="linear" slope="1.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Clip Path to keep shine strictly inside the badge -->
+    <clipPath id="badge-clip">
+      <rect x="70" y="35" width="370" height="80" rx="40"/>
+    </clipPath>
+
+    <!-- Star Particle Shape -->
+    <g id="star">
+      <path d="M 0 -10 L 2 -2 L 10 0 L 2 2 L 0 10 L -2 2 L -10 0 L -2 -2 Z" fill="#ffffff" filter="url(#glow)"/>
+    </g>
+    <!-- Sharp Sparkle Shape -->
+    <g id="spark-sharp">
+      <path d="M 0 -15 L 1 -3 L 10 0 L 1 3 L 0 15 L -1 3 L -10 0 L -1 -3 Z" fill="url(#gold-king)" filter="url(#glow)"/>
+    </g>
+  </defs>
+
+  <!-- مین گروپ کو سکرین کے بالکل سینٹر میں سیٹ کیا گیا ہے -->
+  <g transform="translate(60, 230)">
+    
+    <!-- ========================================== -->
+    <!-- 1. ULTIMATE MULTI-LAYERED ANIMATED RIGHT WING -->
+    <!-- ========================================== -->
+    <g transform="translate(420, 40)">
+      <!-- Back Shadow Layer (Slower flap) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 5 30; 18 5 30; 0 5 30" dur="2.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        <path d="M 0 5 C 45 -20 75 10 75 25 C 55 15 40 20 20 35 Z" fill="url(#gold-dark)"/>
+      </g>
+      <!-- Middle Layer 1 (Normal flap) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 5 30; -10 5 30; 8 5 30; 0 5 30" dur="1.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        <path d="M 0 10 C 40 -10 65 30 65 40 C 45 30 30 35 15 45 Z" fill="url(#gold-king)"/>
+      </g>
+      <!-- Middle Layer 2 (Faster flap) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 5 30; -18 5 30; 12 5 30; 0 5 30" dur="1.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        <path d="M 0 15 C 35 -5 55 40 60 50 C 40 40 25 45 5 55 Z" fill="url(#gold-king)"/>
+      </g>
+      <!-- Front Sharp Layer (Fastest majestic flap) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 5 30; -25 5 30; 15 5 30; 0 5 30" dur="1s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        <path d="M 0 20 C 30 0 45 45 50 55 C 35 45 20 50 0 65 C 10 55 25 60 35 70 C 15 60 5 55 -5 40 Z" fill="#ffffff" opacity="0.9"/>
+      </g>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN PILL / BADGE BACKGROUND -->
+    <!-- ========================================== -->
+    <g filter="url(#shadow-heavy)">
+      <!-- Outer Massive Gold Border -->
+      <rect x="70" y="35" width="370" height="80" rx="40" fill="url(#gold-king)"/>
+      
+      <!-- Inner Crimson Red Background -->
+      <rect x="73" y="38" width="364" height="74" rx="37" fill="url(#red-royal)"/>
+      
+      <!-- Top Royal Jewel Accent -->
+      <path d="M 225 36 L 245 20 L 255 8 L 265 20 L 285 36 Z" fill="url(#gold-king)"/>
+      <polygon points="255,14 263,24 255,34 247,24" fill="#ff1744" filter="url(#glow-extreme)">
+        <animate attributeName="opacity" values="0.4; 1; 0.4" dur="1s" repeatCount="indefinite"/>
+      </polygon>
+
+      <!-- Bottom Royal Jewel Accent -->
+      <path d="M 225 114 L 245 130 L 255 142 L 265 130 L 285 114 Z" fill="url(#gold-king)"/>
+      <polygon points="255,136 263,126 255,116 247,126" fill="#ff1744" filter="url(#glow-extreme)">
+        <animate attributeName="opacity" values="0.4; 1; 0.4" dur="1s" repeatCount="indefinite" delay="0.5s"/>
+      </polygon>
+
+      <!-- Animated Inner 3D Breathing Border -->
+      <rect x="76" y="41" width="358" height="68" rx="34" fill="none" stroke="#ffca28" stroke-width="2.5">
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.5s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 3. ULTIMATE LIGHT SWEEP (Inside the Pill) -->
+    <!-- ========================================== -->
+    <g clip-path="url(#badge-clip)">
+      <!-- 1st Beam: Wide and Bright -->
+      <polygon points="-40,-20 10,-20 60,120 10,120" fill="#ffffff" opacity="0.8">
+        <animateTransform attributeName="transform" type="translate" values="-150 0; 650 0; 650 0" keyTimes="0; 0.3; 1" dur="4s" repeatCount="indefinite" />
+      </polygon>
+      
+      <!-- 2nd Beam: Thin Sharp Gold -->
+      <polygon points="20,-20 35,-20 85,120 70,120" fill="#ffea00" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="-150 0; 650 0; 650 0" keyTimes="0; 0.35; 1" dur="4s" repeatCount="indefinite" />
+      </polygon>
+
+      <!-- 3rd Beam: Slow Fire Reflection Reverse Sweep -->
+      <polygon points="400,-20 440,-20 390,120 350,120" fill="#ff5252" opacity="0.3">
+        <animateTransform attributeName="transform" type="translate" values="250 0; -650 0; -650 0" keyTimes="0; 0.4; 1" dur="5s" repeatCount="indefinite" />
+      </polygon>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 4. SVIP 5 TEXT WITH EXTREME 3D GLOW -->
+    <!-- ========================================== -->
+    <g transform="translate(260, 90)">
+      <!-- Text Deep Shadow -->
+      <text x="0" y="5" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="900" fill="#4a0000" text-anchor="middle" letter-spacing="4">SVIP 5</text>
+      
+      <!-- Main Gold Text -->
+      <text x="0" y="0" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="900" fill="url(#gold-text)" text-anchor="middle" letter-spacing="4">SVIP 5</text>
+      
+      <!-- Animated Fire/Gold Glow -->
+      <text x="0" y="0" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="900" fill="#ffca28" filter="url(#glow-extreme)" text-anchor="middle" letter-spacing="4">
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.5s" repeatCount="indefinite" />
+        SVIP 5
+      </text>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 5. THE KING'S SHIELD & CROWN (Floating) -->
+    <!-- ========================================== -->
+    <g id="shield-group">
+      <!-- Grand Shield Float Animation -->
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="3.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+      
+      <!-- Left Gold Wings (Animated to flex with the float) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 40 60; 5 40 60; 0 40 60" dur="3.5s" repeatCount="indefinite"/>
+        <path d="M 50 45 C 20 25 0 25 0 25 C 20 45 30 55 35 60 Z" fill="url(#gold-king)"/>
+        <path d="M 45 65 C 15 50 -5 55 -5 55 C 15 70 25 75 30 80 Z" fill="url(#gold-king)"/>
+        <path d="M 42 80 C 10 70 0 85 0 85 C 15 95 25 95 30 100 Z" fill="url(#gold-king)"/>
+      </g>
+      
+      <!-- Right Gold Wings (attached to shield) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 140 60; -5 140 60; 0 140 60" dur="3.5s" repeatCount="indefinite"/>
+        <path d="M 130 45 C 160 25 180 25 180 25 C 160 45 150 55 145 60 Z" fill="url(#gold-king)"/>
+        <path d="M 135 65 C 165 50 185 55 185 55 C 165 70 155 75 150 80 Z" fill="url(#gold-king)"/>
+        <path d="M 138 80 C 170 70 180 85 180 85 C 165 95 155 95 150 100 Z" fill="url(#gold-king)"/>
+      </g>
+
+      <!-- Main Shield Outer Gold Border -->
+      <path d="M 40 30 L 140 30 L 148 80 Q 148 135 90 160 Q 32 135 32 80 Z" fill="url(#gold-king)" filter="url(#shadow-heavy)"/>
+      
+      <!-- Inner Deep Crimson Shield -->
+      <path d="M 46 36 L 134 36 L 140 80 Q 140 128 90 152 Q 40 128 40 80 Z" fill="url(#red-royal)"/>
+      
+      <!-- Inner Glowing Gold Detail Line -->
+      <path d="M 50 40 L 130 40 L 135 80 Q 135 122 90 144 Q 45 122 45 80 Z" fill="none" stroke="#ffca28" stroke-width="2.5"/>
+
+      <!-- ============================================== -->
+      <!-- THE KING'S CROWN & SPINNING MAGIC STAR -->
+      <!-- ============================================== -->
+      
+      <!-- Back Velvet Dome of Crown -->
+      <path d="M 65 90 L 55 60 C 70 45 110 45 125 60 L 115 90 Z" fill="url(#fire-core)"/>
+      
+      <!-- *NEW* Spinning Magic Star INSIDE the Crown -->
+      <g transform="translate(90, 70)">
+        <circle cx="0" cy="0" r="15" fill="#ffffff" filter="url(#glow-extreme)">
+          <animate attributeName="opacity" values="0.6; 1; 0.6" dur="1s" repeatCount="indefinite"/>
+          <animate attributeName="r" values="10; 18; 10" dur="1s" repeatCount="indefinite"/>
+        </circle>
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="4s" repeatCount="indefinite"/>
+          <path d="M 0 -20 L 2 -4 L 20 0 L 2 4 L 0 20 L -2 4 L -20 0 L -2 -4 Z" fill="#ffffff"/>
+          <path d="M 0 -15 L 2 -3 L 15 0 L 2 3 L 0 15 L -2 3 L -15 0 L -2 -3 Z" fill="#ffea00" transform="rotate(45)"/>
+        </g>
+      </g>
+
+      <!-- Front Crown Gold Structure -->
+      <rect x="65" y="94" width="50" height="9" rx="3" fill="url(#gold-king)"/>
+      <rect x="67" y="106" width="46" height="4" rx="2" fill="url(#gold-king)"/>
+      <path d="M 65 92 L 55 60 L 75 80 L 90 50 L 105 80 L 125 60 L 115 92 Z" fill="url(#gold-king)"/>
+      <path d="M 55 60 C 75 50 105 50 125 60" fill="none" stroke="url(#gold-king)" stroke-width="2.5"/>
+      
+      <!-- Glowing Red Crown Jewels -->
+      <circle cx="60" cy="58" r="4" fill="#ff1744" filter="url(#glow)">
+        <animate attributeName="r" values="3; 5; 3" dur="1s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="90" cy="48" r="5.5" fill="#ffffff" filter="url(#glow-extreme)">
+        <animate attributeName="r" values="4; 7; 4" dur="1.2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="120" cy="58" r="4" fill="#ff1744" filter="url(#glow)">
+        <animate attributeName="r" values="3; 5; 3" dur="1s" repeatCount="indefinite" delay="0.5s"/>
+      </circle>
+
+      <!-- Ultimate Shield Bottom Diamond -->
+      <polygon points="90,138 97,146 90,154 83,146" fill="#ffffff" filter="url(#glow-extreme)">
+         <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite" />
+      </polygon>
+
+      <!-- Curved Glass Shine on Shield -->
+      <path d="M 40 30 L 85 30 L 40 90 Z" fill="#ffffff" opacity="0.25"/>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 6. ULTIMATE FIRE & GOLD SPARKS (Magic Dust) -->
+    <!-- ========================================== -->
+    
+    <!-- Spark 1 -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="30 160; 10 -20" dur="2.5s" repeatCount="indefinite"/>
+      <use href="#spark-sharp" x="0" y="0">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" values="0; 180" dur="2.5s" repeatCount="indefinite" additive="sum"/>
+      </use>
+    </g>
+    <!-- Spark 2 -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="160 150; 180 -10" dur="3s" repeatCount="indefinite" delay="0.5s"/>
+      <circle cx="0" cy="0" r="4" fill="#ffea00" filter="url(#glow)">
+        <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite" delay="0.5s"/>
+      </circle>
+    </g>
+    <!-- Spark 3 -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="240 170; 240 0" dur="2.2s" repeatCount="indefinite" delay="1s"/>
+      <use href="#star" x="0" y="0" transform="scale(0.8)">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.2s" repeatCount="indefinite" delay="1s"/>
+      </use>
+    </g>
+    <!-- Spark 4 -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="380 140; 410 -30" dur="3.2s" repeatCount="indefinite" delay="0.8s"/>
+      <use href="#spark-sharp" x="0" y="0">
+        <animate attributeName="opacity" values="0; 1; 0" dur="3.2s" repeatCount="indefinite" delay="0.8s"/>
+        <animateTransform attributeName="transform" type="rotate" values="0; -180" dur="3.2s" repeatCount="indefinite" additive="sum" delay="0.8s"/>
+      </use>
+    </g>
+    <!-- Spark 5 -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="100 170; 80 -20" dur="2.7s" repeatCount="indefinite" delay="1.5s"/>
+      <circle cx="0" cy="0" r="3" fill="#ff3d00" filter="url(#glow-extreme)">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.7s" repeatCount="indefinite" delay="1.5s"/>
+      </circle>
+    </g>
+
+    <!-- Side Twinkles -->
+    <use href="#star" x="140" y="10">
+      <animateTransform attributeName="transform" type="rotate" values="0 140 10; 90 140 10" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite"/>
+    </use>
+    <use href="#star" x="30" y="120">
+      <animateTransform attributeName="transform" type="rotate" values="0 30 120; -90 30 120" dur="2.5s" repeatCount="indefinite" delay="1s"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" delay="1s"/>
+    </use>
+
+  </g>
+</svg>

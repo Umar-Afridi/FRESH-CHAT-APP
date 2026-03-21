@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <!-- Premium Gold Gradient for Borders, Wings and Crown -->
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff59d"/>
+      <stop offset="30%" stop-color="#fbc02d"/>
+      <stop offset="50%" stop-color="#f57f17"/>
+      <stop offset="70%" stop-color="#fbc02d"/>
+      <stop offset="100%" stop-color="#fff59d"/>
+    </linearGradient>
+
+    <!-- Horizontal Gold for the SVIP 3 Text -->
+    <linearGradient id="gold-text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#fff59d"/>
+      <stop offset="50%" stop-color="#fbc02d"/>
+      <stop offset="70%" stop-color="#fff59d"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+
+    <!-- Royal Blue Gradient for the Badge Background -->
+    <linearGradient id="blue-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2962ff"/>
+      <stop offset="50%" stop-color="#0d47a1"/>
+      <stop offset="100%" stop-color="#002171"/>
+    </linearGradient>
+
+    <!-- Drop Shadow for the Entire Badge to make it 3D -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Intense Glow Filter for Text, Stars & Crown Jewels -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Clip Path to keep the shine animation exactly inside the badge -->
+    <clipPath id="badge-clip">
+      <rect x="70" y="35" width="370" height="80" rx="40"/>
+    </clipPath>
+
+    <!-- Sparkle Star Shape -->
+    <g id="sparkle">
+      <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z" fill="#ffffff" filter="url(#glow)"/>
+    </g>
+  </defs>
+
+  <!-- مین گروپ کو سکرین کے بالکل سینٹر میں سیٹ کیا گیا ہے -->
+  <g transform="translate(60, 230)">
+    
+    <!-- ========================================== -->
+    <!-- 1. RIGHT SIDE ANIMATED GOLD WING -->
+    <!-- ========================================== -->
+    <g transform="translate(430, 50)">
+      <!-- پر کے تیز پھڑپھڑانے (Flap) کی اینیمیشن -->
+      <animateTransform attributeName="transform" type="rotate" values="0 5 20; -12 5 20; 2 5 20; 0 5 20" dur="1.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+      <!-- Wing Path -->
+      <path d="M 0 0 C 35 -25 55 5 55 15 C 45 10 30 15 15 25 C 25 25 45 35 50 45 C 30 40 10 30 -5 20 Z" fill="url(#gold-grad)"/>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN PILL / BADGE BACKGROUND -->
+    <!-- ========================================== -->
+    <g filter="url(#shadow)">
+      <!-- Outer Gold Border -->
+      <rect x="70" y="35" width="370" height="80" rx="40" fill="url(#gold-grad)"/>
+      
+      <!-- Inner Royal Blue Background -->
+      <rect x="73" y="38" width="364" height="74" rx="37" fill="url(#blue-grad)"/>
+      
+      <!-- Animated Inner 3D Breathing Border -->
+      <rect x="76" y="41" width="358" height="68" rx="34" fill="none" stroke="#fff59d" stroke-width="2">
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="2s" repeatCount="indefinite"/>
+      </rect>
+
+      <!-- Top and Bottom Edge Diamonds -->
+      <polygon points="230,35 235,30 240,35 235,40" fill="#ffffff" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite"/>
+      </polygon>
+      <polygon points="230,115 235,110 240,115 235,120" fill="#ffffff" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 3. DOUBLE SHINE ANIMATION (Inside the Pill) -->
+    <!-- ========================================== -->
+    <g clip-path="url(#badge-clip)">
+      <!-- 1st Light Beam: Fast and Thin -->
+      <polygon points="-20,-20 10,-20 60,120 30,120" fill="#ffffff" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="-150 0; 550 0; 550 0" keyTimes="0; 0.4; 1" dur="3s" repeatCount="indefinite" />
+      </polygon>
+      
+      <!-- 2nd Light Beam: Slower and Wide -->
+      <polygon points="0,-20 50,-20 100,120 50,120" fill="#ffffff" opacity="0.3">
+        <animateTransform attributeName="transform" type="translate" values="-200 0; 600 0; 600 0" keyTimes="0; 0.5; 1" dur="3s" repeatCount="indefinite" />
+      </polygon>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 4. SVIP 3 TEXT WITH PULSING GLOW -->
+    <!-- ========================================== -->
+    <g transform="translate(260, 90)">
+      <!-- Text Dark Shadow for Depth -->
+      <text x="0" y="3" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-weight="bold" fill="#001144" text-anchor="middle" letter-spacing="3">SVIP 3</text>
+      
+      <!-- Main Gold Text -->
+      <text x="0" y="0" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-weight="bold" fill="url(#gold-text)" text-anchor="middle" letter-spacing="3">SVIP 3</text>
+      
+      <!-- Animated Breathing Gold Glow -->
+      <text x="0" y="0" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-weight="bold" fill="#fff59d" filter="url(#glow)" text-anchor="middle" letter-spacing="3">
+        <animate attributeName="opacity" values="0; 0.9; 0" dur="2.5s" repeatCount="indefinite" />
+        SVIP 3
+      </text>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- 5. SHIELD & CROWN (Floating Animation) -->
+    <!-- ========================================== -->
+    <g id="shield-group">
+      <!-- شیلڈ کے اوپر نیچے تیرنے (Float) کی زیادہ سمتھ اینیمیشن -->
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-6; 0,0" dur="2.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+      
+      <!-- Left Gold Wings -->
+      <path d="M 50 55 C 30 40 10 40 10 40 C 30 55 40 65 45 70 Z" fill="url(#gold-grad)"/>
+      <path d="M 45 75 C 25 65 5 70 5 70 C 25 80 35 85 40 90 Z" fill="url(#gold-grad)"/>
+      <path d="M 42 90 C 20 85 10 95 10 95 C 25 100 35 100 40 105 Z" fill="url(#gold-grad)"/>
+      
+      <!-- Right Gold Wings (attached to shield) -->
+      <path d="M 130 55 C 150 40 170 40 170 40 C 150 55 140 65 135 70 Z" fill="url(#gold-grad)"/>
+      <path d="M 135 75 C 155 65 175 70 175 70 C 155 80 145 85 140 90 Z" fill="url(#gold-grad)"/>
+      <path d="M 138 90 C 160 85 170 95 170 95 C 155 100 145 100 140 105 Z" fill="url(#gold-grad)"/>
+
+      <!-- Main Shield Outer Gold Border -->
+      <path d="M 45 35 L 135 35 L 142 80 Q 142 120 90 145 Q 38 120 38 80 Z" fill="url(#gold-grad)" filter="url(#shadow)"/>
+      
+      <!-- Inner Royal Blue Shield -->
+      <path d="M 50 40 L 130 40 L 135 80 Q 135 115 90 138 Q 45 115 45 80 Z" fill="url(#blue-grad)"/>
+      
+      <!-- Inner Shield Gold Outline -->
+      <path d="M 53 43 L 127 43 L 132 80 Q 132 110 90 130 Q 48 110 48 80 Z" fill="none" stroke="#fff59d" stroke-width="2"/>
+
+      <!-- Crown Inside the Shield -->
+      <rect x="65" y="90" width="50" height="7" rx="2" fill="url(#gold-grad)"/>
+      <rect x="67" y="100" width="46" height="3" rx="1" fill="url(#gold-grad)"/>
+      <path d="M 65 88 L 60 65 L 75 80 L 90 60 L 105 80 L 120 65 L 115 88 Z" fill="url(#gold-grad)"/>
+      
+      <!-- Animated Crown Jewels (Twinkling Dots) -->
+      <circle cx="60" cy="62" r="3" fill="#ffffff">
+        <animate attributeName="opacity" values="0.4; 1; 0.4" dur="1.2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="90" cy="57" r="4" fill="#ffffff" filter="url(#glow)">
+        <animate attributeName="r" values="3.5; 5.5; 3.5" dur="1.2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.6; 1; 0.6" dur="1.2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="120" cy="62" r="3" fill="#ffffff">
+        <animate attributeName="opacity" values="0.4; 1; 0.4" dur="1.2s" repeatCount="indefinite" delay="0.6s"/>
+      </circle>
+
+      <!-- Small diamond at the bottom point of shield -->
+      <polygon points="90,123 96,129 90,135 84,129" fill="#ffffff" filter="url(#glow)">
+         <animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" repeatCount="indefinite" />
+      </polygon>
+
+      <!-- Static Shine Reflection on the Shield -->
+      <path d="M 45 35 L 80 35 L 45 75 Z" fill="#ffffff" opacity="0.2"/>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 6. FLOATING MAGIC SPARKLES (New in SVIP 3) -->
+    <!-- ========================================== -->
+    <use href="#sparkle" x="30" y="30">
+      <animateTransform attributeName="transform" type="rotate" values="0 30 30; 90 30 30" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="transform" type="scale" values="0.5; 1.2; 0.5" dur="2s" repeatCount="indefinite"/>
+    </use>
+    
+    <use href="#sparkle" x="150" y="20">
+      <animateTransform attributeName="transform" type="rotate" values="0 150 20; -90 150 20" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" delay="0.5s"/>
+    </use>
+    
+    <use href="#sparkle" x="140" y="120">
+      <animateTransform attributeName="transform" type="rotate" values="0 140 120; 90 140 120" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite" delay="1s"/>
+    </use>
+
+  </g>
+</svg>

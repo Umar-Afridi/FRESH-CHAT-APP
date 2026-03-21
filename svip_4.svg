@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <!-- Silver Gradients -->
+    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#9e9e9e"/>
+      <stop offset="70%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+
+    <!-- Gold Gradients -->
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff59d"/>
+      <stop offset="25%" stop-color="#fbc02d"/>
+      <stop offset="75%" stop-color="#f57f17"/>
+      <stop offset="100%" stop-color="#fff59d"/>
+    </linearGradient>
+
+    <linearGradient id="gold-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f57f17"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </linearGradient>
+
+    <!-- Purple Gradients for Shield and Ribbons -->
+    <linearGradient id="purple-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e040fb"/>
+      <stop offset="40%" stop-color="#9c27b0"/>
+      <stop offset="100%" stop-color="#4a148c"/>
+    </linearGradient>
+
+    <!-- Radial Gradient for the 3D Center Orb -->
+    <radialGradient id="orb-grad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ea80fc"/>
+      <stop offset="50%" stop-color="#d500f9"/>
+      <stop offset="100%" stop-color="#4a148c"/>
+    </radialGradient>
+
+    <!-- Drop Shadow for 3D Elements -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Glow Filter for Text -->
+    <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Sparkling Star Shape -->
+    <g id="sparkle">
+      <path d="M 0 -10 L 2 -2 L 10 0 L 2 2 L 0 10 L -2 2 L -10 0 L -2 -2 Z" fill="#ffffff" filter="url(#glow)"/>
+    </g>
+
+    <!-- Left Wing Component -->
+    <g id="left-wing">
+      <!-- Gold Inner Feathers -->
+      <path d="M 200 250 C 130 200, 50 130, 40 80 C 100 130, 160 180, 200 210 Z" fill="url(#gold-grad)"/>
+      <path d="M 200 300 C 110 270, 30 200, 20 140 C 90 200, 150 250, 200 260 Z" fill="url(#gold-grad)"/>
+      <path d="M 200 350 C 110 330, 40 280, 30 220 C 100 270, 160 310, 200 310 Z" fill="url(#gold-grad)"/>
+      
+      <!-- White/Silver Outer Feathers -->
+      <path d="M 190 260 C 120 220, 60 150, 50 100 C 100 160, 150 210, 190 230 Z" fill="url(#silver-grad)"/>
+      <path d="M 190 310 C 100 290, 40 220, 30 160 C 80 230, 140 280, 190 280 Z" fill="url(#silver-grad)"/>
+      <path d="M 190 360 C 110 350, 50 300, 40 240 C 90 300, 150 330, 190 330 Z" fill="url(#silver-grad)"/>
+
+      <!-- Purple Ribbon Wrapping Around Wing (Back Fold) -->
+      <path d="M 120 280 C 100 290 90 320 110 340 L 130 320 C 110 310 110 290 120 280 Z" fill="#6a1b9a"/>
+      <!-- Purple Ribbon Wrapping Around Wing (Front Main Curl) -->
+      <path d="M 210 360 C 120 380 60 340 70 270 C 75 210 130 190 160 220 C 120 220 100 250 100 280 C 100 320 150 340 210 330 Z" fill="url(#purple-grad)" filter="url(#shadow)"/>
+      <!-- Inner dark connector for 3D realism -->
+      <path d="M 160 220 C 180 200 200 210 210 230 C 180 230 170 230 160 220 Z" fill="#4a148c"/>
+    </g>
+  </defs>
+
+  <!-- MAIN BODY -->
+  <g>
+    <!-- Background Purple Tails (Hanging below the SVIP4 ribbon) -->
+    <g id="purple-tails" transform="translate(0, -5)">
+      <!-- Left Hanging Tail -->
+      <path d="M 210 420 L 260 420 L 260 510 L 235 530 L 210 510 Z" fill="#7b1fa2" stroke="url(#gold-grad)" stroke-width="2"/>
+      <!-- Right Hanging Tail -->
+      <path d="M 390 420 L 340 420 L 340 510 L 365 530 L 390 510 Z" fill="#7b1fa2" stroke="url(#gold-grad)" stroke-width="2"/>
+      <!-- Center Main Hanging Tail -->
+      <path d="M 260 420 L 340 420 L 340 540 L 300 570 L 260 540 Z" fill="#9c27b0" stroke="url(#gold-grad)" stroke-width="3" filter="url(#shadow)"/>
+      
+      <!-- Gold Diamond Emblem on Center Tail -->
+      <polygon points="300,535 315,550 300,565 285,550" fill="url(#gold-grad)" filter="url(#shadow)"/>
+      <!-- Small Star Below Diamond -->
+      <polygon points="300,515 303,522 310,522 305,527 307,534 300,530 293,534 295,527 290,522 297,522" fill="#ffffff" opacity="0.8"/>
+    </g>
+
+    <!-- Left Wings & Ribbons (Wind Swaying Animation) -->
+    <g>
+      <animateTransform 
+        attributeName="transform" 
+        type="rotate" 
+        values="0 200 260; 4 200 260; -1 200 260; 0 200 260" 
+        dur="4s" 
+        repeatCount="indefinite" 
+        calcMode="spline" 
+        keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+      <use href="#left-wing" x="0" y="0" />
+    </g>
+    
+    <!-- Right Wings & Ribbons (Flipped, Wind Swaying Animation) -->
+    <g transform="translate(600, 0) scale(-1, 1)">
+      <g>
+        <animateTransform 
+          attributeName="transform" 
+          type="rotate" 
+          values="0 200 260; -4 200 260; 1 200 260; 0 200 260" 
+          dur="4.2s" 
+          repeatCount="indefinite" 
+          calcMode="spline" 
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+        <use href="#left-wing" x="0" y="0" />
+      </g>
+    </g>
+
+    <!-- Main Shield Frame -->
+    <g id="shield">
+      <!-- Gold Outer Border -->
+      <path d="M 190 170 L 410 170 L 420 320 Q 420 450 300 510 Q 180 450 180 320 Z" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="4"/>
+      <!-- Inner Purple Shield -->
+      <path d="M 210 190 L 390 190 L 398 315 Q 398 420 300 480 Q 202 420 202 315 Z" fill="url(#purple-grad)"/>
+      <!-- Inner Light Gold Line Outline -->
+      <path d="M 215 195 L 385 195 L 392 315 Q 392 410 300 465 Q 208 410 208 315 Z" fill="none" stroke="#fff59d" stroke-width="2"/>
+    </g>
+
+    <!-- Center 3D Glowing Purple Orb (SVIP 4 Emblem) -->
+    <g id="center-emblem" transform="translate(300, 310)">
+      
+      <!-- Outer Hexagon Frame -->
+      <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="none" stroke="url(#silver-grad)" stroke-width="10" filter="url(#shadow)"/>
+      <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="none" stroke="#e040fb" stroke-width="2"/>
+      
+      <!-- Inner Polygon Background (Darker Purple) -->
+      <polygon points="0,-48 42,-24 42,24 0,48 -42,24 -42,-24" fill="#4a148c" stroke="#aa00ff" stroke-width="2"/>
+
+      <!-- Glowing Purple 3D Sphere -->
+      <circle cx="0" cy="0" r="28" fill="url(#orb-grad)" filter="url(#shadow)"/>
+      
+      <!-- Pulsing Outer Glow for the Sphere -->
+      <circle cx="0" cy="0" r="28" fill="none" stroke="#e040fb" stroke-width="3" filter="url(#glow)">
+        <animate attributeName="stroke-width" values="2; 8; 2" dur="2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" repeatCount="indefinite" />
+      </circle>
+
+      <!-- Top Light Reflection on Sphere for 3D realism -->
+      <ellipse cx="-8" cy="-12" rx="10" ry="6" fill="#ffffff" opacity="0.6" transform="rotate(-30 -8 -12)"/>
+
+      <!-- Gold Compass Frame Around Sphere -->
+      <circle cx="0" cy="0" r="35" fill="none" stroke="url(#gold-grad)" stroke-width="4"/>
+      
+      <!-- Compass Points (Top, Bottom, Left, Right) -->
+      <polygon points="0,-45 7,-31 -7,-31" fill="url(#gold-grad)"/>
+      <polygon points="0,45 7,31 -7,31" fill="url(#gold-grad)"/>
+      <polygon points="-45,0 -31,7 -31,-7" fill="url(#gold-grad)"/>
+      <polygon points="45,0 31,7 31,-7" fill="url(#gold-grad)"/>
+      
+    </g>
+
+    <!-- Animated Sparkles Around the Shield -->
+    <use href="#sparkle" x="230" y="220">
+      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite" begin="0s"/>
+    </use>
+    <use href="#sparkle" x="370" y="380">
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" begin="1s"/>
+    </use>
+    <use href="#sparkle" x="380" y="240">
+      <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+    </use>
+
+    <!-- Gold Crown with Purple Jewels -->
+    <g id="crown" transform="translate(0, 15)">
+      <!-- Crown Base -->
+      <path d="M 225 155 L 210 75 L 255 105 L 300 45 L 345 105 L 390 75 L 375 155 Z" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="2"/>
+      <!-- Crown Rim -->
+      <rect x="220" y="145" width="160" height="20" rx="8" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="2"/>
+      
+      <!-- Purple Jewels -->
+      <circle cx="240" cy="155" r="5" fill="#e040fb" stroke="#4a148c" stroke-width="1"/>
+      <circle cx="270" cy="155" r="5" fill="#e040fb" stroke="#4a148c" stroke-width="1"/>
+      <circle cx="300" cy="155" r="5" fill="#e040fb" stroke="#4a148c" stroke-width="1"/>
+      <circle cx="330" cy="155" r="5" fill="#e040fb" stroke="#4a148c" stroke-width="1"/>
+      <circle cx="360" cy="155" r="5" fill="#e040fb" stroke="#4a148c" stroke-width="1"/>
+      
+      <!-- Top Dots -->
+      <circle cx="210" cy="70" r="7" fill="url(#gold-grad)"/>
+      <circle cx="255" cy="100" r="6" fill="url(#gold-grad)"/>
+      <circle cx="300" cy="40" r="9" fill="url(#gold-grad)" filter="url(#glow)"/>
+      <circle cx="345" cy="100" r="6" fill="url(#gold-grad)"/>
+      <circle cx="390" cy="70" r="7" fill="url(#gold-grad)"/>
+    </g>
+
+    <!-- Gold Banner / Ribbon at Bottom -->
+    <g id="banner" transform="translate(0, 440)" filter="url(#shadow)">
+      <!-- Left Ribbon Back Fold -->
+      <path d="M 180 0 L 130 -30 L 160 30 L 120 70 L 200 40 Z" fill="url(#gold-dark)"/>
+      <!-- Right Ribbon Back Fold -->
+      <path d="M 420 0 L 470 -30 L 440 30 L 480 70 L 400 40 Z" fill="url(#gold-dark)"/>
+      
+      <!-- Main Front Ribbon -->
+      <path d="M 170 -5 Q 300 45 430 -5 L 410 55 Q 300 100 190 55 Z" fill="url(#gold-grad)" stroke="#ffffff" stroke-width="2"/>
+      
+      <!-- Text Shadow -->
+      <text x="300" y="58" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#a0522d" text-anchor="middle" letter-spacing="2">SVIP 4</text>
+      
+      <!-- Solid White Main Text -->
+      <text x="300" y="55" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">SVIP 4</text>
+      
+      <!-- Shiny Glowing Text Layer (Animated Gold Shine) -->
+      <text x="300" y="55" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#fff59d" filter="url(#text-glow)" text-anchor="middle" letter-spacing="2">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" />
+        SVIP 4
+      </text>
+    </g>
+  </g>
+</svg>

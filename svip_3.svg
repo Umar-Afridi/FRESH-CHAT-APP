@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <!-- Silver Gradients -->
+    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#9e9e9e"/>
+      <stop offset="70%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+
+    <!-- Gold Gradients -->
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff59d"/>
+      <stop offset="25%" stop-color="#fbc02d"/>
+      <stop offset="75%" stop-color="#f57f17"/>
+      <stop offset="100%" stop-color="#fff59d"/>
+    </linearGradient>
+
+    <linearGradient id="gold-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f57f17"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </linearGradient>
+
+    <!-- Royal Blue Gradient for Shield and Ribbons -->
+    <linearGradient id="blue-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64b5f6"/>
+      <stop offset="40%" stop-color="#1e88e5"/>
+      <stop offset="100%" stop-color="#0d47a1"/>
+    </linearGradient>
+
+    <!-- Drop Shadow for 3D Elements -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Glow Filter for Stars and Diamond -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Glow Filter for Text -->
+    <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Sparkling Star Shape -->
+    <g id="sparkle">
+      <path d="M 0 -10 L 2 -2 L 10 0 L 2 2 L 0 10 L -2 2 L -10 0 L -2 -2 Z" fill="#ffffff" filter="url(#glow)"/>
+    </g>
+
+    <!-- Left Wing Component (Includes the blue curling ribbon) -->
+    <g id="left-wing">
+      <!-- Gold Inner Feathers -->
+      <path d="M 200 250 C 130 200, 50 130, 40 80 C 100 130, 160 180, 200 210 Z" fill="url(#gold-grad)"/>
+      <path d="M 200 300 C 110 270, 30 200, 20 140 C 90 200, 150 250, 200 260 Z" fill="url(#gold-grad)"/>
+      <path d="M 200 350 C 110 330, 40 280, 30 220 C 100 270, 160 310, 200 310 Z" fill="url(#gold-grad)"/>
+      
+      <!-- White/Silver Outer Feathers -->
+      <path d="M 190 260 C 120 220, 60 150, 50 100 C 100 160, 150 210, 190 230 Z" fill="url(#silver-grad)"/>
+      <path d="M 190 310 C 100 290, 40 220, 30 160 C 80 230, 140 280, 190 280 Z" fill="url(#silver-grad)"/>
+      <path d="M 190 360 C 110 350, 50 300, 40 240 C 90 300, 150 330, 190 330 Z" fill="url(#silver-grad)"/>
+
+      <!-- Blue Ribbon Wrapping Around Wing (Back Fold) -->
+      <path d="M 120 280 C 100 290 90 320 110 340 L 130 320 C 110 310 110 290 120 280 Z" fill="#002171"/>
+      <!-- Blue Ribbon Wrapping Around Wing (Front Main Curl) -->
+      <path d="M 210 360 C 120 380 60 340 70 270 C 75 210 130 190 160 220 C 120 220 100 250 100 280 C 100 320 150 340 210 330 Z" fill="url(#blue-grad)" filter="url(#shadow)"/>
+      <!-- Inner dark connector for 3D realism -->
+      <path d="M 160 220 C 180 200 200 210 210 230 C 180 230 170 230 160 220 Z" fill="#002171"/>
+    </g>
+  </defs>
+
+  <!-- MAIN BODY -->
+  <g>
+    <!-- Background Blue Tails (Below the shield) -->
+    <g id="blue-tails" transform="translate(0, -10)">
+      <!-- Left Tail -->
+      <path d="M 215 420 L 255 420 L 255 490 L 235 500 L 215 490 Z" fill="#0d47a1" stroke="url(#gold-grad)" stroke-width="2"/>
+      <!-- Right Tail -->
+      <path d="M 385 420 L 345 420 L 345 490 L 365 500 L 385 490 Z" fill="#0d47a1" stroke="url(#gold-grad)" stroke-width="2"/>
+      <!-- Center Main Tail -->
+      <path d="M 255 420 L 345 420 L 345 520 L 300 545 L 255 520 Z" fill="#1565c0" stroke="url(#gold-grad)" stroke-width="3" filter="url(#shadow)"/>
+    </g>
+
+    <!-- Left Wings & Ribbons (Wind Swaying Animation) -->
+    <g>
+      <animateTransform 
+        attributeName="transform" 
+        type="rotate" 
+        values="0 200 260; 4 200 260; -1 200 260; 0 200 260" 
+        dur="4s" 
+        repeatCount="indefinite" 
+        calcMode="spline" 
+        keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+      <use href="#left-wing" x="0" y="0" />
+    </g>
+    
+    <!-- Right Wings & Ribbons (Flipped, Wind Swaying Animation) -->
+    <g transform="translate(600, 0) scale(-1, 1)">
+      <g>
+        <animateTransform 
+          attributeName="transform" 
+          type="rotate" 
+          values="0 200 260; -4 200 260; 1 200 260; 0 200 260" 
+          dur="4.2s" 
+          repeatCount="indefinite" 
+          calcMode="spline" 
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+        <use href="#left-wing" x="0" y="0" />
+      </g>
+    </g>
+
+    <!-- Main Shield Frame -->
+    <g id="shield">
+      <!-- Gold Outer Border -->
+      <path d="M 190 170 L 410 170 L 420 320 Q 420 450 300 510 Q 180 450 180 320 Z" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="4"/>
+      <!-- Inner Royal Blue Shield -->
+      <path d="M 210 190 L 390 190 L 398 315 Q 398 420 300 480 Q 202 420 202 315 Z" fill="url(#blue-grad)"/>
+      <!-- Inner Silver Line Outline -->
+      <path d="M 215 195 L 385 195 L 392 315 Q 392 410 300 465 Q 208 410 208 315 Z" fill="none" stroke="url(#silver-grad)" stroke-width="4"/>
+    </g>
+
+    <!-- Center 3D Glowing Star (The SVIP 3 Gem) -->
+    <g id="center-star" transform="translate(300, 310)">
+      <!-- Background 4-Point Silver Star (Rotated) -->
+      <path d="M 0 -45 L 12 -12 L 45 0 L 12 12 L 0 45 L -12 12 L -45 0 L -12 -12 Z" fill="url(#silver-grad)" filter="url(#shadow)"/>
+      
+      <!-- Foreground 4-Point 3D Blue Star (Constructed with 8 Polygons for 3D realism) -->
+      <g filter="url(#shadow)">
+        <!-- Top Spike -->
+        <polygon points="0,0 -15,-15 0,-60" fill="#64b5f6"/>
+        <polygon points="0,0 15,-15 0,-60" fill="#42a5f5"/>
+        <!-- Right Spike -->
+        <polygon points="0,0 15,-15 60,0" fill="#1e88e5"/>
+        <polygon points="0,0 15,15 60,0" fill="#1976d2"/>
+        <!-- Bottom Spike -->
+        <polygon points="0,0 15,15 0,60" fill="#1565c0"/>
+        <polygon points="0,0 -15,15 0,60" fill="#0d47a1"/>
+        <!-- Left Spike -->
+        <polygon points="0,0 -15,15 -60,0" fill="#0d47a1"/>
+        <polygon points="0,0 -15,-15 -60,0" fill="#1e88e5"/>
+      </g>
+
+      <!-- Central Pulsing Glow Point -->
+      <circle cx="0" cy="0" r="10" fill="#ffffff" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.5s" repeatCount="indefinite" />
+        <animate attributeName="r" values="8; 12; 8" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+      <!-- Horizontal and Vertical Light Flares -->
+      <path d="M -25 0 L 25 0 M 0 -25 L 0 25" stroke="#ffffff" stroke-width="3" filter="url(#glow)"/>
+    </g>
+
+    <!-- Animated Sparkles Around the Star -->
+    <use href="#sparkle" x="220" y="240">
+      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite" begin="0s"/>
+    </use>
+    <use href="#sparkle" x="370" y="380">
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" begin="1s"/>
+    </use>
+    <use href="#sparkle" x="380" y="230">
+      <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+    </use>
+
+    <!-- Gold Crown with Blue Jewels -->
+    <g id="crown" transform="translate(0, 15)">
+      <!-- Crown Base -->
+      <path d="M 225 155 L 210 75 L 255 105 L 300 45 L 345 105 L 390 75 L 375 155 Z" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="2"/>
+      <!-- Crown Rim -->
+      <rect x="220" y="145" width="160" height="20" rx="8" fill="url(#gold-grad)" stroke="url(#gold-dark)" stroke-width="2"/>
+      
+      <!-- Blue Jewels -->
+      <circle cx="240" cy="155" r="5" fill="#2962ff" stroke="#002171" stroke-width="1"/>
+      <circle cx="270" cy="155" r="5" fill="#2962ff" stroke="#002171" stroke-width="1"/>
+      <circle cx="300" cy="155" r="5" fill="#2962ff" stroke="#002171" stroke-width="1"/>
+      <circle cx="330" cy="155" r="5" fill="#2962ff" stroke="#002171" stroke-width="1"/>
+      <circle cx="360" cy="155" r="5" fill="#2962ff" stroke="#002171" stroke-width="1"/>
+      
+      <!-- Top Dots -->
+      <circle cx="210" cy="70" r="7" fill="url(#gold-grad)"/>
+      <circle cx="255" cy="100" r="6" fill="url(#gold-grad)"/>
+      <circle cx="300" cy="40" r="9" fill="url(#gold-grad)" filter="url(#glow)"/>
+      <circle cx="345" cy="100" r="6" fill="url(#gold-grad)"/>
+      <circle cx="390" cy="70" r="7" fill="url(#gold-grad)"/>
+    </g>
+
+    <!-- Gold Banner / Ribbon at Bottom -->
+    <g id="banner" transform="translate(0, 440)" filter="url(#shadow)">
+      <!-- Left Ribbon Back Fold -->
+      <path d="M 180 0 L 130 -30 L 160 30 L 120 70 L 200 40 Z" fill="url(#gold-dark)"/>
+      <!-- Right Ribbon Back Fold -->
+      <path d="M 420 0 L 470 -30 L 440 30 L 480 70 L 400 40 Z" fill="url(#gold-dark)"/>
+      
+      <!-- Main Front Ribbon -->
+      <path d="M 170 -5 Q 300 45 430 -5 L 410 55 Q 300 100 190 55 Z" fill="url(#gold-grad)" stroke="#ffffff" stroke-width="2"/>
+      
+      <!-- Text Shadow -->
+      <text x="300" y="58" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#a0522d" text-anchor="middle" letter-spacing="2">SVIP 3</text>
+      
+      <!-- Solid White Main Text -->
+      <text x="300" y="55" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">SVIP 3</text>
+      
+      <!-- Shiny Glowing Text Layer (Animated Gold Shine) -->
+      <text x="300" y="55" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#fff59d" filter="url(#text-glow)" text-anchor="middle" letter-spacing="2">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" />
+        SVIP 3
+      </text>
+    </g>
+  </g>
+</svg>

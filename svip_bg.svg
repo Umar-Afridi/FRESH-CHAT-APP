@@ -1,0 +1,186 @@
+<svg viewBox="0 0 1080 950" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient (Dark to Gold) -->
+    <radialGradient id="bgGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#c98a2c" />
+      <stop offset="35%" stop-color="#7a5115" />
+      <stop offset="70%" stop-color="#2a1a05" />
+      <stop offset="100%" stop-color="#050300" />
+    </radialGradient>
+
+    <!-- Light Rays coming from Top -->
+    <linearGradient id="lightRay" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="25%" stop-color="#ffe699" stop-opacity="0.4" />
+      <stop offset="70%" stop-color="#cc8800" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Premium Metallic Gold for Pillars and Stage -->
+    <linearGradient id="goldMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6b4412" />
+      <stop offset="20%" stop-color="#e6b800" />
+      <stop offset="50%" stop-color="#fff2b3" />
+      <stop offset="80%" stop-color="#cca300" />
+      <stop offset="100%" stop-color="#4a2e0a" />
+    </linearGradient>
+
+    <!-- Dark Marble Style for Stage Depth -->
+    <linearGradient id="darkMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1f1406" />
+      <stop offset="100%" stop-color="#050300" />
+    </linearGradient>
+
+    <!-- Glow Filter for Particles and Fire -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background Fill -->
+  <rect width="1080" height="950" fill="url(#bgGradient)" />
+
+  <!-- 2. Background Stairs (Perspective) -->
+  <g opacity="0.5">
+    <polygon points="380,550 700,550 760,610 320,610" fill="url(#goldMetal)" opacity="0.6" stroke="#fff" stroke-width="0.5" />
+    <polygon points="320,610 760,610 840,680 240,680" fill="url(#goldMetal)" opacity="0.4" stroke="#fff" stroke-width="0.5" />
+  </g>
+
+  <!-- 3. Animated Light Rays (Spotlight) -->
+  <g>
+    <!-- Center Ray -->
+    <polygon points="420,0 660,0 950,850 130,850" fill="url(#lightRay)">
+      <animate attributeName="opacity" values="0.6; 1; 0.6" dur="3.5s" repeatCount="indefinite" />
+    </polygon>
+    <!-- Left Ray -->
+    <polygon points="300,0 480,0 550,800 -50,800" fill="url(#lightRay)" opacity="0.5">
+      <animate attributeName="opacity" values="0.3; 0.7; 0.3" dur="4.2s" repeatCount="indefinite" />
+    </polygon>
+    <!-- Right Ray -->
+    <polygon points="600,0 780,0 1130,800 530,800" fill="url(#lightRay)" opacity="0.5">
+      <animate attributeName="opacity" values="0.4; 0.8; 0.4" dur="3.8s" repeatCount="indefinite" />
+    </polygon>
+  </g>
+
+  <!-- 4. Left and Right Pillars -->
+  <!-- Left Pillar Group -->
+  <g>
+    <rect x="0" y="0" width="110" height="950" fill="url(#goldMetal)" opacity="0.85" />
+    <rect x="110" y="0" width="20" height="950" fill="#291a07" />
+    <rect x="25" y="200" width="60" height="750" fill="url(#goldMetal)" rx="15" stroke="#fff2b3" stroke-width="1" />
+  </g>
+  
+  <!-- Right Pillar Group -->
+  <g>
+    <rect x="970" y="0" width="110" height="950" fill="url(#goldMetal)" opacity="0.85" />
+    <rect x="950" y="0" width="20" height="950" fill="#291a07" />
+    <rect x="995" y="200" width="60" height="750" fill="url(#goldMetal)" rx="15" stroke="#fff2b3" stroke-width="1" />
+  </g>
+
+  <!-- 5. 3D Golden Podium / Stage (Without Rotating Rings) -->
+  <g transform="translate(0, 0)">
+    
+    <!-- Outer Base Black Shadow -->
+    <ellipse cx="540" cy="850" rx="520" ry="110" fill="#000000" opacity="0.8" filter="url(#glow)" />
+    
+    <!-- Fire Base Glow (Left Side) -->
+    <ellipse cx="320" cy="810" rx="120" ry="40" fill="#ff4400" opacity="0.35" filter="url(#glow)">
+       <animate attributeName="opacity" values="0.2; 0.5; 0.2" dur="2s" repeatCount="indefinite" />
+    </ellipse>
+
+    <!-- Fire Base Glow (Right Side) -->
+    <ellipse cx="760" cy="810" rx="120" ry="40" fill="#ff4400" opacity="0.35" filter="url(#glow)">
+       <animate attributeName="opacity" values="0.2; 0.5; 0.2" dur="2.3s" repeatCount="indefinite" />
+    </ellipse>
+
+    <!-- Bottom Layer -->
+    <ellipse cx="540" cy="840" rx="500" ry="95" fill="url(#darkMetal)" stroke="#a3761e" stroke-width="3" />
+    <ellipse cx="540" cy="830" rx="500" ry="95" fill="none" stroke="url(#goldMetal)" stroke-width="5" />
+    
+    <!-- Middle Step Dark Base -->
+    <ellipse cx="540" cy="810" rx="430" ry="80" fill="#0a0600" />
+    
+    <!-- Middle Step Gold Surface -->
+    <ellipse cx="540" cy="795" rx="420" ry="78" fill="url(#goldMetal)" />
+    <ellipse cx="540" cy="795" rx="415" ry="76" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.6" />
+
+    <!-- Solid Elegant Inner Core (Where Medal will visually sit above) -->
+    <ellipse cx="540" cy="780" rx="330" ry="60" fill="#120b02" stroke="#cca300" stroke-width="3" />
+    <ellipse cx="540" cy="780" rx="310" ry="55" fill="#0a0500" stroke="#8a5a19" stroke-width="1.5" />
+    
+    <!-- Small center glow -->
+    <ellipse cx="540" cy="780" rx="150" ry="25" fill="#e6b800" opacity="0.15" filter="url(#glow)" />
+  </g>
+
+  <!-- 6. Fire Sparks / Embers Flying Upwards (Left & Right Fire Sources) -->
+  <g filter="url(#glow)">
+    
+    <!-- Left Side Sparks -->
+    <circle r="3.5" fill="#ffaa00">
+      <animate attributeName="cx" values="320; 280" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="810; 450" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="2.5s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2" fill="#ff4400">
+      <animate attributeName="cx" values="350; 390" dur="3.1s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="820; 350" dur="3.1s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.9; 0" dur="3.1s" repeatCount="indefinite" />
+    </circle>
+    <circle r="3" fill="#ffea00">
+      <animate attributeName="cx" values="280; 300" dur="2.2s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="800; 500" dur="2.2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="2.2s" repeatCount="indefinite" />
+    </circle>
+    <circle r="1.5" fill="#ffaa00">
+      <animate attributeName="cx" values="400; 370" dur="2.8s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="810; 400" dur="2.8s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.8; 0" dur="2.8s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2.5" fill="#ff3300">
+      <animate attributeName="cx" values="300; 320" dur="3.5s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="830; 300" dur="3.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="3.5s" repeatCount="indefinite" />
+    </circle>
+
+    <!-- Right Side Sparks -->
+    <circle r="3.5" fill="#ffaa00">
+      <animate attributeName="cx" values="760; 800" dur="2.4s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="810; 450" dur="2.4s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="2.4s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2" fill="#ff4400">
+      <animate attributeName="cx" values="730; 690" dur="3.2s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="820; 350" dur="3.2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.9; 0" dur="3.2s" repeatCount="indefinite" />
+    </circle>
+    <circle r="3" fill="#ffea00">
+      <animate attributeName="cx" values="800; 780" dur="2.1s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="800; 500" dur="2.1s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="2.1s" repeatCount="indefinite" />
+    </circle>
+    <circle r="1.5" fill="#ffaa00">
+      <animate attributeName="cx" values="680; 710" dur="2.9s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="810; 400" dur="2.9s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.8; 0" dur="2.9s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2.5" fill="#ff3300">
+      <animate attributeName="cx" values="780; 760" dur="3.4s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="830; 300" dur="3.4s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="3.4s" repeatCount="indefinite" />
+    </circle>
+
+    <!-- Few Center Sparks -->
+    <circle r="2" fill="#ffaa00">
+      <animate attributeName="cx" values="500; 480" dur="3.6s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="800; 350" dur="3.6s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.7; 0" dur="3.6s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2" fill="#ffaa00">
+      <animate attributeName="cx" values="580; 600" dur="3.3s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="800; 380" dur="3.3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.7; 0" dur="3.3s" repeatCount="indefinite" />
+    </circle>
+
+  </g>
+</svg>

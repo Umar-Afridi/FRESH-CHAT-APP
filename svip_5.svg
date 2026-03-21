@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <!-- Ultra Premium Gold Gradient -->
+    <linearGradient id="gold-premium" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9c4"/>
+      <stop offset="20%" stop-color="#ffeb3b"/>
+      <stop offset="50%" stop-color="#f57f17"/>
+      <stop offset="80%" stop-color="#ffb300"/>
+      <stop offset="100%" stop-color="#fff9c4"/>
+    </linearGradient>
+
+    <!-- Dark Gold for Deep 3D Shadows -->
+    <linearGradient id="gold-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f57f17"/>
+      <stop offset="50%" stop-color="#bf360c"/>
+      <stop offset="100%" stop-color="#3e2723"/>
+    </linearGradient>
+
+    <!-- Royal Crimson Red Gradient -->
+    <linearGradient id="red-royal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff5252"/>
+      <stop offset="40%" stop-color="#d50000"/>
+      <stop offset="100%" stop-color="#8e0000"/>
+    </linearGradient>
+
+    <!-- Fiery Radial Gradient for the Center Core -->
+    <radialGradient id="fire-core" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffff8d"/>
+      <stop offset="30%" stop-color="#ff3d00"/>
+      <stop offset="70%" stop-color="#b71c1c"/>
+      <stop offset="100%" stop-color="#4a0000"/>
+    </radialGradient>
+
+    <!-- Advanced Filters -->
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    
+    <filter id="glow-extreme" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComponentTransfer in="blur" result="glow">
+        <feFuncA type="linear" slope="1.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Sharp Majestic Left Wing Component -->
+    <g id="left-wing-sharp">
+      <!-- Back layer sharp spikes -->
+      <path d="M 180 230 L 40 130 L 100 200 L 20 200 L 110 250 L 10 280 L 120 300 L 30 360 L 160 330 Z" fill="url(#gold-dark)" filter="url(#shadow)"/>
+      <!-- Mid layer feathers -->
+      <path d="M 190 240 L 60 160 L 120 220 L 40 230 L 130 270 L 30 310 L 140 310 L 60 370 L 170 330 Z" fill="url(#gold-premium)"/>
+      <!-- Front bright feathers -->
+      <path d="M 200 250 C 130 200, 70 170, 80 170 C 120 200, 160 230, 200 260 Z" fill="#ffffff" opacity="0.8"/>
+      <path d="M 200 290 C 130 250, 60 240, 60 240 C 120 260, 160 280, 200 300 Z" fill="#ffffff" opacity="0.8"/>
+      <path d="M 200 330 C 130 310, 70 320, 70 320 C 130 320, 160 330, 200 340 Z" fill="#ffffff" opacity="0.8"/>
+
+      <!-- Royal Red Ribbon Winding -->
+      <!-- Back fold -->
+      <path d="M 140 240 Q 100 210 110 170 Q 140 190 150 220 Z" fill="#8e0000"/>
+      <!-- Front grand swoop -->
+      <path d="M 200 350 C 100 390 30 320 60 230 C 70 190 110 160 140 160 Q 160 200 130 240 C 90 290 140 350 200 330 Z" fill="url(#red-royal)" filter="url(#shadow)"/>
+      <!-- Ribbon Gold Trim -->
+      <path d="M 200 350 C 100 390 30 320 60 230" fill="none" stroke="#ffeb3b" stroke-width="2"/>
+    </g>
+
+    <!-- Star Sparkle -->
+    <g id="star">
+      <path d="M 0 -15 L 2 -3 L 15 0 L 2 3 L 0 15 L -2 3 L -15 0 L -2 -3 Z" fill="#ffffff" filter="url(#glow-extreme)"/>
+    </g>
+  </defs>
+
+  <!-- MAIN BODY -->
+  <g>
+    <!-- Background Royal Tails -->
+    <g id="red-tails" transform="translate(0, -10)">
+      <path d="M 200 420 L 250 420 L 250 510 L 225 530 L 200 510 Z" fill="#8e0000" stroke="url(#gold-premium)" stroke-width="2"/>
+      <path d="M 400 420 L 350 420 L 350 510 L 375 530 L 400 510 Z" fill="#8e0000" stroke="url(#gold-premium)" stroke-width="2"/>
+      <!-- Center Main Tail -->
+      <path d="M 250 420 L 350 420 L 350 550 L 300 590 L 250 550 Z" fill="url(#red-royal)" stroke="url(#gold-premium)" stroke-width="4" filter="url(#shadow)"/>
+      <!-- Inner Diamond -->
+      <polygon points="300,535 320,555 300,575 280,555" fill="url(#gold-premium)" filter="url(#shadow)"/>
+      <!-- Inner Star -->
+      <use href="#star" x="300" y="555" transform="scale(0.5)"/>
+    </g>
+
+    <!-- Majestic Wind Swaying Wings (Left & Right) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0 200 260; 3 200 260; -1 200 260; 0 200 260" dur="4.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+      <use href="#left-wing-sharp" x="0" y="0" />
+    </g>
+    <g transform="translate(600, 0) scale(-1, 1)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 200 260; -3 200 260; 1 200 260; 0 200 260" dur="4.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+        <use href="#left-wing-sharp" x="0" y="0" />
+      </g>
+    </g>
+
+    <!-- Grand Shield Base -->
+    <g id="shield">
+      <!-- Outer Gold Massive Border -->
+      <path d="M 170 160 L 430 160 L 440 330 Q 440 470 300 530 Q 160 470 160 330 Z" fill="url(#gold-dark)" filter="url(#shadow)"/>
+      <path d="M 180 170 L 420 170 L 430 325 Q 430 460 300 515 Q 170 460 170 325 Z" fill="url(#gold-premium)"/>
+      <!-- Inner Royal Red Shield -->
+      <path d="M 200 190 L 400 190 L 408 320 Q 408 440 300 490 Q 192 440 192 320 Z" fill="url(#red-royal)"/>
+      <!-- Inner Glowing Gold Line -->
+      <path d="M 210 200 L 390 200 L 395 315 Q 395 425 300 470 Q 205 425 205 315 Z" fill="none" stroke="#ffeb3b" stroke-width="2"/>
+    </g>
+
+    <!-- CENTER PIECE: Rotating Frame & Fiery Core -->
+    <g id="center-emblem" transform="translate(300, 310)">
+      
+      <!-- Golden Inner Laurel/Wings holding the core -->
+      <path d="M 0 60 C -60 60 -80 0 -80 -30 C -40 -30 -30 20 0 30 Z" fill="url(#gold-premium)" filter="url(#shadow)"/>
+      <path d="M 0 60 C 60 60 80 0 80 -30 C 40 -30 30 20 0 30 Z" fill="url(#gold-premium)" filter="url(#shadow)"/>
+      <path d="M 0 -60 C -50 -60 -70 -10 -70 20 C -30 20 -20 -20 0 -30 Z" fill="url(#gold-dark)"/>
+      <path d="M 0 -60 C 50 -60 70 -10 70 20 C 30 20 20 -20 0 -30 Z" fill="url(#gold-dark)"/>
+
+      <!-- Spinning Tech/Magic Gold Ring -->
+      <g>
+        <circle cx="0" cy="0" r="45" fill="none" stroke="url(#gold-premium)" stroke-width="4" stroke-dasharray="15 10">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="0" cy="0" r="55" fill="none" stroke="#ffeb3b" stroke-width="1" stroke-dasharray="5 15" opacity="0.6">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- The Pulsing Fiery Red Core -->
+      <circle cx="0" cy="0" r="35" fill="url(#fire-core)" filter="url(#shadow)"/>
+      
+      <!-- Core Pulsating Glow -->
+      <circle cx="0" cy="0" r="35" fill="none" stroke="#ff3d00" stroke-width="4" filter="url(#glow-red)">
+        <animate attributeName="stroke-width" values="2; 10; 2" dur="1.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.6; 1; 0.6" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+
+      <!-- Glass/Light Reflection on Core -->
+      <ellipse cx="-10" cy="-15" rx="15" ry="8" fill="#ffffff" opacity="0.5" transform="rotate(-35 -10 -15)"/>
+      
+      <!-- Central Floating Star Particle -->
+      <use href="#star" x="0" y="0" transform="scale(0.8)">
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="2s" repeatCount="indefinite"/>
+      </use>
+    </g>
+
+    <!-- Animated Floating Sparkles around the Medallion -->
+    <use href="#star" x="200" y="200"><animate attributeName="opacity" values="0; 1; 0" dur="1.8s" repeatCount="indefinite" begin="0s"/></use>
+    <use href="#star" x="400" y="220"><animate attributeName="opacity" values="0; 1; 0" dur="2.2s" repeatCount="indefinite" begin="0.5s"/></use>
+    <use href="#star" x="180" y="380"><animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" begin="1s"/></use>
+    <use href="#star" x="420" y="360"><animate attributeName="opacity" values="0; 1; 0" dur="2.1s" repeatCount="indefinite" begin="1.5s"/></use>
+
+    <!-- The Ultimate King Crown -->
+    <g id="crown" transform="translate(0, 5)">
+      <!-- Red Velvet Cap inside the crown -->
+      <path d="M 215 130 C 215 40, 385 40, 385 130 Z" fill="#b71c1c" stroke="#4a0000" stroke-width="2" filter="url(#shadow)"/>
+      
+      <!-- Crown Gold Base -->
+      <path d="M 220 160 L 195 70 L 250 110 L 300 30 L 350 110 L 405 70 L 380 160 Z" fill="url(#gold-premium)" stroke="url(#gold-dark)" stroke-width="3" filter="url(#shadow)"/>
+      <!-- Crown Heavy Rim -->
+      <rect x="210" y="145" width="180" height="25" rx="10" fill="url(#gold-premium)" stroke="url(#gold-dark)" stroke-width="3" filter="url(#shadow)"/>
+      
+      <!-- Large Glowing Red Jewels on Rim -->
+      <circle cx="230" cy="157" r="6" fill="#ff1744" stroke="#4a0000" stroke-width="2" filter="url(#glow-red)"/>
+      <circle cx="265" cy="157" r="7" fill="#ff1744" stroke="#4a0000" stroke-width="2"/>
+      <circle cx="300" cy="157" r="8" fill="#ff1744" stroke="#4a0000" stroke-width="2" filter="url(#glow-red)"/>
+      <circle cx="335" cy="157" r="7" fill="#ff1744" stroke="#4a0000" stroke-width="2"/>
+      <circle cx="370" cy="157" r="6" fill="#ff1744" stroke="#4a0000" stroke-width="2" filter="url(#glow-red)"/>
+      
+      <!-- Top Crown Points & Center Diamond -->
+      <circle cx="195" cy="65" r="8" fill="url(#gold-premium)"/>
+      <circle cx="250" cy="105" r="7" fill="url(#gold-premium)"/>
+      <!-- Center Massive Glowing Diamond -->
+      <polygon points="300,10 315,30 300,50 285,30" fill="#ffffff" filter="url(#glow-extreme)"/>
+      <polygon points="300,15 310,30 300,45 290,30" fill="#ff5252"/>
+      <circle cx="350" cy="105" r="7" fill="url(#gold-premium)"/>
+      <circle cx="405" cy="65" r="8" fill="url(#gold-premium)"/>
+    </g>
+
+    <!-- Massive Gold Banner at Bottom -->
+    <g id="banner" transform="translate(0, 450)" filter="url(#shadow)">
+      <!-- Left Ribbon Back Fold -->
+      <path d="M 170 10 L 110 -30 L 150 40 L 100 80 L 190 50 Z" fill="url(#gold-dark)"/>
+      <!-- Right Ribbon Back Fold -->
+      <path d="M 430 10 L 490 -30 L 450 40 L 500 80 L 410 50 Z" fill="url(#gold-dark)"/>
+      
+      <!-- Main Front Grand Ribbon -->
+      <path d="M 150 -10 Q 300 50 450 -10 L 430 60 Q 300 110 170 60 Z" fill="url(#gold-premium)" stroke="#ffffff" stroke-width="3"/>
+      
+      <!-- Inner Line Detail -->
+      <path d="M 165 0 Q 300 55 435 0" fill="none" stroke="#f57f17" stroke-width="2"/>
+      <path d="M 180 50 Q 300 95 420 50" fill="none" stroke="#f57f17" stroke-width="2"/>
+
+      <!-- Text Dark Shadow -->
+      <text x="300" y="62" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900" fill="#4a0000" text-anchor="middle" letter-spacing="3">SVIP 5</text>
+      
+      <!-- Solid Gold Text -->
+      <text x="300" y="58" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3">SVIP 5</text>
+      
+      <!-- Pulsing 3D Gold Glow Text -->
+      <text x="300" y="58" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900" fill="#ffeb3b" filter="url(#glow-extreme)" text-anchor="middle" letter-spacing="3">
+        <animate attributeName="opacity" values="0.3; 1; 0.3" dur="2s" repeatCount="indefinite" />
+        SVIP 5
+      </text>
+    </g>
+  </g>
+</svg>
