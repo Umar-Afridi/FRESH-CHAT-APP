@@ -1,5 +1,5 @@
 // ==========================================
-// SVIP SYSTEM LOGIC & UI (YARAAN APP) - FIXED WITH SWIPE
+// SVIP SYSTEM LOGIC & UI (YARAAN APP) - FIXED WITH SWIPE, IMAGE LOADING & PERFECT CENTER TABS
 // ==========================================
 
 const SVIP_LEVELS =[
@@ -45,8 +45,7 @@ window.addRechargeToSVIP = async (rechargeAmount) => {
 // =========================================================
 
 window.openSVIPModal = async () => {
-    // لوڈنگ والا میسج (Swal) یہاں سے ہٹا دیا گیا ہے تاکہ کلین اوپن ہو
-    
+    // بغیر کسی پوپ اپ کے سیدھا ڈیٹا لوڈ کریں گے
     const snap = await window.get(window.ref(window.db, `users/${window.currentUser.uid}`));
     const data = snap.val() || {};
     currentUserTotalRecharge = data.totalRecharge || 0; 
@@ -123,25 +122,25 @@ function createSVIPModalHTML() {
             <img src="./svip_bg.svg" class="absolute inset-0 w-full h-full object-cover z-0" onerror="this.style.display='none'">
             <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-[#0a0a0a] z-10"></div>
             
-            <!-- Header (اسے تھوڑا اوپر کیا گیا ہے pt-6) -->
+            <!-- Header -->
             <div class="w-full p-4 pt-6 flex justify-between items-center z-50 relative">
                 <i class="fa-solid fa-chevron-left text-2xl cursor-pointer drop-shadow-lg p-2" onclick="closeSVIPModal()"></i>
                 <h2 class="text-xl font-extrabold tracking-widest drop-shadow-lg">SVIP</h2>
                 <i class="fa-regular fa-circle-question text-xl drop-shadow-lg p-2"></i>
             </div>
             
-            <!-- TABS (ٹیبز کو ہیڈر کے بالکل نیچے کیا گیا ہے) -->
-            <div class="w-full flex justify-center gap-4 z-40 px-2 text-[13px] font-bold text-white/50 relative" id="svip-tabs">
-                <span onclick="changeSVIPView(1)" class="cursor-pointer transition" id="tab-svip-1">SVIP1</span>
-                <span onclick="changeSVIPView(2)" class="cursor-pointer transition" id="tab-svip-2">SVIP2</span>
-                <span onclick="changeSVIPView(3)" class="cursor-pointer transition" id="tab-svip-3">SVIP3</span>
-                <span onclick="changeSVIPView(4)" class="cursor-pointer transition" id="tab-svip-4">SVIP4</span>
-                <span onclick="changeSVIPView(5)" class="cursor-pointer transition" id="tab-svip-5">SVIP5</span>
+            <!-- TABS (Animated Carousel Style) -->
+            <div class="w-full h-12 relative z-40 overflow-hidden mt-2" id="svip-tabs">
+                <span onclick="changeSVIPView(1)" class="absolute transform -translate-x-1/2 transition-all duration-300 cursor-pointer" id="tab-svip-1">SVIP1</span>
+                <span onclick="changeSVIPView(2)" class="absolute transform -translate-x-1/2 transition-all duration-300 cursor-pointer" id="tab-svip-2">SVIP2</span>
+                <span onclick="changeSVIPView(3)" class="absolute transform -translate-x-1/2 transition-all duration-300 cursor-pointer" id="tab-svip-3">SVIP3</span>
+                <span onclick="changeSVIPView(4)" class="absolute transform -translate-x-1/2 transition-all duration-300 cursor-pointer" id="tab-svip-4">SVIP4</span>
+                <span onclick="changeSVIPView(5)" class="absolute transform -translate-x-1/2 transition-all duration-300 cursor-pointer" id="tab-svip-5">SVIP5</span>
             </div>
 
-        <!-- Main SVIP SVG Medal -->
-            <div class="absolute inset-0 flex items-center justify-center z-30 pointer-events-none mt-10">
-                <img id="svip-main-emblem" src="./svip_1.svg" class="w-56 h-56 object-contain drop-shadow-[0_15px_25px_rgba(255,215,0,0.4)] animate-pulse opacity-0 transition-opacity duration-500" onload="this.classList.remove('opacity-0')" onerror="this.style.opacity='0'">
+            <!-- Main SVIP SVG Medal (Size Reduced to w-44 h-44) -->
+            <div class="absolute inset-0 flex items-center justify-center z-30 pointer-events-none mt-16">
+                <img id="svip-main-emblem" src="./svip_1.svg" class="w-44 h-44 object-contain drop-shadow-[0_15px_25px_rgba(255,215,0,0.4)] animate-pulse transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
             </div>
         </div>
 
@@ -173,20 +172,20 @@ function createSVIPModalHTML() {
             <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
                 <!-- Box 1: Medal -->
                 <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
-                    <img id="priv-medal-img" src="./svip_1.svg" class="w-14 h-14 object-contain drop-shadow-md mb-2 opacity-0 transition-opacity duration-500" onload="this.classList.remove('opacity-0')" onerror="this.style.opacity='0'">
+                    <img id="priv-medal-img" src="./svip_1.svg" class="w-14 h-14 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
                     <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Medal</span>
                 </div>
                 
-                <!-- Box 2: Badge -->
+                <!-- Box 2: Badge (Size Increased to w-28 h-14) -->
                 <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
-                    <img id="priv-badge-img" src="./svip1_badge.svg" class="w-20 h-10 object-contain drop-shadow-md mb-2 opacity-0 transition-opacity duration-500" onload="this.classList.remove('opacity-0')" onerror="this.style.opacity='0'">
+                    <img id="priv-badge-img" src="./svip1_badge.svg" class="w-28 h-14 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
                     <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Badge</span>
                 </div>
                 
                 <!-- Box 3: Chat Bubble -->
                 <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28 relative">
                     <div class="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-                    <img id="priv-bubble-img" src="./chat_bubble1.svg" class="w-16 h-12 object-contain drop-shadow-md mb-2 opacity-0 transition-opacity duration-500" onload="this.classList.remove('opacity-0')" onerror="this.style.opacity='0'">
+                    <img id="priv-bubble-img" src="./chat_bubble1.svg" class="w-16 h-12 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
                     <span class="text-gray-300 text-[10px] font-bold text-center leading-tight">Chat Bubble</span>
                 </div>
             </div>
@@ -198,28 +197,41 @@ function createSVIPModalHTML() {
 function renderSVIPUI(level) {
     for(let i=1; i<=5; i++) {
         let tab = document.getElementById(`tab-svip-${i}`);
+        
+        // ریاضی (Math) کی مدد سے بالکل سینٹر لانا
+        let offset = i - level;
+        let leftPosition = 50 + (offset * 25); // 25% کا فاصلہ
+        if (tab) tab.style.left = `${leftPosition}%`;
+
         if(i === level) {
-            tab.className = "cursor-pointer transition text-white text-lg font-black border-b-2 border-yellow-500 pb-1";
+            // Active Tab (بالکل سینٹر، بڑا اور واضح)
+            if (tab) tab.className = "absolute top-0 transform -translate-x-1/2 transition-all duration-300 cursor-pointer text-white text-[22px] font-black border-b-[3px] border-yellow-500 pb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] z-50";
         } else {
-            tab.className = "cursor-pointer transition text-white/50 text-sm font-bold border-b-2 border-transparent pb-1";
+            // Inactive Tabs (سائیڈز پر، چھوٹے اور بلر)
+            if (tab) tab.className = "absolute top-2 transform -translate-x-1/2 transition-all duration-300 cursor-pointer text-white/30 text-[12px] font-medium border-b-2 border-transparent pb-1 blur-[0.5px] z-10";
         }
     }
 
     const svipData = SVIP_LEVELS[level - 1];
     
-   // پہلے تصاویر کو غائب (Transparent) کریں تاکہ لوڈنگ کلین ہو
     let emblem = document.getElementById('svip-main-emblem');
     let medal = document.getElementById('priv-medal-img');
     let badge = document.getElementById('priv-badge-img');
-    let bubble = document.getElementById('priv-bubble-img');[emblem, medal, badge, bubble].forEach(img => {
-        if(img) img.style.opacity = '0';
-    });
+    let bubble = document.getElementById('priv-bubble-img');
+    let imgs = [emblem, medal, badge, bubble];
 
-    // اب نیا سورس (Source) لگائیں، جیسے ہی لوڈ ہوگا onload اسے واپس show کر دے گا
-    if(emblem) emblem.src = `./svip_${level}.svg`;
-    if(medal) medal.src = `./svip_${level}.svg`;
-    if(badge) badge.src = `./svip${level}_badge.svg`;
-    if(bubble) bubble.src = `./chat_bubble${level}.svg`;
+    // 1. سب کو سمودھ طریقے سے غائب کریں (CSS Transition)
+    imgs.forEach(img => { if(img) img.style.opacity = '0'; });
+
+    // 2. 150 ملی سیکنڈ بعد سورس تبدیل کر کے واپس شو کروا دیں (Onload اور Cache کا مسئلہ حل)
+    setTimeout(() => {
+        if(emblem) emblem.src = `./svip_${level}.svg`;
+        if(medal) medal.src = `./svip_${level}.svg`;
+        if(badge) badge.src = `./svip${level}_badge.svg`;
+        if(bubble) bubble.src = `./chat_bubble${level}.svg`;
+
+        imgs.forEach(img => { if(img) img.style.opacity = '1'; });
+    }, 150);
 
     let requiredRecharge = svipData.req;
     document.getElementById('svip-target-text').innerText = `SVIP${level}`;
