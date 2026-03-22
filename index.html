@@ -1480,7 +1480,7 @@
             <div class="flex flex-col items-center flex-shrink-0">
                 <div class="relative w-[90px] h-[90px] flex items-center justify-center">
                     <div id="fpv-visual-container" class="w-full h-full relative"></div>
-                    <img id="fpv-v-badge-dp" src="./v_badge.png" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 4px; right: 4px;" onerror="this.style.display='none'">
+                    <img id="fpv-v-badge-dp" src="./v_badge.svg" class="absolute z-50 hidden bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 4px; right: 4px;" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
                 </div>
                 
                 <!-- 🔴 نیا لیول بیج اور SVIP بیج -->
@@ -1495,13 +1495,13 @@
 
             <!-- Right Column: نام اور آئی ڈی وغیرہ -->
             <div id="fpv-text-container" class="flex flex-col justify-center flex-1 relative z-40 mt-2 pl-2 transition-all">
-                <div class="flex items-center flex-wrap gap-1.5 mb-1.5 w-full">
-                    <h2 id="fpv-name" class="text-[18px] font-extrabold text-white drop-shadow-md max-w-[135px] truncate leading-normal">User Name</h2>
-                    <img id="fpv-official" src="./verify_official.png" class="h-[24px] hidden object-contain drop-shadow-md flex-shrink-0 mt-[1px]" onerror="this.style.display='none'">
-                    <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-[2px] rounded-full flex items-center justify-center gap-1 font-bold border border-white/30 shadow-sm flex-shrink-0 h-[20px]">
-                        <i class="fa-solid fa-mars"></i> 18
-                    </span>
-                </div>
+            <div class="flex items-center flex-wrap gap-1.5 mb-1.5 w-full">
+    <h2 id="fpv-name" class="text-[18px] font-extrabold text-white drop-shadow-md max-w-[135px] truncate leading-normal">User Name</h2>
+    <img id="fpv-official" src="./virfication_badge.svg" class="h-[24px] hidden object-contain drop-shadow-md flex-shrink-0 mt-[1px]" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+    <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-[2px] rounded-full flex items-center justify-center gap-1 font-bold border border-white/30 shadow-sm flex-shrink-0 h-[20px]">
+        <i class="fa-solid fa-mars"></i> 18
+    </span>
+</div>
                 <div class="flex items-center gap-3 text-xs font-bold text-gray-200 drop-shadow-md mt-1">
                     <div class="bg-black/60 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
                         ID: <span id="fpv-id" class="text-white">0000</span> <i class="fa-regular fa-copy text-[10px] cursor-pointer hover:text-white" onclick="copyToClipboard(document.getElementById('fpv-id').innerText)"></i>
@@ -1822,12 +1822,12 @@
                         <!-- YARAAN OFFICIAL DP (NEWLY ADDED) -->
                         <div class="relative w-14 h-14 rounded-full flex items-center justify-center shadow-sm border border-gray-200 flex-shrink-0">
                             <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
-                            <img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
+                            <img src="./v_badge.svg" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
                         </div>
                         
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-center mb-1">
-                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">YARAAN Official <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">Yaraan Official <img src="./v_badge.svg" class="w-3 h-3"></h4>
                                 <span class="text-[10px] text-gray-400" id="official-time">Just now</span>
                             </div>
                             <p class="text-xs text-gray-500 truncate" id="official-last-msg">No new messages</p>
@@ -1839,11 +1839,11 @@
                     <div onclick="openSystemChatView('rocket')" class="flex items-center gap-3 cursor-pointer bg-white p-2 rounded-xl active:bg-gray-50 transition">
                         <div class="relative w-14 h-14 rounded-full flex items-center justify-center shadow-sm border border-gray-200">
                             <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover" onerror="this.src='https://placehold.co/100?text=Y'">
-                            <img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
+                            <img src="./v_badge.svg" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-center mb-1">
-                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">YARAAN Reward <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <h4 class="font-bold text-gray-900 text-sm flex items-center gap-1">Yaraan Reward <img src="./v_badge.svg" class="w-3 h-3"></h4>
                                 <span class="text-[10px] text-gray-400" id="rocket-time">Just now</span>
                             </div>
                             <p class="text-xs text-gray-500 truncate" id="rocket-last-msg">Check your rewards!</p>
@@ -1867,7 +1867,7 @@
             <div class="flex items-center gap-3 p-4 border-b border-gray-200 bg-white shadow-sm sticky top-0 z-10 pt-10">
                 <button onclick="closeSystemChatView()" class="text-gray-800 p-2 active:opacity-50"><i class="fa-solid fa-chevron-left text-xl"></i></button>
                 <div class="font-extrabold text-gray-900 text-lg flex-1" id="system-chat-title">YARAAN</div>
-                <img src="./v_badge.png" class="w-5 h-5 object-contain mr-2">
+                <img src="./v_badge.svg" class="w-5 h-5 object-contain mr-2">
             </div>
             <div id="system-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
         </div>
@@ -1881,7 +1881,7 @@
                 <div class="fp-dp-wrapper mt-2 relative flex items-center justify-center">
                     <img id="fp-image" src="" class="fp-dp relative z-10">
                     <img id="fp-frame" src="" class="absolute z-20 pointer-events-none hidden" style="width: 140%; height: 140%; object-fit: contain;">
-                    <img id="fp-v-badge" src="./v_badge.png" class="fp-v-badge hidden relative z-30" onerror="this.style.display='none'">
+                    <img id="fp-v-badge" src="./v_badge.svg" class="fp-v-badge hidden relative z-30" onerror="this.style.display='none'">
                 </div>
                 
                 <h3 id="fp-name" class="text-2xl font-black text-gray-900 mb-1">User Name</h3>
@@ -1908,7 +1908,7 @@
 <div onclick="openFullProfileView()" class="flex items-center p-5 bg-white cursor-pointer relative">
     <div class="profile-page-visual mr-4" id="profile-visual-container"></div>
     <div class="flex-1 flex flex-col justify-center">
-        <h2 id="profile-name" class="text-2xl font-extrabold text-gray-900 mb-0.5 flex items-center">...<img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'"></h2>
+        <h2 id="profile-name" class="text-2xl font-extrabold text-gray-900 mb-0.5 flex items-center">...<img id="profile-v-badge" src="./v_badge.svg" class="v-badge-profile hidden" onerror="this.style.display='none'"></h2>
         
         <div class="flex justify-between items-center w-full pr-4">
             <div>
@@ -1928,7 +1928,7 @@
                 </div>
             </div>
             
-            <img id="profile-verify-official" src="./verify_official.png" class="h-8 object-contain hidden filter drop-shadow-md" onerror="this.style.display='none'">
+            <img id="profile-verify-official" src="./virfication_badge.svg" class="h-8 object-contain hidden filter drop-shadow-md" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
         </div>
     </div>
     <div class="flex items-center justify-center"><i class="fa-solid fa-chevron-right text-gray-300 text-lg"></i></div>
@@ -3444,7 +3444,7 @@
                 });
 
                 let nameEl = document.getElementById('profile-name');
-                nameEl.innerHTML = `<span class="${d.nameColorClass || 'text-gray-900'}">${d.username}</span> <img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
+                nameEl.innerHTML = `<span class="${d.nameColorClass || 'text-gray-900'}">${d.username}</span> <img id="profile-v-badge" src="./v_badge.svg" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
                 document.getElementById('profile-bio').innerText = d.bio || ""; 
                 const container = document.getElementById('profile-visual-container'); 
                 let isOff = (d.isOfficial === true || Number(d.customId) === window.SUPER_ADMIN_ID || Number(d.customId) === 10005);
@@ -3708,7 +3708,7 @@
                         <div class="flex items-start gap-2">
                             <img src="./yaraan_dp.png" class="w-10 h-10 rounded-full border border-gray-200">
                             <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%]">
-                                <h4 class="font-bold text-gray-900 text-xs mb-1 flex items-center gap-1">${val.fromName} <img src="./v_badge.png" class="w-3 h-3"></h4>
+                                <h4 class="font-bold text-gray-900 text-xs mb-1 flex items-center gap-1">${val.fromName} <img src="./v_badge.svg" class="w-3 h-3"></h4>
                                 <div class="text-xs text-gray-600 leading-relaxed">${val.message}</div>
                             </div>
                         </div>
@@ -3759,7 +3759,7 @@
 
         function inboxItem(key, val, type) { 
             if(type === 'req') return `<div class="bg-white border border-gray-200 shadow-sm p-2 rounded flex justify-between items-center mb-1"><span class="text-xs text-gray-800 font-medium">Followed you: ${val.fromName}</span><div class="flex gap-2"><button onclick="acceptFriend('${val.fromUid}', '${val.fromName}')" class="text-blue-600 text-xs font-bold border border-blue-600 px-2 py-1 rounded hover:bg-blue-50">FOLLOW BACK</button><button onclick="delNotif('requests/${key}')" class="text-red-500"><i class="fa-solid fa-xmark"></i></button></div></div>`; 
-            if(type === 'sys') return `<div class="bg-red-50 border border-red-200 shadow-sm p-3 rounded flex items-center gap-3 mb-2 relative overflow-hidden"><div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div><img src="${val.icon || './yaraan_dp.png'}" class="w-10 h-10 rounded-full border border-red-500 object-cover bg-white"><div class="flex-1"><h4 class="text-red-600 font-bold text-xs flex items-center">${val.fromName} <img src="./v_badge.png" class="w-3 h-3 ml-1" onerror="this.style.display='none'"></h4><p class="text-[10px] text-gray-700 font-medium leading-tight mt-0.5">${val.message}</p></div><button onclick="delNotif('system/${key}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-sm"></i></button></div>`;
+            if(type === 'sys') return `<div class="bg-red-50 border border-red-200 shadow-sm p-3 rounded flex items-center gap-3 mb-2 relative overflow-hidden"><div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div><img src="${val.icon || './yaraan_dp.png'}" class="w-10 h-10 rounded-full border border-red-500 object-cover bg-white"><div class="flex-1"><h4 class="text-red-600 font-bold text-xs flex items-center">${val.fromName} <img src="./v_badge.svg" class="w-3 h-3 ml-1" onerror="this.style.display='none'"></h4><p class="text-[10px] text-gray-700 font-medium leading-tight mt-0.5">${val.message}</p></div><button onclick="delNotif('system/${key}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-sm"></i></button></div>`;
             return `<div class="bg-white border border-gray-200 shadow-sm p-2 rounded flex justify-between items-center mb-1"><span class="text-xs text-gray-800 font-medium">Invite: ${val.fromName}</span><div class="flex gap-2"><button onclick="joinRoom('${val.roomId}')" class="text-blue-600 font-bold hover:underline">JOIN</button><button onclick="delNotif('invites/${key}')" class="text-red-500"><i class="fa-solid fa-xmark"></i></button></div></div>`; 
         }
 
@@ -4845,7 +4845,7 @@ const hpContainer = document.getElementById('hp-visual-container');
                 let hpPic = d.photoURL || 'https://placehold.co/100';
                 
                 // 🔥 V-Badge Position Fixed (بالکل ریڈ سرکل کی جگہ، آدھا تصویر پر اور آدھا باہر) 🔥
-                let vBadgeHTML = isOff ? `<img src="./v_badge.png" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 10px; right: 2px;">` : '';
+                let vBadgeHTML = isOff ? `<img src="./v_badge.svg" class="absolute z-50 bg-transparent object-contain drop-shadow-md" style="width: 26px; height: 26px; bottom: 10px; right: 2px;" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">` : '';
                 // NEW: مین کنٹینر کو Flex کر دیا تاکہ دونوں ڈی پیز اور دل ایک سیدھی لائن میں اور درمیان میں آ جائیں
                 let hpHtml = `<div class="flex items-center justify-center">`;
 
@@ -4898,7 +4898,7 @@ const hpContainer = document.getElementById('hp-visual-container');
             
             // 🔥 Verify Official Badge & Name UI (Fixed) 🔥
             // آفیشل بیج کا سائز h-[18px] سے بڑھا کر h-[24px] کر دیا گیا ہے تاکہ واضح نظر آئے
-            let offNameImg = isOff ? `<img src="./verify_official.png" class="h-[24px] object-contain mx-1 drop-shadow-sm flex-shrink-0">` : '';
+            let offNameImg = isOff ? `<img src="./virfication_badge.svg" class="h-[24px] object-contain mx-1 drop-shadow-sm flex-shrink-0" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">` : '';
             let genderClass = d.gender === 'female' ? 'bg-pink-400 text-white' : 'bg-blue-400 text-white';
             
             // جینڈر آئیکن کا سائز بھی چھوٹا کر دیا گیا ہے
@@ -5966,7 +5966,7 @@ window.promptRemoveCP = async (partnerUid, partnerName) => {
             await update(ref(db,`users/${currentUser.uid}`), updateData); 
             
             // Update Base Profile View
-            document.getElementById('profile-name').innerHTML = `<span class="${updateData.nameColorClass || 'text-gray-900'}">${n}</span> <img id="profile-v-badge" src="./v_badge.png" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
+            document.getElementById('profile-name').innerHTML = `<span class="${updateData.nameColorClass || 'text-gray-900'}">${n}</span> <img id="profile-v-badge" src="./v_badge.svg" class="v-badge-profile hidden" onerror="this.style.display='none'">`; 
             document.getElementById('profile-bio').innerText = b; 
             
             const container = document.getElementById('profile-visual-container'); 
@@ -6187,7 +6187,7 @@ window.leaveRoomFull = () => {
                 let isFollowing = friendCheck.exists();
                 
                 // V-Badge for Officials
-                let vBadgeHtml = (ud.isOfficial || ud.customId === window.SUPER_ADMIN_ID) ? `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full p-[2px] shadow-sm">` : '';
+                let vBadgeHtml = (ud.isOfficial || ud.customId === window.SUPER_ADMIN_ID) ? `<img src="./v_badge.svg" class="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full p-[2px] shadow-sm">` : '';
                 let genderIcon = ud.gender === 'female' ? '<i class="fa-solid fa-venus text-pink-500"></i>' : '<i class="fa-solid fa-mars text-blue-500"></i>';
 
                 // 6. Modern Search Result UI (Clickable to open Full Profile)

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 150" width="100%" height="100%">
+  <defs>
+    <!-- 1. Background Gradient (تصویر جیسا اورنج اور سرخ شیڈ) -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF9E3D"/> <!-- Orange -->
+      <stop offset="100%" stop-color="#FF5D51"/> <!-- Coral / Red -->
+    </linearGradient>
+
+    <!-- 2. Outer Yellow Ring Gradient (پیلے رنگ کا سرکل) -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF480"/>
+      <stop offset="100%" stop-color="#FACC22"/>
+    </linearGradient>
+
+    <!-- 3. Inner Circle Orange Gradient -->
+    <linearGradient id="innerCircleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFBA26"/>
+      <stop offset="100%" stop-color="#F28C00"/>
+    </linearGradient>
+
+    <!-- 4. ANIMATED FIRE SHINE (فائر اور چمکدار شیڈز کی پٹی) -->
+    <linearGradient id="fireShineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#FF4500" stop-opacity="0"/>    <!-- Transparent -->
+      <stop offset="45%" stop-color="#FF3300" stop-opacity="0.6"/>  <!-- سرخ (Red Fire) -->
+      <stop offset="48%" stop-color="#FFD700" stop-opacity="0.9"/>  <!-- پیلا (Yellow/Gold) -->
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="1"/>    <!-- تیز سفید چمک (Hot White) -->
+      <stop offset="52%" stop-color="#FFD700" stop-opacity="0.9"/>  <!-- پیلا (Yellow/Gold) -->
+      <stop offset="55%" stop-color="#FF3300" stop-opacity="0.6"/>  <!-- سرخ (Red Fire) -->
+      <stop offset="65%" stop-color="#FF4500" stop-opacity="0"/>    <!-- Transparent -->
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Drop Shadow for the Badge (بیج کے نیچے کا شیڈو) -->
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+
+    <!-- Subtle Drop Shadow for Text to make it pop -->
+    <filter id="textShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#b33b22" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Clip Path to keep the shine inside the short pill shape -->
+    <clipPath id="pillClip">
+      <rect x="20" y="25" width="320" height="100" rx="50" ry="50"/>
+    </clipPath>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- MAIN BADGE BACKGROUND -->
+  <!-- ========================================== -->
+  <rect x="20" y="25" width="320" height="100" rx="50" ry="50" fill="url(#bgGrad)" filter="url(#shadow)"/>
+
+  <!-- ========================================== -->
+  <!-- ICON SECTION (V Circle) -->
+  <!-- ========================================== -->
+  <g filter="url(#textShadow)">
+    <!-- Inner Darker Orange Circle -->
+    <circle cx="85" cy="75" r="32" fill="url(#innerCircleGrad)"/>
+    <!-- Outer Yellow Ring -->
+    <circle cx="85" cy="75" r="32" fill="none" stroke="url(#ringGrad)" stroke-width="6"/>
+    
+    <!-- Custom 'V' Letter Path (روٹیشن 15 سے کم کر کے 5 کر دی گئی ہے) -->
+    <path d="M 66 56 L 80 90 L 90 90 L 104 56 L 91 56 L 85 76 L 79 56 Z" fill="#ffffff" transform="rotate(5, 85, 75)" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- TEXT SECTION ("Official") -->
+  <!-- ========================================== -->
+  <text x="140" y="92" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="52" font-weight="600" fill="#ffffff" filter="url(#textShadow)">
+    Official
+  </text>
+
+  <!-- ========================================== -->
+  <!-- SHINE & GLOSS EFFECTS (فائر والی چمک کی اینیمیشن) -->
+  <!-- ========================================== -->
+  <g clip-path="url(#pillClip)">
+    <!-- Static Top Glass Highlight -->
+    <ellipse cx="180" cy="25" rx="160" ry="25" fill="#ffffff" opacity="0.15"/>
+    
+    <!-- ANIMATED SWEEPING FIRE SHINE -->
+    <rect x="-600" y="-50" width="1200" height="250" fill="url(#fireShineGrad)" transform="skewX(-25)">
+      <animate 
+        attributeName="x" 
+        values="-600; 500" 
+        dur="2.5s" 
+        repeatCount="indefinite" />
+    </rect>
+  </g>
+  
+  <!-- Outer Shiny White Rim (ہلکی سی بارڈر چمک) -->
+  <rect x="20" y="25" width="320" height="100" rx="50" ry="50" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+
+</svg>

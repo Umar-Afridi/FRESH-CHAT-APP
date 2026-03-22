@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <!-- گولڈن بارڈر (Outer Ring Gradient) -->
+    <linearGradient id="goldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE57F" />
+      <stop offset="25%" stop-color="#FFD700" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="80%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#B8860B" />
+    </linearGradient>
+    
+    <!-- اندر کا پیلا رنگ (Inner Coin Gradient) -->
+    <linearGradient id="innerYellow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFE966" />
+      <stop offset="40%" stop-color="#FFCC00" />
+      <stop offset="100%" stop-color="#E69900" />
+    </linearGradient>
+    
+    <!-- شیشے کی چمک (Top Glass Reflection) -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- 3D V کے لیے ڈراپ شیڈو -->
+    <filter id="vShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="2" flood-color="#805500" flood-opacity="0.8"/>
+    </filter>
+    
+    <!-- V کے اندر کا بیس وائٹ کلر -->
+    <linearGradient id="vGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E6E6E6" />
+    </linearGradient>
+
+    <!-- 🔥 ANIMATED FIRE SHINE (اب بہت پتلی اور سمارٹ پٹی ہے) 🔥 -->
+    <linearGradient id="fireShineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF4500" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#FF3300" stop-opacity="0.5"/>  <!-- سرخ فائر -->
+      <stop offset="40%" stop-color="#FFD700" stop-opacity="0.9"/>  <!-- گولڈن آگ -->
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="1"/>    <!-- تیز سفید چمک -->
+      <stop offset="60%" stop-color="#FFD700" stop-opacity="0.9"/>  <!-- گولڈن آگ -->
+      <stop offset="80%" stop-color="#FF3300" stop-opacity="0.5"/>  <!-- سرخ فائر -->
+      <stop offset="100%" stop-color="#FF4500" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- کلپ پاتھ پورے کوائن کے لیے تاکہ چمک چوکور خانے میں نہ جائے -->
+    <clipPath id="coinClip">
+      <circle cx="50" cy="50" r="48" />
+    </clipPath>
+  </defs>
+
+  <!-- یہ گروپ پورے گول سرکل اور V کو چھوٹا رکھتا ہے (80% scale) -->
+  <g transform="translate(10, 10) scale(0.8)">
+    
+    <!-- 3D گولڈ بارڈر -->
+    <circle cx="50" cy="50" r="48" fill="url(#goldRim)" />
+    
+    <!-- اندر کا حصہ -->
+    <circle cx="50" cy="50" r="42" fill="url(#innerYellow)" />
+    
+    <!-- اندرونی ہلکی بارڈر (Highlight) -->
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#FFF599" stroke-width="1.5" opacity="0.8"/>
+
+    <!-- میٹالک شیشے والی چمک (Glossy Top Highlight) -->
+    <path d="M 12 45 A 38 38 0 0 1 88 45 A 40 25 0 0 0 12 45 Z" fill="url(#shineGrad)" />
+    
+    <!-- روشنی کی ترچھی کرن (Diagonal Light Ray) -->
+    <polygon points="35,8 45,8 65,92 55,92" fill="#FFFFFF" opacity="0.15" transform="rotate(45 50 50)" />
+
+    <!-- 🌟 ترچھا "V" (بہت ہلکا سا 4 ڈگری روٹیٹ، بالکل سینٹر میں) 🌟 -->
+    <path d="M 33 32 L 45 68 L 55 68 L 67 32 L 56 32 L 50 53 L 44 32 Z" 
+          fill="url(#vGrad)" 
+          filter="url(#vShadow)" 
+          stroke="#FFFFFF" 
+          stroke-width="0.5" 
+          stroke-linejoin="round"
+          transform="rotate(4, 50, 50)" />
+
+    <!-- 🔥 چلتی ہوئی فائر چمک پٹی جو اب پتلی ہے (Width 40) 🔥 -->
+    <g clip-path="url(#coinClip)">
+      <rect x="-100" y="-20" width="40" height="140" fill="url(#fireShineGrad)" transform="skewX(-25)">
+        <animate attributeName="x" values="-100; 150" dur="2s" repeatCount="indefinite" />
+      </rect>
+    </g>
+    
+  </g>
+</svg>
