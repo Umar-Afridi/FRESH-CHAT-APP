@@ -1,7 +1,7 @@
 // ================= FINAL SLIM WALLET SYSTEM (PKR & ABBREVIATIONS) =================
 
 const walletStructure = `
-<div id="wallet-full-view" class="fixed inset-0 bg-[#f8f9fa] z-[8000] hidden flex-col transition-transform transform translate-x-full duration-300 ease-in-out">
+<div id="wallet-full-view" class="fixed inset-0 bg-[#f8f9fa] z-[8000] hidden flex-col transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none">
     <!-- Top Header -->
     <div class="flex items-center justify-between px-4 py-3 pt-12 bg-white border-b border-gray-100">
         <i class="fa-solid fa-chevron-left text-2xl text-gray-800 cursor-pointer active:opacity-50" onclick="closeWallet()"></i>
@@ -96,7 +96,7 @@ window.openRechargeModal = function() {
     const wallet = document.getElementById('wallet-full-view');
     wallet.classList.remove('hidden');
     wallet.style.display = 'flex';
-    setTimeout(() => { wallet.classList.remove('translate-x-full'); }, 10);
+    setTimeout(() => { wallet.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
     renderRechargeList();
     renderExchangeList();
     startLiveBalanceListener();
@@ -104,9 +104,9 @@ window.openRechargeModal = function() {
 
 window.closeWallet = function() {
     const wallet = document.getElementById('wallet-full-view');
-    wallet.classList.add('translate-x-full');
+    wallet.classList.add('opacity-0', 'pointer-events-none');
     if(walletListener) { walletListener(); walletListener = null; }
-    setTimeout(() => { wallet.style.display = 'none'; }, 300);
+    setTimeout(() => { wallet.classList.add('hidden'); wallet.style.display = 'none'; }, 300);
 };
 
 function showSlimMsg(text, duration = 2000) {

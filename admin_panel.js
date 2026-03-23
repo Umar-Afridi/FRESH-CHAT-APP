@@ -4,7 +4,7 @@
 // =====================================================================
 
 const adminPanelHTML = `
-<div id="full-admin-view" class="fixed inset-0 bg-[#0f0c29] z-[9999] hidden flex-col transition-transform transform translate-x-full duration-300 ease-in-out font-['Montserrat']">
+<div id="full-admin-view" class="fixed inset-0 bg-[#0f0c29] z-[9999] hidden flex-col transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none font-['Montserrat']">
     
     <!-- Top Header (Compact) -->
     <div class="flex justify-between items-center p-3 pt-10 border-b border-red-500/20 bg-[#1f1a2a] shadow-md">
@@ -104,7 +104,7 @@ window.openAdminPanel = async function() {
     const view = document.getElementById('full-admin-view');
     view.classList.remove('hidden');
     view.style.display = 'flex';
-    setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
+    setTimeout(() => { view.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
     document.getElementById('admin-target-user').classList.add('hidden');
     document.getElementById('admin-search-id').value = '';
     adminTargetUid = null;
@@ -126,7 +126,7 @@ window.openAdminPanel = async function() {
 
 window.closeAdminPanel = function() {
     const view = document.getElementById('full-admin-view');
-    view.classList.add('translate-x-full');
+    view.classList.add('opacity-0', 'pointer-events-none');
     setTimeout(() => { view.classList.add('hidden'); view.style.display = 'none'; }, 300);
 };
 

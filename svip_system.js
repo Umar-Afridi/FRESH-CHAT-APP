@@ -178,7 +178,7 @@ function createSVIPModalHTML() {
                 
                 <!-- Box 2: Badge (Size Increased to w-28 h-14) -->
                 <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
-                    <img id="priv-badge-img" src="./svip1_badge.svg" class="w-28 h-14 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                    <img id="priv-badge-img" src="./svip1_badge.svg" class="w-28 h-14 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent; transform: scale(1.5);" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
                     <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Badge</span>
                 </div>
                 

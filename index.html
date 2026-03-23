@@ -472,10 +472,36 @@
     pointer-events: auto;
 }
 
-@keyframes slideUpChat {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+/* =================================================================
+   SMOOTH OPEN FIX: STOP ALL SLIDING AND USE FADE INSTEAD
+   یہ کوڈ تمام سلائیڈنگ اینیمیشنز کو ختم کر کے سموتھ فیڈ میں بدل دے گا
+================================================================= */
+
+/* 1. Stop X-Axis (Left/Right) Movement */
+#global-search-view, #admin-search-view, #full-profile-view, 
+#edit-profile-view, #view-system-chat, #level-system-modal {
+    transition-property: opacity !important;
+    transform: none !important;
 }
+
+/* 2. Stop Y-Axis (Bottom/Top) Movement */
+#mic-sheet-content, #half-profile-content, #cp-ranking-modal {
+    transition-property: opacity !important;
+    transition-duration: 0.25s !important;
+    transform: none !important;
+}
+
+/* 3. Convert Tailwind Translate Classes to Smooth Opacity Fades */
+.translate-x-full, .-translate-x-full, 
+.translate-y-full, .-translate-y-full {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 4. Overriding Keyframe Animations to Fade Instead of Slide */
+@keyframes slideUp { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideUpChat { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
 /* چیٹ باکس کی ان پٹ فیلڈ کا ڈیزائن */
 #room-chat-input-field {
@@ -1484,12 +1510,12 @@
                 </div>
                 
                 <!-- 🔴 نیا لیول بیج اور SVIP بیج -->
-                <div class="flex items-center justify-center mt-[25px] z-[60] gap-3">
+                <div class="flex items-center justify-center mt-[25px] z-[60] gap-1.5">
                     <div id="fpv-level-badge-container" class="user-level-badge flex items-center justify-center relative m-0">
                         <img id="fpv-medal-img" src="" class="level-medal-img"> <span id="fpv-level-text">Lv.1</span>
                     </div>
                     <!-- SVIP BADGE -->
-                    <img id="fpv-svip-badge" src="" class="h-[24px] object-contain hidden drop-shadow-md" onerror="this.style.display='none'">
+                    <img id="fpv-svip-badge" src="" class="h-[55px] w-auto object-contain hidden drop-shadow-md -my-4 ml-1" onerror="this.style.display='none'">
                 </div>
             </div>
 
@@ -1902,7 +1928,7 @@
                         <span id="profile-level-text">Lv.1</span>
                     </div>
                     <!-- SVIP BADGE -->
-                    <img id="profile-svip-badge" src="" class="h-[16px] object-contain hidden drop-shadow-md" onerror="this.style.display='none'">
+                    <img id="profile-svip-badge" src="" class="h-[42px] w-auto object-contain hidden drop-shadow-md -my-3 ml-1" onerror="this.style.display='none'">
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -1931,8 +1957,8 @@
                     <!-- 2. Invite Friends (Moved below Recharge) -->
                     <div class="menu-item" onclick="showInviteModal()"><div class="menu-icon-box"><i class="fa-solid fa-user-plus text-green-500 text-lg"></i></div><div class="menu-text">Invite friends</div><span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full mr-2">Invite</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     
-                    <!-- 3. NEW: SVIP Button (For Future Logic) -->
-                    <div class="menu-item" onclick="openSVIPModal()"><div class="menu-icon-box"><i class="fa-solid fa-gem text-yellow-600 text-lg"></i></div><div class="menu-text font-extrabold text-yellow-600">SVIP Privileges</div><span class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[9px] font-black px-2 py-0.5 rounded-full mr-2">NEW</span><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    <!-- 3. SVIP Button -->
+                    <div class="menu-item" onclick="openSVIPModal()"><div class="menu-icon-box"><i class="fa-solid fa-gem text-yellow-600 text-lg"></i></div><div class="menu-text font-extrabold text-yellow-600">SVIP Privileges</div><img id="menu-svip-badge" src="" class="h-[55px] w-auto object-contain hidden mr-1 -my-4"><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
 
                     <!-- 4. Official Panel -->
                     <!-- OFFICIAL PANEL BUTTON - FIXED -->
@@ -1954,7 +1980,7 @@
                     <div class="menu-item" onclick="showCharmBoard()"><div class="menu-icon-box"><i class="fa-solid fa-heart text-pink-500 text-lg"></i></div><div class="menu-text">Love House (Charm)</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     
                     <!-- 8. Level Center -->
-                    <div class="menu-item" onclick="openLevelModal()"><div class="menu-icon-box"><i class="fa-solid fa-crown text-purple-500 text-lg"></i></div><div class="menu-text">Level Center</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
+                    <div class="menu-item" onclick="openLevelModal()"><div class="menu-icon-box"><i class="fa-solid fa-crown text-purple-500 text-lg"></i></div><div class="menu-text">Level Center</div><div id="menu-level-badge" class="mr-2" style="transform: scale(0.85); transform-origin: right center;"></div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
                     
                     <!-- 9. Customer Service (Moved above Logout) -->
                     <div class="menu-item" onclick="openCustomerSupport()"><div class="menu-icon-box"><i class="fa-solid fa-headset text-blue-500 text-lg"></i></div><div class="menu-text">Customer Service</div><i class="fa-solid fa-chevron-right menu-arrow"></i></div>
@@ -2388,7 +2414,7 @@
         </div>
     </div>
 <!-- ================= CP STAR RANKING MODAL (FULLY SCROLLABLE - FIXED STRUCTURE) ================= -->
-<div id="cp-ranking-modal" class="fixed inset-0 bg-black z-[4000] hidden flex-col" style="display: none; overflow: hidden;">
+<div id="cp-ranking-modal" class="fixed inset-0 bg-black z-[4000] hidden flex-col translate-y-full" style="display: none; overflow: hidden;">
     
     <!-- Video Background for CP Star -->
     <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-80" poster="./cp_star_bg.png">
@@ -2971,72 +2997,131 @@
         let touchStartX = 0; let touchStartY = 0; 
         document.addEventListener('touchstart', e => { 
             // .fpv-scroll-area کو ہٹا دیا گیا ہے تاکہ وائٹ ایریا پر بھی سوائپ کام کرے
-            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper') || e.target.closest('#svip-full-modal')) return; 
             touchStartX = e.changedTouches[0].screenX; 
             touchStartY = e.changedTouches[0].screenY; 
         }, {passive: false}); 
 
         document.addEventListener('touchend', e => { 
-            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper')) return; 
+            if(e.target.closest('.modern-carousel') || e.target.closest('.gift-targets-wrapper') || e.target.closest('#svip-full-modal')) return; 
             let touchEndX = e.changedTouches[0].screenX; 
             let touchEndY = e.changedTouches[0].screenY; 
             handleGesture(touchStartX, touchStartY, touchEndX, touchEndY); 
         }, {passive: false});
-     function handleGesture(sX, sY, eX, eY) { 
+     
+function handleGesture(sX, sY, eX, eY) { 
             const diffX = eX - sX; 
             const diffY = eY - sY; 
             
+            // اگر یوزر نے سیدھا سوائپ نہیں کیا تو کچھ مت کرو
             if (Math.abs(diffX) < 50 || Math.abs(diffX) <= Math.abs(diffY)) return; 
 
-            // 1. فل پروفائل سوائپ
-            const fpv = document.getElementById('full-profile-view');
-            if (fpv && !fpv.classList.contains('hidden') && !fpv.classList.contains('translate-x-full')) {
-                const isProfileActive = document.getElementById('fpv-tab-profile').classList.contains('block');
-                if (diffX < -50 && isProfileActive) { window.switchProfileTab('intimacy'); } 
-                else if (diffX > 50 && !isProfileActive) { window.switchProfileTab('profile'); } 
-                return;
-            }
+            // Helper: چیک کرنے کے لیے کہ کونسا پیج اوپن ہے
+            const isOpen = (id) => {
+                const el = document.getElementById(id);
+                return el && (!el.classList.contains('hidden') && !el.classList.contains('opacity-0') && el.style.display !== 'none');
+            };
 
-            // 2. لیڈر بورڈ سوائپ
-            const lb = document.getElementById('leaderboard-modal');
-            if (lb && lb.style.display === 'flex') {
-                let tabs = document.querySelectorAll('.lb-m-tab');
-                let activeIndex = 0;
-                tabs.forEach((t, i) => { if(t.classList.contains('active')) activeIndex = i; });
-                if (diffX < -50 && activeIndex < 2) { window.switchMainTab(activeIndex + 1); } 
-                else if (diffX > 50 && activeIndex > 0) { window.switchMainTab(activeIndex - 1); } 
-                return;
-            }
-
-            // 3. ہوم ٹیب سوائپ
-            const homeView = document.getElementById('view-home');
-            if (homeView && homeView.style.display === 'flex') {
-                let tabs =['following', 'popular', 'recent']; 
-                let currentIndex = tabs.indexOf(currentHomeTab); 
-                if (diffX < -50 && currentIndex < tabs.length - 1) window.switchHomeTab(tabs[currentIndex + 1]); 
-                else if (diffX > 50 && currentIndex > 0) window.switchHomeTab(tabs[currentIndex - 1]); 
-                return;
-            }
-            
-            // 4. روم ایگزٹ / منیمائز سوائپ (اب دوسری سائیڈ پر شفٹ کر دیا گیا ہے)
-            const roomView = document.getElementById('view-room'); 
-            if (roomView && roomView.style.display === 'flex') { 
-                if (diffX < -50) { // دائیں سے بائیں سوائپ (Right to Left)
-                    window.toggleExitMenu(); 
+            // ==========================================
+            // 🔴 1. یونیورسل بیک / پچھلا سوائپ (اب لیفٹ سے رائٹ: diffX > 50)
+            // جب آپ انگلی دائیں جانب کھینچیں گے تو یہ بیک آئے گا یا پچھلے ٹیب پر جائے گا
+            // ==========================================
+            if (diffX > 50) {
+                // فل پروفائل میں ٹیب سوئچ اور بیک کا سپیشل لاجک
+                if (isOpen('full-profile-view')) {
+                    const isProfileActive = document.getElementById('fpv-tab-profile').classList.contains('block');
+                    if (!isProfileActive) { 
+                        window.switchProfileTab('profile'); // اگر Intimacy پر ہے تو Profile پر آؤ (بیک)
+                        return; 
+                    } else {
+                        window.closeFullProfileView(); // اگر Profile پر ہے تو سوائپ کر کے پیج کلوز کر دو
+                        return;
+                    }
                 }
-                return; 
+
+                // باقی تمام پیجز کو سوائپ سے بند کرنے کا لاجک (Top to Bottom ترجیح)
+                if (isOpen('full-chat-view')) { window.closeDirectChat(); return; }
+                if (isOpen('admin-search-view')) { window.closeAdminSearch(); return; }
+                if (isOpen('full-admin-view')) { window.closeAdminPanel(); return; }
+                if (isOpen('wallet-full-view')) { window.closeWallet(); return; }
+                if (isOpen('cp-ranking-modal')) { window.closeCPRankingModal(); return; }
+                if (isOpen('global-search-view')) { window.closeGlobalSearch(); return; }
+                if (isOpen('edit-profile-view')) { window.closeEditProfileScreen(); return; }
+                if (isOpen('level-system-modal')) { window.closeLevelModal(); return; }
+                
+                // 🔥 اسٹور، پروپ ویئر ہاؤس اور SVIP کا سوائپ لاجک 🔥
+                if (isOpen('store-modal')) { window.closeStoreModal(); return; }
+                
+                if (isOpen('svip-modal') || isOpen('svip-full-view')) { 
+                    if (typeof window.closeSVIPModal === 'function') window.closeSVIPModal(); 
+                    return; 
+                }
+                
+                const propModal = document.getElementById('prophouse-modal'); 
+                if (propModal && (propModal.classList.contains('open') || isOpen('prophouse-modal'))) { 
+                    window.closePropHouse(); 
+                    return; 
+                } 
+
+                // لیڈر بورڈ ٹیب بیک سوائپ
+                const lb = document.getElementById('leaderboard-modal');
+                if (lb && lb.style.display === 'flex') {
+                    let tabs = document.querySelectorAll('.lb-m-tab');
+                    let activeIndex = 0;
+                    tabs.forEach((t, i) => { if(t.classList.contains('active')) activeIndex = i; });
+                    if (activeIndex > 0) { window.switchMainTab(activeIndex - 1); return; }
+                    else { window.closeLeaderboard(); return; } // اگر پہلی ٹیب پر ہے تو بند کر دو
+                }
+                
+                // مین پروفائل سے ہوم پر جانے کا سوائپ
+                const profileView = document.getElementById('view-profile'); 
+                if (profileView && profileView.style.display === 'flex') { window.switchTab('view-home', document.getElementById('btn-home')); return; } 
+                
+                // ہوم ٹیبز بیک سوائپ (Recent -> Popular -> Following)
+                const homeView = document.getElementById('view-home');
+                if (homeView && homeView.style.display === 'flex') {
+                    let tabs =['following', 'popular', 'recent']; 
+                    let currentIndex = tabs.indexOf(currentHomeTab); 
+                    if (currentIndex > 0) { window.switchHomeTab(tabs[currentIndex - 1]); return; }
+                }
             }
 
-            // 5. بیک سوائپ (باقی پیجز بند کرنے کے لیے - بائیں سے دائیں)
-            if (diffX > 50) { 
-                const profileView = document.getElementById('view-profile'); 
-                const propModal = document.getElementById('prophouse-modal'); 
-                if (profileView && profileView.style.display === 'flex') { window.switchTab('view-home', document.getElementById('btn-home')); return; } 
-                if (propModal && propModal.classList.contains('open')) { window.closePropHouse(); return; } 
+            // ==========================================
+            // 🔴 2. نیکسٹ / اگلا سوائپ (اب رائٹ سے لیفٹ: diffX < -50)
+            // جب آپ انگلی بائیں جانب کھینچیں گے تو یہ اگلے ٹیب پر جائے گا
+            // ==========================================
+            if (diffX < -50) {
+                // فل پروفائل ٹیب سوئچ (Profile -> Intimacy)
+                if (isOpen('full-profile-view')) {
+                    const isProfileActive = document.getElementById('fpv-tab-profile').classList.contains('block');
+                    if (isProfileActive) { window.switchProfileTab('intimacy'); return; }
+                }
+
+                // لیڈر بورڈ ٹیب سوئچ (Contribution -> Charm -> Room)
+                const lb = document.getElementById('leaderboard-modal');
+                if (lb && lb.style.display === 'flex') {
+                    let tabs = document.querySelectorAll('.lb-m-tab');
+                    let activeIndex = 0;
+                    tabs.forEach((t, i) => { if(t.classList.contains('active')) activeIndex = i; });
+                    if (activeIndex < 2) { window.switchMainTab(activeIndex + 1); return; }
+                }
+
+                // ہوم ٹیبز سوئچ (Following -> Popular -> Recent)
+                const homeView = document.getElementById('view-home');
+                if (homeView && homeView.style.display === 'flex') {
+                    let tabs =['following', 'popular', 'recent']; 
+                    let currentIndex = tabs.indexOf(currentHomeTab); 
+                    if (currentIndex < tabs.length - 1) { window.switchHomeTab(tabs[currentIndex + 1]); return; } 
+                }
+
+                // روم ایگزٹ / منیمائز مینو اوپن کرنا
+                const roomView = document.getElementById('view-room'); 
+                if (roomView && roomView.style.display === 'flex') { 
+                    window.toggleExitMenu(); 
+                    return; 
+                }
             }
         }
-
-        
         function forceScrollBottom() { const chatArea = document.getElementById('chat-display-area'); if (chatArea) { chatArea.scrollTop = chatArea.scrollHeight; } } window.addEventListener('resize', () => { if(currentRoomId) setTimeout(forceScrollBottom, 100); });
         
         window.toggleAuthMode = () => { isSignup = !isSignup; document.getElementById('username-field').classList.toggle('hidden'); if (isSignup) { document.getElementById('auth-btn').textContent = "CREATE ACCOUNT"; document.getElementById('auth-switch').textContent = "Back to Login"; document.getElementById('email-form-title').textContent = "Create Account"; } else { document.getElementById('auth-btn').textContent = "LOGIN"; document.getElementById('auth-switch').textContent = "Create an account"; document.getElementById('email-form-title').textContent = "Email Login"; } };
@@ -3450,15 +3535,30 @@
 
                 updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
-                // For My Profile SVIP Badge
+                // Menu Level Badge Update
+                let menuLevelBadge = document.getElementById('menu-level-badge');
+                if (menuLevelBadge) {
+                    menuLevelBadge.innerHTML = window.renderLevelHTML(currentUserExp);
+                }
+
+                // For My Profile & Menu SVIP Badge
                 let mySvipBadge = document.getElementById('profile-svip-badge');
-                if (mySvipBadge) {
-                    if (d.svipLevel && d.svipLevel > 0) {
-                        mySvipBadge.src = `./svip${d.svipLevel}_badge.png`;
+                let menuSvipBadge = document.getElementById('menu-svip-badge');
+                
+                if (d.svipLevel && d.svipLevel > 0) {
+                    if (mySvipBadge) {
+                        mySvipBadge.src = `./svip${d.svipLevel}_badge.svg`;
                         mySvipBadge.classList.remove('hidden');
-                    } else {
-                        mySvipBadge.classList.add('hidden');
+                        mySvipBadge.style.display = 'block'; // FIX: Force show
                     }
+                    if (menuSvipBadge) {
+                        menuSvipBadge.src = `./svip${d.svipLevel}_badge.svg`;
+                        menuSvipBadge.classList.remove('hidden');
+                        menuSvipBadge.style.display = 'block'; // FIX: Force show
+                    }
+                } else {
+                    if (mySvipBadge) { mySvipBadge.classList.add('hidden'); mySvipBadge.style.display = 'none'; }
+                    if (menuSvipBadge) { menuSvipBadge.classList.add('hidden'); menuSvipBadge.style.display = 'none'; }
                 }
 
                 if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
@@ -4592,14 +4692,19 @@ window.joinRoom = async (rid) => {
                         let userDp = m.pic || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=random`;
                         let clickableAction = m.uid ? `onclick="openHalfProfile('${m.uid}', null)"` : '';
                         
+                        // 🔥 SVIP Badge in Chat Logic
+                        let chatSvipHtml = (m.svipLevel && m.svipLevel > 0) ? `<img src="./svip${m.svipLevel}_badge.svg" style="height: 38px; width: auto; object-fit: contain; margin-left: 2px; margin-right: 4px; margin-top: -10px; margin-bottom: -10px;">` : '';
+                        
                         chatArea.innerHTML += `
                         <div class="flex flex-col mb-3">
-                            <!-- اوپر والی لائن: DP, Level, Name -->
-                            <div class="flex items-center gap-1 mb-1"> <!-- gap-2 سے gap-1 کر دیا -->
+                            <!-- اوپر والی لائن: DP, Level, SVIP, Name -->
+                            <div class="flex items-center gap-1 mb-1"> 
                                 <img src="${userDp}" ${clickableAction} style="width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.5); flex-shrink: 0; cursor: pointer;" class="shadow-sm" onerror="this.src='https://placehold.co/100'">
                                 
-                                <!-- margin-right: -8px کا اضافہ کیا تاکہ نام قریب آ جائے -->
                                 <div style="transform: scale(0.85); transform-origin: left center; display: inline-flex; margin-right: -8px;">${levelBadgeHtml}</div>
+                                
+                                <!-- SVIP Badge Render -->
+                                ${chatSvipHtml}
                                 
                                 <span ${clickableAction} class="text-[13px] font-black ${colorClass} drop-shadow-md tracking-wide cursor-pointer" style="text-shadow: 1px 1px 0px rgba(0,0,0,0.8);">${m.name}</span>
                             </div>
@@ -5186,12 +5291,25 @@ const hpContainer = document.getElementById('hp-visual-container');
 
       // ================= FIXED FULL PROFILE VIEW LOGIC =================
         let viewingProfileUid = null;
+        window.profileHistoryStack = window.profileHistoryStack ||[];
 
-        window.openFullProfileView = async (targetUid) => {
-            viewingProfileUid = (targetUid && typeof targetUid === 'string') ? targetUid : currentUser.uid; 
-            let isMe = (viewingProfileUid === currentUser.uid);
+        window.openFullProfileView = async (targetUid, targetTab = 'profile', isBackNav = false) => {
+            let newUid = (targetUid && typeof targetUid === 'string') ? targetUid : currentUser.uid; 
             
             const view = document.getElementById('full-profile-view');
+            
+            // بیک ہسٹری کا لاجک (ایک پروفائل سے دوسری میں جانے کا ریکارڈ)
+            if (!isBackNav) {
+                if (!view.classList.contains('hidden') && viewingProfileUid && viewingProfileUid !== newUid) {
+                    let activeTab = document.getElementById('fpv-tab-intimacy').classList.contains('hidden') ? 'profile' : 'intimacy';
+                    window.profileHistoryStack.push({ uid: viewingProfileUid, tab: activeTab });
+                } else if (view.classList.contains('hidden')) {
+                    window.profileHistoryStack =[]; 
+                }
+            }
+
+            viewingProfileUid = newUid;
+            let isMe = (viewingProfileUid === currentUser.uid);
             view.classList.remove('hidden');
             setTimeout(() => { view.classList.remove('translate-x-full'); }, 10);
 
@@ -5342,10 +5460,12 @@ const hpContainer = document.getElementById('hp-visual-container');
             let fpvSvipBadge = document.getElementById('fpv-svip-badge');
             if (fpvSvipBadge) {
                 if (d.svipLevel && d.svipLevel > 0) {
-                    fpvSvipBadge.src = `./svip${d.svipLevel}_badge.png`;
+                    fpvSvipBadge.src = `./svip${d.svipLevel}_badge.svg`;
                     fpvSvipBadge.classList.remove('hidden');
+                    fpvSvipBadge.style.display = 'block'; // FIX: Force show
                 } else {
                     fpvSvipBadge.classList.add('hidden');
+                    fpvSvipBadge.style.display = 'none';
                 }
             }
 
@@ -5360,7 +5480,7 @@ const hpContainer = document.getElementById('hp-visual-container');
             renderFPVMedals(d, currentLevel); 
             
             loadCPData(d); // اب CP Data کامیابی سے لوڈ ہوگا
-            window.switchProfileTab('profile');
+            window.switchProfileTab(targetTab); // جو ٹیب پہلے اوپن تھا وہی اوپن ہوگا (Profile یا Intimacy)
         };
 
         // --- NEW HELPER FUNCTIONS FOR OTHER PROFILES ---
@@ -5398,9 +5518,16 @@ const hpContainer = document.getElementById('hp-visual-container');
         }
         // ------------------------------------------------
         window.closeFullProfileView = () => {
-            const view = document.getElementById('full-profile-view');
-            view.classList.add('translate-x-full');
-            setTimeout(() => { view.classList.add('hidden'); }, 300);
+            // اگر ہسٹری میں کوئی پچھلا پروفائل موجود ہے تو وہاں واپس جائیں
+            if (window.profileHistoryStack && window.profileHistoryStack.length > 0) {
+                let prevProfile = window.profileHistoryStack.pop();
+                window.openFullProfileView(prevProfile.uid, prevProfile.tab, true);
+            } else {
+                // اگر ہسٹری خالی ہے تو فل پروفائل کلوز کر دیں
+                const view = document.getElementById('full-profile-view');
+                view.classList.add('translate-x-full');
+                setTimeout(() => { view.classList.add('hidden'); }, 300);
+            }
         };
         
         
@@ -6034,8 +6161,9 @@ window.leaveRoomFull = () => {
                     text: text, 
                     type: 'chat',
                     userExp: currentUserExp || 0,
+                    svipLevel: uData.svipLevel || 0, // <--- SVIP LEVEL ADDED FOR CHAT BADGE
                     nameColorClass: uData.nameColorClass || null,
-                    bubbleClass: uData.currentBubbleClass || null, // <--- NEW SVIP BUBBLE
+                    bubbleClass: uData.currentBubbleClass || null,
                     timestamp: Date.now()
                 });
                 input.value=''; 
@@ -7674,6 +7802,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./gift_animation.js"></script>
 <script src="./prop_house.js"></script>
 <script src="./cp_system.js"></script>
+<script src="./edge_swipe.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>

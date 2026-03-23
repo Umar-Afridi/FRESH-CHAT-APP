@@ -29,7 +29,15 @@ window.updateLevelBadgeUI = function(badgeId, exp) {
     let tier = window.getLevelTier(lvl);
     let badgeEl = document.getElementById(badgeId);
     if(badgeEl) {
-        badgeEl.className = `user-level-badge tier-${tier}`;
+        // پرانی کلاسز ڈیلیٹ ہونے سے روکنے کے لیے نیا طریقہ
+        for(let i=1; i<=15; i++) {
+            badgeEl.classList.remove('tier-' + i);
+        }
+        if(!badgeEl.classList.contains('user-level-badge')) {
+            badgeEl.classList.add('user-level-badge');
+        }
+        badgeEl.classList.add(`tier-${tier}`);
+        
         badgeEl.innerHTML = `<span>LV.${lvl}</span>`;
         badgeEl.style.backgroundImage = 'none';
     }

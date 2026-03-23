@@ -44,8 +44,8 @@ const cpPopupStyles = `
         animation: slideUpCP 0.3s ease-out;
     }
     @keyframes slideUpCP {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
     }
     .cp-bottom-search-text {
         font-size: 12px;
@@ -151,8 +151,17 @@ window.loadCPData = function(userData) {
             ontouchmove="endCpPress()"
         ` : '';
 
+        // پرائیویسی لاجک: اگر اپنی پروفائل ہے تو پوائنٹس شو ہوں گے ورنہ غائب
+        let pointsPillHTML = isMe ? `
+            <div class="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-[1px] rounded-full flex items-center justify-center gap-0.5 shadow-sm border border-pink-100 z-30 w-max pointer-events-none">
+                <i class="fa-solid fa-heart text-pink-500 text-[6px] flex-shrink-0 mt-[1px]"></i>
+                <span class="text-pink-500 text-[6.5px] font-black leading-tight whitespace-nowrap">${cpPts.toLocaleString()}</span>
+            </div>
+        ` : '';
+
+        // w-[96%] کو w-full کر دیا گیا ہے تاکہ وائٹ سپیس ختم ہو جائے
         container.innerHTML = headerHTML + `
-            <div class="relative w-[96%] mx-auto flex justify-center items-center rounded-[20px] overflow-hidden shadow-md">
+            <div class="relative w-full mx-auto flex justify-center items-center rounded-[20px] overflow-hidden shadow-md">
                 <img src="./cp_lv${cpLevel}.svg" class="w-full h-auto drop-shadow-md z-10 pointer-events-none" onerror="this.src='https://placehold.co/350x200?text=CP+Level+${cpLevel}'">
                 
                 <!-- Left DP (User) -->
@@ -167,7 +176,7 @@ window.loadCPData = function(userData) {
                     <span class="text-white font-extrabold text-[8px] drop-shadow-md leading-tight">${daysText}</span>
                 </div>
 
-                <!-- Right DP (Partner) with Points -->
+                <!-- Right DP (Partner) -->
                 <div class="absolute z-20 flex flex-col items-center cursor-pointer transition" style="left: 78%; top: 50%; transform: translate(-50%, -50%);" 
                      ${pressEvents} 
                      onclick="handleCpPartnerClick('${userData.cp.partnerUid}')">
@@ -175,11 +184,7 @@ window.loadCPData = function(userData) {
                     <div class="relative w-[55px] h-[55px]">
                         <img src="${partnerPic}" class="w-full h-full rounded-full object-cover border-[2.5px] border-white shadow-md ${isMe ? 'active:scale-95' : 'hover:scale-105'}">
                         
-                        <!-- Points Pill (Fixed: Shows Full Number) -->
-                        <div class="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-[1px] rounded-full flex items-center justify-center gap-0.5 shadow-sm border border-pink-100 z-30 w-max pointer-events-none">
-                            <i class="fa-solid fa-heart text-pink-500 text-[6px] flex-shrink-0 mt-[1px]"></i>
-                            <span class="text-pink-500 text-[6.5px] font-black leading-tight whitespace-nowrap">${cpPts.toLocaleString()}</span>
-                        </div>
+                        ${pointsPillHTML}
                     </div>
                     <span class="text-gray-800 text-[9px] font-extrabold mt-3.5 bg-white/80 px-2.5 py-0.5 rounded-full backdrop-blur-sm shadow-sm truncate max-w-[65px]">${partnerName}</span>
                 </div>
@@ -189,7 +194,7 @@ window.loadCPData = function(userData) {
         `;
     } else {
         container.innerHTML = headerHTML + `
-            <div class="relative w-[96%] mx-auto flex justify-center items-center rounded-[20px] overflow-hidden shadow-md">
+            <div class="relative w-full mx-auto flex justify-center items-center rounded-[20px] overflow-hidden shadow-md">
                 <img src="./cp_main.svg" class="w-full h-auto drop-shadow-md z-10 pointer-events-none" onerror="this.src='https://placehold.co/350x200?text=CP+Main'">
                 
                 <div class="absolute z-20 flex flex-col items-center" style="left: 22%; top: 50%; transform: translate(-50%, -50%);">

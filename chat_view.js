@@ -46,7 +46,7 @@ const chatViewHTML = `
 </style>
 
 <!-- 🔴 FIX: Chat View کا Z-index کم کر دیا (3900) تاکہ پروفائل اور ایموجی اس کے اوپر کھلیں -->
-<div id="full-chat-view" class="fixed inset-0 z-[3900] hidden flex-col transition-transform transform translate-x-full duration-300 ease-in-out">
+<div id="full-chat-view" class="fixed inset-0 z-[3900] hidden flex-col transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none">
     
     <!-- Top Header -->
     <div class="bg-white flex items-center justify-between p-3 pt-10 shadow-sm border-b border-gray-100 z-20">
@@ -122,7 +122,7 @@ window.openDirectChat = async (friendUid, friendName) => {
     const chatView = document.getElementById('full-chat-view'); 
     chatView.classList.remove('hidden'); 
     chatView.style.display = 'flex'; 
-    setTimeout(() => { chatView.classList.remove('translate-x-full'); }, 10);
+    setTimeout(() => { chatView.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
 
     // Fetch Friend Data for Header (Safe Mode)
     const uSnap = await window.get(window.ref(window.db, `users/${friendUid}`));
@@ -134,7 +134,7 @@ window.openDirectChat = async (friendUid, friendName) => {
         fData = uSnap.val();
         pic = fData.photoURL || pic;
         if(fData.isOfficial || fData.customId === 10005) {
-            vBadgeHtml = `<img src="./v_badge.png" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10 drop-shadow-md">`;
+            vBadgeHtml = `<img src="./v_badge.svg" class="absolute -bottom-1 -right-1 w-5 h-5 bg-transparent object-contain z-10 drop-shadow-md">`;
         }
     }
 
@@ -235,7 +235,7 @@ window.openDirectChat = async (friendUid, friendName) => {
 window.closeDirectChat = () => {
     const chatView = document.getElementById('full-chat-view');
     if(chatView) {
-        chatView.classList.add('translate-x-full');
+        chatView.classList.add('opacity-0', 'pointer-events-none');
         setTimeout(() => {
             chatView.classList.add('hidden');
             chatView.style.display = 'none';
