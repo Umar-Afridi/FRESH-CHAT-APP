@@ -1,0 +1,93 @@
+
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffdce8" />
+      <stop offset="40%" stop-color="#fae4fb" />
+      <stop offset="100%" stop-color="#a8d1ff" />
+    </linearGradient>
+
+    <!-- Heart Gradient -->
+    <linearGradient id="heartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff9eb5" />
+      <stop offset="100%" stop-color="#ff6b8e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="340" rx="15" ry="15" fill="url(#bgGrad)" />
+
+  <!-- Background Clouds (Left) -->
+  <path d="M 0 150 Q 40 130 70 180 Q 120 150 160 220 Q 200 210 250 280 L 0 280 Z" fill="#ffffff" opacity="0.15" />
+  <path d="M 0 200 Q 60 180 100 240 Q 150 220 200 290 Q 250 280 320 340 L 0 340 Z" fill="#ffffff" opacity="0.25" />
+
+  <!-- Background Clouds (Right) -->
+  <path d="M 800 150 Q 760 130 730 180 Q 680 150 640 220 Q 600 210 550 280 L 800 280 Z" fill="#ffffff" opacity="0.15" />
+  <path d="M 800 200 Q 740 180 700 240 Q 650 220 600 290 Q 550 280 480 340 L 800 340 Z" fill="#ffffff" opacity="0.25" />
+
+  <!-- Bottom Mist -->
+  <path d="M 0 260 Q 200 320 400 290 Q 600 260 800 310 L 800 340 L 0 340 Z" fill="#ffffff" opacity="0.3" />
+
+  <!-- Top "CP" Tab -->
+  <g transform="translate(320, 0)">
+    <!-- Dark Red Corner Triangles -->
+    <polygon points="5,0 15,0 15,10" fill="#d83a56" />
+    <polygon points="155,0 145,0 145,10" fill="#d83a56" />
+    <!-- Pink Tab -->
+    <path d="M 15 0 L 145 0 C 150 0 152 2 152 5 L 145 40 C 140 48 125 50 115 50 L 45 50 C 35 50 20 48 15 40 L 8 5 C 8 2 10 0 15 0 Z" fill="#ffb8cb" opacity="0.9" />
+    <!-- Text -->
+    <text x="80" y="34" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#d83a56" text-anchor="middle" letter-spacing="1">CP</text>
+  </g>
+
+  <!-- Flowing ECG Lines (Moved Down & Animated like Blood Flow) -->
+  <g stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    
+    <!-- LEFT LINE -->
+    <!-- Base track (Light White) -->
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#ffffff" opacity="0.4" />
+    
+    <!-- Glowing Blood Flow Animation (Red/Pink Shine) -->
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#ff2a55" stroke-dasharray="60 200">
+      <animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.5s" repeatCount="indefinite" />
+    </path>
+    
+    <!-- Inner White Shine moving with blood -->
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#ffffff" stroke-width="2" stroke-dasharray="20 240">
+      <animate attributeName="stroke-dashoffset" from="240" to="-20" dur="1.5s" repeatCount="indefinite" />
+    </path>
+
+    <!-- RIGHT LINE -->
+    <!-- Base track (Light White) -->
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#ffffff" opacity="0.4" />
+    
+    <!-- Glowing Blood Flow Animation (Red/Pink Shine) -->
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#ff2a55" stroke-dasharray="60 200">
+      <animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.5s" repeatCount="indefinite" />
+    </path>
+
+    <!-- Inner White Shine moving with blood -->
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#ffffff" stroke-width="2" stroke-dasharray="20 240">
+      <animate attributeName="stroke-dashoffset" from="240" to="-20" dur="1.5s" repeatCount="indefinite" />
+    </path>
+    
+  </g>
+
+  <!-- Center Heart (Fixed perfectly in the center, beating) -->
+  <g transform="translate(400, 160)">
+    <g>
+      <animateTransform attributeName="transform" type="scale" values="1; 1.06; 1; 1.03; 1" dur="1s" repeatCount="indefinite" />
+
+      <!-- Outer Glow Heart -->
+      <path d="M 0 -15 C -30 -50 -75 -35 -75 5 C -75 45 0 95 0 95 C 0 95 75 45 75 5 C 75 -35 30 -50 0 -15 Z" fill="#ffb3c6" opacity="0.4" />
+      
+      <!-- Middle Dark Pink Heart -->
+      <path d="M 0 -12 C -22 -40 -60 -28 -60 5 C -60 38 0 78 0 78 C 0 78 60 38 60 5 C 60 -28 22 -40 0 -12 Z" fill="url(#heartGrad)" />
+      
+      <!-- Inner Light Pink Heart with Stroke (Glass Effect) -->
+      <path d="M 0 -8 C -15 -30 -42 -20 -42 5 C -42 28 0 58 0 58 C 0 58 42 28 42 5 C 42 -20 15 -30 0 -8 Z" fill="#ffe6ee" stroke="#ffffff" stroke-width="1.5" opacity="0.9" />
+    </g>
+  </g>
+
+</svg>

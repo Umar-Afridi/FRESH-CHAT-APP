@@ -1561,26 +1561,10 @@
                 </div>
             </div>
 
-           <!-- انٹمیسی / سی پی ٹیب (بلیک جگہ ختم) -->
-            <div id="fpv-tab-intimacy" onclick="toggleCPBackground()" class="hidden flex-col items-center justify-center min-h-[280px] relative bg-cover bg-center mt-2 rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-500 cursor-pointer mb-6" style="background-image: url('./cp_bg1.png'); background-size: cover !important;">
-                <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0" id="cp-bg-overlay"></div>
-                <video id="cp-bg-video" class="absolute inset-0 w-full h-full object-cover z-0 hidden" loop muted playsinline>
-                    <source src="./cp_background.mp4" type="video/mp4">
-                </video>
-                <div class="flex items-center justify-center gap-6 w-full relative z-10 flex-wrap py-4">
-                    <div class="flex flex-col items-center z-10">
-                        <div class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)]">
-                            <img id="cp-user-img" src="" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100?text=User'">
-                        </div>
-                        <span id="cp-user-name" class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">Name</span>
-                    </div>
-                    <div class="relative flex items-center justify-center z-20">
-                        <img id="cp-heart-icon" src="./cp_heart1.png" class="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.9)] transition-all duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/833/833472.png'">
-                        <span id="cp-level-text" class="absolute text-[12px] font-black text-white hidden z-30 tracking-widest" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;">LV 1</span>
-                    </div>
-                    <div class="flex flex-col items-center z-10" id="cp-partner-container"></div>
-                </div>
-                <p id="cp-empty-text" class="relative z-10 text-[10px] text-gray-800 font-bold mt-4 bg-white/90 px-3 py-1.5 rounded-full shadow-md border border-pink-200 text-center">Find your special someone!</p>
+           <!-- NEW CP INTIMACY TAB (SVG BASED) -->
+            <div id="fpv-tab-intimacy" class="hidden flex-col items-center justify-center min-h-[280px] relative mt-2 mb-6">
+                <!-- نیا CP کنٹینر جہاں cp_system.js خود بخود SVG اور ڈی پی لگائے گا -->
+                <div id="cp-svg-container" class="w-full flex items-center justify-center relative"></div>
             </div>
             
         </div> <!-- END SCROLLABLE CONTENT -->
@@ -3645,21 +3629,7 @@
                         });
                     }
                     
-                    if (data.cpRequests) {
-                        Object.entries(data.cpRequests).forEach(([key, val]) => {
-                            totalUnread++;
-                            let profilePic = val.fromPic || `https://ui-avatars.com/api/?name=${val.fromName}&background=random`;
-                            followDiv.innerHTML += `
-                            <div class="bg-pink-50 p-3 rounded-xl flex items-center gap-3 mt-2 shadow-sm border border-pink-200">
-                                <img src="${profilePic}" class="w-12 h-12 rounded-full object-cover border border-pink-300">
-                                <div class="flex-1"><p class="text-sm text-gray-800 font-bold">${val.fromName} <span class="font-normal text-gray-500">sent CP Request ❤️</span></p></div>
-                                <div class="flex flex-col gap-1">
-                                    <button onclick="acceptCP('${val.fromUid}', '${val.fromName}', '${profilePic}', 'cpRequests/${key}')" class="bg-pink-500 text-white text-[10px] px-3 py-1 rounded-full font-bold">Accept</button>
-                                    <button onclick="delNotif('cpRequests/${key}')" class="bg-gray-300 text-gray-700 text-[10px] px-3 py-1 rounded-full font-bold">Reject</button>
-                                </div>
-                            </div>`;
-                        });
-                    }
+                    
                 }
 
                 // Update UI Badges & Text
@@ -5469,213 +5439,7 @@ const hpContainer = document.getElementById('hp-visual-container');
             }
         };
 
-        // ================= CP (INTIMACY) FUNCTIONS =================
-
-// CP Level Load Karne Ka Function (اب دوسروں کے لیے Read-Only ہو گیا ہے)
-function loadCPData(userData) {
-    document.getElementById('cp-user-img').src = userData.photoURL || 'https://placehold.co/100';
-    document.getElementById('cp-user-name').innerText = userData.username || 'User';
-
-    let isMe = (viewingProfileUid === currentUser.uid); // چیک کریں کہ یہ میرا پروفائل ہے یا کسی اور کا
-
-    const partnerContainer = document.getElementById('cp-partner-container');
-    
-    let cpGiftAmount = (userData.cp && userData.cp.cpGiftAmount) ? userData.cp.cpGiftAmount : 0;
-    let cpLevel = 1;
-    
-    if(cpGiftAmount >= 15000000) { cpLevel = 4; }
-    else if(cpGiftAmount >= 8000000) { cpLevel = 3; }
-    else if(cpGiftAmount >= 3000000) { cpLevel = 2; }
-
-    document.getElementById('fpv-tab-intimacy').style.backgroundImage = `url('./cp_bg${cpLevel}.png')`;
-    document.getElementById('cp-heart-icon').src = `./cp_heart${cpLevel}.png`;
-
-    if (userData.cp && userData.cp.partnerUid) {
-        // Partner Found
-        partnerContainer.innerHTML = `
-            <div id="my-cp-partner" class="w-20 h-20 rounded-full border-[3px] border-pink-500 overflow-hidden shadow-[0_0_20px_rgba(236,72,153,0.5)] ${isMe ? 'cursor-pointer' : ''}">
-                <img src="${userData.cp.partnerPic || 'https://placehold.co/100'}" class="w-full h-full object-cover pointer-events-none">
-            </div>
-            <span class="text-xs font-bold text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full truncate max-w-[80px] text-center shadow-sm">${userData.cp.partnerName}</span>
-        `;
         
-        document.getElementById('cp-empty-text').style.display = 'none';
-        let cpText = document.getElementById('cp-level-text');
-        cpText.style.display = 'block';
-        cpText.innerText = `LV ${cpLevel}`;
-
-        // صرف اس صورت میں کلک اور ریموو کا آپشن دیں اگر یوزر اپنی پروفائل دیکھ رہا ہو
-        if (isMe) {
-            let pressTimer;
-            const partnerDiv = document.getElementById('my-cp-partner');
-            
-            const startPress = () => { 
-                pressTimer = setTimeout(() => { promptRemoveCP(userData.cp.partnerUid, userData.cp.partnerName); }, 800); 
-            };
-            const cancelPress = () => { clearTimeout(pressTimer); };
-            
-            partnerDiv.addEventListener('touchstart', startPress);
-            partnerDiv.addEventListener('touchend', cancelPress);
-            partnerDiv.addEventListener('touchmove', cancelPress);
-            partnerDiv.addEventListener('mousedown', startPress);
-            partnerDiv.addEventListener('mouseup', cancelPress);
-            partnerDiv.addEventListener('mouseleave', cancelPress);
-        }
-
-    } else {
-        document.getElementById('cp-level-text').style.display = 'none';
-        document.getElementById('cp-empty-text').style.display = 'block';
-        
-        if (isMe) {
-            // اپنی پروفائل میں پلس کا بٹن
-            partnerContainer.innerHTML = `
-                <div onclick="inviteCP()" class="w-20 h-20 rounded-full border-[3px] border-dashed border-pink-400 flex items-center justify-center bg-white/50 cursor-pointer hover:bg-pink-100 transition shadow-[0_0_10px_rgba(236,72,153,0.1)]">
-                    <i class="fa-solid fa-plus text-pink-500 text-3xl"></i>
-                </div>
-                <span class="text-xs text-gray-900 mt-2 bg-white/70 px-2 py-0.5 rounded-full font-bold">Add Partner</span>
-            `;
-        } else {
-            // دوسروں کی پروفائل میں صرف لاک کا نشان، کلک نہیں ہوگا
-            partnerContainer.innerHTML = `
-                <div class="w-20 h-20 rounded-full border-[3px] border-dashed border-gray-400 flex items-center justify-center bg-white/50 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
-                    <i class="fa-solid fa-lock text-gray-400 text-2xl drop-shadow-md"></i>
-                </div>
-                <span class="text-xs text-gray-700 mt-2 bg-white/70 px-3 py-0.5 rounded-full font-bold">Single</span>
-            `;
-        }
-    }
-}
-
-// یہ فنکشن پلس بٹن پر کلک کرنے پر کال ہو گا (NEW)
-window.inviteCP = () => {
-    if (!currentUser) {
-        return Swal.fire({ icon: 'error', title: 'Login Required', text: 'Please login first to send CP request.', background: '#111', color: '#fff' });
-    }
-
-    Swal.fire({
-        title: 'Send CP Request',
-        html: `<input type="text" id="cp-partner-id" class="swal2-input" placeholder="Enter Friend's ID">`,
-        confirmButtonText: 'Send Request',
-        showCancelButton: true,
-        background: '#111',
-        color: '#fff',
-        preConfirm: () => {
-            const partnerId = document.getElementById('cp-partner-id').value.trim();
-            if (!partnerId) {
-                Swal.showValidationMessage('Please enter a valid ID');
-                return false;
-            }
-            return partnerId;
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const partnerId = result.value;
-            sendCPRequest(partnerId);
-        }
-    });
-}
-
-// یہ فنکشن ID لے کر CP ری quest بھیجتا ہے (NEW)
-async function sendCPRequest(targetId) {
-    if (targetId == document.getElementById('profile-id').innerText) {
-        return Swal.fire({ icon: 'error', title: 'Invalid ID', text: 'You cannot send request to yourself.', background: '#111', color: '#fff' });
-    }
-
-    try {
-        const uidSnap = await get(ref(db, `idToUid/${targetId}`));
-        if (!uidSnap.exists()) {
-            return Swal.fire({ icon: 'error', title: 'Not Found', text: 'User with this ID does not exist.', background: '#111', color: '#fff' });
-        }
-        const targetUid = uidSnap.val();
-
-        const mySnap = await get(ref(db, `users/${currentUser.uid}`));
-        const myData = mySnap.val();
-        if (myData.cp && myData.cp.partnerUid) {
-            return Swal.fire({ icon: 'error', title: 'Already in CP', text: 'You are already in a relationship. Please remove your current partner first.', background: '#111', color: '#fff' });
-        }
-
-        const targetSnap = await get(ref(db, `users/${targetUid}`));
-        const targetData = targetSnap.val();
-        if (targetData.cp && targetData.cp.partnerUid) {
-            return Swal.fire({ icon: 'error', title: 'User Already in CP', text: 'This user is already in a relationship.', background: '#111', color: '#fff' });
-        }
-
-        const requestRef = ref(db, `users/${targetUid}/inbox/cpRequests/${currentUser.uid}`);
-        await set(requestRef, {
-            fromName: currentUser.displayName,
-            fromUid: currentUser.uid,
-            fromPic: currentUser.photoURL,
-            type: 'cpRequest',
-            timestamp: Date.now()
-        });
-
-        Swal.fire({ icon: 'success', title: 'Request Sent!', text: `CP request sent to ID: ${targetId}`, background: '#111', color: '#fff', timer: 2000, showConfirmButton: false });
-
-    } catch (error) {
-        console.error("Error sending CP request:", error);
-        Swal.fire({ icon: 'error', title: 'Error', text: error.message, background: '#111', color: '#fff' });
-    }
-}
-
-// CP ری quest قبول کرنے کا فنکشن (NEW - UPDATED)
-window.acceptCP = async (partnerUid, partnerName, partnerPic, notifPath) => {
-    try {
-        await update(ref(db, `users/${currentUser.uid}`), {
-            cp: {
-                partnerUid: partnerUid,
-                partnerName: partnerName,
-                partnerPic: partnerPic,
-                cpGiftAmount: 0
-            }
-        });
-
-        await update(ref(db, `users/${partnerUid}`), {
-            cp: {
-                partnerUid: currentUser.uid,
-                partnerName: currentUser.displayName,
-                partnerPic: currentUser.photoURL,
-                cpGiftAmount: 0
-            }
-        });
-
-        if (notifPath) {
-            await delNotif(notifPath);
-        }
-
-        Swal.fire({ icon: 'success', title: 'CP Partner Added!', text: `You are now connected with ${partnerName}.`, background: '#111', color: '#fff' });
-
-        if (!document.getElementById('full-profile-view').classList.contains('hidden') && viewingProfileUid === currentUser.uid) {
-            openFullProfileView();
-        }
-
-    } catch (error) {
-        console.error("Error accepting CP:", error);
-        Swal.fire({ icon: 'error', title: 'Error', text: error.message, background: '#111', color: '#fff' });
-    }
-}
-
-// CP Partner Remove Karne Ka Function (OLD WALA LEKIN CONFIRM)
-window.promptRemoveCP = async (partnerUid, partnerName) => {
-    const res = await Swal.fire({
-        title: 'Remove Partner?',
-        text: `Are you sure you want to break CP with ${partnerName}?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#3b82f6',
-        confirmButtonText: 'Yes, Remove',
-        background: '#111',
-        color: '#fff'
-    });
-
-    if(res.isConfirmed) {
-        Swal.fire({title: 'Removing...', allowOutsideClick: false, showConfirmButton: false, background: '#111', color: '#fff'});
-        await update(ref(db, `users/${currentUser.uid}`), { cp: null });
-        await update(ref(db, `users/${partnerUid}`), { cp: null });
-        Swal.fire({icon: 'success', title: 'Removed', text: 'CP Partner removed successfully.', background: '#111', color: '#fff'});
-        openFullProfileView();
-    }
-};
         // ================= OTHER PROFILE RENDERERS =================
         // نیا Frames فنکشن (Grid اور Use بٹن کے ساتھ)
         // ================= NEW GRID RENDERERS =================
@@ -7909,6 +7673,7 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
 <script src="./rocket_system.js"></script>
 <script src="./gift_animation.js"></script>
 <script src="./prop_house.js"></script>
+<script src="./cp_system.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>

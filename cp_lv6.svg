@@ -1,0 +1,74 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="100%" height="100%">
+  <defs>
+    <!-- Vibrant Royal Purple to Magenta Gradient (No Black) -->
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f107a3" />
+      <stop offset="100%" stop-color="#7b2ff7" />
+    </linearGradient>
+    
+    <!-- Massive Golden Chamak (Glow) in the center -->
+    <radialGradient id="glow6" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#FF8C00" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FF8C00" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ruby Red Premium Heart -->
+    <linearGradient id="heart6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff0844" />
+      <stop offset="100%" stop-color="#ffb199" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="340" rx="15" ry="15" fill="url(#bg6)" />
+
+  <!-- Animated Golden Aura (Chamak) Behind Heart -->
+  <circle cx="400" cy="160" r="230" fill="url(#glow6)">
+    <animate attributeName="opacity" values="0.5; 1; 0.5" dur="1.8s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Golden Twinkling Stars -->
+  <circle cx="180" cy="120" r="3.5" fill="#FFD700"><animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" /></circle>
+  <circle cx="620" cy="70" r="4.5" fill="#ffffff"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" /></circle>
+  <circle cx="120" cy="240" r="2.5" fill="#FFD700"><animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite" /></circle>
+  <circle cx="680" cy="220" r="4" fill="#FFD700"><animate attributeName="opacity" values="0;1;0" dur="1.7s" repeatCount="indefinite" /></circle>
+  <circle cx="280" cy="60" r="3" fill="#ffffff"><animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite" /></circle>
+
+  <!-- Clouds (Light Pink/Purple Tint) -->
+  <path d="M 0 150 Q 40 130 70 180 Q 120 150 160 220 Q 200 210 250 280 L 0 280 Z" fill="#ffffff" opacity="0.2" />
+  <path d="M 0 200 Q 60 180 100 240 Q 150 220 200 290 Q 250 280 320 340 L 0 340 Z" fill="#ffffff" opacity="0.3" />
+  <path d="M 800 150 Q 760 130 730 180 Q 680 150 640 220 Q 600 210 550 280 L 800 280 Z" fill="#ffffff" opacity="0.2" />
+  <path d="M 800 200 Q 740 180 700 240 Q 650 220 600 290 Q 550 280 480 340 L 800 340 Z" fill="#ffffff" opacity="0.3" />
+  <path d="M 0 260 Q 200 320 400 290 Q 600 260 800 310 L 800 340 L 0 340 Z" fill="#FFD700" opacity="0.15" />
+
+  <!-- LV.6 Tab (Golden) -->
+  <g transform="translate(320, 0)">
+    <polygon points="5,0 15,0 15,10" fill="#b92b27" />
+    <polygon points="155,0 145,0 145,10" fill="#b92b27" />
+    <path d="M 15 0 L 145 0 C 150 0 152 2 152 5 L 145 40 C 140 48 125 50 115 50 L 45 50 C 35 50 20 48 15 40 L 8 5 C 8 2 10 0 15 0 Z" fill="#FFD700" opacity="0.95" />
+    <text x="80" y="34" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#7b2ff7" text-anchor="middle" letter-spacing="1">LV.6</text>
+  </g>
+
+  <!-- Golden Flowing ECG Lines -->
+  <g stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#ffffff" opacity="0.3" />
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#FFD700" stroke-dasharray="60 200"><animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.2s" repeatCount="indefinite" /></path>
+    <path d="M 140 215 L 220 215 L 235 195 L 250 235 L 265 210 L 280 215 L 320 215" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="20 240"><animate attributeName="stroke-dashoffset" from="240" to="-20" dur="1.2s" repeatCount="indefinite" /></path>
+
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#ffffff" opacity="0.3" />
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#FFD700" stroke-dasharray="60 200"><animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.2s" repeatCount="indefinite" /></path>
+    <path d="M 480 215 L 520 215 L 535 210 L 550 235 L 565 195 L 580 215 L 660 215" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="20 240"><animate attributeName="stroke-dashoffset" from="240" to="-20" dur="1.2s" repeatCount="indefinite" /></path>
+  </g>
+
+  <!-- Center Ruby Heart -->
+  <g transform="translate(400, 160)">
+    <g>
+      <animateTransform attributeName="transform" type="scale" values="1; 1.09; 1; 1.04; 1" dur="1s" repeatCount="indefinite" />
+      <path d="M 0 -15 C -30 -50 -75 -35 -75 5 C -75 45 0 95 0 95 C 0 95 75 45 75 5 C 75 -35 30 -50 0 -15 Z" fill="#ff80ab" opacity="0.6" />
+      <path d="M 0 -12 C -22 -40 -60 -28 -60 5 C -60 38 0 78 0 78 C 0 78 60 38 60 5 C 60 -28 22 -40 0 -12 Z" fill="url(#heart6)" stroke="#FFD700" stroke-width="2" />
+      <path d="M 0 -8 C -15 -30 -42 -20 -42 5 C -42 28 0 58 0 58 C 0 58 42 28 42 5 C 42 -20 15 -30 0 -8 Z" fill="#ffebee" stroke="#ffffff" stroke-width="1.5" opacity="0.9" />
+    </g>
+  </g>
+</svg>

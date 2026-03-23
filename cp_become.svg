@@ -1,0 +1,111 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient (Soft Pink to White) -->
+    <linearGradient id="bgLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffc6d9" />
+      <stop offset="50%" stop-color="#ffeef3" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+
+    <!-- Main Heart Gradient (Very Pale Pink/White) -->
+    <linearGradient id="mainHeartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#ffe0ec" />
+    </linearGradient>
+
+    <!-- Glass Shine Sweep Gradient -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- The Base Heart Path used everywhere -->
+    <path id="coreHeart" d="M 0 -15 C -30 -50 -75 -35 -75 5 C -75 45 0 95 0 95 C 0 95 75 45 75 5 C 75 -35 30 -50 0 -15 Z" />
+
+    <!-- Clip Path to keep animations strictly INSIDE the heart -->
+    <clipPath id="heartClip">
+      <use href="#coreHeart" />
+    </clipPath>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="800" height="340" rx="15" ry="15" fill="url(#bgLight)" />
+
+  <!-- Background Envelope "V" Bands -->
+  <path d="M -50 20 L 400 230 L 850 20 L 850 75 L 400 285 L -50 75 Z" fill="#ffabc2" opacity="0.4" />
+  <path d="M 0 0 L 400 190 L 800 0 Z" fill="#ffcce0" opacity="0.2" />
+
+  <!-- Dotted Border Line at the Bottom -->
+  <line x1="15" y1="335" x2="785" y2="335" stroke="#ffcedc" stroke-width="2.5" stroke-dasharray="6 4" stroke-linecap="round" />
+
+  <!-- ================= SMALL FLOATING HEARTS (Animated) ================= -->
+  
+  <!-- Left Medium Heart -->
+  <g transform="translate(110, 160) scale(0.4) rotate(-15)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-15; 0,0" dur="3.5s" repeatCount="indefinite" />
+      <use href="#coreHeart" fill="#ffb3cb" opacity="0.9" />
+    </g>
+  </g>
+
+  <!-- Bottom Left Tiny Heart -->
+  <g transform="translate(170, 260) scale(0.2) rotate(-20)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-8; 0,0" dur="2.5s" repeatCount="indefinite" />
+      <use href="#coreHeart" fill="#ffdce8" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- Right Bottom Medium Heart -->
+  <g transform="translate(680, 220) scale(0.35) rotate(15)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="4s" repeatCount="indefinite" />
+      <use href="#coreHeart" fill="#ff9eb5" opacity="0.9" />
+    </g>
+  </g>
+
+  <!-- Top Right Small Heart -->
+  <g transform="translate(720, 130) scale(0.25) rotate(25)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-12; 0,0" dur="3s" repeatCount="indefinite" />
+      <use href="#coreHeart" fill="#ffcce0" opacity="0.7" />
+    </g>
+  </g>
+
+
+  <!-- ================= MAIN CENTER HEART (Static Structure, Animated Inside) ================= -->
+  
+  <g transform="translate(400, 160) scale(1.8)">
+    
+    <!-- Heart Drop Shadow -->
+    <use href="#coreHeart" fill="#ff9eb5" opacity="0.15" transform="translate(0, 6)" />
+
+    <!-- Static Main Heart Background -->
+    <use href="#coreHeart" fill="url(#mainHeartGrad)" />
+
+    <!-- "ANDR ANDR" ANIMATION START -->
+    <g clip-path="url(#heartClip)">
+      
+      <!-- 1. Inner Glowing Pulse (Soft light fading in and out at the core) -->
+      <circle cx="0" cy="30" r="40" fill="#ffabc2" opacity="0">
+        <animate attributeName="opacity" values="0; 0.5; 0" dur="2s" repeatCount="indefinite" />
+        <animate attributeName="r" values="30; 80; 30" dur="2s" repeatCount="indefinite" />
+      </circle>
+
+      <!-- 2. Glass Shine Sweeping Animation (Moves across the heart diagonally) -->
+      <rect x="-150" y="-150" width="300" height="300" fill="url(#shineGrad)">
+        <animateTransform attributeName="transform" type="translate" values="-200,-200; 200,200" dur="3.5s" repeatCount="indefinite" />
+      </rect>
+      
+    </g>
+    <!-- "ANDR ANDR" ANIMATION END -->
+
+    <!-- Clean White Outline for Premium Glass Look (Fixed/Static) -->
+    <use href="#coreHeart" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.8" />
+  </g>
+
+</svg>
