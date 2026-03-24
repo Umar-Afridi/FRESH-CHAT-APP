@@ -3,13 +3,13 @@
 // ==========================================
 
 const giftWebmAssets = {
-    'Rose': './rose.webm',
-    'Ring': './ring.webm',
-    'Car': './car.webm',
-    'Rocket': './rocket_gift.webm',
-    'Crown': './crown.webm',
-    'Castle': './castle.webm',
-    'Yacht': './yacht.webm',
+    'Drink': './drink.webm',
+    'Couple': './couple.webm',
+    'King Queen': './king,queen.webm',
+    'Romance': './romance.webm',
+    'My Love': './my,love.webm',
+    'Drinking Couple': './drinking,couple.webm',
+    'Proposal': './proposal.webm',
     'Dragon': './dragon.webm'
 };
 
