@@ -70,26 +70,27 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
                     let b = frame.data[i * 4 + 2];
                     let a = frame.data[i * 4 + 3];
 
-                    // 🔴 FIX: GREEN SCREEN کو کناروں سے سموتھ (Feather) کرنا تاکہ کٹے ہوئے نشان نہ آئیں
-                    if (g > 70 && g > r * 1.1 && g > b * 1.1) {
+                    // 🔴 FIX: GREEN SCREEN کو نرم (Soft) کر دیا تاکہ مین گفٹ بالکل نہ کٹے
+                    if (g > 90 && g > r * 1.3 && g > b * 1.3) {
                         let maxOther = Math.max(r, b);
                         let diff = g - maxOther;
                         
-                        if (diff > 40) {
-                            frame.data[i * 4 + 3] = 0; // خالص سبز حصہ بالکل غائب
+                        if (diff > 60) {
+                            frame.data[i * 4 + 3] = 0; // صرف تیز سبز رنگ غائب ہوگا
                         } else {
-                            // کناروں کو ہلکا (Transparent) کرنا
-                            frame.data[i * 4 + 3] = a * (diff / 40);
-                            frame.data[i * 4 + 1] = maxOther; // کناروں سے سبز رنگت (Spill) ختم کرنا
+                            // کناروں پر ہلکا سا بیک گراؤنڈ رہنے دیا ہے تاکہ مین چیز کی کٹنگ نہ ہو
+                            frame.data[i * 4 + 3] = a * (diff / 60);
+                            frame.data[i * 4 + 1] = maxOther + 10; // ہلکا سا اوریجنل کلر باقی رہے گا
                         }
                     }
-                    // 🔴 FIX: BLACK SCREEN کو سموتھ کرنا تاکہ گاڑی کے ٹائر غائب نہ ہوں
-                    else if (r < 30 && g < 30 && b < 30) {
+                    // 🔴 FIX: BLACK SCREEN کو بہت نارمل کٹ کرنا تاکہ گفٹ کے کالے حصے (شیڈو، ٹائر وغیرہ) محفوظ رہیں
+                    else if (r < 15 && g < 15 && b < 15) {
                         let maxDark = Math.max(r, g, b);
-                        if (maxDark < 10) {
-                            frame.data[i * 4 + 3] = 0; // خالص کالا رنگ بالکل غائب
+                        if (maxDark < 6) {
+                            frame.data[i * 4 + 3] = 0; // صرف 100% فل کالا رنگ غائب ہوگا
                         } else {
-                            frame.data[i * 4 + 3] = a * ((maxDark - 10) / 20); // کناروں کو بلینڈ کرنا
+                            // تھوڑا سا گہرا حصہ (شیڈو/بیک گراؤنڈ) ہلکا سا نظر آئے گا تاکہ گفٹ خراب نہ ہو
+                            frame.data[i * 4 + 3] = a * ((maxDark - 6) / 9); 
                         }
                     }
                 }
