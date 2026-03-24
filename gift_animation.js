@@ -1,5 +1,5 @@
 // ==========================================
-// NEW WEBM GIFT ANIMATION SYSTEM (PERFECT GREEN/BLACK SCREEN REMOVAL + SOUND)
+// NEW WEBM GIFT ANIMATION SYSTEM (ADVANCED BLENDING + GREEN SCREEN FIX)
 // ==========================================
 
 const giftWebmAssets = {
@@ -41,60 +41,61 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
         videoEl.volume = 1.0;  // والیوم فل کرنے کے لیے
         videoEl.load();
 
-        textEl.innerHTML = ''; // ٹیکسٹ ریموو کر دیا گیا ہے، اب سکرین پر شو نہیں ہوگا
+        textEl.innerHTML = ''; 
         
         containerEl.classList.remove('hidden');
         containerEl.style.display = 'flex';
+
+        // 🔥 MAGIC FIX: CSS Blend Mode (SCREEN)
+        // یہ کالے بیک گراؤنڈ کو بالکل سموتھ شفاف کر دے گا اور گفٹ کے اپنے کلرز/سوٹ کو بالکل نہیں کاٹے گا۔
+        canvasEl.style.mixBlendMode = 'screen'; 
+        canvasEl.style.opacity = '1';
 
         // جب ویڈیو کا ڈیٹا لوڈ ہو جائے تو سائز سیٹ کریں
         videoEl.onloadedmetadata = () => {
             canvasEl.width = videoEl.videoWidth;
             canvasEl.height = videoEl.videoHeight;
-            videoEl.play().catch(e => console.error("Video play/audio error (Click anywhere on screen first):", e));
+            videoEl.play().catch(e => console.error("Video play error:", e));
         };
 
         videoEl.onplay = () => {
             function processFrame() {
                 if (videoEl.paused || videoEl.ended) return;
                 
-                // 🔴 FIX: پچھلے فریم کو کینوس سے صاف کرنا لازمی ہے ورنہ براؤن/گرے دھبے (Trails) بنیں گے
                 ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-                
                 ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+                
+                // ہم نے کالا رنگ کاٹنے والا کوڈ مکمل ختم کر دیا ہے کیونکہ mixBlendMode اسے خود ہینڈل کر رہا ہے۔
+                // یہ لاجک صرف اس صورت میں چلے گی اگر کوئی ویڈیو "Green Screen" (ہرے پردے) والی ہو۔
                 let frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
                 let length = frame.data.length / 4;
+                let isGreenScreen = false;
 
-                for (let i = 0; i < length; i++) {
-                    let r = frame.data[i * 4 + 0];
-                    let g = frame.data[i * 4 + 1];
-                    let b = frame.data[i * 4 + 2];
-                    let a = frame.data[i * 4 + 3];
-
-                    // 🔴 FIX: GREEN SCREEN کو نرم (Soft) کر دیا تاکہ مین گفٹ بالکل نہ کٹے
-                    if (g > 90 && g > r * 1.3 && g > b * 1.3) {
-                        let maxOther = Math.max(r, b);
-                        let diff = g - maxOther;
-                        
-                        if (diff > 60) {
-                            frame.data[i * 4 + 3] = 0; // صرف تیز سبز رنگ غائب ہوگا
-                        } else {
-                            // کناروں پر ہلکا سا بیک گراؤنڈ رہنے دیا ہے تاکہ مین چیز کی کٹنگ نہ ہو
-                            frame.data[i * 4 + 3] = a * (diff / 60);
-                            frame.data[i * 4 + 1] = maxOther + 10; // ہلکا سا اوریجنل کلر باقی رہے گا
-                        }
-                    }
-                    // 🔴 FIX: BLACK SCREEN کو بہت نارمل کٹ کرنا تاکہ گفٹ کے کالے حصے (شیڈو، ٹائر وغیرہ) محفوظ رہیں
-                    else if (r < 15 && g < 15 && b < 15) {
-                        let maxDark = Math.max(r, g, b);
-                        if (maxDark < 6) {
-                            frame.data[i * 4 + 3] = 0; // صرف 100% فل کالا رنگ غائب ہوگا
-                        } else {
-                            // تھوڑا سا گہرا حصہ (شیڈو/بیک گراؤنڈ) ہلکا سا نظر آئے گا تاکہ گفٹ خراب نہ ہو
-                            frame.data[i * 4 + 3] = a * ((maxDark - 6) / 9); 
-                        }
+                // چیک کریں کہ کیا ویڈیو کا بیک گراؤنڈ ہرا (Green) ہے؟
+                if (length > 100) {
+                    let sampleR = frame.data[400 + 0];
+                    let sampleG = frame.data[400 + 1];
+                    let sampleB = frame.data[400 + 2];
+                    if (sampleG > 120 && sampleG > sampleR * 1.5 && sampleG > sampleB * 1.5) {
+                        isGreenScreen = true;
                     }
                 }
-                ctx.putImageData(frame, 0, 0);
+
+                if (isGreenScreen) {
+                    canvasEl.style.mixBlendMode = 'normal'; // گرین سکرین کے لیے نارمل موڈ
+                    for (let i = 0; i < length; i++) {
+                        let r = frame.data[i * 4 + 0];
+                        let g = frame.data[i * 4 + 1];
+                        let b = frame.data[i * 4 + 2];
+
+                        // انتہائی نارمل گرین سکرین کٹنگ
+                        if (g > 90 && g > r * 1.2 && g > b * 1.2) {
+                            frame.data[i * 4 + 3] = 0; 
+                        }
+                    }
+                    ctx.putImageData(frame, 0, 0);
+                }
+
                 currentGiftAnimationId = requestAnimationFrame(processFrame);
             }
             processFrame();
@@ -105,10 +106,10 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
             closeGiftAnimation(containerEl, videoEl, ctx, canvasEl);
         };
 
-        // 6 سیکنڈ بعد احتیاطاً خود بخود غائب کر دیں
+        // 8 سیکنڈ بعد احتیاطاً خود بخود غائب کر دیں (اگر ویڈیو لمبی ہو)
         setTimeout(() => {
             closeGiftAnimation(containerEl, videoEl, ctx, canvasEl);
-        }, 6000); 
+        }, 8000); 
     }
 };
 
@@ -117,6 +118,7 @@ function closeGiftAnimation(container, video, ctx, canvas) {
     container.style.display = 'none';
     video.pause();
     video.src = "";
+    canvas.style.mixBlendMode = 'normal'; // ری سیٹ
     if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); // سکرین بالکل صاف
     if (currentGiftAnimationId) cancelAnimationFrame(currentGiftAnimationId);
 }
