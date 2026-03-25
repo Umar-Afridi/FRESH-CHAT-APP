@@ -1355,7 +1355,7 @@
                 <div class="flex justify-between items-center bg-gray-100 p-4 rounded-xl mb-4 border border-gray-200">
                     <div>
                         <span class="font-bold text-gray-800 block">Super Mic</span>
-                        <span class="text-[10px] text-gray-500">Enable/Disable GURIYA seat</span>
+                        <span class="text-[10px] text-gray-500">Enable/Disable Super seat</span>
                     </div>
                     <!-- Custom Toggle Switch -->
                     <div id="toggle-super-mic" class="toggle-switch active" onclick="toggleSuperMicLive()">
@@ -2166,24 +2166,24 @@
 <div id="mics-scroll-area" style="padding-top: 48px !important; margin-top: 0px !important;">
     <div class="mics-container-main" style="gap: 10px; padding-top: 0px !important;">
                         
-                        <!-- Top Row: UMAR (1) & GURIYA (2) [سمپل اور سٹینڈرڈ] -->
+                        <!-- Top Row: Owner (1) & Super (2) [سمپل اور سٹینڈرڈ] -->
 <div class="flex justify-center items-center gap-12 w-full px-4 mb-2 mt-2" id="super-mics-row">
     <div class="mic-wrapper" id="wrapper-seat1">
-        <div class="seat-base mic-container-sm mx-auto" id="cont-seat1" onclick="handleSeatTap('seat1', 'UMAR', event)">
+        <div class="seat-base mic-container-sm mx-auto" id="cont-seat1" onclick="handleSeatTap('seat1', 'Owner', event)">
             <img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'">
             <div id="seat1-visual" class="user-dp-visual"></div>
             <div id="menu-seat1" class="action-menu-overlay"></div>
         </div>
-        <span id="seat1-name" class="seat-name mt-1 font-bold text-pink-400">UMAR</span>
+        <span id="seat1-name" class="seat-name mt-1 font-bold text-pink-400">Owner</span>
     </div>
 
     <div class="mic-wrapper" id="wrapper-seat2">
-        <div class="seat-base mic-container-sm mx-auto" id="cont-seat2" onclick="handleSeatTap('seat2', 'GURIYA', event)">
+        <div class="seat-base mic-container-sm mx-auto" id="cont-seat2" onclick="handleSeatTap('seat2', 'Super', event)">
             <img src="./chair_beautiful.png" class="chair-bg-img" onerror="this.style.display='none'">
             <div id="seat2-visual" class="user-dp-visual"></div>
             <div id="menu-seat2" class="action-menu-overlay"></div>
         </div>
-        <span id="seat2-name" class="seat-name mt-1 font-bold text-pink-400">GURIYA</span>
+        <span id="seat2-name" class="seat-name mt-1 font-bold text-pink-400">Super</span>
     </div>
 </div>
                         
@@ -2796,24 +2796,22 @@
             }
         });
 
-        // 🔥 ماسٹر کیو پروسیسر (راکٹ مکمل ہونے تک گفٹ لاک رہے گا)
+        // 🔥 ماسٹر کیو پروسیسر (راکٹس اور گفٹس ایک ساتھ)
         window.processGlobalBannerQueue = function() {
-            // 1. اگر راکٹس کیو میں ہیں، تو دونوں سلاٹس کو راکٹس سے بھر دو
+            // 1. اگر راکٹس کیو میں ہیں، تو دستیاب سلاٹس میں راکٹس ڈال دیں
             if (rocketBannerQueue.length > 0) {
                 if (!isSlot1Busy) {
                     isSlot1Busy = true;
                     playBannerInSlot('slot1', rocketBannerQueue.shift());
                 }
-                // اگر سلاٹ 2 خالی ہے اور ایک اور راکٹ موجود ہے تو اسے بھی ساتھ چلاؤ (ڈبل راکٹ بینر)
                 if (!isSlot2Busy && rocketBannerQueue.length > 0) {
                     isSlot2Busy = true;
                     playBannerInSlot('slot2', rocketBannerQueue.shift());
                 }
-                return; // گفٹس کو یہیں روک دیں
             }
 
-            // 2. گفٹس صرف تب چلیں گے جب راکٹ کی اینیمیشن مکمل طور پر ختم ہو چکی ہو
-            if (normalBannerQueue.length > 0 && !window.isRocketSequenceActive) {
+            // 2. گفٹس کو راکٹ کے ساتھ شو ہونے کی اجازت ہے، کوئی لاک نہیں
+            if (normalBannerQueue.length > 0) {
                 if (!isSlot1Busy) {
                     isSlot1Busy = true;
                     playBannerInSlot('slot1', normalBannerQueue.shift());
@@ -2849,53 +2847,50 @@
                     ? `<span id="${uniqueTimerId}" style="color:#fff; font-size:11px; font-weight:900; background:rgba(0,0,0,0.5); padding: 1px 4px; border-radius:10px;">9s</span>`
                     : '';
 
-                innerHTML = `
-                <div style="margin: 0 auto; position: relative; width: 98%; max-width: 420px; height: 90px; display: flex; align-items: center; pointer-events: auto; animation: slideInLeft 0.3s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); overflow: visible;">
-                    <img src="${svgBanner}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1; border-radius: 12px;">
-                    <img src="${roomDpUrl}" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 6px; border: 2px solid #facc15; z-index: 5; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
+           innerHTML = `
+                <div onclick="if(currentRoomId !== '${data.roomId}') { window.joinRoom('${data.roomId}'); }" style="margin: 0 auto; position: relative; width: 100%; max-width: 380px; height: 80px; display: flex; align-items: center; pointer-events: auto; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); overflow: visible; cursor: pointer;">
+                    <img src="${svgBanner}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: -1;">
                     
-                    <div style="position: absolute; left: 58px; right: 150px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
-                        <span style="color: #facc15; font-size: 10px; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 2px;">Room ID: ${displayId}</span>
-                        <marquee scrollamount="3" style="color: #ffffff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); width: 100%;">
-                            Rocket is about to launch Lv.${rocketLevel}
-                        </marquee>
-                    </div>
+                    <img src="${roomDpUrl}" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid #fff; z-index: 5; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.5);" onerror="this.src='https://placehold.co/100'">
                     
-                    <div style="position: absolute; right: 80px; top: 35%; transform: translateY(-50%) scale(1.35); z-index: 20; height: 95px; width: 60px; pointer-events: none;">
-                        <img src="${rocketImg}" class="rocket-rumble" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'">
-                    </div>
-                    
-                    <div onclick="if(currentRoomId !== '${data.roomId}') { window.joinRoom('${data.roomId}'); }" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 25; cursor: pointer;">
-                        <div style="background: linear-gradient(to bottom, #facc15, #d97706); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; border: 1px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.6); active:scale-95 transition;">
-                            <span style="color:#000; font-size:10px; font-weight:900;">GO</span>
-                            ${timerHtml}
+                    <div style="position: absolute; left: 80px; right: 120px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
+                        <span style="color: #facc15; font-size: 11px; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 4px;">Room ID: ${displayId}</span>
+                        <div style="width: 100%; overflow: hidden; margin-top: 1px;">
+                            <marquee scrollamount="4" style="color: #ffffff; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); width: 100%;">
+                                Rocket is about to launch Lv.${rocketLevel} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rocket is about to launch Lv.${rocketLevel}
+                            </marquee>
                         </div>
                     </div>
+                    
+                    <div style="position: absolute; right: 45px; top: 35%; transform: translateY(-50%) scale(1.1); z-index: 20; height: 85px; width: 50px; pointer-events: none;">
+                        <img src="${rocketImg}" class="rocket-rumble" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'">
+                    </div>
+                    <!-- GO Button removed completely as requested -->
                 </div>`;
 
                 if (data.waitTime === 9000) {
                     let secondsLeft = 9;
                     let countdownInterval = setInterval(() => {
                         secondsLeft--;
-                        let timerEl = document.getElementById(uniqueTimerId);
-                        if (timerEl) timerEl.innerText = secondsLeft + 's';
                         if (secondsLeft <= 0) clearInterval(countdownInterval);
                     }, 1000);
                 }
             } 
             else if (data.type === 'win') {
-                let nameHtml = `<span style="font-size: 16px; color: white; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`;
-                if (data.nameColorClass) { nameHtml = `<span class="${data.nameColorClass}" style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`; }
+                let nameHtml = `<span style="font-size: 15px; color: white; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`;
+                if (data.nameColorClass) { nameHtml = `<span class="${data.nameColorClass}" style="font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`; }
                 innerHTML = `
-                <div style="margin: 0 auto; position: relative; width: 98%; max-width: 420px; height: 85px; display: flex; align-items: center; pointer-events: none; animation: slideInLeft 0.3s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));">
-                    <img src="./lucky_fruit_banner.svg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1;">
-                    <img src="${data.dp}" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; border: 2px solid #facc15; z-index: 1; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
-                    <div style="position: absolute; left: 75px; right: 90px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
+                <div style="margin: 0 auto; position: relative; width: 100%; max-width: 380px; height: 75px; display: flex; align-items: center; pointer-events: none; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));">
+                    <img src="./lucky_fruit_banner.svg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: -1;">
+                    <img src="${data.dp}" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 2px solid #facc15; z-index: 1; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
+                    <div style="position: absolute; left: 70px; right: 60px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
                         ${nameHtml}
-                        <marquee scrollamount="4" style="color: #facc15; font-size: 14px; font-weight: 900; text-shadow: 1px 1px 2px #000; margin-top: 2px; width: 100%;">won ${data.amount.toLocaleString()} coins at lucky fruit &nbsp;&nbsp;&nbsp; won ${data.amount.toLocaleString()} coins at lucky fruit</marquee>
+                        <div style="width: 100%; overflow: hidden; margin-top: 1px;">
+                            <marquee scrollamount="4" style="color: #ffffff; font-size: 12px; font-weight: 900; text-shadow: 1px 1px 2px #000; width: 100%;">won ${data.amount.toLocaleString()} coins at lucky fruit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; won ${data.amount.toLocaleString()} coins at lucky fruit</marquee>
+                        </div>
                     </div>
                 </div>`;
-            } 
+            }
             else if (data.type === 'gift') {
                 let comboText = data.giftName ? data.giftName.split(' ')[0] : '1x';
                 let recName = data.receiverName || "User";
@@ -4725,7 +4720,7 @@ window.joinRoom = async (rid) => {
             }
         }
 
-        // Super Mic Logic (UMAR Centered vs GURIYA side-by-side)
+        // Super Mic Logic (Owner Centered vs Super side-by-side)
         const superMicsRow = document.getElementById('super-mics-row');
         const seat2Wrapper = document.getElementById('wrapper-seat2');
         const heartWrapper = document.getElementById('heartbeat-container');
@@ -4735,7 +4730,7 @@ window.joinRoom = async (rid) => {
             if (rtData.superMic === false) {
                 seat2Wrapper.classList.add('hidden');
                 heartWrapper.classList.add('hidden');
-                // Center UMAR
+                // Center Owner
                 superMicsRow.classList.remove('gap-6');
                 seat1Wrapper.classList.add('mx-auto');
             } else {
@@ -4862,8 +4857,8 @@ window.joinRoom = async (rid) => {
     // ========== 10 SEATS LISTENER (UPDATED) ==========
     onValue(child(rr, 'seats'), s => { 
         currentRoomSeats = s.val() || {}; 
-        updateSeat('seat1', currentRoomSeats.seat1, "UMAR"); 
-        updateSeat('seat2', currentRoomSeats.seat2, "GURIYA"); 
+        updateSeat('seat1', currentRoomSeats.seat1, "Owner"); 
+        updateSeat('seat2', currentRoomSeats.seat2, "Super"); 
         updateSeat('seat3', currentRoomSeats.seat3, "1"); 
         updateSeat('seat4', currentRoomSeats.seat4, "2"); 
         updateSeat('seat5', currentRoomSeats.seat5, "3"); 
