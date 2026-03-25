@@ -13,12 +13,12 @@ window.ROCKET_LEVELS =[
     } 
 ];
 
-window.currentRocketTargetLevel = 1; // For tracking current room level
-
+window.currentRocketTargetLevel = 1; 
 window.rocket_currentRoomExp = 0;
 window.lastRocketLevel = 0;
 window.rocketQueue =[];
 window.isRocketFlying = false;
+window.isRocketSequenceActive = false; // 🔥 یہ گفٹ کو روکے گا جب تک سارے راکٹ نہ اڑ جائیں
 window.isFirstRocketLoad = true; 
 window.rocketAnimTimeout = null;
 
@@ -31,8 +31,6 @@ window.initRocketListener = function(rid) {
     });
 };
 
-// راکٹ کو دوبارہ سٹارٹ کرنے کے لیے گلوبل ٹائمر
-// راکٹ کو دوبارہ سٹارٹ کرنے کے لیے گلوبل ٹائمر
 window.rocketLoopTimer = null;
 window.currentRoomRocketAnim = null;
 window.currentModalSvg = null; 
@@ -42,7 +40,6 @@ window.updateRocketUI = function(exp, rid) {
     let nextThreshold = window.ROCKET_LEVELS[0].cost; 
     let prevThreshold = 0;
 
-    // 1. پہلے چیک کریں کہ کون سا لیول اچیو (Achieve) ہو چکا ہے
     for (let i = 0; i < window.ROCKET_LEVELS.length; i++) {
         if (exp >= window.ROCKET_LEVELS[i].cost) {
             targetLevel = window.ROCKET_LEVELS[i].level; 
@@ -55,7 +52,6 @@ window.updateRocketUI = function(exp, rid) {
         }
     }
     
-    // 2. یہ لاجک طے کرے گا کہ سکرین پر کون سا راکٹ کھڑا نظر آئے گا (Next Target)
     let displayLevelIndex = 0;
     for (let i = 0; i < window.ROCKET_LEVELS.length; i++) {
         if (exp >= window.ROCKET_LEVELS[i].cost) {
@@ -67,7 +63,6 @@ window.updateRocketUI = function(exp, rid) {
     window.currentRocketTargetLevel = displayData.level; 
     window.currentRoomRocketAnim = displayData.anim; 
 
-    // 3. روم کے چھوٹے آئیکن پر SVG لگائیں (بغیر جھٹکے کے - PRELOAD TECHNIQUE)
     const triggerImg = document.getElementById('main-rocket-icon'); 
     if (triggerImg && !triggerImg.src.includes(displayData.anim)) {
         let tempRoomImg = new Image();
@@ -75,20 +70,15 @@ window.updateRocketUI = function(exp, rid) {
         tempRoomImg.src = displayData.anim + "?t=" + Date.now();
     }
     
-    // 4. آٹو ری سٹارٹ (Loop) سسٹم تاکہ راکٹ غائب نہ ہو اور کوئی سفید ڈبہ نہ آئے!
     if(window.rocketLoopTimer) clearInterval(window.rocketLoopTimer);
     window.rocketLoopTimer = setInterval(() => {
         let cacheBuster = "?t=" + Date.now(); 
-        
-        // روم کے چھوٹے آئیکن کو بیک گراؤنڈ میں لوڈ کر کے ری سٹارٹ کریں
         let icon = document.getElementById('main-rocket-icon');
         if(icon && window.currentRoomRocketAnim) {
             let tempIcon = new Image();
             tempIcon.onload = function() { icon.src = this.src; };
             tempIcon.src = window.currentRoomRocketAnim + cacheBuster;
         }
-        
-        // موڈل والے بڑے راکٹ کو بھی بیک گراؤنڈ میں لوڈ کر کے ری سٹارٹ کریں
         let modal = document.getElementById('rocket-details-modal');
         let modalIcon = document.getElementById('modal-big-rocket');
         if(modal && modal.style.display !== 'none' && modalIcon && window.currentModalSvg) {
@@ -96,9 +86,8 @@ window.updateRocketUI = function(exp, rid) {
             tempModalIcon.onload = function() { modalIcon.src = this.src; };
             tempModalIcon.src = window.currentModalSvg + cacheBuster;
         }
-    }, 2800); // 2.8 سیکنڈ بعد لوپ چلے گا
+    }, 2800); 
     
-    // 5. پرسنٹیج ٹیوب کا لاجک
     let percentage = 0;
     if (targetLevel < 4) { 
         percentage = ((exp - prevThreshold) / (nextThreshold - prevThreshold)) * 100; 
@@ -112,7 +101,6 @@ window.updateRocketUI = function(exp, rid) {
     if(tubeFill) tubeFill.style.height = `${percentage}%`; 
     if(tubeText) tubeText.innerText = `${Math.floor(percentage)}%`;
 
-    // 6. راکٹ اڑانے کی کیو (Queue) کا سسٹم
     if (window.isFirstRocketLoad) {
         window.lastRocketLevel = targetLevel;
         window.isFirstRocketLoad = false;
@@ -120,9 +108,23 @@ window.updateRocketUI = function(exp, rid) {
         let startLoop = Math.max(1, window.lastRocketLevel + 1);
         if (window.lastRocketLevel === 0 && targetLevel > 0) startLoop = 1;
         
+        // 🔥 راکٹ شروع ہونے لگا ہے، گفٹ بینر کو لاک کر دیں
+        window.isRocketSequenceActive = true; 
+        let batchIndex = 0;
+
         for(let lvl = startLoop; lvl <= targetLevel; lvl++) {
             const rData = window.ROCKET_LEVELS.find(r => r.level === lvl);
             if(rData) {
+                // 🔥 پہلے دو راکٹس کے بینر پر 9 سیکنڈ کا ٹائمر، باقی پر 3 سیکنڈ
+                let bannerWaitTime = (batchIndex < 2) ? 9000 : 3000;
+
+                // 1. تمام راکٹس کا بینر ایک ساتھ براڈکاسٹ کریں تاکہ وہ ایک ساتھ شو ہو سکیں
+                if(typeof window.broadcastRocketLaunch === "function"){
+                    let shortId = window.currentRoomData?.ownerCustomId || rid;
+                    window.broadcastRocketLaunch(rid, shortId, window.currentRoomData?.roomName || 'A Room', lvl, rData.img, bannerWaitTime);
+                }
+
+                // 2. SVG پلے کرنے کے لیے قطار (Queue) میں لگائیں
                 window.rocketQueue.push({ 
                     animSrc: rData.anim, 
                     imgSrc: rData.img,   
@@ -130,9 +132,18 @@ window.updateRocketUI = function(exp, rid) {
                     isMaxLevel: (lvl === 4),
                     roomId: rid 
                 });
+                batchIndex++;
             }
         }
-        window.processRocketQueue();
+
+        // 3. اگر روم میں راکٹ اڑنا شروع نہیں ہوا تو اسے ٹرگر کریں
+        if (!window.isRocketFlying) {
+            window.isRocketFlying = true;
+            // 🔥 صرف ایک بار 9 سیکنڈ کا ویٹ کریں گے تاکہ لوگ بینر دیکھ کر آ سکیں، پھر تمام راکٹ لگاتار اڑیں گے
+            setTimeout(() => {
+                window.processRocketQueue();
+            }, 9000);
+        }
 
         if (rid) {
             window.get(window.ref(window.db, `rooms/${rid}/activeUsers`)).then(snap => {
@@ -158,18 +169,16 @@ window.updateRocketUI = function(exp, rid) {
     window.lastRocketLevel = targetLevel;
 };
 
-// Preview Modal Function (یہاں بھی پری لوڈ ٹیکنیک لگا دی گئی ہے)
 window.previewRocketModal = function(level) {
     const rData = window.ROCKET_LEVELS.find(r => r.level === level);
     if(!rData) return;
 
     window.currentModalSvg = rData.anim; 
     
-    // موڈل میں SVG لوڈ کریں (بیک گراؤنڈ میں لوڈ ہو کر پھر سکرین پر آئے گا)
     const bigRocket = document.getElementById('modal-big-rocket');
     let tempModalLoad = new Image();
     tempModalLoad.onload = function() { bigRocket.src = this.src; };
-    tempModalLoad.onerror = function() { bigRocket.src = rData.img; }; // اگر SVG فیل ہو تو PNG چلا دے
+    tempModalLoad.onerror = function() { bigRocket.src = rData.img; }; 
     tempModalLoad.src = rData.anim + "?t=" + Date.now();
     
     document.querySelectorAll('.modal-level-btn').forEach(btn => btn.classList.remove('active'));
@@ -196,10 +205,18 @@ window.closeRocketDetails = () => {
 };
 
 window.processRocketQueue = function() {
-    if (window.isRocketFlying || window.rocketQueue.length === 0) return;
-    window.isRocketFlying = true;
+    // 🔥 اگر قطار میں مزید کوئی راکٹ نہیں ہے، تو گفٹ بینر کا لاک کھول دیں
+    if (window.rocketQueue.length === 0) {
+        window.isRocketFlying = false;
+        window.isRocketSequenceActive = false; // گفٹس ان-لاک ہو گئے
+        if(typeof window.processGlobalBannerQueue === 'function') {
+            window.processGlobalBannerQueue(); // روکے ہوئے گفٹس چلائیں
+        }
+        return;
+    }
     
     const nextRocket = window.rocketQueue.shift(); 
+    // اب سارے راکٹ 0 سیکنڈ ڈیلے کے ساتھ فوراً اڑیں گے کیونکہ 9 سیکنڈ کا ویٹ پہلے ہی ہو چکا ہے۔
     window.playRocketAnimation(nextRocket.animSrc, nextRocket.imgSrc, nextRocket.targetLevel, nextRocket.isMaxLevel, nextRocket.roomId);
 };
 
@@ -210,7 +227,6 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
     const layer = document.createElement('div');
     layer.id = 'rocket-fullscreen-layer'; 
     
-    // راکٹ کو روم کے اندر اپینڈ کریں تاکہ باہر نہ جائے
     const viewRoom = document.getElementById('view-room');
     if (viewRoom) {
         viewRoom.appendChild(layer);
@@ -235,18 +251,11 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
         transform: translateZ(99999px) !important; 
     `;
     
-    // آواز صرف اس صورت میں چلے جب روم اوپن ہو
     const audio = document.getElementById('rocket-sound');
     if (audio && viewRoom && viewRoom.style.display !== 'none') {
         audio.currentTime = 0;
         let playPromise = audio.play();
         if (playPromise !== undefined) playPromise.catch(e => console.log(e));
-    }
-
-    // 🔥 یہ ہے وہ لائن جو گلوبل بینر کو ٹرگر کرتی ہے (باہر اور اندر ہر جگہ) 🔥
-    if(typeof window.broadcastRocketLaunch === "function"){
-        let shortId = window.currentRoomData?.ownerCustomId || rid;
-        window.broadcastRocketLaunch(rid, shortId, window.currentRoomData?.roomName || 'A Room', targetLevel, imgSrc);
     }
 
     const cacheBusterSrc = animSrc + "?t=" + Date.now();
@@ -259,13 +268,14 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
             object-fit: contain !important; 
             z-index: 2147483647 !important; 
             pointer-events: none !important;
-            transform: scale(1.4) !important; 
+            transform: scale(1) !important; 
             transform-origin: center center !important;
         ">
     `;
 
     window.pendingRocketResetParams = isMaxLevel ? { rid: rid } : null;
 
+    // 🔥 یہ ٹائم 9.5 سیکنڈ کر دیا گیا ہے تاکہ راکٹ پوری طرح اوپر جا کر غائب ہو، ادھورا نہ کٹے
     window.rocketAnimTimeout = setTimeout(() => {
         if (window.pendingRocketResetParams) { 
             window.set(window.ref(window.db, `rooms/${window.pendingRocketResetParams.rid}/roomExp`), 0); 
@@ -281,17 +291,17 @@ window.playRocketAnimation = function(animSrc, imgSrc, targetLevel, isMaxLevel, 
         let layerCheck = document.getElementById('rocket-fullscreen-layer');
         if(layerCheck) layerCheck.remove(); 
         
-        window.isRocketFlying = false;
-        window.processRocketQueue();
+        window.processRocketQueue(); // فوراً اگلا راکٹ بلائیں
+        
     }, 9500); 
 };
 
-// ==== ایگزٹ (Leave) یا Minimize پر راکٹ کو مکمل ختم کرنے کا فنکشن ====
 window.resetRocketSystemOnExit = function() {
     if (window.rocketAnimTimeout) {
         clearTimeout(window.rocketAnimTimeout);
         window.rocketAnimTimeout = null;
     }
-    window.rocketQueue =[]; // لائن صاف کر دی
-    window.isRocketFlying = false; // سٹیٹس ری سیٹ کر دیا
+   
+    window.rocketQueue =[]; 
+    window.isRocketFlying = false; 
 };
