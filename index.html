@@ -2796,22 +2796,24 @@
             }
         });
 
-        // 🔥 ماسٹر کیو پروسیسر (راکٹس اور گفٹس ایک ساتھ)
+        // 🔥 ماسٹر کیو پروسیسر (راکٹ مکمل ہونے تک گفٹ لاک رہے گا)
         window.processGlobalBannerQueue = function() {
-            // 1. اگر راکٹس کیو میں ہیں، تو دستیاب سلاٹس میں راکٹس ڈال دیں
+            // 1. اگر راکٹس کیو میں ہیں، تو دونوں سلاٹس کو راکٹس سے بھر دو
             if (rocketBannerQueue.length > 0) {
                 if (!isSlot1Busy) {
                     isSlot1Busy = true;
                     playBannerInSlot('slot1', rocketBannerQueue.shift());
                 }
+                // اگر سلاٹ 2 خالی ہے اور ایک اور راکٹ موجود ہے تو اسے بھی ساتھ چلاؤ (ڈبل راکٹ بینر)
                 if (!isSlot2Busy && rocketBannerQueue.length > 0) {
                     isSlot2Busy = true;
                     playBannerInSlot('slot2', rocketBannerQueue.shift());
                 }
+                return; // گفٹس کو یہیں روک دیں
             }
 
-            // 2. گفٹس کو راکٹ کے ساتھ شو ہونے کی اجازت ہے، کوئی لاک نہیں
-            if (normalBannerQueue.length > 0) {
+            // 2. گفٹس صرف تب چلیں گے جب راکٹ کی اینیمیشن مکمل طور پر ختم ہو چکی ہو
+            if (normalBannerQueue.length > 0 && !window.isRocketSequenceActive) {
                 if (!isSlot1Busy) {
                     isSlot1Busy = true;
                     playBannerInSlot('slot1', normalBannerQueue.shift());
@@ -2847,50 +2849,53 @@
                     ? `<span id="${uniqueTimerId}" style="color:#fff; font-size:11px; font-weight:900; background:rgba(0,0,0,0.5); padding: 1px 4px; border-radius:10px;">9s</span>`
                     : '';
 
-           innerHTML = `
-                <div onclick="if(currentRoomId !== '${data.roomId}') { window.joinRoom('${data.roomId}'); }" style="margin: 0 auto; position: relative; width: 100%; max-width: 380px; height: 80px; display: flex; align-items: center; pointer-events: auto; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); overflow: visible; cursor: pointer;">
-                    <img src="${svgBanner}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: -1;">
+                innerHTML = `
+                <div style="margin: 0 auto; position: relative; width: 98%; max-width: 420px; height: 90px; display: flex; align-items: center; pointer-events: auto; animation: slideInLeft 0.3s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); overflow: visible;">
+                    <img src="${svgBanner}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1; border-radius: 12px;">
+                    <img src="${roomDpUrl}" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 6px; border: 2px solid #facc15; z-index: 5; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
                     
-                    <img src="${roomDpUrl}" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid #fff; z-index: 5; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.5);" onerror="this.src='https://placehold.co/100'">
-                    
-                    <div style="position: absolute; left: 80px; right: 120px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
-                        <span style="color: #facc15; font-size: 11px; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 4px;">Room ID: ${displayId}</span>
-                        <div style="width: 100%; overflow: hidden; margin-top: 1px;">
-                            <marquee scrollamount="4" style="color: #ffffff; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); width: 100%;">
-                                Rocket is about to launch Lv.${rocketLevel} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rocket is about to launch Lv.${rocketLevel}
-                            </marquee>
-                        </div>
+                    <div style="position: absolute; left: 58px; right: 150px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
+                        <span style="color: #facc15; font-size: 10px; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 2px;">Room ID: ${displayId}</span>
+                        <marquee scrollamount="3" style="color: #ffffff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); width: 100%;">
+                            Rocket is about to launch Lv.${rocketLevel}
+                        </marquee>
                     </div>
                     
-                    <div style="position: absolute; right: 45px; top: 35%; transform: translateY(-50%) scale(1.1); z-index: 20; height: 85px; width: 50px; pointer-events: none;">
+                    <div style="position: absolute; right: 80px; top: 35%; transform: translateY(-50%) scale(1.35); z-index: 20; height: 95px; width: 60px; pointer-events: none;">
                         <img src="${rocketImg}" class="rocket-rumble" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'">
                     </div>
-                    <!-- GO Button removed completely as requested -->
+                    
+                    <div onclick="if(currentRoomId !== '${data.roomId}') { window.joinRoom('${data.roomId}'); }" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 25; cursor: pointer;">
+                        <div style="background: linear-gradient(to bottom, #facc15, #d97706); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; border: 1px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.6); active:scale-95 transition;">
+                            <span style="color:#000; font-size:10px; font-weight:900;">GO</span>
+                            ${timerHtml}
+                        </div>
+                    </div>
                 </div>`;
 
                 if (data.waitTime === 9000) {
                     let secondsLeft = 9;
                     let countdownInterval = setInterval(() => {
                         secondsLeft--;
+                        let timerEl = document.getElementById(uniqueTimerId);
+                        if (timerEl) timerEl.innerText = secondsLeft + 's';
                         if (secondsLeft <= 0) clearInterval(countdownInterval);
                     }, 1000);
                 }
             } 
             else if (data.type === 'win') {
-                let nameHtml = `<span style="font-size: 15px; color: white; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`;
-                if (data.nameColorClass) { nameHtml = `<span class="${data.nameColorClass}" style="font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`; }
+                let nameHtml = `<span style="font-size: 16px; color: white; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`;
+                if (data.nameColorClass) { nameHtml = `<span class="${data.nameColorClass}" style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`; }
                 innerHTML = `
-                <div style="margin: 0 auto; position: relative; width: 100%; max-width: 380px; height: 75px; display: flex; align-items: center; pointer-events: none; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));">
-                    <img src="./lucky_fruit_banner.svg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: -1;">
-                    <img src="${data.dp}" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 2px solid #facc15; z-index: 1; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
-                    <div style="position: absolute; left: 70px; right: 60px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
+                <div style="margin: 0 auto; position: relative; width: 98%; max-width: 420px; height: 85px; display: flex; align-items: center; pointer-events: none; animation: slideInLeft 0.3s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));">
+                    <img src="./lucky_fruit_banner.svg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1;">
+                    <img src="${data.dp}" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; border: 2px solid #facc15; z-index: 1; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
+                    <div style="position: absolute; left: 75px; right: 90px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
                         ${nameHtml}
-                        <div style="width: 100%; overflow: hidden; margin-top: 1px;">
-                            <marquee scrollamount="4" style="color: #ffffff; font-size: 12px; font-weight: 900; text-shadow: 1px 1px 2px #000; width: 100%;">won ${data.amount.toLocaleString()} coins at lucky fruit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; won ${data.amount.toLocaleString()} coins at lucky fruit</marquee>
-                        </div>
+                        <marquee scrollamount="4" style="color: #facc15; font-size: 14px; font-weight: 900; text-shadow: 1px 1px 2px #000; margin-top: 2px; width: 100%;">won ${data.amount.toLocaleString()} coins at lucky fruit &nbsp;&nbsp;&nbsp; won ${data.amount.toLocaleString()} coins at lucky fruit</marquee>
                     </div>
                 </div>`;
-            }
+            } 
             else if (data.type === 'gift') {
                 let comboText = data.giftName ? data.giftName.split(' ')[0] : '1x';
                 let recName = data.receiverName || "User";
