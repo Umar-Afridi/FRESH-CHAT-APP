@@ -1,0 +1,168 @@
+<svg viewBox="0 0 1200 350" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- 1. Deep Metallic Red Gradient for the Main Box -->
+        <linearGradient id="redMetalBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5A0000" />
+            <stop offset="30%" stop-color="#C40B0B" />
+            <stop offset="50%" stop-color="#FF1E1E" />
+            <stop offset="70%" stop-color="#A60000" />
+            <stop offset="100%" stop-color="#4A0000" />
+        </linearGradient>
+
+        <!-- 2. Rich Gold Gradient for Borders -->
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#B8860B" />
+            <stop offset="25%" stop-color="#FFD700" />
+            <stop offset="50%" stop-color="#FFF8DC" />
+            <stop offset="75%" stop-color="#FFD700" />
+            <stop offset="100%" stop-color="#DAA520" />
+        </linearGradient>
+
+        <!-- 3. Shine Gradient (چمک) -->
+        <linearGradient id="shineLight" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0)" />
+            <stop offset="30%" stop-color="rgba(255, 255, 255, 0.4)" />
+            <stop offset="50%" stop-color="rgba(255, 255, 255, 0.9)" />
+            <stop offset="70%" stop-color="rgba(255, 255, 255, 0.4)" />
+            <stop offset="100%" stop-color="rgba(255, 255, 255, 0)" />
+        </linearGradient>
+
+        <!-- 4. Drop Shadows for 3D Effect -->
+        <filter id="shadowBox">
+            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+        </filter>
+        <filter id="shadowOrnaments">
+            <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+        </filter>
+
+        <!-- Clip Path to keep the shine inside the newly stretched banner box -->
+        <clipPath id="shineClip">
+            <rect x="-480" y="-70" width="960" height="140" />
+        </clipPath>
+
+        <!-- ========================================== -->
+        <!--  MODULAR ORNAMENTS (Center, Corners, Ends) -->
+        <!-- ========================================== -->
+        
+        <!-- Center Ornament (Top & Bottom) -->
+        <g id="ornament-center-top" filter="url(#shadowOrnaments)">
+            <!-- Central Lotus -->
+            <path d="M 0 -70 C 15 -70, 30 -85, 30 -70 C 15 -65, 5 -68, 0 -70 Z" fill="#D40000"/>
+            <path d="M 0 -70 C -15 -70, -30 -85, -30 -70 C -15 -65, -5 -68, 0 -70 Z" fill="#D40000"/>
+            <path d="M 0 -70 C 5 -90, 15 -100, 20 -70 C 10 -68, 5 -70, 0 -70 Z" fill="#D40000"/>
+            <path d="M 0 -70 C -5 -90, -15 -100, -20 -70 C -10 -68, -5 -70, 0 -70 Z" fill="#D40000"/>
+            
+            <!-- Central Ring -->
+            <path d="M 15 -100 A 15 15 0 0 0 -15 -100" fill="none" stroke="#D40000" stroke-width="6"/>
+            <path d="M 12 -103 A 12 12 0 0 0 -12 -103" fill="none" stroke="#FFD700" stroke-width="1.5"/>
+            
+            <!-- Central Top Flame -->
+            <path d="M 0 -150 C 10 -145, 15 -135, 0 -135 C -15 -135, -10 -145, 0 -150 Z" fill="#D40000"/>
+
+            <!-- Main Thick Red C-Curls (Left & Right from center) -->
+            <path d="M 30 -70 C 50 -130, 120 -150, 150 -100 C 180 -50, 110 -20, 90 -60 C 80 -80, 100 -100, 130 -90 C 150 -80, 140 -120, 110 -130 C 70 -140, 50 -100, 30 -70 Z" fill="#D40000"/>
+            <path d="M -30 -70 C -50 -130, -120 -150, -150 -100 C -180 -50, -110 -20, -90 -60 C -80 -80, -100 -100, -130 -90 C -150 -80, -140 -120, -110 -130 C -70 -140, -50 -100, -30 -70 Z" fill="#D40000"/>
+            
+            <!-- Gold Accents -->
+            <path d="M 50 -90 C 65 -115, 90 -125, 115 -115" fill="none" stroke="#FFD700" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M -50 -90 C -65 -115, -90 -125, -115 -115" fill="none" stroke="#FFD700" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Corner Ornament (Right Side) -->
+        <g id="corner-tr" filter="url(#shadowOrnaments)">
+            <!-- Corner X-Flower -->
+            <path d="M -20 -20 Q 0 -10, 0 0 Q 0 -10, 20 -20 Q 10 0, 0 0 Q 10 0, 20 20 Q 0 10, 0 0 Q 0 10, -20 20 Q -10 0, 0 0 Q -10 0, -20 -20 Z" fill="#D40000"/>
+            <path d="M -10 -10 Q 0 -5, 0 0 Q 0 -5, 10 -10 Q 5 0, 0 0 Q 5 0, 10 10 Q 0 5, 0 0 Q 0 5, -10 10 Q -5 0, 0 0 Q -5 0, -10 -10 Z" fill="#FFD700"/>
+            
+            <!-- Inward Swirl along the top edge -->
+            <path d="M -15 -5 C -40 -30, -70 -40, -100 -20 C -120 -5, -100 15, -80 5 C -60 -5, -70 -20, -90 -15 C -105 -10, -105 5, -90 10 C -60 20, -30 5, -15 -5 Z" fill="#D40000" transform="translate(0, -15)"/>
+            <!-- Gold Accent on Swirl -->
+            <path d="M -30 -25 C -50 -40, -80 -40, -100 -25" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+        </g>
+
+        <!-- Side Bracket (Right End) -->
+        <g id="bracket-r" filter="url(#shadowOrnaments)">
+            <!-- Outer Red Bracket -->
+            <path d="M 0 -85 L 60 -85 L 60 85 L 0 85" fill="none" stroke="#D40000" stroke-width="4"/>
+            <!-- Inner Gold Bracket -->
+            <path d="M 4 -79 L 54 -79 L 54 79 L 4 79" fill="none" stroke="#FFD700" stroke-width="1.5"/>
+            <!-- Accent Dots -->
+            <circle cx="60" cy="0" r="8" fill="#D40000"/>
+            <circle cx="60" cy="0" r="4" fill="#FFD700"/>
+            <circle cx="80" cy="0" r="4" fill="#D40000"/>
+            <circle cx="80" cy="0" r="1.5" fill="#FFD700"/>
+        </g>
+
+        <!-- Sparkling Star -->
+        <path id="star" d="M 0,-10 L 2,-3 L 10,0 L 2,3 L 0,10 L -2,3 L -10,0 L -2,-3 Z" fill="#FFFFFF" filter="drop-shadow(0 0 4px #FFF)"/>
+    </defs>
+
+    <style>
+        /* CSS ANIMATIONS */
+        @keyframes sweep {
+            0% { transform: translateX(-600px) skewX(-25deg); }
+            100% { transform: translateX(1200px) skewX(-25deg); }
+        }
+        @keyframes twinkle {
+            0%, 100% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+        }
+        
+        /* Shine is now faster to cover the long distance smoothly */
+        .shine-box { animation: sweep 4s infinite ease-in-out; }
+        .sparkle1 { animation: twinkle 2s infinite ease-in-out; }
+        .sparkle2 { animation: twinkle 1.5s infinite ease-in-out 0.5s; }
+        .sparkle3 { animation: twinkle 2.5s infinite ease-in-out 1s; }
+        .sparkle4 { animation: twinkle 1.8s infinite ease-in-out 0.8s; }
+    </style>
+
+    <!-- Master Group (Centering everything perfectly: Width 1200 / 2 = 600, Height 350 / 2 = 175) -->
+    <g transform="translate(600, 175)">
+        
+        <!-- =================== THE ORNAMENTS =================== -->
+        <!-- Center Top & Bottom -->
+        <use href="#ornament-center-top" />
+        <use href="#ornament-center-top" transform="scale(1, -1)" />
+
+        <!-- Corners (Pushed all the way out to X = 480 and -480) -->
+        <use href="#corner-tr" transform="translate(480, -70)" />
+        <use href="#corner-tr" transform="translate(-480, -70) scale(-1, 1)" />
+        <use href="#corner-tr" transform="translate(480, 70) scale(1, -1)" />
+        <use href="#corner-tr" transform="translate(-480, 70) scale(-1, -1)" />
+
+        <!-- Side Ends / Brackets -->
+        <use href="#bracket-r" transform="translate(480, 0)" />
+        <use href="#bracket-r" transform="translate(-480, 0) scale(-1, 1)" />
+
+        <!-- =================== THE MAIN STRETCHED BANNER BOX =================== -->
+        <!-- Box is now 960 pixels wide (X from -480 to 480) -->
+        
+        <!-- Base Shadow Box -->
+        <rect x="-480" y="-70" width="960" height="140" fill="url(#redMetalBg)" filter="url(#shadowBox)"/>
+        
+        <!-- Outer Gold Border -->
+        <rect x="-476" y="-66" width="952" height="132" fill="none" stroke="url(#goldGrad)" stroke-width="4"/>
+        
+        <!-- Inner Gold Border -->
+        <rect x="-468" y="-58" width="936" height="116" fill="none" stroke="#FFD700" stroke-width="1.5" opacity="0.8"/>
+        
+        <!-- Inner Glow/Shadow for 3D Depth -->
+        <rect x="-480" y="-70" width="960" height="140" fill="none" stroke="#330000" stroke-width="3" opacity="0.6"/>
+
+        <!-- =================== THE SHINE ANIMATION =================== -->
+        <g clip-path="url(#shineClip)">
+            <rect class="shine-box" x="0" y="-100" width="180" height="340" fill="url(#shineLight)" />
+        </g>
+
+        <!-- =================== MAGICAL SPARKLES =================== -->
+        <!-- Spread out across the new long width -->
+        <use href="#star" x="-460" y="-80" class="sparkle1" />
+        <use href="#star" x="460" y="80" class="sparkle2" />
+        <use href="#star" x="0" y="-120" class="sparkle3" />
+        <use href="#star" x="-250" y="75" class="sparkle4" />
+        <use href="#star" x="250" y="-75" class="sparkle1" />
+        <use href="#star" x="520" y="0" class="sparkle3" />
+        <use href="#star" x="-520" y="0" class="sparkle2" />
+
+    </g>
+</svg>
