@@ -1,0 +1,222 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- ================= MULTI-COLOR PRISMATIC DIAMOND GRADIENTS ================= -->
+    <!-- Top Crown Facets -->
+    <linearGradient id="gTFL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e6ffff"/>
+      <stop offset="100%" stop-color="#33bbff"/>
+    </linearGradient>
+    <linearGradient id="gTML" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ff99cc"/> <!-- Pink Fire -->
+    </linearGradient>
+    <linearGradient id="gTC" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#80dfff"/> <!-- Ice Blue -->
+    </linearGradient>
+    <linearGradient id="gTMR" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e6ffff"/>
+      <stop offset="100%" stop-color="#cc99ff"/> <!-- Purple Fire -->
+    </linearGradient>
+    <linearGradient id="gTFR" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#33bbff"/>
+      <stop offset="100%" stop-color="#ff66b3"/>
+    </linearGradient>
+    
+    <!-- Bottom Pavilion Facets -->
+    <linearGradient id="gBFL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00aaff"/>
+      <stop offset="100%" stop-color="#003366"/>
+    </linearGradient>
+    <linearGradient id="gBML" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff66b3"/>
+      <stop offset="100%" stop-color="#006699"/>
+    </linearGradient>
+    <linearGradient id="gBMR" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9933ff"/>
+      <stop offset="100%" stop-color="#0088cc"/>
+    </linearGradient>
+    <linearGradient id="gBFR" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ccff"/>
+      <stop offset="100%" stop-color="#1a0033"/>
+    </linearGradient>
+
+    <!-- ================= PERFECT 3D GOLD GRADIENT FOR ROUND BAND ================= -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5cc"/>  <!-- Extreme highlight -->
+      <stop offset="20%" stop-color="#ffcc00"/> <!-- Pure Gold -->
+      <stop offset="50%" stop-color="#996600"/> <!-- Core Shadow -->
+      <stop offset="75%" stop-color="#ffdd33"/> <!-- Bounce Light -->
+      <stop offset="100%" stop-color="#4d2600"/> <!-- Deep Shadow -->
+    </linearGradient>
+
+    <linearGradient id="goldProng" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b38000"/>
+      <stop offset="50%" stop-color="#fffae6"/>
+      <stop offset="100%" stop-color="#664d00"/>
+    </linearGradient>
+
+    <!-- ================= SUPER BRIGHT CHAMAK (ANIMATED SHINE) ================= -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="35%" stop-color="rgba(255,255,255,0.6)"/>
+      <stop offset="48%" stop-color="#ffffff"/>
+      <stop offset="52%" stop-color="#ffffff"/>
+      <stop offset="65%" stop-color="rgba(255,255,255,0.6)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+
+    <!-- ================= FILTERS ================= -->
+    <filter id="drop-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="25" stdDeviation="15" flood-color="#000000" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#00aaff" flood-opacity="0.3"/>
+    </filter>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur1"/>
+      <feGaussianBlur stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="soft-blur"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="heavy-blur"><feGaussianBlur stdDeviation="6"/></filter>
+
+    <!-- ================= CLIP PATH FOR SHINE ================= -->
+    <clipPath id="shineClip">
+      <!-- Massive Diamond Bounds -->
+      <polygon points="160,40 340,40 430,130 250,260 70,130" />
+      <!-- Perfectly Round Hollow Ring Band Path -->
+      <path clip-rule="evenodd" d="M 250,140 A 160,160 0 1,0 250,460 A 160,160 0 1,0 250,140 Z M 250,155 A 145,145 0 1,1 250,445 A 145,145 0 1,1 250,155 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Main Group with Drop Shadow -->
+  <g filter="url(#drop-shadow)">
+    
+    <!-- ================= PERFECTLY STRAIGHT & ROUND HOLLOW GOLD BAND ================= -->
+    <!-- Center of the ring is completely empty/transparent so the background shows through! -->
+    <!-- Outer Radius: 160, Inner Radius: 145 (Thin & Beautiful) -->
+    <path fill-rule="evenodd" d="M 250,140 A 160,160 0 1,0 250,460 A 160,160 0 1,0 250,140 Z M 250,155 A 145,145 0 1,1 250,445 A 145,145 0 1,1 250,155 Z" fill="url(#goldGrad)" />
+    
+    <!-- 3D Glassy/Metallic Edge Highlights for the Thin Ring -->
+    <!-- Inner Tube Highlight (Creates extreme 3D cylinder illusion) -->
+    <circle cx="250" cy="300" r="152.5" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.35" filter="url(#soft-blur)" />
+    <!-- Sharp Outer Edge -->
+    <circle cx="250" cy="300" r="160" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7" filter="url(#soft-blur)" />
+    <!-- Sharp Inner Edge -->
+    <circle cx="250" cy="300" r="145" fill="none" stroke="#fff0b3" stroke-width="1.5" opacity="0.9" />
+
+
+    <!-- ================= THE PRONGS (Holding the Diamond) ================= -->
+    <!-- Back Prongs -->
+    <path d="M 180,155 L 150,128 L 160,126 Z" fill="url(#goldProng)" />
+    <path d="M 320,155 L 350,128 L 340,126 Z" fill="url(#goldProng)" />
+
+
+    <!-- ================= THE MASSIVE BEAUTIFUL DIAMOND 💎 ================= -->
+    <g stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round">
+      <!-- Top Crown Facets -->
+      <polygon points="160,40 70,130 160,130" fill="url(#gTFL)" />
+      <polygon points="160,40 160,130 250,130" fill="url(#gTML)" />
+      <polygon points="160,40 340,40 250,130" fill="url(#gTC)" />
+      <polygon points="340,40 250,130 340,130" fill="url(#gTMR)" />
+      <polygon points="340,40 340,130 430,130" fill="url(#gTFR)" />
+      
+      <!-- Bottom Pavilion Facets -->
+      <polygon points="70,130 160,130 250,260" fill="url(#gBFL)" />
+      <polygon points="160,130 250,130 250,260" fill="url(#gBML)" />
+      <polygon points="250,130 340,130 250,260" fill="url(#gBMR)" />
+      <polygon points="340,130 430,130 250,260" fill="url(#gBFR)" />
+    </g>
+
+    <!-- Diamond Inner Glass Edge Glows (Extreme Realism) -->
+    <g fill="none" stroke="#ffffff" stroke-width="2.5" filter="url(#soft-blur)" opacity="0.65">
+      <polygon points="160,40 70,130 160,130" />
+      <polygon points="160,40 160,130 250,130" />
+      <polygon points="160,40 340,40 250,130" />
+      <polygon points="340,40 250,130 340,130" />
+      <polygon points="340,40 340,130 430,130" />
+      <polygon points="70,130 160,130 250,260" />
+      <polygon points="340,130 430,130 250,260" />
+    </g>
+
+    <!-- Diamond Specular Highlights (Intense Light Reflections) -->
+    <polygon points="160,40 70,130 160,130" fill="#ffffff" opacity="0.4" filter="url(#soft-blur)" />
+    <polygon points="70,130 160,130 250,260" fill="#ffffff" opacity="0.15" filter="url(#heavy-blur)" />
+    <!-- Top Table Brilliant Flash -->
+    <polygon points="160,40 340,40 250,60" fill="#ffffff" opacity="0.8" filter="url(#soft-blur)" />
+
+
+    <!-- ================= FRONT PRONGS (Overlapping the Diamond) ================= -->
+    <path d="M 220,145 L 220,128 L 228,126 L 232,142 Z" fill="url(#goldProng)" />
+    <path d="M 280,145 L 280,128 L 272,126 L 268,142 Z" fill="url(#goldProng)" />
+    <!-- Prong Highlights -->
+    <path d="M 222,126 L 226,142" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.8" />
+    <path d="M 278,126 L 274,142" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.8" />
+
+
+    <!-- ================= THE RUNNING CHAMAK PATTI (Inner Sweeping Shine) ================= -->
+    <g clip-path="url(#shineClip)">
+      <!-- Main wide shine sweeping across the entire perfectly round ring and massive diamond -->
+      <rect x="-350" y="-50" width="100" height="600" fill="url(#shineGrad)" transform="skewX(-35)">
+        <animate attributeName="x" from="-400" to="850" dur="2.8s" repeatCount="indefinite" />
+      </rect>
+      <!-- Secondary bright thin shine following right behind it -->
+      <rect x="-200" y="-50" width="25" height="600" fill="url(#shineGrad)" transform="skewX(-35)">
+        <animate attributeName="x" from="-250" to="1000" dur="2.8s" repeatCount="indefinite" />
+      </rect>
+    </g>
+
+  </g>
+
+  <!-- ================= GLOWING & TWINKLING REALISTIC STARS ================= -->
+  <g fill="#ffffff" filter="url(#glow)">
+    
+    <!-- Top Left Huge Sparkle -->
+    <g transform="translate(60, 110)">
+      <path d="M 18 0 Q 18 18 36 18 Q 18 18 18 36 Q 18 18 0 18 Q 18 18 18 0 Z">
+        <animateTransform attributeName="transform" type="scale" values="0.7; 1.6; 0.7" dur="2.2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.4; 1; 0.4" dur="2.2s" repeatCount="indefinite" />
+      </path>
+      <circle cx="18" cy="18" r="3" fill="#fff" />
+    </g>
+    
+    <!-- Top Right Sparkle -->
+    <g transform="translate(370, 30)">
+      <path d="M 14 0 Q 14 14 28 14 Q 14 14 14 28 Q 14 14 0 14 Q 14 14 14 0 Z" fill="#ffccff">
+        <animateTransform attributeName="transform" type="scale" values="0.5; 1.3; 0.5" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.2; 0.9; 0.2" dur="2.5s" repeatCount="indefinite" />
+      </path>
+    </g>
+
+    <!-- Far Right Ring Base Sparkle -->
+    <g transform="translate(400, 280)">
+      <path d="M 15 0 Q 15 15 30 15 Q 15 15 15 30 Q 15 15 0 15 Q 15 15 15 0 Z" fill="#ffe680">
+        <animateTransform attributeName="transform" type="scale" values="0.6; 1.4; 0.6" dur="1.8s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.8s" repeatCount="indefinite" />
+      </path>
+    </g>
+    
+    <!-- Bottom Left Ring Edge Sparkle -->
+    <g transform="translate(70, 320)">
+      <path d="M 12 0 Q 12 12 24 12 Q 12 12 12 24 Q 12 12 0 12 Q 12 12 12 0 Z" fill="#ccffff">
+        <animateTransform attributeName="transform" type="scale" values="0.5; 1.2; 0.5" dur="2.6s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.1; 1; 0.1" dur="2.6s" repeatCount="indefinite" />
+      </path>
+    </g>
+
+    <!-- Bottom Center Diamond Tip Sparkle -->
+    <g transform="translate(235, 255)">
+      <path d="M 15 0 Q 15 15 30 15 Q 15 15 15 30 Q 15 15 0 15 Q 15 15 15 0 Z">
+        <animateTransform attributeName="transform" type="scale" values="0.4; 1.3; 0.4" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="3s" repeatCount="indefinite" />
+      </path>
+      <circle cx="15" cy="15" r="2" fill="#fff" />
+    </g>
+
+  </g>
+</svg>

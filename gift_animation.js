@@ -1,44 +1,131 @@
 // ==========================================
-// NEW WEBM GIFT ANIMATION SYSTEM (ADVANCED BLENDING + GREEN SCREEN FIX)
+// NEW HYBRID GIFT ANIMATION SYSTEM (WEBM + SVG TRAJECTORY)
 // ==========================================
 
-const giftWebmAssets = {
-    'Drink': './drink.webm',
-    'Couple': './couple.webm',
-    'King Queen': './king,queen.webm',
-    'Romance': './romance.webm',
-    'My Love': './my,love.webm',
-    'Drinking Couple': './drinking,couple.webm',
-    'Proposal': './proposal.webm',
-    'Dragon': './dragon.webm'
+const giftAssets = {
+    // 🔴 OLD WEBM GIFTS
+    'Drink': { file: './drink.webm', type: 'webm' },
+    'Couple': { file: './couple.webm', type: 'webm' },
+    'King Queen': { file: './king,queen.webm', type: 'webm' },
+    'Romance': { file: './romance.webm', type: 'webm' },
+    'My Love': { file: './my,love.webm', type: 'webm' },
+    'Drinking Couple': { file: './drinking,couple.webm', type: 'webm' },
+    'Proposal': { file: './proposal.webm', type: 'webm' },
+    'Dragon': { file: './dragon.webm', type: 'webm' },
+    
+    // 🟢 4 NEW SVG GIFTS
+    'Kiss': { file: './kiss_gift.svg', type: 'svg' },
+    'Diamond': { file: './Diamond_gift.svg', type: 'svg' },
+    'Ring': { file: './ring_gift.svg', type: 'svg' },
+    'Heart': { file: './heart_gift.svg', type: 'svg' }
 };
 
 let currentGiftAnimationId = null;
 
-window.playGiftAnimation = function(senderName, giftName, timestamp) {
-    // ٹائم لمٹ 15 سیکنڈ کر دی گئی ہے تاکہ انٹرنیٹ سلو ہونے پر بھی اینیمیشن لازمی پلے ہو
+window.playGiftAnimation = function(senderUid, senderName, receiverUidsArr, giftName, timestamp, giftType) {
     if (Date.now() - timestamp > 15000) return;
 
-    let webmSrc = giftWebmAssets[giftName];
-    if (!webmSrc) {
-        console.error("Gift WebM not found for:", giftName);
-        return;
+    let giftObj = giftAssets[giftName];
+    if (!giftObj) return;
+
+    if (giftObj.type === 'svg' || giftType === 'svg') {
+        playSVGTrajectoryAnimation(senderUid, receiverUidsArr, giftObj.file);
+    } else {
+        playWebmAnimation(giftObj.file);
+    }
+};
+
+// =====================================
+// 1. SVG CURVED TRAJECTORY ANIMATION (BOTTOM DROP & PERFECT SPACING)
+// =====================================
+function playSVGTrajectoryAnimation(senderUid, receiverUids, svgFile) {
+    function getSeatCenter(uid) {
+        let seats = window.currentRoomSeats || {};
+        for (let i = 1; i <= 10; i++) {
+            if (seats[`seat${i}`] && seats[`seat${i}`].uid === uid) {
+                let seatEl = document.getElementById(`cont-seat${i}`);
+                if(seatEl) {
+                    let rect = seatEl.getBoundingClientRect();
+                    return {
+                        x: rect.left + (rect.width / 2),
+                        y: rect.top + (rect.height / 2)
+                    };
+                }
+            }
+        }
+        return null; 
     }
 
+    // 🔥 آپ کی ڈرائنگ کے مطابق: گفٹ پہلے نیچے آئے گا (سکرین کے 65% نچلے حصے پر)
+    let dropPointX = window.innerWidth / 2;
+    let dropPointY = window.innerHeight * 0.65; // یہ جگہ لائیو پٹی اور چیٹ کے بالکل اوپر بنتی ہے
+
+    let senderPos = getSeatCenter(senderUid);
+    let startX = senderPos ? senderPos.x : (window.innerWidth / 2);
+    let startY = senderPos ? senderPos.y : (window.innerHeight - 100);
+
+    // ہر ریسیور کے لیے گفٹ نکالنا
+    receiverUids.forEach((rUid, index) => {
+        // 🔥 وقفہ (Delay) فکس: 100ms کو بڑھا کر 400ms کر دیا گیا ہے۔ 
+        // اب اگر 3 لوگوں کو گفٹ دیا ہے تو وہ ایک کے پیچھے ایک خوبصورتی سے نکلیں گے (مکس نہیں ہوں گے)
+        setTimeout(() => {
+            let receiverPos = getSeatCenter(rUid);
+
+            let endX = receiverPos ? receiverPos.x : dropPointX;
+            let endY = receiverPos ? receiverPos.y : dropPointY;
+
+            let el = document.createElement('img');
+            el.src = svgFile;
+            el.className = 'svg-gift-fly';
+            
+            el.style.transform = `translate3d(${startX - 30}px, ${startY - 30}px, 0px) scale(0.1)`;
+            document.body.appendChild(el);
+
+            let isSelfGift = (senderUid === rUid);
+            let animationFrames =[];
+
+            if (isSelfGift) {
+                // اپنی ڈی پی -> نیچے سکرین کے سینٹر میں -> واپس اوپر اپنی ڈی پی
+                animationFrames =[
+                    { transform: `translate3d(${startX - 30}px, ${startY - 30}px, 0) scale(0.2)`, opacity: 1, offset: 0 },
+                    { transform: `translate3d(${dropPointX - 30}px, ${dropPointY - 30}px, 0) scale(2.5)`, opacity: 1, offset: 0.5 },
+                    { transform: `translate3d(${startX - 30}px, ${startY - 30}px, 0) scale(0.5)`, opacity: 1, offset: 1 }
+                ];
+            } else {
+                // اپنی ڈی پی -> نیچے سکرین کے سینٹر میں -> کراس کر کے اوپر ریسیور کی ڈی پی
+                animationFrames =[
+                    { transform: `translate3d(${startX - 30}px, ${startY - 30}px, 0) scale(0.2)`, opacity: 1, offset: 0 },
+                    { transform: `translate3d(${dropPointX - 30}px, ${dropPointY - 30}px, 0) scale(2.5)`, opacity: 1, offset: 0.5 },
+                    { transform: `translate3d(${endX - 30}px, ${endY - 30}px, 0) scale(0.5)`, opacity: 1, offset: 1 }
+                ];
+            }
+
+            el.animate(animationFrames, {
+                duration: 1200, 
+                easing: 'ease-in-out', // سموتھ باؤنس ایفیکٹ
+                fill: 'forwards'
+            }).onfinish = () => el.remove();
+
+        }, index * 400); // 400ms کا گیپ ہر گفٹ کے درمیان
+    });
+}
+// =====================================
+// 2. WEBM FULLSCREEN ANIMATION
+// =====================================
+function playWebmAnimation(webmSrc) {
     let containerEl = document.getElementById('gift-animation-container');
     let videoEl = document.getElementById('gift-video-player');
     let canvasEl = document.getElementById('gift-canvas-player');
     let textEl = document.getElementById('gift-animation-text');
 
     if (containerEl && videoEl && canvasEl) {
-        // اگر پہلے سے کوئی اینیمیشن چل رہی ہے تو اسے روک دیں
         if (currentGiftAnimationId) cancelAnimationFrame(currentGiftAnimationId);
         
         const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
         
         videoEl.src = webmSrc;
-        videoEl.muted = false; // ساؤنڈ آن کرنے کے لیے
-        videoEl.volume = 1.0;  // والیوم فل کرنے کے لیے
+        videoEl.muted = false; 
+        videoEl.volume = 1.0; 
         videoEl.load();
 
         textEl.innerHTML = ''; 
@@ -46,12 +133,9 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
         containerEl.classList.remove('hidden');
         containerEl.style.display = 'flex';
 
-        // 🔥 MAGIC FIX: CSS Blend Mode (SCREEN)
-        // یہ کالے بیک گراؤنڈ کو بالکل سموتھ شفاف کر دے گا اور گفٹ کے اپنے کلرز/سوٹ کو بالکل نہیں کاٹے گا۔
         canvasEl.style.mixBlendMode = 'screen'; 
         canvasEl.style.opacity = '1';
 
-        // جب ویڈیو کا ڈیٹا لوڈ ہو جائے تو سائز سیٹ کریں
         videoEl.onloadedmetadata = () => {
             canvasEl.width = videoEl.videoWidth;
             canvasEl.height = videoEl.videoHeight;
@@ -65,13 +149,10 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
                 ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
                 ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
                 
-                // ہم نے کالا رنگ کاٹنے والا کوڈ مکمل ختم کر دیا ہے کیونکہ mixBlendMode اسے خود ہینڈل کر رہا ہے۔
-                // یہ لاجک صرف اس صورت میں چلے گی اگر کوئی ویڈیو "Green Screen" (ہرے پردے) والی ہو۔
                 let frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
                 let length = frame.data.length / 4;
                 let isGreenScreen = false;
 
-                // چیک کریں کہ کیا ویڈیو کا بیک گراؤنڈ ہرا (Green) ہے؟
                 if (length > 100) {
                     let sampleR = frame.data[400 + 0];
                     let sampleG = frame.data[400 + 1];
@@ -82,13 +163,12 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
                 }
 
                 if (isGreenScreen) {
-                    canvasEl.style.mixBlendMode = 'normal'; // گرین سکرین کے لیے نارمل موڈ
+                    canvasEl.style.mixBlendMode = 'normal'; 
                     for (let i = 0; i < length; i++) {
                         let r = frame.data[i * 4 + 0];
                         let g = frame.data[i * 4 + 1];
                         let b = frame.data[i * 4 + 2];
 
-                        // انتہائی نارمل گرین سکرین کٹنگ
                         if (g > 90 && g > r * 1.2 && g > b * 1.2) {
                             frame.data[i * 4 + 3] = 0; 
                         }
@@ -101,24 +181,22 @@ window.playGiftAnimation = function(senderName, giftName, timestamp) {
             processFrame();
         };
 
-        // ویڈیو ختم ہونے پر سکرین کلیئر کریں
         videoEl.onended = () => {
             closeGiftAnimation(containerEl, videoEl, ctx, canvasEl);
         };
 
-        // 8 سیکنڈ بعد احتیاطاً خود بخود غائب کر دیں (اگر ویڈیو لمبی ہو)
         setTimeout(() => {
             closeGiftAnimation(containerEl, videoEl, ctx, canvasEl);
         }, 8000); 
     }
-};
+}
 
 function closeGiftAnimation(container, video, ctx, canvas) {
     container.classList.add('hidden');
     container.style.display = 'none';
     video.pause();
     video.src = "";
-    canvas.style.mixBlendMode = 'normal'; // ری سیٹ
-    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); // سکرین بالکل صاف
+    canvas.style.mixBlendMode = 'normal'; 
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); 
     if (currentGiftAnimationId) cancelAnimationFrame(currentGiftAnimationId);
 }

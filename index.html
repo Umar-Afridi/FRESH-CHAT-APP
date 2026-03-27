@@ -2307,45 +2307,68 @@
 
             <!-- Gift Grid -->
             <div class="gift-grid px-3" id="gift-items-grid">
-                <div class="gift-item" onclick="selectGiftItem('Drink', 10000, this)">
+                <!-- 4 NEW SMALL SVG GIFTS -->
+                <div class="gift-item" onclick="selectGiftItem('Kiss', 10, this, 'svg')">
+                    <img src="./kiss_gift.svg" class="gift-img" onerror="this.src='https://placehold.co/50?text=💋'">
+                    <span class="text-white text-[10px] font-bold mt-1 block">Kiss</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 10</span>
+                </div>
+                <div class="gift-item" onclick="selectGiftItem('Diamond', 20, this, 'svg')">
+                    <img src="./Diamond_gift.svg" class="gift-img" onerror="this.src='https://placehold.co/50?text=💎'">
+                    <span class="text-white text-[10px] font-bold mt-1 block">Diamond</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 20</span>
+                </div>
+                <div class="gift-item" onclick="selectGiftItem('Ring', 30, this, 'svg')">
+                    <img src="./ring_gift.svg" class="gift-img" onerror="this.src='https://placehold.co/50?text=💍'">
+                    <span class="text-white text-[10px] font-bold mt-1 block">Ring</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 30</span>
+                </div>
+                <div class="gift-item" onclick="selectGiftItem('Heart', 40, this, 'svg')">
+                    <img src="./heart_gift.svg" class="gift-img" onerror="this.src='https://placehold.co/50?text=💖'">
+                    <span class="text-white text-[10px] font-bold mt-1 block">Heart</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 40</span>
+                </div>
+
+                <!-- OLD WEBM GIFTS WITH UPDATED PRICES -->
+                <div class="gift-item" onclick="selectGiftItem('Drink', 10000, this, 'webm')">
                     <img src="./drink.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🍹'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Drink</span>
                     <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 10k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('Couple', 50000, this)">
+                <div class="gift-item" onclick="selectGiftItem('Couple', 20000, this, 'webm')">
                     <img src="./couple.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=👫'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Couple</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 50k</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 20k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('King Queen', 300000, this)">
+                <div class="gift-item" onclick="selectGiftItem('King Queen', 40000, this, 'webm')">
                     <img src="./king,queen.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=👑'">
                     <span class="text-white text-[10px] font-bold mt-1 block">King Queen</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 300k</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 40k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('Romance', 500000, this)">
+                <div class="gift-item" onclick="selectGiftItem('Romance', 50000, this, 'webm')">
                     <img src="./romance.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=💖'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Romance</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 500k</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 50k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('My Love', 1000000, this)">
+                <div class="gift-item" onclick="selectGiftItem('My Love', 100000, this, 'webm')">
                     <img src="./my,love.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=💞'">
                     <span class="text-white text-[10px] font-bold mt-1 block">My Love</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 1M</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 100k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('Drinking Couple', 5000000, this)">
+                <div class="gift-item" onclick="selectGiftItem('Drinking Couple', 200000, this, 'webm')">
                     <img src="./drinking,couple.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🥂'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Drinking Couple</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 5M</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 200k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('Proposal', 10000000, this)">
+                <div class="gift-item" onclick="selectGiftItem('Proposal', 300000, this, 'webm')">
                     <img src="./proposal.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=💍'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Proposal</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 10M</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 300k</span>
                 </div>
-                <div class="gift-item" onclick="selectGiftItem('Dragon', 50000000, this)">
+                <div class="gift-item" onclick="selectGiftItem('Dragon', 10000000, this, 'webm')">
                     <img src="./dragon.webp" class="gift-img" onerror="this.src='https://placehold.co/50?text=🐉'">
                     <span class="text-white text-[10px] font-bold mt-1 block">Dragon</span>
-                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 50M</span>
+                    <span class="gift-price"><img src="./coin_icon.png" class="w-3 h-3"> 10M</span>
                 </div>
             </div>
 
@@ -3051,11 +3074,11 @@
             }
         }
 
-        window.selectGiftItem = (name, cost, el) => {
+        window.selectGiftItem = (name, cost, el, type = 'webm') => {
             document.querySelectorAll('.gift-item').forEach(item => item.classList.remove('selected'));
             el.classList.add('selected');
             let imgSrc = el.querySelector('.gift-img').src;
-            selectedGiftObj = { name: name, cost: cost, img: imgSrc };
+            selectedGiftObj = { name: name, cost: cost, img: imgSrc, type: type };
         };
 
         window.toggleGiftQtyMenu = () => {
@@ -3069,16 +3092,101 @@
             document.getElementById('gift-combo-menu').style.display = 'none';
         };
 
+        let comboCount = 0;
+        let comboTimer = null;
+        let pendingComboGifts = 0;
+
         window.executeSendGift = async () => {
             if(!currentRoomId) return;
             if(selectedTargetsMap.size === 0) return Swal.fire({toast:true, icon:'warning', title:'Select at least one user!', position:'center', timer:1500, showConfirmButton:false});
             if(!selectedGiftObj) return Swal.fire({toast:true, icon:'warning', title:'Select a gift!', position:'center', timer:1500, showConfirmButton:false});
 
+            if (selectedGiftObj.type === 'svg') {
+                closeGiftModal();
+                startComboMode();
+            } else {
+                let success = await performGiftTransaction(false);
+                if(success) {
+                    closeGiftModal();
+                    Swal.fire({ toast: true, icon: 'success', title: `Sent ${selectedGiftObj.name}!`, position: 'top', timer: 2000, showConfirmButton: false, background: '#111', color: '#fff' });
+                }
+            }
+        };
+
+        window.handleComboTap = () => {
+            comboCount++;
+            pendingComboGifts++;
+            
+            // نئی پٹی (Strip) کی UI اپڈیٹ
+            let stripEl = document.getElementById('live-combo-strip');
+            let countEl = document.getElementById('combo-strip-count');
+            
+            stripEl.style.opacity = 1;
+            countEl.innerText = 'x' + comboCount;
+            countEl.classList.remove('combo-pop');
+            void countEl.offsetWidth; 
+            countEl.classList.add('combo-pop');
+
+            let receivers = Array.from(selectedTargetsMap.keys());
+            if(typeof window.playGiftAnimation === 'function') {
+                window.playGiftAnimation(currentUser.uid, currentUser.displayName, receivers, selectedGiftObj.name, Date.now(), selectedGiftObj.type);
+            }
+
+            // ٹائمر بڑھا کر 1500ms (ڈیڑھ سیکنڈ) کر دیا تاکہ چیٹ سپیم نہ ہو
+            clearTimeout(comboTimer);
+            comboTimer = setTimeout(() => {
+                processPendingComboInDB();
+            }, 1500); 
+        };
+
+        window.startComboMode = () => {
+            document.getElementById('combo-tap-overlay').style.display = 'block';
+            comboCount = 0;
+            pendingComboGifts = 0;
+            
+            // پٹی کا ڈیٹا سیٹ کریں
+            let receiverNames = Array.from(selectedTargetsMap.values()).map(t => t.name);
+            let receiverText = receiverNames.length === 1 ? receiverNames[0] : `${receiverNames.length} users`;
+            
+            document.getElementById('combo-strip-dp').src = currentUser.photoURL;
+            document.getElementById('combo-strip-sender').innerText = currentUser.displayName;
+            document.getElementById('combo-strip-receiver').innerText = receiverText;
+            document.getElementById('combo-strip-gift').src = selectedGiftObj.img;
+            
+            handleComboTap(); 
+        };
+
+        window.endComboMode = () => {
+            document.getElementById('combo-tap-overlay').style.display = 'none';
+            document.getElementById('live-combo-strip').style.opacity = 0;
+            comboCount = 0;
+        };
+
+        async function processPendingComboInDB() {
+            if(pendingComboGifts === 0) return;
+            
+            let countToProcess = pendingComboGifts;
+            pendingComboGifts = 0; 
+            
+            let originalQty = currentGiftQty;
+            currentGiftQty = currentGiftQty * countToProcess; 
+            
+            // یہ ایک ہی میسج فائر کرے گا (e.g. Sent x28 Diamond)
+            await performGiftTransaction(false); 
+            
+            currentGiftQty = originalQty; 
+            endComboMode();
+        }
+
+        window.performGiftTransaction = async (isComboTap = false) => {
             let targetsCount = selectedTargetsMap.size;
             let costPerTarget = selectedGiftObj.cost * currentGiftQty;
             let totalCost = costPerTarget * targetsCount;
 
-            if(currentCoins < totalCost) return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
+            if(currentCoins < totalCost) {
+                Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
+                return false;
+            }
 
             let timeKeys = typeof window.getLeaderboardTimeKeys === 'function' ? window.getLeaderboardTimeKeys() : {
                 daily: new Date().toISOString().split('T')[0],
@@ -3106,9 +3214,11 @@
             updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
             let targetNamesForChat =[];
+            let receiverUidsArray =[];
             
             for (let[tUid, tData] of selectedTargetsMap.entries()) {
                 targetNamesForChat.push(tData.name);
+                receiverUidsArray.push(tUid);
 
                 const rSnap = await get(ref(db, `users/${tUid}`));
                 let rData = rSnap.val() || {};
@@ -3141,16 +3251,21 @@
                 }
             }
 
-            // بینر کے لیے "To 2 others" والا لاجک
-            let receiverBannerText = "";
+            // 🛑 CLEAN RECEIVER NAME LOGIC (1 User = Name, Multiple = Name & X others)
+            let finalReceiverText = "";
             if (targetNamesForChat.length === 1) {
-                receiverBannerText = targetNamesForChat[0];
+                finalReceiverText = targetNamesForChat[0]; // اگر ایک ہے تو صرف نام
             } else {
-                receiverBannerText = `${targetNamesForChat.length} others`;
+                let othersCount = targetNamesForChat.length - 1;
+                finalReceiverText = `${targetNamesForChat[0]} & ${othersCount} others`; // اگر زیادہ ہیں تو Name & 2 others
             }
 
-            // لوپ ختم ہونے کے بعد صرف 1 بار بینر شو کروانا
-            broadcastGift(currentUser.displayName, currentUser.photoURL, receiverBannerText, "", `${currentGiftQty}x ${selectedGiftObj.name}`, selectedGiftObj.img, totalCost);
+            // 🛑 BANNER LOGIC
+            if(!isComboTap) {
+                if (totalCost >= 10000) {
+                    broadcastGift(currentUser.displayName, currentUser.photoURL, finalReceiverText, "", `${currentGiftQty}x ${selectedGiftObj.name}`, selectedGiftObj.img, totalCost);
+                }
+            }
 
             const rmSnap = await get(ref(db, `rooms/${currentRoomId}`));
             let rmData = rmSnap.val() || {};
@@ -3164,24 +3279,25 @@
                 lastGiftDate: timeKeys.daily, lastGiftWeek: timeKeys.weekly, lastGiftMonth: timeKeys.monthly
             });
 
-            // چیٹ میں 🎁 کی جگہ اصلی گفٹ آئیکن
-            let joinedNames = targetNamesForChat.join(', ');
+            // 🎁 CLEAN CHAT MESSAGE LOGIC
             let giftIconHtml = `<img src="${selectedGiftObj.img}" style="width:16px; height:16px; display:inline-block; vertical-align:middle; margin:0 2px;">`;
             
             await push(ref(db, `rooms/${currentRoomId}/messages`), { 
                 name: currentUser.displayName, 
-                text: `Sent ${currentGiftQty}x ${giftIconHtml} to ${joinedNames}`, 
+                uid: currentUser.uid,
+                text: `Sent ${currentGiftQty}x ${giftIconHtml} to ${finalReceiverText}`, 
                 type: 'gift', 
                 giftName: selectedGiftObj.name, 
+                giftType: selectedGiftObj.type,
+                receivers: receiverUidsArray,
                 timestamp: Date.now() 
             });
+
             if(typeof window.updateHomeTopDPs === 'function') window.updateHomeTopDPs();
             if(typeof window.loadCPRankingData === 'function') window.loadCPRankingData();
             
-            closeGiftModal(); 
-            Swal.fire({ toast: true, icon: 'success', title: `Sent ${currentGiftQty}x ${selectedGiftObj.name} to ${targetsCount} user(s)!`, position: 'top', timer: 2000, showConfirmButton: false, background: '#111', color: '#fff' });
+            return true;
         };
-
         const bannerTrack = document.getElementById('banner-track'); const bannerDots = document.getElementById('banner-dots'); let bannerIndex = 0; let bannerInterval; const totalBanners = 3; 
         for(let i=0; i<totalBanners; i++) { const dot = document.createElement('div'); dot.classList.add('dot'); if(i === 0) dot.classList.add('active'); bannerDots.appendChild(dot); }
         function updateBanner() { bannerTrack.style.transform = `translateX(-${bannerIndex * 100}%)`; const dots = document.querySelectorAll('.dot'); dots.forEach((d, idx) => { if(idx === bannerIndex) d.classList.add('active'); else d.classList.remove('active'); }); }
@@ -4862,6 +4978,7 @@ window.joinRoom = async (rid) => {
     // ========== 10 SEATS LISTENER (UPDATED) ==========
     onValue(child(rr, 'seats'), s => { 
         currentRoomSeats = s.val() || {}; 
+        window.currentRoomSeats = currentRoomSeats; // 🔥 یہ لائن ایڈ کی ہے تاکہ گفٹ اینیمیشن کو مائیک کی لوکیشن مل سکے
         updateSeat('seat1', currentRoomSeats.seat1, "Owner"); 
         updateSeat('seat2', currentRoomSeats.seat2, "Super"); 
         updateSeat('seat3', currentRoomSeats.seat3, "1"); 
@@ -4949,10 +5066,10 @@ window.joinRoom = async (rid) => {
                         </div>`; 
                     }
 
-                    // TRIGGER WEBP GIFT ANIMATION FROM EXTERNAL FILE
+                    // TRIGGER WEBP/SVG GIFT ANIMATION FROM EXTERNAL FILE
                     if(m.type === 'gift' && m.giftName) {
                         if(typeof window.playGiftAnimation === 'function') {
-                            window.playGiftAnimation(m.name, m.giftName, m.timestamp);
+                            window.playGiftAnimation(m.uid, m.name, m.receivers ||[], m.giftName, m.timestamp, m.giftType);
                         }
                     }
                 } 
@@ -7951,5 +8068,44 @@ window.showNotice = function(text) {
 
 <!-- ROCKET FLY LAYER (سب ڈبوں سے باہر، فل سکرین کے لیے) -->
 <div id="rocket-fly-layer" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 999999999; pointer-events: none; background: transparent; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10%;"></div>
+
+<!-- COLORFUL & BEAUTIFUL COMBO STRIP UI -->
+<div id="combo-tap-overlay" onclick="handleComboTap()" style="position: fixed; inset: 0; z-index: 5000; display: none; cursor: pointer; background: transparent;">
+    
+    <!-- Colorful Glassmorphism Strip -->
+    <div id="live-combo-strip" style="position: absolute; left: 15px; bottom: 32%; display: flex; background: linear-gradient(90deg, rgba(236, 72, 153, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%); padding: 6px 15px 6px 6px; border: 1.5px solid rgba(255,255,255,0.4); border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.2); z-index: 100; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; backdrop-filter: blur(5px);">
+        
+        <!-- DP (بڑی اور واضح) -->
+        <img id="combo-strip-dp" src="" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid white; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">
+        
+        <!-- Text Info (خوبصورت سٹائل میں) -->
+        <div style="display: flex; flex-direction: column; justify-content: center; min-width: 90px;">
+            <span style="color: white; font-size: 12px; font-weight: 900; line-height: 1.3; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">
+                <span id="combo-strip-sender" style="color: #facc15;">Sender</span> 
+                <span style="font-weight: 700; font-size: 10px; color: rgba(255,255,255,0.9);">sent to</span> 
+                <span id="combo-strip-receiver" style="color: #a7f3d0;">Receiver</span>
+            </span>
+        </div>
+        
+        <!-- Gift Icon & Glowing Combo Count (بڑا سائز اور چمکتا ہوا) -->
+        <div style="display: flex; align-items: center; gap: 5px; border-left: 1.5px solid rgba(255,255,255,0.3); padding-left: 10px;">
+            <img id="combo-strip-gift" src="" style="width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <span id="combo-strip-count" style="color: #fef08a; font-size: 30px; font-weight: 900; font-style: italic; text-shadow: 2px 2px 0px rgba(0,0,0,0.8), 0 0 12px rgba(250,204,21,0.8);">x1</span>
+        </div>
+
+    </div>
+</div>
+
+<style>
+/* باؤنس اور پاپ اینیمیشن تاکہ نمبر ایک دم اُچھل کر آئے */
+.combo-pop { animation: popCombo 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popCombo { 
+    0% { transform: scale(0.6); } 
+    50% { transform: scale(1.4); } 
+    100% { transform: scale(1); } 
+}
+.svg-gift-fly { position: fixed; width: 60px; height: 60px; z-index: 99999; pointer-events: none; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+</style>
+
 </body>
 </html>
