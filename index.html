@@ -5716,6 +5716,11 @@ const hpContainer = document.getElementById('hp-visual-container');
             document.getElementById('image-upload').click();
         };
 
+        // 🔥 فکس: روم کور (Room Cover) اپلوڈ کرنے کا فنکشن جو غائب تھا 🔥
+        window.triggerRoomCoverUpload = () => {
+            document.getElementById('image-upload').click();
+        };
+
         document.getElementById('image-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
