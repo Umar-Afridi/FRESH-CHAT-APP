@@ -61,8 +61,11 @@ function playSVGTrajectoryAnimation(senderUid, receiverUids, svgFile) {
     let dropPointY = window.innerHeight * 0.65; // یہ جگہ لائیو پٹی اور چیٹ کے بالکل اوپر بنتی ہے
 
     let senderPos = getSeatCenter(senderUid);
-    let startX = senderPos ? senderPos.x : (window.innerWidth / 2);
-    let startY = senderPos ? senderPos.y : (window.innerHeight - 100);
+    
+    // 🔥 فکس: اگر گفٹ سینڈ کرنے والا مائیک پر نہیں بیٹھا (senderPos === null)، 
+    // تو گفٹ سکرین کے بالکل درمیان میں اوپر (Top Center) سے نکلے گا۔
+    let startX = senderPos ? senderPos.x : (window.innerWidth / 2); // سکرین کا بالکل درمیانی حصہ
+    let startY = senderPos ? senderPos.y : 60; // اوپر سے تھوڑا سا نیچے (ریڈ سرکل والی جگہ)
 
     // ہر ریسیور کے لیے گفٹ نکالنا
     receiverUids.forEach((rUid, index) => {

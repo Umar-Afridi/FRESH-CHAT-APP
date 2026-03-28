@@ -2907,18 +2907,42 @@
                 }
             } 
             else if (data.type === 'win') {
-                let nameHtml = `<span style="font-size: 16px; color: white; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`;
-                if (data.nameColorClass) { nameHtml = `<span class="${data.nameColorClass}" style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${data.name}</span>`; }
+                
+                // نام کا سائز تھوڑا سا ایڈجسٹ کیا ہے تاکہ خوبصورت لگے
+                let nameHtml = `<span style="font-size: 13px; color: white; font-weight: 900; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; letter-spacing: 0.5px;">${data.name}</span>`;
+                if (data.nameColorClass) { 
+                    nameHtml = `<span class="${data.nameColorClass}" style="font-size: 13px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; letter-spacing: 0.5px;">${data.name}</span>`; 
+                }
+                
                 innerHTML = `
-                <div style="margin: 0 auto; position: relative; width: 98%; max-width: 420px; height: 85px; display: flex; align-items: center; pointer-events: none; animation: slideInLeft 0.3s ease-out forwards; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));">
-                    <img src="./lucky_fruit_banner.svg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; z-index: -1;">
-                    <img src="${data.dp}" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; border: 2px solid #facc15; z-index: 1; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.6);" onerror="this.src='https://placehold.co/100'">
-                    <div style="position: absolute; left: 75px; right: 90px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; z-index: 1; overflow: hidden; height: 100%;">
-                        ${nameHtml}
-                        <marquee scrollamount="4" style="color: #facc15; font-size: 14px; font-weight: 900; text-shadow: 1px 1px 2px #000; margin-top: 2px; width: 100%;">won ${data.amount.toLocaleString()} coins at lucky fruit &nbsp;&nbsp;&nbsp; won ${data.amount.toLocaleString()} coins at lucky fruit</marquee>
+                <div style="position: relative; margin: 0 auto; width: 320px; max-width: 95vw; display: flex; align-items: center; justify-content: center; animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));">
+                    
+                    <img src="./lucky_fruit_banner.svg" style="width: 100%; height: auto; display: block; z-index: 1;" onerror="this.src='https://placehold.co/320x80?text=Win+Banner'">
+                    
+                    <div style="position: absolute; inset: 0; z-index: 2; display: flex; align-items: center;">
+                        
+                        <!-- لیفٹ سائیڈ (DP کے لیے - تھوڑا مارجن دیا ہے تاکہ بارڈر سے الگ رہے) -->
+                        <div style="width: 65px; display: flex; justify-content: center; align-items: center; margin-left: 8px;">
+                            <img src="${data.dp}" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #facc15; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.7);" onerror="this.src='https://placehold.co/100'">
+                        </div>
+                        
+                        <!-- سینٹر ایریا (یہی وہ جگہ ہے جسے محدود کیا گیا ہے تاکہ ٹیکسٹ کوائنز کے اوپر نہ جائے) -->
+                        <!-- width: 145px کی وجہ سے اب پٹی بالکل ریڈ لائن والی جگہ پر کٹ (hide) ہو جائے گی -->
+                        <div style="width: 145px; margin-left: 8px; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                            ${nameHtml}
+                            
+                            <!-- چلنے والی پٹی: وائٹ کلر، چھوٹا سائز، بغیر ایموجی کے -->
+                            <marquee scrollamount="3" style="color: #ffffff; font-size: 9.5px; font-weight: 800; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); width: 100%; margin-top: 2px; letter-spacing: 0.5px;">
+                                won ${data.amount.toLocaleString()} coins at lucky fruit
+                            </marquee>
+                        </div>
+                        
+                        <!-- رائٹ سائیڈ (اسے خالی چھوڑ دیا ہے تاکہ SVG کے کوائنز صاف نظر آئیں) -->
+                        <div style="flex: 1;"></div>
+
                     </div>
                 </div>`;
-            } 
+            }
             else if (data.type === 'gift') {
                 let comboText = data.giftName ? data.giftName.split(' ')[0] : '1x';
                 let recName = data.receiverName || "User";
@@ -3096,7 +3120,8 @@
         let comboTimer = null;
         let pendingComboGifts = 0;
 
-        window.executeSendGift = async () => {
+         
+window.executeSendGift = async () => {
             if(!currentRoomId) return;
             if(selectedTargetsMap.size === 0) return Swal.fire({toast:true, icon:'warning', title:'Select at least one user!', position:'center', timer:1500, showConfirmButton:false});
             if(!selectedGiftObj) return Swal.fire({toast:true, icon:'warning', title:'Select a gift!', position:'center', timer:1500, showConfirmButton:false});
@@ -3105,7 +3130,7 @@
                 closeGiftModal();
                 startComboMode();
             } else {
-                let success = await performGiftTransaction(false);
+                let success = await performGiftTransaction(false, false);
                 if(success) {
                     closeGiftModal();
                     Swal.fire({ toast: true, icon: 'success', title: `Sent ${selectedGiftObj.name}!`, position: 'top', timer: 2000, showConfirmButton: false, background: '#111', color: '#fff' });
@@ -3113,7 +3138,50 @@
             }
         };
 
+        // اینڈرائیڈ اسٹائل ریچارج پاپ اپ
+        function showRechargePopup() {
+            Swal.fire({
+                toast: true,
+                position: 'top',
+                icon: 'warning',
+                title: 'Insufficient Coins!',
+                text: 'Click here to Recharge',
+                showConfirmButton: true,
+                confirmButtonText: 'Recharge',
+                confirmButtonColor: '#facc15',
+                background: '#111',
+                color: '#fff',
+                timer: 5000,
+                timerProgressBar: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if(typeof window.openRechargeModal === 'function') window.openRechargeModal();
+                }
+            });
+        }
+
         window.handleComboTap = () => {
+            let targetsCount = selectedTargetsMap.size;
+            let costPerTap = selectedGiftObj.cost * currentGiftQty * targetsCount;
+
+            // 1. ہر کلک پر سب سے پہلے کوائنز چیک کرو (کمبو رک جائے گا اگر کوائنز ختم ہو گئے)
+            if (currentCoins < costPerTap) {
+                showRechargePopup();
+                
+                // جتنا کمبو لگ چکا ہے اسے ڈیٹا بیس میں سیو کر دو
+                if (pendingComboGifts > 0) {
+                    processPendingComboInDB();
+                } else {
+                    endComboMode();
+                }
+                return; // مزید اینیمیشن یا کمبو کاؤنٹ نہیں بڑھے گا
+            }
+
+            // 2. کوائنز لائیو کاٹ لو تاکہ جلدی کلک کرنے پر بھی فری گفٹ نہ جائے
+            currentCoins -= costPerTap;
+            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
+            if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
+
             comboCount++;
             pendingComboGifts++;
             
@@ -3171,21 +3239,27 @@
             let originalQty = currentGiftQty;
             currentGiftQty = currentGiftQty * countToProcess; 
             
-            // یہ ایک ہی میسج فائر کرے گا (e.g. Sent x28 Diamond)
-            await performGiftTransaction(false); 
+            // true پاس کریں گے تاکہ یہ دوبارہ کوائنز نہ کاٹے (کیونکہ handleComboTap میں کاٹ لیے ہیں)
+            await performGiftTransaction(true, true); 
             
             currentGiftQty = originalQty; 
             endComboMode();
         }
 
-        window.performGiftTransaction = async (isComboTap = false) => {
+        // alreadyDeductedLocally ایڈ کیا ہے تاکہ کمبو میں ڈبل کوائنز نہ کٹیں
+        window.performGiftTransaction = async (isComboTap = false, alreadyDeductedLocally = false) => {
             let targetsCount = selectedTargetsMap.size;
             let costPerTarget = selectedGiftObj.cost * currentGiftQty;
             let totalCost = costPerTarget * targetsCount;
 
-            if(currentCoins < totalCost) {
-                Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'center', timer:1500, showConfirmButton:false});
-                return false;
+            // اگر نارمل گفٹ ہے (کمبو نہیں ہے) تو یہاں کوائنز کاٹے گا
+            if (!alreadyDeductedLocally) {
+                if(currentCoins < totalCost) {
+                    showRechargePopup();
+                    return false;
+                }
+                currentCoins -= totalCost;
+                if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
             }
 
             let timeKeys = typeof window.getLeaderboardTimeKeys === 'function' ? window.getLeaderboardTimeKeys() : {
@@ -3197,9 +3271,7 @@
             const sSnap = await get(ref(db, `users/${currentUser.uid}`));
             let sData = sSnap.val() || {};
 
-            currentCoins -= totalCost;
-            currentUserExp += totalCost; 
-
+            currentUserExp += totalCost;
             let exp_d = (sData.lastGiftDate === timeKeys.daily) ? (Number(sData.userExp_daily) || 0) : 0;
             let exp_w = (sData.lastGiftWeek === timeKeys.weekly) ? (Number(sData.userExp_weekly) || 0) : 0;
             let exp_m = (sData.lastGiftMonth === timeKeys.monthly) ? (Number(sData.userExp_monthly) || 0) : 0;
@@ -3879,8 +3951,6 @@ function handleGesture(sX, sY, eX, eY) {
                 selectedGender = d.gender || null; 
                 updateGenderUI(d.lastGenderChange);
                 
-                currentCoins = d.coins || 50000; 
-                currentDiamonds = d.diamonds || 0; 
                 currentUserExp = d.userExp || 0; 
 
                 updateLevelBadgeUI('profile-level-badge', currentUserExp);
@@ -3911,8 +3981,30 @@ function handleGesture(sX, sY, eX, eY) {
                     if (menuSvipBadge) { menuSvipBadge.classList.add('hidden'); menuSvipBadge.style.display = 'none'; }
                 }
 
-                if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
-                if(document.getElementById('gift-modal-coins')) { document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString(); }
+                // 🔥 NEW: LIVE REAL-TIME COINS & DIAMONDS LISTENER 🔥
+                // اب آپ جیسے ہی ڈائمنڈ کنورٹ کریں گے، ہر جگہ کوائنز خود بخود اپڈیٹ ہوں گے
+                onValue(ref(db, `users/${currentUser.uid}/coins`), (snap) => {
+                    currentCoins = snap.exists() ? snap.val() : 0;
+                    
+                    // پوری ایپ میں جہاں جہاں کوائنز شو ہوتے ہیں، سب کو لائیو اپڈیٹ کر دیں
+                    if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = currentCoins.toLocaleString();
+                    if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
+                    if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
+                    
+                    // سٹور میں M یا K والے فارمیٹ کے لیے
+                    if(document.getElementById('store-coins-display') && typeof formatNumberShort === 'function') {
+                        document.getElementById('store-coins-display').innerText = formatNumberShort(currentCoins);
+                    }
+                });
+
+                // ڈائمنڈز کا بھی لائیو لسنر
+                onValue(ref(db, `users/${currentUser.uid}/diamonds`), (snap) => {
+                    currentDiamonds = snap.exists() ? snap.val() : 0;
+                    
+                    if(document.getElementById('wallet-diamonds-display')) {
+                        document.getElementById('wallet-diamonds-display').innerText = currentDiamonds.toLocaleString();
+                    }
+                });
                 
                 const connectedRef = ref(db, '.info/connected');
                 onValue(connectedRef, (snap) => {
@@ -4190,7 +4282,8 @@ function handleGesture(sX, sY, eX, eY) {
         let originalRoomNotice = "";
 
         window.openRoomSettings = async () => { 
-            if(!currentRoomId || currentRoomId !== currentUser.uid) { 
+            // 🔥 فکس: یہاں currentRoomId کی بجائے currentRoomOwner کو چیک کیا گیا ہے
+            if(!currentRoomId || currentRoomOwner !== currentUser.uid) { 
                 return Swal.fire('Access Denied', 'Only owner can access room settings', 'warning'); 
             } 
             const snap = await get(ref(db, `rooms/${currentRoomId}`)); 
@@ -8069,28 +8162,28 @@ window.showNotice = function(text) {
 <!-- ROCKET FLY LAYER (سب ڈبوں سے باہر، فل سکرین کے لیے) -->
 <div id="rocket-fly-layer" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 999999999; pointer-events: none; background: transparent; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10%;"></div>
 
-<!-- COLORFUL & BEAUTIFUL COMBO STRIP UI -->
+<!-- COLORFUL & BEAUTIFUL COMBO STRIP UI (SLIM & ELEGANT) -->
 <div id="combo-tap-overlay" onclick="handleComboTap()" style="position: fixed; inset: 0; z-index: 5000; display: none; cursor: pointer; background: transparent;">
     
-    <!-- Colorful Glassmorphism Strip -->
-    <div id="live-combo-strip" style="position: absolute; left: 15px; bottom: 32%; display: flex; background: linear-gradient(90deg, rgba(236, 72, 153, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%); padding: 6px 15px 6px 6px; border: 1.5px solid rgba(255,255,255,0.4); border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.2); z-index: 100; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; backdrop-filter: blur(5px);">
+    <!-- Colorful Glassmorphism Strip (پتلی اور چھوٹی پٹی) -->
+    <div id="live-combo-strip" style="position: absolute; left: 15px; bottom: 35%; display: flex; background: linear-gradient(90deg, rgba(236, 72, 153, 0.85) 0%, rgba(139, 92, 246, 0.85) 100%); padding: 3px 10px 3px 4px; border: 1px solid rgba(255,255,255,0.4); border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 8px rgba(255,255,255,0.2); z-index: 100; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.2s; pointer-events: none; backdrop-filter: blur(4px);">
         
-        <!-- DP (بڑی اور واضح) -->
-        <img id="combo-strip-dp" src="" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid white; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">
+        <!-- DP (چھوٹی کر دی گئی ہے) -->
+        <img id="combo-strip-dp" src="" style="width: 26px; height: 26px; border-radius: 50%; border: 1px solid white; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
         
-        <!-- Text Info (خوبصورت سٹائل میں) -->
-        <div style="display: flex; flex-direction: column; justify-content: center; min-width: 90px;">
-            <span style="color: white; font-size: 12px; font-weight: 900; line-height: 1.3; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">
+        <!-- Text Info (چھوٹی لکھائی اور سنگل لائن فیل) -->
+        <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+            <span style="color: white; font-size: 10px; font-weight: 800; text-shadow: 1px 1px 1px rgba(0,0,0,0.8);">
                 <span id="combo-strip-sender" style="color: #facc15;">Sender</span> 
-                <span style="font-weight: 700; font-size: 10px; color: rgba(255,255,255,0.9);">sent to</span> 
+                <span style="font-weight: 600; font-size: 8px; color: rgba(255,255,255,0.8); margin: 0 2px;">to</span> 
                 <span id="combo-strip-receiver" style="color: #a7f3d0;">Receiver</span>
             </span>
         </div>
         
-        <!-- Gift Icon & Glowing Combo Count (بڑا سائز اور چمکتا ہوا) -->
-        <div style="display: flex; align-items: center; gap: 5px; border-left: 1.5px solid rgba(255,255,255,0.3); padding-left: 10px;">
-            <img id="combo-strip-gift" src="" style="width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-            <span id="combo-strip-count" style="color: #fef08a; font-size: 30px; font-weight: 900; font-style: italic; text-shadow: 2px 2px 0px rgba(0,0,0,0.8), 0 0 12px rgba(250,204,21,0.8);">x1</span>
+        <!-- Gift Icon & Glowing Combo Count (چھوٹا سائز) -->
+        <div style="display: flex; align-items: center; gap: 4px; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 6px;">
+            <img id="combo-strip-gift" src="" style="width: 20px; height: 20px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
+            <span id="combo-strip-count" style="color: #fef08a; font-size: 22px; font-weight: 900; font-style: italic; text-shadow: 1px 1px 0px rgba(0,0,0,0.8), 0 0 8px rgba(250,204,21,0.8);">x1</span>
         </div>
 
     </div>
