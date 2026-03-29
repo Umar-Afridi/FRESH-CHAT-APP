@@ -3000,7 +3000,7 @@
             document.getElementById('gift-qty-display').innerText = "1";
             document.getElementById('gift-combo-menu').style.display = 'none';
             document.querySelectorAll('.gift-item').forEach(el => el.classList.remove('selected'));
-            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
+            if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = window.formatNumberShort(currentCoins);
 
             let targets =[];
             
@@ -3987,9 +3987,9 @@ function handleGesture(sX, sY, eX, eY) {
                     currentCoins = snap.exists() ? snap.val() : 0;
                     
                     // پوری ایپ میں جہاں جہاں کوائنز شو ہوتے ہیں، سب کو لائیو اپڈیٹ کر دیں
-                    if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = currentCoins.toLocaleString();
-                    if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-                    if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = currentCoins.toLocaleString();
+                    if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = window.formatNumberShort(currentCoins);
+                    if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = window.formatNumberShort(currentCoins);
+                    if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = window.formatNumberShort(currentCoins);
                     
                     // سٹور میں M یا K والے فارمیٹ کے لیے
                     if(document.getElementById('store-coins-display') && typeof formatNumberShort === 'function') {
@@ -4017,7 +4017,7 @@ function handleGesture(sX, sY, eX, eY) {
 
                 // ===== OFFICIAL PANEL FIX =====
                 window.currentUserIsOfficial = d.isOfficial || false;
-                window.SUPER_ADMIN_ID = 10005; 
+                // SUPER_ADMIN_ID اب head_official.js سے آ رہا ہے اس لیے یہاں سے ہٹا دیا ہے
 
                 let adminBtn = document.getElementById('btn-super-admin');
                 let vBadgeName = document.getElementById('profile-v-badge');
@@ -5629,13 +5629,15 @@ const hpContainer = document.getElementById('hp-visual-container');
     { id: 'frame_9', name: 'Reach King', price: 400000, img: './frames/frame_9.svg' }
 ];
 
-        // شارٹ فارمیٹ کے لیے نیا فنکشن
-        function formatNumberShort(num) {
-            if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
-            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-            if (num >= 10000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        // شارٹ فارمیٹ کے لیے اپڈیٹڈ فنکشن (Trillions & Quadrillions سپورٹ کے ساتھ)
+        window.formatNumberShort = function(num) {
+            if (num >= 1e15) return (num / 1e15).toFixed(1).replace(/\.0$/, '') + 'Q'; // Quadrillion
+            if (num >= 1e12) return (num / 1e12).toFixed(1).replace(/\.0$/, '') + 'T'; // Trillion
+            if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';  // Billion
+            if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';  // Million
+            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K'; // Thousand
             return num.toLocaleString();
-        }
+        };
 
         window.openStoreModal = () => {
             const grid = document.getElementById('store-grid');
@@ -8121,6 +8123,9 @@ setTimeout(() => { if (typeof listenForSignals === 'function') listenForSignals(
         };
 </script>
 <!-- New Admin Panel Link -->
+<!-- Head Official ID Configuration -->
+<script src="./head_official.js"></script>
+
 <script src="./wallet_system.js"></script>
 <script src="./refresh_system.js"></script>
 <script src="./cp_rewards.js"></script> <!-- یہ لائن ہم نے ایڈ کی ہے -->
