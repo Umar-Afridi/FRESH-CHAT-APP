@@ -36,8 +36,8 @@ window.addRechargeToSVIP = async (rechargeAmount) => {
     let updates = { totalRecharge: newTotal };
     if (newLevel > (data.svipLevel || 0)) {
         updates.svipLevel = newLevel;
-        // نیا چیٹ ببل گفٹ کریں
-        await checkAndGiveChatBubble(newLevel, data.unlockedFrames || {});
+        // نیا چیٹ ببل اور فریم آٹومیٹک گفٹ کریں
+        await checkAndGiveSVIPRewards(newLevel, data.unlockedFrames || {});
     }
 
     await window.update(userRef, updates);
@@ -86,29 +86,57 @@ window.handleSVIPTouchEnd = (e) => {
     }
 };
 
-async function checkAndGiveChatBubble(level, unlockedFrames) {
+// 🔴 نیا گفٹ فنکشن (Bubble + Frame دونوں دے گا اور ایکٹو کر دے گا)
+// 🟢 اپڈیٹڈ گفٹ فنکشن (ایکسپائرڈ کو ٹھیک کرے گا اور ہر لیول پر صحیح فریم/ببل دے گا)
+async function checkAndGiveSVIPRewards(level, unlockedFrames) {
     let bubbleId = `svip_bubble_lvl_${level}`;
-    let hasBubble = false;
-    for(let key in unlockedFrames) {
-        if(unlockedFrames[key].isBubble && unlockedFrames[key].svipLevel === level) {
-            hasBubble = true; break;
-        }
+    let frameId = `svip_frame_lvl_${level}`;
+    
+    let hasValidBubble = false;
+    let hasValidFrame = false;
+    let now = Date.now();
+
+    // 1. چیک کریں کہ کیا یوزر کے پاس پہلے سے "ایکٹو" (Permanent) ببل اور فریم موجود ہیں؟
+    if(unlockedFrames[bubbleId] && unlockedFrames[bubbleId].expiry > now) {
+        hasValidBubble = true;
     }
-    if(!hasBubble) {
-        let bubbleData = {
+    if(unlockedFrames[frameId] && unlockedFrames[frameId].expiry > now) {
+        hasValidFrame = true;
+    }
+
+    let updates = {};
+
+    // 2. اگر ببل نہیں ہے یا پرانا والا ایکسپائر ہو چکا ہے، تو نیا پرماننٹ ببل دے دو
+    if(!hasValidBubble) {
+        updates[bubbleId] = {
             name: `SVIP${level} Chat Bubble`,
-            img: `./chat_bubble${level}.svg`, // صرف Prop House اور SVIP Modal میں آئیکن کے لیے
+            // ⚠️ نوٹ: اگر آپ کی تصاویر .png میں ہیں تو اسے png ہی رہنے دیں، اگر svg ہیں تو اسے svg کر دیں۔
+            img: `./chat_bubble${level}.png`, 
             isBubble: true,
             svipLevel: level,
-            bubbleClass: `svip-bubble-${level}`, // یہ ہماری نئی کلر والی CSS کلاس کو کال کرے گا
+            bubbleClass: `svip-bubble-${level}`, 
             purchasedAt: Date.now(),
-            expiry: 4102444800000, 
+            expiry: 4102444800000, // Permanent (کبھی ایکسپائر نہیں ہوگا)
             status: 'unused'
         };
-        await window.update(window.ref(window.db, `users/${window.currentUser.uid}/unlockedFrames/${bubbleId}`), bubbleData);
+    }
+
+    // 3. اگر فریم نہیں ہے یا ایکسپائر ہو چکا ہے، تو نیا پرماننٹ فریم دے دو
+    if(!hasValidFrame) {
+        updates[frameId] = {
+            name: `SVIP${level} Frame`,
+            img: `./svip${level}_frame.svg`, // آپ کے بتائے ہوئے نام کے مطابق (svip1_frame.svg)
+            purchasedAt: Date.now(),
+            expiry: 4102444800000, // Permanent
+            status: 'active' // 🟢 ڈائریکٹ فل پروفائل میں Use کے لیے ریڈی ہوگا
+        };
+    }
+
+    // 4. ڈیٹا بیس میں اپڈیٹ کر دیں
+    if(Object.keys(updates).length > 0) {
+        await window.update(window.ref(window.db, `users/${window.currentUser.uid}/unlockedFrames`), updates);
     }
 }
-
 function createSVIPModalHTML() {
     if (document.getElementById('svip-full-modal')) return;
 
@@ -144,49 +172,60 @@ function createSVIPModalHTML() {
             </div>
         </div>
 
-        <!-- Bottom Section (Progress and Identification) -->
-        <div class="flex-1 bg-[#0a0a0a] w-full px-5 relative z-20 flex flex-col items-center pb-5">
+        <!-- Bottom Section (Progress and Identification with Scroll) -->
+        <div class="flex-1 bg-[#0a0a0a] w-full relative z-20 flex flex-col items-center overflow-hidden pb-2">
             
-            <!-- Progress Box -->
-            <div class="w-full bg-[#1a150e] border border-[#3a2a18] rounded-2xl p-5 -mt-8 shadow-2xl relative z-50">
-                <div class="flex justify-between text-xs text-yellow-500 font-bold mb-2">
-                    <span id="svip-progress-dot" class="animate-pulse">●</span>
-                    <span id="svip-target-text">SVIP1</span>
-                </div>
-                <div class="w-full bg-black rounded-full h-1.5 mb-3 overflow-hidden">
-                    <div id="svip-progress-bar" class="h-full bg-gradient-to-r from-yellow-300 to-yellow-600 rounded-full transition-all duration-1000" style="width: 0%;"></div>
-                </div>
-                <div class="flex justify-between items-end">
-                    <span class="text-[10px] text-gray-400 w-2/3 leading-tight" id="svip-req-desc">You need ...</span>
-                    <span class="text-xs text-yellow-500 font-bold" id="svip-points-text">0/15,000</span>
+            <!-- Progress Box (یہ ٹاپ پر فکس رہے گا اور سکرول نہیں ہوگا) -->
+            <div class="w-full px-5 flex-shrink-0 z-50">
+                <div class="w-full bg-[#1a150e] border border-[#3a2a18] rounded-2xl p-5 -mt-8 shadow-2xl relative">
+                    <div class="flex justify-between text-xs text-yellow-500 font-bold mb-2">
+                        <span id="svip-progress-dot" class="animate-pulse">●</span>
+                        <span id="svip-target-text">SVIP1</span>
+                    </div>
+                    <div class="w-full bg-black rounded-full h-1.5 mb-3 overflow-hidden">
+                        <div id="svip-progress-bar" class="h-full bg-gradient-to-r from-yellow-300 to-yellow-600 rounded-full transition-all duration-1000" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-[10px] text-gray-400 w-2/3 leading-tight" id="svip-req-desc">You need ...</span>
+                        <span class="text-xs text-yellow-500 font-bold" id="svip-points-text">0/15,000</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-6 mb-4 flex items-center justify-center gap-4 w-full">
-                <div class="h-px bg-gradient-to-r from-transparent to-yellow-600 w-16"></div>
-                <span class="text-yellow-500 font-black tracking-widest text-[11px] italic">IDENTIFICATION</span>
-                <div class="h-px bg-gradient-to-l from-transparent to-yellow-600 w-16"></div>
-            </div>
+            <!-- Scrollable Area for Icons (یہاں سے نیچے سکرول ہو سکے گا) -->
+            <div class="w-full flex-1 overflow-y-auto px-5 pb-10 flex flex-col items-center mt-2">
+                <div class="mt-4 mb-4 flex items-center justify-center gap-4 w-full flex-shrink-0">
+                    <div class="h-px bg-gradient-to-r from-transparent to-yellow-600 w-16"></div>
+                    <span class="text-yellow-500 font-black tracking-widest text-[11px] italic">IDENTIFICATION</span>
+                    <div class="h-px bg-gradient-to-l from-transparent to-yellow-600 w-16"></div>
+                </div>
 
-            <!-- Bottom 3 Icons -->
-            <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
-                <!-- Box 1: Medal -->
-                <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
-                    <img id="priv-medal-img" src="./svip_1.svg" class="w-14 h-14 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
-                    <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Medal</span>
-                </div>
-                
-                <!-- Box 2: Badge (Size Increased to w-28 h-14) -->
-                <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
-                    <img id="priv-badge-img" src="./svip1_badge.svg" class="w-28 h-14 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent; transform: scale(1.5);" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
-                    <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Badge</span>
-                </div>
-                
-                <!-- Box 3: Chat Bubble -->
-                <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28 relative">
-                    <div class="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-                    <img id="priv-bubble-img" src="./chat_bubble1.svg" class="w-16 h-12 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
-                    <span class="text-gray-300 text-[10px] font-bold text-center leading-tight">Chat Bubble</span>
+                <!-- Bottom 4 Icons (Grid 3 Columns - Scrollable) -->
+                <div class="grid grid-cols-3 gap-3 w-full max-w-sm flex-shrink-0 pb-6">
+                    <!-- Box 1: Medal -->
+                    <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
+                        <img id="priv-medal-img" src="./svip_1.svg" class="w-14 h-14 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                        <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Medal</span>
+                    </div>
+                    
+                    <!-- Box 2: Badge -->
+                    <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28">
+                        <img id="priv-badge-img" src="./svip1_badge.svg" class="w-24 h-12 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent; transform: scale(1.2);" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                        <span class="text-gray-300 text-[10px] font-bold text-center">SVIP Badge</span>
+                    </div>
+                    
+                    <!-- Box 3: Chat Bubble -->
+                    <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28 relative">
+                        <img id="priv-bubble-img" src="./chat_bubble1.svg" class="w-16 h-12 object-contain drop-shadow-md mb-2 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                        <span class="text-gray-300 text-[10px] font-bold text-center leading-tight">Chat Bubble</span>
+                    </div>
+
+                    <!-- Box 4: SVIP Frame -->
+                    <div class="bg-gradient-to-b from-[#2a2015] to-[#15100a] border border-[#3a2a18] rounded-xl p-2 flex flex-col items-center justify-center shadow-lg h-28 relative">
+                        <div class="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+                        <img id="priv-frame-img" src="./svip1_frame.svg" class="w-16 h-16 object-contain drop-shadow-md mb-1 transition-opacity duration-300" style="opacity: 0; color: transparent;" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                        <span class="text-gray-300 text-[10px] font-bold text-center leading-tight">SVIP Frame</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -218,7 +257,8 @@ function renderSVIPUI(level) {
     let medal = document.getElementById('priv-medal-img');
     let badge = document.getElementById('priv-badge-img');
     let bubble = document.getElementById('priv-bubble-img');
-    let imgs = [emblem, medal, badge, bubble];
+    let frameImg = document.getElementById('priv-frame-img'); // NEW FRAME IMAGE
+    let imgs =[emblem, medal, badge, bubble, frameImg];
 
     // 1. سب کو سمودھ طریقے سے غائب کریں (CSS Transition)
     imgs.forEach(img => { if(img) img.style.opacity = '0'; });
@@ -229,6 +269,7 @@ function renderSVIPUI(level) {
         if(medal) medal.src = `./svip_${level}.svg`;
         if(badge) badge.src = `./svip${level}_badge.svg`;
         if(bubble) bubble.src = `./chat_bubble${level}.svg`;
+        if(frameImg) frameImg.src = `./svip${level}_frame.svg`; // NEW FRAME SOURCE
 
         imgs.forEach(img => { if(img) img.style.opacity = '1'; });
     }, 150);
