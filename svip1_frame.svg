@@ -1,0 +1,55 @@
+<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sv1-bzBase" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b2313"/><stop offset="50%" stop-color="#cd7f32"/><stop offset="100%" stop-color="#2a1508"/>
+    </linearGradient>
+    <linearGradient id="sv1-bzHigh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4c490"/><stop offset="50%" stop-color="#b86d29"/><stop offset="100%" stop-color="#4a2511"/>
+    </linearGradient>
+    <linearGradient id="sv1-leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a8e6cf"/><stop offset="100%" stop-color="#1b5e20"/>
+    </linearGradient>
+    <filter id="sv1-sh"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.8"/></filter>
+    <filter id="sv1-gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <g id="sv1-emb">
+      <ellipse cx="0" cy="0" rx="2" ry="8" fill="#a8e6cf" filter="url(#sv1-gl)" opacity="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#fff"/>
+    </g>
+  </defs>
+  <style>
+    .sv1-wL { transform-origin: 300px 180px; animation: sv1wL 4s ease-in-out infinite alternate; }
+    .sv1-wR { transform-origin: 300px 180px; animation: sv1wR 4s ease-in-out infinite alternate; }
+    @keyframes sv1wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-3deg); } }
+    @keyframes sv1wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(3deg); } }
+    @keyframes sv1flyL { 0%{transform:translate(150px,580px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(190px,350px) scale(1) rotate(20deg);} 100%{transform:translate(250px,100px) scale(0) rotate(40deg);opacity:0;} }
+    @keyframes sv1flyR { 0%{transform:translate(450px,580px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(410px,350px) scale(1) rotate(-20deg);} 100%{transform:translate(350px,100px) scale(0) rotate(-40deg);opacity:0;} }
+    .sv1-el { animation: sv1flyL 3s infinite ease-in; }
+    .sv1-er { animation: sv1flyR 3.5s infinite ease-in 1s; }
+  </style>
+
+  <!-- Small Leaves with Wind -->
+  <g filter="url(#sv1-sh)">
+    <path class="sv1-wL" d="M300,180 Q180,140 140,80 Q190,110 260,170 Z" fill="url(#sv1-leaf)"/>
+    <path class="sv1-wR" d="M300,180 Q420,140 460,80 Q410,110 340,170 Z" fill="url(#sv1-leaf)"/>
+  </g>
+
+  <!-- Frame Base -->
+  <circle cx="300" cy="350" r="180" fill="none" stroke="#2a1508" stroke-width="20" filter="url(#sv1-sh)"/>
+  <circle cx="300" cy="350" r="180" fill="none" stroke="url(#sv1-bzHigh)" stroke-width="12"/>
+
+  <!-- Crown -->
+  <path d="M250,160 L270,110 L300,140 L330,110 L350,160 Z" fill="url(#sv1-bzHigh)" filter="url(#sv1-sh)"/>
+
+  <!-- Nameplate -->
+  <g filter="url(#sv1-sh)">
+    <path d="M180,520 Q300,490 420,520 L430,560 Q300,580 170,560 Z" fill="#1b0a02" stroke="url(#sv1-bzHigh)" stroke-width="6"/>
+  </g>
+
+  <!-- Sparks over frame -->
+  <g opacity="0.9">
+    <use href="#sv1-emb" class="sv1-el"/>
+    <use href="#sv1-emb" class="sv1-er"/>
+  </g>
+
+  <text x="300" y="555" font-family="'Trebuchet MS', sans-serif" font-size="30" font-weight="900" fill="url(#sv1-bzHigh)" text-anchor="middle" letter-spacing="3">SVIP 1</text>
+</svg>

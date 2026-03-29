@@ -1,0 +1,63 @@
+<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sv4-ptBase" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1a0033"/><stop offset="50%" stop-color="#4b0082"/><stop offset="100%" stop-color="#0d001a"/>
+    </linearGradient>
+    <linearGradient id="sv4-ptHigh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#eebbff"/><stop offset="100%" stop-color="#9932cc"/>
+    </linearGradient>
+    <linearGradient id="sv4-wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3d5ff"/><stop offset="100%" stop-color="#8a2be2"/>
+    </linearGradient>
+    <filter id="sv4-sh"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000" flood-opacity="0.9"/></filter>
+    <filter id="sv4-gl"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <g id="sv4-emb">
+      <ellipse cx="0" cy="0" rx="3.5" ry="16" fill="#ff1493" filter="url(#sv4-gl)" opacity="0.9"/>
+      <circle cx="0" cy="0" r="2" fill="#fff"/>
+    </g>
+  </defs>
+  <style>
+    .sv4-wL { transform-origin: 300px 150px; animation: sv4wL 2.5s ease-in-out infinite alternate; }
+    .sv4-wR { transform-origin: 300px 150px; animation: sv4wR 2.5s ease-in-out infinite alternate; }
+    @keyframes sv4wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-9deg); } }
+    @keyframes sv4wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(9deg); } }
+    @keyframes sv4flyL { 0%{transform:translate(110px,610px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(160px,310px) scale(1.3) rotate(35deg);} 100%{transform:translate(220px,70px) scale(0) rotate(55deg);opacity:0;} }
+    @keyframes sv4flyR { 0%{transform:translate(490px,610px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(440px,310px) scale(1.3) rotate(-35deg);} 100%{transform:translate(380px,70px) scale(0) rotate(-55deg);opacity:0;} }
+    .sv4-el1 { animation: sv4flyL 2.2s infinite ease-in; }
+    .sv4-er1 { animation: sv4flyR 2.4s infinite ease-in 0.4s; }
+    .sv4-el2 { animation: sv4flyL 2.0s infinite ease-in 1.0s; }
+    .sv4-er2 { animation: sv4flyR 2.1s infinite ease-in 1.4s; }
+    .sv4-el3 { animation: sv4flyL 1.9s infinite ease-in 1.8s; }
+  </style>
+
+  <!-- Sharp Magic Crystal Wings -->
+  <g filter="url(#sv4-sh)">
+    <path class="sv4-wL" d="M300,150 L120,60 L90,20 L160,80 Z" fill="url(#sv4-wing)"/>
+    <path class="sv4-wL" d="M300,160 L100,100 L60,80 L140,120 Z" fill="url(#sv4-wing)"/>
+    <path class="sv4-wR" d="M300,150 L480,60 L510,20 L440,80 Z" fill="url(#sv4-wing)"/>
+    <path class="sv4-wR" d="M300,160 L500,100 L540,80 L460,120 Z" fill="url(#sv4-wing)"/>
+  </g>
+
+  <!-- Heavy Glowing Frame -->
+  <circle cx="300" cy="350" r="210" fill="none" stroke="#0b0014" stroke-width="35" filter="url(#sv4-sh)"/>
+  <circle cx="300" cy="350" r="210" fill="none" stroke="url(#sv4-ptHigh)" stroke-width="25"/>
+  <circle cx="300" cy="350" r="185" fill="none" stroke="#ffb6c1" stroke-width="5" filter="url(#sv4-gl)"/>
+
+  <!-- Crystal Crown -->
+  <polygon points="220,130 250,30 300,90 350,30 380,130 300,170" fill="url(#sv4-ptHigh)" filter="url(#sv4-sh)"/>
+  <circle cx="300" cy="90" r="12" fill="#ff1493" filter="url(#sv4-gl)"/>
+
+  <!-- Sharp Nameplate -->
+  <g filter="url(#sv4-sh)">
+    <polygon points="120,530 480,530 500,580 460,610 140,610 100,580" fill="#190033" stroke="url(#sv4-ptHigh)" stroke-width="8"/>
+  </g>
+
+  <!-- Magic Sparks over frame -->
+  <g opacity="0.9">
+    <use href="#sv4-emb" class="sv4-el1"/><use href="#sv4-emb" class="sv4-er1"/>
+    <use href="#sv4-emb" class="sv4-el2"/><use href="#sv4-emb" class="sv4-er2"/>
+    <use href="#sv4-emb" class="sv4-el3"/>
+  </g>
+
+  <text x="300" y="585" font-family="'Trebuchet MS', sans-serif" font-size="42" font-weight="900" fill="url(#sv4-ptHigh)" text-anchor="middle" letter-spacing="5">SVIP 4</text>
+</svg>

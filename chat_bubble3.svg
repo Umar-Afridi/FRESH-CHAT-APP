@@ -1,0 +1,158 @@
+<svg viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <!-- Deep Glossy Blue Gradient for Chat Bubble Base -->
+    <linearGradient id="blueBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066ff"/>
+      <stop offset="40%" stop-color="#0033cc"/>
+      <stop offset="100%" stop-color="#001a80"/>
+    </linearGradient>
+
+    <!-- Glowing Cyan/Light Blue Border Gradient -->
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#80d4ff"/>
+      <stop offset="50%" stop-color="#0099ff"/>
+      <stop offset="100%" stop-color="#0055ff"/>
+    </linearGradient>
+
+    <!-- Realistic 3D Gold Gradient for Crown & Bottom Left Accent -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe680"/>
+      <stop offset="20%" stop-color="#ffaa00"/>
+      <stop offset="50%" stop-color="#cc7700"/>
+      <stop offset="80%" stop-color="#ffcc00"/>
+      <stop offset="100%" stop-color="#804000"/>
+    </linearGradient>
+
+    <!-- Shiny Diamond Gradient -->
+    <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#66ccff"/>
+      <stop offset="100%" stop-color="#0055ff"/>
+    </linearGradient>
+
+    <!-- Drop Shadows for 3D Pop Effect -->
+    <filter id="boxShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="elementShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+    
+    <!-- Outer Glow for the Chat Bubble -->
+    <filter id="glowEffect">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Sparkling Star Shape -->
+    <g id="star">
+      <path d="M0,-15 Q0,0 15,0 Q0,0 0,15 Q0,0 -15,0 Q0,0 0,-15 Z" fill="#ffffff" filter="url(#glowEffect)"/>
+    </g>
+  </defs>
+
+  <style>
+    /* BUBBLE IS FIXED - ONLY STARS BLINK */
+    .twinkle1 { animation: blink 2s infinite alternate ease-in-out; }
+    .twinkle2 { animation: blink 2.5s infinite alternate ease-in-out 0.5s; }
+    .twinkle3 { animation: blink 1.8s infinite alternate ease-in-out 1s; }
+    .twinkle4 { animation: blink 3s infinite alternate ease-in-out 0.2s; }
+    
+    @keyframes blink {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+  </style>
+
+  <!-- BACKGROUND SPARKLES (Animated but keep their position fixed) -->
+  <g transform="translate(130, 80)">
+    <use href="#star" class="twinkle1" transform="scale(0.8)"/>
+  </g>
+  <g transform="translate(420, 110)">
+    <use href="#star" class="twinkle2" transform="scale(1.2)"/>
+  </g>
+  <g transform="translate(410, 270)">
+    <use href="#star" class="twinkle3" transform="scale(0.9)"/>
+  </g>
+  <g transform="translate(180, 230)">
+    <circle cx="0" cy="0" r="2" fill="#fff" class="twinkle4"/>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- MAIN CHAT BUBBLE (FIXED POSITION) -->
+  <!-- ========================================== -->
+  <g filter="url(#boxShadow)">
+    
+    <!-- Base Blue Rectangle with Rounded Corners -->
+    <rect x="120" y="100" width="260" height="130" rx="15" fill="url(#blueBase)" stroke="url(#cyanGlow)" stroke-width="4"/>
+    
+    <!-- Inner Glossy Highlight (Makes it look like glass/plastic) -->
+    <rect x="123" y="103" width="254" height="60" rx="12" fill="#ffffff" opacity="0.1"/>
+    <rect x="122" y="102" width="256" height="126" rx="13" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.4"/>
+    
+    <!-- Top Right Fold Ribbon (Blue Ribbon) -->
+    <path d="M350,100 L380,100 Q395,100 390,120 Q370,110 350,100 Z" fill="url(#cyanGlow)" filter="url(#elementShadow)"/>
+    <path d="M360,105 Q370,110 380,110" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8"/>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- EXTERNAL DECORATIONS -->
+  <!-- ========================================== -->
+
+  <!-- Top Left Diamond Gem -->
+  <g transform="translate(120, 100)" filter="url(#elementShadow)">
+    <!-- Rotated Square (Diamond Shape) -->
+    <polygon points="0,-15 15,0 0,15 -15,0" fill="url(#diamondGrad)" stroke="#ffffff" stroke-width="2"/>
+    <!-- Inner facets for 3D look -->
+    <polygon points="0,-15 15,0 0,0 -15,0" fill="#ffffff" opacity="0.5"/>
+    <polygon points="0,-7 7,0 0,7 -7,0" fill="#ffffff" opacity="0.8"/>
+  </g>
+
+  <!-- Bottom Left Wing & Gold Curve -->
+  <g transform="translate(120, 230)" filter="url(#elementShadow)">
+    <!-- Gold Hook/Swoop -->
+    <path d="M -10,-10 C -20,30 30,50 60,10 C 30,30 -5,20 5,-15 Z" fill="url(#goldGrad)"/>
+    <!-- Shiny edge for Gold -->
+    <path d="M -5,5 C 0,20 20,30 40,15" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- Cyan/Blue Fin Wing over the Gold -->
+    <path d="M -15,-40 Q -30,0 5,15 Q -10,0 -5,-30 Z" fill="url(#cyanGlow)"/>
+    <!-- Inner bright line for fin -->
+    <path d="M -10,-30 Q -15,-5 0,5" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.8"/>
+  </g>
+
+  <!-- Bottom Right 3D Royal Crown -->
+  <g transform="translate(370, 220) rotate(-10)" filter="url(#elementShadow)">
+    <!-- Crown Base -->
+    <path d="M-30,-10 L-20,20 L30,20 L40,-10 L20,5 L5,-20 L-10,5 Z" fill="url(#goldGrad)"/>
+    
+    <!-- Inner darker shade for 3D depth -->
+    <path d="M-25,-5 L-20,20 L30,20 L35,-5 L20,10 L5,-10 L-10,10 Z" fill="#995500" opacity="0.6"/>
+    
+    <!-- Crown Bottom Rim -->
+    <rect x="-22" y="18" width="54" height="6" rx="3" fill="url(#goldGrad)"/>
+    <rect x="-22" y="18" width="54" height="2" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Jewels on the crown peaks -->
+    <circle cx="-30" cy="-10" r="3" fill="#ffffff" filter="url(#glowEffect)"/>
+    <circle cx="5" cy="-20" r="3.5" fill="#ffffff" filter="url(#glowEffect)"/>
+    <circle cx="40" cy="-10" r="3" fill="#ffffff" filter="url(#glowEffect)"/>
+    
+    <!-- Red Jewel in the center -->
+    <circle cx="5" cy="5" r="4" fill="#ff3333"/>
+    <circle cx="4" cy="4" r="1.5" fill="#ffffff"/> <!-- Shine on red jewel -->
+  </g>
+
+  <!-- ========================================== -->
+  <!-- TEXT (HELLO) -->
+  <!-- ========================================== -->
+  <!-- Fixed Text, properly centered -->
+  <text x="250" y="180" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2">Hello</text>
+
+  <!-- Extra small glow dots around the text -->
+  <circle cx="170" cy="150" r="1.5" fill="#ffffff" class="twinkle1"/>
+  <circle cx="330" cy="185" r="1.5" fill="#ffffff" class="twinkle3"/>
+
+</svg>

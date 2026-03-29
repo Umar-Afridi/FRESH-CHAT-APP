@@ -1,0 +1,85 @@
+<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sv5-rbBase" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3d0000"/><stop offset="50%" stop-color="#b8860b"/><stop offset="100%" stop-color="#1a0000"/>
+    </linearGradient>
+    <linearGradient id="sv5-rbHigh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="40%" stop-color="#ffd700"/><stop offset="100%" stop-color="#b30000"/>
+    </linearGradient>
+    <linearGradient id="sv5-wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="80%" stop-color="#ffcccc"/><stop offset="100%" stop-color="#990000"/>
+    </linearGradient>
+    <filter id="sv5-sh"><feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#000" flood-opacity="1"/></filter>
+    <filter id="sv5-gl"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <g id="sv5-emb">
+      <ellipse cx="0" cy="0" rx="4" ry="18" fill="#ff4500" filter="url(#sv5-gl)" opacity="0.9"/>
+      <ellipse cx="0" cy="0" rx="2" ry="8" fill="#ffcc00"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+    </g>
+  </defs>
+  <style>
+    .sv5-wL { transform-origin: 300px 140px; animation: sv5wL 2s ease-in-out infinite alternate; }
+    .sv5-wR { transform-origin: 300px 140px; animation: sv5wR 2s ease-in-out infinite alternate; }
+    @keyframes sv5wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-12deg); } }
+    @keyframes sv5wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(12deg); } }
+    @keyframes sv5flyL { 0%{transform:translate(100px,630px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(150px,300px) scale(1.5) rotate(40deg);} 100%{transform:translate(210px,60px) scale(0) rotate(60deg);opacity:0;} }
+    @keyframes sv5flyR { 0%{transform:translate(500px,630px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(450px,300px) scale(1.5) rotate(-40deg);} 100%{transform:translate(390px,60px) scale(0) rotate(-60deg);opacity:0;} }
+    .sv5-el1 { animation: sv5flyL 1.8s infinite ease-in; }
+    .sv5-er1 { animation: sv5flyR 1.9s infinite ease-in 0.3s; }
+    .sv5-el2 { animation: sv5flyL 2.1s infinite ease-in 0.8s; }
+    .sv5-er2 { animation: sv5flyR 2.0s infinite ease-in 1.2s; }
+    .sv5-el3 { animation: sv5flyL 1.7s infinite ease-in 1.5s; }
+    .sv5-er3 { animation: sv5flyR 1.8s infinite ease-in 1.7s; }
+    .pulse-glow { animation: pulse 3s infinite alternate; }
+    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
+  </style>
+
+  <!-- Ambient Fire Glow Behind -->
+  <circle cx="300" cy="350" r="230" fill="none" stroke="#ff4500" stroke-width="20" class="pulse-glow" filter="url(#sv5-gl)"/>
+
+  <!-- Massive Layered Dragon Wings with Wind -->
+  <g filter="url(#sv5-sh)">
+    <path class="sv5-wL" d="M300,140 Q130,80 80,10 Q140,40 210,100 Z" fill="url(#sv5-wing)"/>
+    <path class="sv5-wL" d="M300,160 Q110,120 60,60 Q130,90 200,140 Z" fill="url(#sv5-wing)"/>
+    <path class="sv5-wR" d="M300,140 Q470,80 520,10 Q460,40 390,100 Z" fill="url(#sv5-wing)"/>
+    <path class="sv5-wR" d="M300,160 Q490,120 540,60 Q470,90 400,140 Z" fill="url(#sv5-wing)"/>
+  </g>
+
+  <!-- Ultimate Massive 3D Ring -->
+  <g filter="url(#sv5-sh)">
+    <circle cx="300" cy="350" r="220" fill="none" stroke="#1f0000" stroke-width="45"/>
+    <circle cx="300" cy="350" r="220" fill="none" stroke="url(#sv5-rbHigh)" stroke-width="35"/>
+    <circle cx="300" cy="350" r="198" fill="none" stroke="url(#sv5-rbBase)" stroke-width="8"/>
+  </g>
+
+  <!-- Heavy Side Shields -->
+  <g filter="url(#sv5-sh)">
+    <path d="M100,350 C70,220 180,140 250,110 C140,180 50,280 130,460 Z" fill="url(#sv5-rbHigh)"/>
+    <path d="M500,350 C530,220 420,140 350,110 C460,180 550,280 470,460 Z" fill="url(#sv5-rbHigh)"/>
+  </g>
+
+  <!-- Massive Double Royal Crown -->
+  <g filter="url(#sv5-sh)">
+    <path d="M200,120 L240,20 L300,80 L360,20 L400,120 L300,190 Z" fill="url(#sv5-rbHigh)"/>
+    <circle cx="300" cy="80" r="15" fill="#ff0000" filter="url(#sv5-gl)"/>
+    <circle cx="240" cy="30" r="10" fill="#ff0000" filter="url(#sv5-gl)"/>
+    <circle cx="360" cy="30" r="10" fill="#ff0000" filter="url(#sv5-gl)"/>
+  </g>
+
+  <!-- Shield Heavy Nameplate -->
+  <g filter="url(#sv5-sh)">
+    <path d="M110,540 Q300,490 490,540 L500,590 Q300,640 100,590 Z" fill="#290000" stroke="url(#sv5-rbHigh)" stroke-width="10"/>
+    <polygon points="300,610 330,640 300,670 270,640" fill="url(#sv5-rbHigh)"/>
+  </g>
+
+  <!-- Intense Fire Embers OVER the frame -->
+  <g opacity="0.95">
+    <use href="#sv5-emb" class="sv5-el1"/><use href="#sv5-emb" class="sv5-er1"/>
+    <use href="#sv5-emb" class="sv5-el2"/><use href="#sv5-emb" class="sv5-er2"/>
+    <use href="#sv5-emb" class="sv5-el3"/><use href="#sv5-emb" class="sv5-er3"/>
+  </g>
+
+  <!-- 3D Shadow Text -->
+  <text x="300" y="585" font-family="'Trebuchet MS', sans-serif" font-size="46" font-weight="900" fill="#3d0000" text-anchor="middle" letter-spacing="6">SVIP 5</text>
+  <text x="300" y="582" font-family="'Trebuchet MS', sans-serif" font-size="46" font-weight="900" fill="url(#sv5-rbHigh)" text-anchor="middle" letter-spacing="6">SVIP 5</text>
+</svg>

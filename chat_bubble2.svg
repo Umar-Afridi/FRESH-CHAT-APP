@@ -1,120 +1,156 @@
-<svg viewBox="0 0 420 250" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
-    <!-- Strong Neon Green Glow for SVIP2 -->
-    <filter id="neonGlowLevel2" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="5" result="blur1" />
-      <feGaussianBlur stdDeviation="2" result="blur2" />
+    <!-- Dark Green Gradient for Chat Bubble Base -->
+    <linearGradient id="greenBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004d00"/>
+      <stop offset="50%" stop-color="#002600"/>
+      <stop offset="100%" stop-color="#001a00"/>
+    </linearGradient>
+
+    <!-- Glowing Neon Green Border Gradient -->
+    <linearGradient id="greenBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#99ff99"/>
+      <stop offset="40%" stop-color="#00ff00"/>
+      <stop offset="100%" stop-color="#009900"/>
+    </linearGradient>
+
+    <!-- Realistic 3D Gold Gradient for Crown -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff0b3"/>
+      <stop offset="20%" stop-color="#ffbb00"/>
+      <stop offset="50%" stop-color="#cc7700"/>
+      <stop offset="80%" stop-color="#ffcc00"/>
+      <stop offset="100%" stop-color="#804000"/>
+    </linearGradient>
+
+    <!-- Vibrant Green Gem Gradient -->
+    <linearGradient id="greenGem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#66ff66"/>
+      <stop offset="50%" stop-color="#00cc00"/>
+      <stop offset="100%" stop-color="#008000"/>
+    </linearGradient>
+
+    <!-- Drop Shadows & Glow Filters -->
+    <filter id="boxShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="elementShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+    
+    <!-- Outer Glow for Green Edges and Sparkles -->
+    <filter id="glowGreen">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
       <feMerge>
-        <feMergeNode in="blur1"/>
-        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
 
-    <!-- Golden Crown Gradient (For SVIP 2) -->
-    <linearGradient id="goldCrown" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff273" />
-      <stop offset="30%" stop-color="#ffcc00" />
-      <stop offset="70%" stop-color="#d99b00" />
-      <stop offset="100%" stop-color="#8c6600" />
-    </linearGradient>
-
-    <!-- Moving gradient for the border shine -->
-    <linearGradient id="borderShine" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00ff55">
-         <animate attributeName="stop-color" values="#00ff55; #00b33c; #00ff55" dur="3s" repeatCount="indefinite" />
-      </stop>
-      <stop offset="50%" stop-color="#b3ffcc">
-         <animate attributeName="stop-color" values="#b3ffcc; #00ff55; #b3ffcc" dur="3s" repeatCount="indefinite" />
-      </stop>
-      <stop offset="100%" stop-color="#00ff55">
-         <animate attributeName="stop-color" values="#00ff55; #00b33c; #00ff55" dur="3s" repeatCount="indefinite" />
-      </stop>
-    </linearGradient>
-
-    <filter id="textShadow">
-      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.9"/>
-    </filter>
+    <!-- Sparkling Star Shape -->
+    <g id="star">
+      <path d="M0,-15 Q0,0 15,0 Q0,0 0,15 Q0,0 -15,0 Q0,0 0,-15 Z" fill="#ffffff" filter="url(#glowGreen)"/>
+    </g>
   </defs>
 
-  <!-- ========================================== -->
-  <!-- 1. CHAT BUBBLE BACKGROUND (Stretchable)      -->
-  <!-- ========================================== -->
-  <g id="BubbleContainer">
-    <!-- Deep Dark Green Base -->
-    <rect x="60" y="50" width="280" height="120" rx="18" ry="18" fill="#012b0e" />
+  <style>
+    /* BUBBLE IS FIXED - ONLY STARS BLINK FOR A PREMIUM FEEL */
+    .twinkle1 { animation: blink 2s infinite alternate ease-in-out; }
+    .twinkle2 { animation: blink 2.5s infinite alternate ease-in-out 0.5s; }
+    .twinkle3 { animation: blink 1.8s infinite alternate ease-in-out 1s; }
+    .twinkle4 { animation: blink 3s infinite alternate ease-in-out 0.2s; }
     
-    <!-- Animated Glowing Neon Border -->
-    <rect x="60" y="50" width="280" height="120" rx="18" ry="18" fill="none" stroke="url(#borderShine)" stroke-width="5" filter="url(#neonGlowLevel2)">
-      <!-- Pulsing Glow Animation -->
-      <animate attributeName="opacity" values="0.7; 1; 0.7" dur="2s" repeatCount="indefinite" />
-    </rect>
+    @keyframes blink {
+      0% { opacity: 0.2; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1.15); }
+    }
+  </style>
 
-    <!-- Inner subtle glow line for 3D feel -->
-    <rect x="63" y="53" width="274" height="114" rx="15" ry="15" fill="none" stroke="#80ffaa" stroke-width="1.5" opacity="0.5" />
-    
-    <!-- Chat Text Placeholder -->
-    <text x="200" y="125" font-family="Arial, sans-serif" font-weight="bold" font-size="42" fill="#ffffff" text-anchor="middle" filter="url(#textShadow)">Hello.</text>
+  <!-- BACKGROUND: Transparent so it fits anywhere -->
+
+  <!-- BACKGROUND SPARKLES (Animated) -->
+  <g transform="translate(90, 110)">
+    <use href="#star" class="twinkle1" transform="scale(0.8)"/>
+  </g>
+  <g transform="translate(410, 80)">
+    <use href="#star" class="twinkle2" transform="scale(1)"/>
+  </g>
+  <g transform="translate(400, 270)">
+    <use href="#star" class="twinkle3" transform="scale(0.85)"/>
   </g>
 
   <!-- ========================================== -->
-  <!-- 2. WINGS DECORATION (Fixed Top-Left)         -->
+  <!-- MAIN CHAT BUBBLE (FIXED POSITION) -->
   <!-- ========================================== -->
-  <g id="TopLeftWings" transform="translate(40, 25)">
-    <!-- Base glowing gem/square -->
-    <rect x="15" y="15" width="20" height="20" rx="4" fill="#00ff55" filter="url(#neonGlowLevel2)">
-      <animate attributeName="opacity" values="0.8; 1; 0.8" dur="1.5s" repeatCount="indefinite" />
-    </rect>
+  <g filter="url(#boxShadow)">
+    <!-- Glowing Neon Green Outer Edge -->
+    <rect x="116" y="96" width="268" height="138" rx="18" fill="none" stroke="url(#greenBorder)" stroke-width="5" filter="url(#glowGreen)" opacity="0.9"/>
     
-    <!-- Outer Bright Leaf/Wing -->
-    <path d="M 15 15 C -5 25, -10 45, 0 70 C 5 60, 15 45, 25 35 Z" fill="#00ff55" />
-    <!-- Inner Leaf/Wing -->
-    <path d="M 20 20 C 5 35, 5 60, 10 85 C 20 70, 25 50, 30 35 Z" fill="#b3ffcc" opacity="0.9" />
-    <!-- Small side leaf -->
-    <path d="M 25 25 C 15 40, 20 65, 30 80 C 35 60, 35 45, 35 30 Z" fill="#00cc44" />
+    <!-- Base Dark Green Rectangle -->
+    <rect x="120" y="100" width="260" height="130" rx="15" fill="url(#greenBase)" stroke="url(#greenBorder)" stroke-width="2.5"/>
+    
+    <!-- Inner Glassy Highlight (Shine) -->
+    <rect x="123" y="103" width="254" height="60" rx="12" fill="#ffffff" opacity="0.1"/>
+    <rect x="122" y="102" width="256" height="126" rx="13" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.25"/>
   </g>
 
   <!-- ========================================== -->
-  <!-- 3. GOLDEN CROWN (Fixed Bottom-Right)         -->
+  <!-- EXTERNAL DECORATIONS -->
   <!-- ========================================== -->
-  <g id="BottomRightCrown" transform="translate(290, 120)">
-    <!-- Crown Main Body -->
-    <path d="M -5 55 L 75 55 L 65 25 L 50 45 L 35 15 L 20 45 L 5 25 Z" fill="url(#goldCrown)" stroke="#ffe680" stroke-width="1.5">
-      <!-- Crown gentle levitation/shine tweak -->
-      <animate attributeName="opacity" values="0.95; 1; 0.95" dur="3s" repeatCount="indefinite" />
-    </path>
+
+  <!-- Top Left: Green Gem with Small Feather Wings -->
+  <g transform="translate(125, 105)" filter="url(#elementShadow)">
+    <!-- Tiny green feathers -->
+    <path d="M -10,-10 Q -25,-20 -20,-35 Q -10,-20 -5,-15 Z" fill="#b3ffb3"/>
+    <path d="M -15,-5 Q -30,-10 -35,-20 Q -20,-10 -10,-5 Z" fill="#33ff33"/>
     
-    <!-- Crown 3D Base -->
-    <path d="M -5 55 L 75 55 L 70 68 L 0 68 Z" fill="#b38000" />
-    <path d="M 0 68 L 70 68 L 65 73 L 5 73 Z" fill="#664900" />
+    <!-- Square Gem -->
+    <rect x="-10" y="-12" width="18" height="18" rx="2" fill="url(#greenGem)" stroke="#ffffff" stroke-width="1.5"/>
+    <!-- Gem reflection -->
+    <polygon points="-10,-12 8,6 8,-12" fill="#ffffff" opacity="0.4"/>
     
-    <!-- Golden Jewels / Ornaments -->
-    <circle cx="35" cy="15" r="3.5" fill="#ffffff" filter="url(#neonGlowLevel2)" />
-    <circle cx="5" cy="25" r="3" fill="#ffffff" filter="url(#neonGlowLevel2)" />
-    <circle cx="65" cy="25" r="3" fill="#ffffff" filter="url(#neonGlowLevel2)" />
-    <circle cx="20" cy="45" r="2" fill="#ffcc00" />
-    <circle cx="50" cy="45" r="2" fill="#ffcc00" />
+    <!-- Tiny Sparkle Dot -->
+    <circle cx="-15" cy="-20" r="1.5" fill="#ffffff" class="twinkle4" filter="url(#glowGreen)"/>
+  </g>
+
+  <!-- Bottom Left: Elegant Neon Green Feathers/Wings -->
+  <g transform="translate(120, 230)" filter="url(#elementShadow)">
+    <!-- Layered Green Feathers -->
+    <path d="M 20,10 Q -5,20 -15,0 Q -5,10 10,5 Z" fill="#009900"/>
+    <path d="M 5,5 Q -20,10 -30,-15 Q -15,0 0,-5 Z" fill="#00cc00"/>
+    <path d="M -5,0 Q -30,-5 -30,-35 Q -15,-10 5,-15 Z" fill="#33ff33"/>
+    <path d="M -5,-10 Q -25,-20 -20,-45 Q -10,-20 0,-25 Z" fill="#b3ffb3" opacity="0.9"/>
+    
+    <!-- Tiny Sparkle Dot -->
+    <circle cx="20" cy="0" r="1.5" fill="#ffffff" class="twinkle4" filter="url(#glowGreen)"/>
+  </g>
+
+  <!-- Bottom Right: 3D Golden Crown -->
+  <g transform="translate(365, 225) rotate(-10)" filter="url(#elementShadow)">
+    
+    <!-- Crown Inside Cushion (Dark Bronze) -->
+    <path d="M-25,-5 Q-15,-30 -5,-5 Q5,-30 15,-5 Q25,-30 35,-5 L30,20 L-20,20 Z" fill="#804d00"/>
+    <path d="M-20,0 Q-10,-20 0,0 Q10,-20 20,0 Q30,-20 30,0 L25,20 L-15,20 Z" fill="#4d2e00"/>
+
+    <!-- Gold Crown Base & Spikes -->
+    <path d="M-30,-10 L-20,20 L30,20 L40,-10 L20,5 L5,-20 L-10,5 Z" fill="url(#goldGrad)"/>
+    <!-- Crown 3D Depth Shade -->
+    <path d="M-25,-5 L-20,20 L30,20 L35,-5 L20,10 L5,-10 L-10,10 Z" fill="#995c00" opacity="0.7"/>
+    
+    <!-- Crown Bottom Rim -->
+    <rect x="-22" y="18" width="54" height="6" rx="3" fill="url(#goldGrad)"/>
+    <rect x="-22" y="18" width="54" height="2" fill="#ffffff" opacity="0.6"/>
+
+    <!-- Jewels on the crown peaks (Glowing Gold) -->
+    <circle cx="-30" cy="-10" r="3.5" fill="#ffffcc" filter="url(#glowGreen)"/>
+    <circle cx="5" cy="-20" r="4" fill="#ffffcc" filter="url(#glowGreen)"/>
+    <circle cx="40" cy="-10" r="3.5" fill="#ffffcc" filter="url(#glowGreen)"/>
   </g>
 
   <!-- ========================================== -->
-  <!-- 4. ANIMATED FLOATING STARS                   -->
+  <!-- TEXT (HELLO.) -->
   <!-- ========================================== -->
-  <g id="Sparkles" fill="#ffffff" filter="url(#neonGlowLevel2)">
-    <!-- Left Mid Star -->
-    <path d="M 25 110 Q 30 115 40 115 Q 30 115 25 125 Q 25 115 15 115 Q 25 115 25 110 Z">
-      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="scale" values="0.8; 1.2; 0.8" dur="2s" repeatCount="indefinite" additive="sum" />
-    </path>
-    
-    <!-- Top Right Big Star -->
-    <path d="M 330 30 Q 335 40 350 40 Q 335 40 330 55 Q 325 40 310 40 Q 325 40 330 30 Z">
-      <animate attributeName="opacity" values="0.2; 1; 0.2" dur="3s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="scale" values="0.9; 1.1; 0.9" dur="3s" repeatCount="indefinite" additive="sum" />
-    </path>
-    
-    <!-- Bottom Right Small Star -->
-    <path d="M 320 190 Q 323 193 330 193 Q 323 193 320 198 Q 317 193 310 193 Q 317 193 320 190 Z">
-      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite" />
-    </path>
-  </g>
+  <!-- Fixed Text, properly centered, with the dot added -->
+  <text x="250" y="180" font-family="'Trebuchet MS', Arial, sans-serif" font-size="44" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2" filter="url(#elementShadow)">Hello.</text>
+
 </svg>
