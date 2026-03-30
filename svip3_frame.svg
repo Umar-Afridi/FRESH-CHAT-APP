@@ -1,59 +1,147 @@
-<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="sv3-gdBase" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#4a3600"/><stop offset="50%" stop-color="#cca814"/><stop offset="100%" stop-color="#261b01"/>
+    <!-- Crisp Drop Shadow -->
+    <filter id="heavy-shadow-3" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000022" flood-opacity="0.8"/>
+    </filter>
+
+    <filter id="light-glow-3" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="text-shadow-3">
+      <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#01579B" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#00E5FF" flood-opacity="0.8"/>
+    </filter>
+
+    <!-- BLUE THEME GRADIENTS -->
+    <linearGradient id="blue-bright" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#84FFFF"/>
+      <stop offset="40%" stop-color="#00E5FF"/>
+      <stop offset="70%" stop-color="#00B0FF"/>
+      <stop offset="100%" stop-color="#2962FF"/>
     </linearGradient>
-    <linearGradient id="sv3-gdHigh" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#ffd700"/><stop offset="100%" stop-color="#996515"/>
+
+    <linearGradient id="blue-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0288D1"/>
+      <stop offset="50%" stop-color="#01579B"/>
+      <stop offset="100%" stop-color="#001133"/>
     </linearGradient>
-    <linearGradient id="sv3-wing" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f5deb3"/>
+
+    <linearGradient id="cyan-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FFFF"/>
+      <stop offset="100%" stop-color="#84FFFF"/>
     </linearGradient>
-    <filter id="sv3-sh"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity="0.85"/></filter>
-    <filter id="sv3-gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <g id="sv3-emb">
-      <ellipse cx="0" cy="0" rx="3" ry="14" fill="#ffd700" filter="url(#sv3-gl)" opacity="0.9"/>
-      <circle cx="0" cy="0" r="2" fill="#fff"/>
+
+    <linearGradient id="silver-white-3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#E1F5FE"/>
+      <stop offset="100%" stop-color="#BDBDBD"/>
+    </linearGradient>
+
+    <linearGradient id="plate-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="15%" stop-color="#00B0FF"/>
+      <stop offset="85%" stop-color="#01579B"/>
+      <stop offset="100%" stop-color="#001133"/>
+    </linearGradient>
+
+    <linearGradient id="text-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#84FFFF"/>
+      <stop offset="100%" stop-color="#00B0FF"/>
+    </linearGradient>
+
+    <mask id="frame-mask-3">
+      <rect x="0" y="0" width="500" height="500" fill="#FFFFFF"/>
+    </mask>
+
+    <!-- SVIP 3 Side Armor -->
+    <g id="side-armor-3">
+      <path d="M 130,370 C 10,310 0,160 120,90 C 30,170 30,300 150,350 Z" fill="url(#blue-dark)"/>
+      <path d="M 140,340 C 40,290 30,180 140,110 C 60,190 70,280 160,320 Z" fill="url(#blue-bright)"/>
+      <path d="M 150,310 C 70,270 60,190 150,130 C 90,200 90,260 160,290 Z" fill="url(#silver-white-3)"/>
+
+      <path d="M 120,160 L 30,130 L 90,200 Z" fill="url(#silver-white-3)" filter="url(#heavy-shadow-3)"/>
+      <path d="M 110,165 L 40,140 L 90,190 Z" fill="url(#blue-bright)"/>
+      
+      <path d="M 100,240 L 10,240 L 80,280 Z" fill="url(#silver-white-3)" filter="url(#heavy-shadow-3)"/>
+      <path d="M 90,245 L 25,245 L 75,270 Z" fill="url(#cyan-accent)"/>
+      
+      <path d="M 120,330 L 40,360 L 100,300 Z" fill="url(#silver-white-3)" filter="url(#heavy-shadow-3)"/>
+      <path d="M 115,320 L 55,345 L 95,305 Z" fill="url(#blue-bright)"/>
+
+      <polygon points="60,200 50,210 60,220 70,210" fill="#FFFFFF" filter="url(#light-glow-3)"/>
+      <polygon points="45,280 38,287 45,294 52,287" fill="#00FFFF" filter="url(#light-glow-3)"/>
+      
+      <path d="M 220,60 C 150,40 100,90 90,140 C 130,90 180,75 200,80 Z" fill="url(#silver-white-3)"/>
+    </g>
+
+    <!-- Bottom Feathers -->
+    <g id="bottom-feathers-3">
+      <path d="M 0,0 C -30,5 -60,20 -80,40 C -50,30 -20,20 -5,-5 Z" fill="url(#silver-white-3)"/>
+      <path d="M -10,10 C -40,15 -70,35 -90,60 C -60,45 -30,30 -15,5 Z" fill="url(#silver-white-3)"/>
+      <path d="M -20,25 C -40,30 -60,50 -75,70 C -50,55 -30,40 -20,15 Z" fill="url(#silver-white-3)"/>
     </g>
   </defs>
-  <style>
-    .sv3-wL { transform-origin: 300px 160px; animation: sv3wL 3s ease-in-out infinite alternate; }
-    .sv3-wR { transform-origin: 300px 160px; animation: sv3wR 3s ease-in-out infinite alternate; }
-    @keyframes sv3wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-7deg); } }
-    @keyframes sv3wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(7deg); } }
-    @keyframes sv3flyL { 0%{transform:translate(120px,600px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(170px,320px) scale(1.2) rotate(30deg);} 100%{transform:translate(230px,80px) scale(0) rotate(50deg);opacity:0;} }
-    @keyframes sv3flyR { 0%{transform:translate(480px,600px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(430px,320px) scale(1.2) rotate(-30deg);} 100%{transform:translate(370px,80px) scale(0) rotate(-50deg);opacity:0;} }
-    .sv3-el1 { animation: sv3flyL 2.5s infinite ease-in; }
-    .sv3-er1 { animation: sv3flyR 2.7s infinite ease-in 0.5s; }
-    .sv3-el2 { animation: sv3flyL 2.2s infinite ease-in 1.2s; }
-    .sv3-er2 { animation: sv3flyR 2.4s infinite ease-in 1.7s; }
-  </style>
 
-  <!-- Angel Wings with Wind -->
-  <g filter="url(#sv3-sh)">
-    <path class="sv3-wL" d="M300,160 Q120,100 80,40 Q150,70 230,140 Z" fill="url(#sv3-wing)"/>
-    <path class="sv3-wR" d="M300,160 Q480,100 520,40 Q450,70 370,140 Z" fill="url(#sv3-wing)"/>
+  <!-- BACKGROUND IS ERASED HERE FOR PROFILE PICTURE -->
+
+  <!-- Main Ring -->
+  <g filter="url(#heavy-shadow-3)">
+    <circle cx="250" cy="250" r="162" fill="none" stroke="url(#blue-dark)" stroke-width="22" />
+    <circle cx="250" cy="250" r="158" fill="none" stroke="url(#blue-bright)" stroke-width="12" />
+    <circle cx="250" cy="250" r="148" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.6" />
+    <circle cx="250" cy="250" r="145" fill="none" stroke="#00E5FF" stroke-width="4" opacity="0.8"/>
   </g>
 
-  <!-- Thick Gold Frame -->
-  <circle cx="300" cy="350" r="200" fill="none" stroke="#261b01" stroke-width="30" filter="url(#sv3-sh)"/>
-  <circle cx="300" cy="350" r="200" fill="none" stroke="url(#sv3-gdHigh)" stroke-width="20"/>
-  <circle cx="300" cy="350" r="180" fill="none" stroke="url(#sv3-gdBase)" stroke-width="6" stroke-dasharray="10 5"/>
-
-  <!-- Royal Crown -->
-  <path d="M230,140 L250,60 L300,110 L350,60 L370,140 Z" fill="url(#sv3-gdHigh)" filter="url(#sv3-sh)"/>
-  <circle cx="300" cy="110" r="10" fill="#ffffff" filter="url(#sv3-gl)"/>
-
-  <!-- Nameplate -->
-  <g filter="url(#sv3-sh)">
-    <path d="M150,520 Q300,500 450,520 L460,570 Q300,590 140,570 Z" fill="#120c00" stroke="url(#sv3-gdHigh)" stroke-width="8"/>
+  <!-- Side Armor -->
+  <g filter="url(#heavy-shadow-3)">
+    <use href="#side-armor-3" x="0" y="0"/>
+    <use href="#side-armor-3" x="0" y="0" transform="translate(500, 0) scale(-1, 1)"/>
   </g>
 
-  <!-- Golden Sparks over frame -->
-  <g opacity="0.9">
-    <use href="#sv3-emb" class="sv3-el1"/><use href="#sv3-emb" class="sv3-er1"/>
-    <use href="#sv3-emb" class="sv3-el2"/><use href="#sv3-emb" class="sv3-er2"/>
+  <!-- Top Crown -->
+  <g filter="url(#heavy-shadow-3)">
+    <polygon points="250,95 210,60 250,20 290,60" fill="url(#blue-dark)"/>
+    <path d="M 250,25 L 220,60 L 250,85 L 280,60 Z" fill="url(#silver-white-3)"/>
+    <path d="M 210,70 L 235,30 L 250,60 Z" fill="url(#blue-bright)"/>
+    <path d="M 290,70 L 265,30 L 250,60 Z" fill="url(#blue-bright)"/>
+    <polygon points="250,25 240,60 250,85 260,60" fill="#FFFFFF" opacity="0.6"/>
+    <polygon points="250,5 235,18 250,30 265,18" fill="url(#cyan-accent)" filter="url(#light-glow-3)"/>
+    <polygon points="250,85 230,95 250,125 270,95" fill="url(#blue-bright)"/>
+    <polygon points="250,85 250,125 270,95" fill="url(#blue-dark)"/>
   </g>
 
-  <text x="300" y="565" font-family="'Trebuchet MS', sans-serif" font-size="38" font-weight="900" fill="url(#sv3-gdHigh)" text-anchor="middle" letter-spacing="4">SVIP 3</text>
+  <!-- Bottom Nameplate -->
+  <g filter="url(#heavy-shadow-3)">
+    <use href="#bottom-feathers-3" x="140" y="415"/>
+    <use href="#bottom-feathers-3" x="360" y="415" transform="translate(720, 0) scale(-1, 1)"/>
+    <path d="M 120,400 L 90,435 L 150,445 Z" fill="url(#blue-dark)"/>
+    <path d="M 380,400 L 410,435 L 350,445 Z" fill="url(#blue-dark)"/>
+    <path d="M 130,385 C 200,380 300,380 370,385 L 385,445 C 300,455 200,455 115,445 Z" fill="url(#plate-grad-3)"/>
+    <path d="M 130,385 C 200,380 300,380 370,385 L 385,445 C 300,455 200,455 115,445 Z" fill="none" stroke="url(#silver-white-3)" stroke-width="4"/>
+    <path d="M 120,370 L 150,390 L 130,460 L 100,430 Z" fill="url(#blue-bright)"/>
+    <path d="M 380,370 L 350,390 L 370,460 L 400,430 Z" fill="url(#blue-bright)"/>
+    <path d="M 133,390 C 200,385 300,385 367,390 L 370,405 C 300,400 200,400 130,405 Z" fill="#FFFFFF" opacity="0.2"/>
+    <polygon points="250,448 230,465 250,490 270,465" fill="url(#silver-white-3)" filter="url(#light-glow-3)"/>
+  </g>
+
+  <!-- Text -->
+  <text x="250" y="425" dominant-baseline="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="30" fill="url(#text-grad-3)" text-anchor="middle" letter-spacing="4" filter="url(#text-shadow-3)">SVIP 3</text>
+
+  <!-- Shine Sweep -->
+  <g mask="url(#frame-mask-3)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="-200 -100; 700 300" dur="2.5s" repeatCount="indefinite" />
+      <linearGradient id="shine-sweep-3" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+      </linearGradient>
+      <rect x="0" y="-400" width="40" height="1200" fill="url(#shine-sweep-3)" transform="rotate(35)" />
+      <rect x="65" y="-400" width="80" height="1200" fill="url(#shine-sweep-3)" transform="rotate(35)" opacity="0.4"/>
+    </g>
+  </g>
 </svg>

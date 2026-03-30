@@ -1,57 +1,165 @@
-<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="sv2-siBase" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#40454a"/><stop offset="50%" stop-color="#a0a5ab"/><stop offset="100%" stop-color="#1a1c1e"/>
+    <!-- Simple, Clean 3D Shadow -->
+    <filter id="crisp-shadow-2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#002200" flood-opacity="0.7"/>
+    </filter>
+
+    <filter id="light-glow-2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Text Shadow -->
+    <filter id="text-shadow-2">
+      <feDropShadow dx="0" dy="2" stdDeviation="1" flood-color="#003300" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00E676" flood-opacity="0.8"/>
+    </filter>
+
+    <!-- ================= SVIP 2 GRADIENTS (GREEN, GOLD & SILVER) ================= -->
+    <!-- Rich Emerald Green -->
+    <linearGradient id="green-bright" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#69F0AE"/>
+      <stop offset="30%" stop-color="#00E676"/>
+      <stop offset="70%" stop-color="#00C853"/>
+      <stop offset="100%" stop-color="#008B00"/>
     </linearGradient>
-    <linearGradient id="sv2-siHigh" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#d0d5da"/><stop offset="100%" stop-color="#70757a"/>
+
+    <!-- Deep Forest Green for Base -->
+    <linearGradient id="green-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00C853"/>
+      <stop offset="60%" stop-color="#004D40"/>
+      <stop offset="100%" stop-color="#002200"/>
     </linearGradient>
-    <linearGradient id="sv2-wing" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e0ffff"/><stop offset="100%" stop-color="#4682b4"/>
+
+    <!-- Warm Orange/Gold (From the reference image) -->
+    <linearGradient id="bronze-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD54F"/>
+      <stop offset="40%" stop-color="#FFA000"/>
+      <stop offset="80%" stop-color="#FF6F00"/>
+      <stop offset="100%" stop-color="#E65100"/>
     </linearGradient>
-    <filter id="sv2-sh"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.8"/></filter>
-    <filter id="sv2-gl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <g id="sv2-emb">
-      <ellipse cx="0" cy="0" rx="2.5" ry="12" fill="#00bfff" filter="url(#sv2-gl)" opacity="0.9"/>
-      <circle cx="0" cy="0" r="1.5" fill="#fff"/>
+
+    <!-- Clean Silver/Grey (For the pentagon outlines) -->
+    <linearGradient id="silver-clean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F5F5"/>
+      <stop offset="50%" stop-color="#BDBDBD"/>
+      <stop offset="100%" stop-color="#757575"/>
+    </linearGradient>
+
+    <!-- Text Gradient -->
+    <linearGradient id="text-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#FFA000"/>
+    </linearGradient>
+
+    <mask id="frame-mask-2">
+      <rect x="0" y="0" width="500" height="500" fill="#FFFFFF"/>
+    </mask>
+
+    <!-- Reusable Clean Side Shield Guard -->
+    <g id="shield-guard">
+      <!-- Outer Gold Rim -->
+      <path d="M 120,360 C 20,280 20,160 120,80 C 40,170 40,270 140,340 Z" fill="url(#bronze-gold)" filter="url(#crisp-shadow-2)"/>
+      <!-- Inner Green Core -->
+      <path d="M 125,340 C 45,260 45,170 125,95 C 60,180 60,260 135,320 Z" fill="url(#green-bright)"/>
+      <!-- Silver Trim Accent -->
+      <path d="M 128,310 C 65,245 65,185 128,120 C 80,190 80,240 135,290 Z" fill="url(#silver-clean)"/>
+    </g>
+
+    <!-- 5-Point Pentagon from Reference Image -->
+    <g id="silver-pentagon">
+      <!-- Outer Silver Layer -->
+      <polygon points="250,10 280,30 270,65 230,65 220,30" fill="url(#silver-clean)" filter="url(#crisp-shadow-2)"/>
+      <!-- Inner Green Layer -->
+      <polygon points="250,18 272,34 263,60 237,60 228,34" fill="url(#green-dark)"/>
+      <polygon points="250,22 266,36 258,55 242,55 234,36" fill="url(#green-bright)"/>
+      <!-- Center Glowing Gem -->
+      <circle cx="250" cy="42" r="6" fill="#69F0AE" filter="url(#light-glow-2)">
+        <animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" repeatCount="indefinite"/>
+      </circle>
     </g>
   </defs>
-  <style>
-    .sv2-wL { transform-origin: 300px 170px; animation: sv2wL 3.5s ease-in-out infinite alternate; }
-    .sv2-wR { transform-origin: 300px 170px; animation: sv2wR 3.5s ease-in-out infinite alternate; }
-    @keyframes sv2wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-5deg); } }
-    @keyframes sv2wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(5deg); } }
-    @keyframes sv2flyL { 0%{transform:translate(130px,590px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(180px,330px) scale(1) rotate(25deg);} 100%{transform:translate(240px,90px) scale(0) rotate(45deg);opacity:0;} }
-    @keyframes sv2flyR { 0%{transform:translate(470px,590px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(420px,330px) scale(1) rotate(-25deg);} 100%{transform:translate(360px,90px) scale(0) rotate(-45deg);opacity:0;} }
-    .sv2-el1 { animation: sv2flyL 2.8s infinite ease-in; }
-    .sv2-er1 { animation: sv2flyR 3.2s infinite ease-in 0.8s; }
-    .sv2-el2 { animation: sv2flyL 2.5s infinite ease-in 1.5s; }
-  </style>
 
-  <!-- Ice Wings with Wind -->
-  <g filter="url(#sv2-sh)">
-    <path class="sv2-wL" d="M300,170 Q150,120 100,50 Q160,90 240,150 Z" fill="url(#sv2-wing)"/>
-    <path class="sv2-wR" d="M300,170 Q450,120 500,50 Q440,90 360,150 Z" fill="url(#sv2-wing)"/>
+  <!-- BACKGROUND IS COMPLETELY ERASED / TRANSPARENT -->
+
+  <!-- ================= SVIP 2 SHIELD RINGS ================= -->
+  <!-- Clean, structured rings with less chaos than SVIP 3/4/5 -->
+  <g filter="url(#crisp-shadow-2)">
+    <!-- Base Deep Green Heavy Ring -->
+    <circle cx="250" cy="250" r="162" fill="none" stroke="url(#green-dark)" stroke-width="18" />
+    
+    <!-- Outer Gold Border -->
+    <circle cx="250" cy="250" r="172" fill="none" stroke="url(#bronze-gold)" stroke-width="6" />
+    
+    <!-- Inner Main Bright Green Ring -->
+    <circle cx="250" cy="250" r="158" fill="none" stroke="url(#green-bright)" stroke-width="10" />
+    
+    <!-- Inner Silver/Grey Border (Like the image) -->
+    <circle cx="250" cy="250" r="148" fill="none" stroke="url(#silver-clean)" stroke-width="4" />
   </g>
 
-  <!-- Silver Frame -->
-  <circle cx="300" cy="350" r="190" fill="none" stroke="#151719" stroke-width="25" filter="url(#sv2-sh)"/>
-  <circle cx="300" cy="350" r="190" fill="none" stroke="url(#sv2-siHigh)" stroke-width="15"/>
-  <circle cx="300" cy="350" r="175" fill="none" stroke="url(#sv2-siBase)" stroke-width="4"/>
-
-  <!-- Sharp Crown -->
-  <path d="M240,150 L260,80 L300,130 L340,80 L360,150 Z" fill="url(#sv2-siHigh)" filter="url(#sv2-sh)"/>
-  <circle cx="300" cy="70" r="8" fill="#00bfff" filter="url(#sv2-gl)"/>
-
-  <!-- Hexagon Nameplate -->
-  <g filter="url(#sv2-sh)">
-    <polygon points="170,520 430,520 450,550 430,580 170,580 150,550" fill="#0b0d0f" stroke="url(#sv2-siHigh)" stroke-width="6"/>
+  <!-- ================= SMOOTH SIDE SHIELD GUARDS ================= -->
+  <!-- Simple curved guards instead of spiky wings -->
+  <g filter="url(#crisp-shadow-2)">
+    <use href="#shield-guard" x="0" y="0"/>
+    <use href="#shield-guard" x="0" y="0" transform="translate(500, 0) scale(-1, 1)"/>
   </g>
 
-  <!-- Sparks over frame -->
-  <g opacity="0.9">
-    <use href="#sv2-emb" class="sv2-el1"/><use href="#sv2-emb" class="sv2-er1"/><use href="#sv2-emb" class="sv2-el2"/>
+  <!-- ================= TOP ELEMENT (STUDDED BAR & PENTAGON) ================= -->
+  <!-- Taj (Crown) ki jagah ek pyara sa studded plaque (Jesa reference image me hai) -->
+  <g filter="url(#crisp-shadow-2)">
+    <!-- Top Gold Arch -->
+    <path d="M 160,85 Q 250,30 340,85 L 350,65 Q 250,10 150,65 Z" fill="url(#bronze-gold)"/>
+    <path d="M 160,85 Q 250,40 340,85 L 340,75 Q 250,25 160,75 Z" fill="#FFA000"/>
+    
+    <!-- The 5 Green Studs/Dots (Like your picture) -->
+    <circle cx="185" cy="65" r="4.5" fill="#00E676" stroke="#004D40" stroke-width="1.5"/>
+    <circle cx="218" cy="50" r="4.5" fill="#00E676" stroke="#004D40" stroke-width="1.5"/>
+    <circle cx="250" cy="45" r="4.5" fill="#00E676" stroke="#004D40" stroke-width="1.5"/>
+    <circle cx="282" cy="50" r="4.5" fill="#00E676" stroke="#004D40" stroke-width="1.5"/>
+    <circle cx="315" cy="65" r="4.5" fill="#00E676" stroke="#004D40" stroke-width="1.5"/>
   </g>
 
-  <text x="300" y="563" font-family="'Trebuchet MS', sans-serif" font-size="34" font-weight="900" fill="url(#sv2-siHigh)" text-anchor="middle" letter-spacing="4">SVIP 2</text>
+  <!-- ================= BOTTOM BANNER & PENTAGON GEM ================= -->
+  <g filter="url(#crisp-shadow-2)">
+    <!-- Simple Banner Plate -->
+    <path d="M 130,390 C 200,385 300,385 370,390 L 380,435 C 300,445 200,445 120,435 Z" fill="url(#green-dark)"/>
+    <path d="M 135,395 C 200,390 300,390 365,395 L 372,430 C 300,438 200,438 128,430 Z" fill="url(#green-bright)"/>
+    
+    <!-- Gold Trim around Banner -->
+    <path d="M 130,390 C 200,385 300,385 370,390 L 380,435 C 300,445 200,445 120,435 Z" fill="none" stroke="url(#bronze-gold)" stroke-width="5"/>
+
+    <!-- Banner Edge Clasps -->
+    <path d="M 115,380 L 140,395 L 125,445 L 100,425 Z" fill="url(#bronze-gold)"/>
+    <path d="M 385,380 L 360,395 L 375,445 L 400,425 Z" fill="url(#bronze-gold)"/>
+    
+    <!-- Bottom Shield Drop (The Pentagon symbol from your image) -->
+    <g transform="translate(0, 420)">
+      <polygon points="250,55 280,35 270,0 230,0 220,35" fill="url(#silver-clean)" filter="url(#crisp-shadow-2)"/>
+      <polygon points="250,48 272,32 263,6 237,6 228,32" fill="url(#green-dark)"/>
+      <polygon points="250,42 266,30 258,10 242,10 234,30" fill="url(#green-bright)"/>
+      <circle cx="250" cy="25" r="6" fill="#69F0AE" filter="url(#light-glow-2)"/>
+    </g>
+  </g>
+
+  <!-- ================= 3D EMBOSSED TEXT ================= -->
+  <!-- Thora normal size (26) rakha hai SVIP 3,4,5 ke muqablay me -->
+  <text x="250" y="420" dominant-baseline="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="28" fill="url(#text-grad-2)" text-anchor="middle" letter-spacing="3" filter="url(#text-shadow-2)">SVIP 2</text>
+
+  <!-- ================= SMOOTH SHINE SWEEP ================= -->
+  <!-- Animation simple aur aaram se chalne wali rakhi hai -->
+  <g mask="url(#frame-mask-2)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="-200 -100; 700 300" dur="3.5s" repeatCount="indefinite" />
+      <linearGradient id="shine-sweep-2" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+      </linearGradient>
+      <rect x="0" y="-400" width="30" height="1200" fill="url(#shine-sweep-2)" transform="rotate(35)" />
+      <rect x="50" y="-400" width="60" height="1200" fill="url(#shine-sweep-2)" transform="rotate(35)" opacity="0.4"/>
+    </g>
+  </g>
 </svg>

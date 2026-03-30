@@ -1,85 +1,271 @@
-<svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="sv5-rbBase" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#3d0000"/><stop offset="50%" stop-color="#b8860b"/><stop offset="100%" stop-color="#1a0000"/>
+    <!-- Crisp 3D Shadow for Premium Depth -->
+    <filter id="shadow-5" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#220000" flood-opacity="0.9"/>
+    </filter>
+
+    <!-- Intense Light Glow -->
+    <filter id="glow-5" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- 3D Text Shadow -->
+    <filter id="text-shadow-5">
+      <feDropShadow dx="0" dy="4" stdDeviation="2" flood-color="#4A0000" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FF1744" flood-opacity="0.8"/>
+    </filter>
+
+    <!-- ================= SVIP 5 PREMIUM RED & GOLD GRADIENTS ================= -->
+    <!-- Ultimate Emperor Gold -->
+    <linearGradient id="gold-bright-5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDE7"/>
+      <stop offset="25%" stop-color="#FFD54F"/>
+      <stop offset="50%" stop-color="#FFB300"/>
+      <stop offset="80%" stop-color="#FF8F00"/>
+      <stop offset="100%" stop-color="#E65100"/>
     </linearGradient>
-    <linearGradient id="sv5-rbHigh" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/><stop offset="40%" stop-color="#ffd700"/><stop offset="100%" stop-color="#b30000"/>
+
+    <!-- Deep Antique Gold for 3D Contrast -->
+    <linearGradient id="gold-dark-5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8F00"/>
+      <stop offset="50%" stop-color="#D84315"/>
+      <stop offset="100%" stop-color="#3E2723"/>
     </linearGradient>
-    <linearGradient id="sv5-wing" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/><stop offset="80%" stop-color="#ffcccc"/><stop offset="100%" stop-color="#990000"/>
+
+    <!-- Vibrant Royal Crimson (Red) -->
+    <linearGradient id="red-bright-5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5252"/>
+      <stop offset="40%" stop-color="#FF0000"/>
+      <stop offset="70%" stop-color="#D50000"/>
+      <stop offset="100%" stop-color="#B71C1C"/>
     </linearGradient>
-    <filter id="sv5-sh"><feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#000" flood-opacity="1"/></filter>
-    <filter id="sv5-gl"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <g id="sv5-emb">
-      <ellipse cx="0" cy="0" rx="4" ry="18" fill="#ff4500" filter="url(#sv5-gl)" opacity="0.9"/>
-      <ellipse cx="0" cy="0" rx="2" ry="8" fill="#ffcc00"/>
-      <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+
+    <!-- Deep Blood Red for Base Armor -->
+    <linearGradient id="red-dark-5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#B71C1C"/>
+      <stop offset="50%" stop-color="#7F0000"/>
+      <stop offset="100%" stop-color="#330000"/>
+    </linearGradient>
+
+    <linearGradient id="text-grad-5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="40%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#FF6D00"/>
+    </linearGradient>
+
+    <mask id="frame-mask-5">
+      <rect x="0" y="0" width="500" height="500" fill="#FFFFFF"/>
+    </mask>
+
+    <!-- Floating Fire Embers -->
+    <g id="ember-5">
+      <circle cx="0" cy="0" r="3.5" fill="#FFD54F" filter="url(#glow-5)"/>
+      <circle cx="0" cy="0" r="1.5" fill="#FFFFFF"/>
+    </g>
+
+    <!-- Star Sparkle -->
+    <g id="sparkle-5">
+      <path d="M0,-15 Q0,0 15,0 Q0,0 0,15 Q0,0 -15,0 Q0,0 0,-15 Z" fill="#FFFFFF" filter="url(#glow-5)"/>
+    </g>
+
+    <!-- ================= DRAGON/PHOENIX WING (Left Side) ================= -->
+    <g id="dragon-wing-5">
+      <!-- Massive Background Red Shield Wing -->
+      <path d="M 110,390 C -20,320 -30,120 120,60 C 10,170 10,310 130,370 Z" fill="url(#red-dark-5)"/>
+      
+      <!-- Tier 1 Gold Feathers (Long) -->
+      <path d="M 120,360 C 20,280 10,150 120,90 C 30,190 30,290 140,340 Z" fill="url(#gold-dark-5)"/>
+      
+      <!-- Tier 2 Bright Red Armor Center -->
+      <path d="M 130,330 C 50,260 40,160 130,110 C 60,190 60,270 150,310 Z" fill="url(#red-bright-5)"/>
+
+      <!-- Sharp Massive Gold Dragon Blades -->
+      <!-- Top Blade -->
+      <path d="M 100,140 L 5,70 L 60,180 Z" fill="url(#gold-bright-5)" filter="url(#shadow-5)"/>
+      <path d="M 90,145 L 20,85 L 55,170 Z" fill="url(#red-bright-5)"/>
+      
+      <!-- Mid-High Blade -->
+      <path d="M 90,210 L -15,180 L 60,250 Z" fill="url(#gold-bright-5)" filter="url(#shadow-5)"/>
+      <path d="M 80,215 L 0,190 L 55,240 Z" fill="url(#gold-dark-5)"/>
+
+      <!-- Mid-Low Blade -->
+      <path d="M 100,280 L -10,290 L 70,320 Z" fill="url(#gold-bright-5)" filter="url(#shadow-5)"/>
+      <path d="M 90,285 L 5,295 L 65,310 Z" fill="url(#red-bright-5)"/>
+
+      <!-- Bottom Heavy Blade -->
+      <path d="M 120,350 L 15,410 L 100,320 Z" fill="url(#gold-bright-5)" filter="url(#shadow-5)"/>
+      <path d="M 110,340 L 35,390 L 90,325 Z" fill="url(#gold-dark-5)"/>
+
+      <!-- Floating Diamond Jewels in Wing -->
+      <polygon points="45,160 35,175 45,190 55,175" fill="#FFD54F" filter="url(#glow-5)"/>
+      <polygon points="35,260 28,270 35,280 42,270" fill="#FF5252" filter="url(#glow-5)"/>
+
+      <!-- Crown Golden Support -->
+      <path d="M 210,60 C 150,35 100,80 85,130 C 130,75 180,70 200,75 Z" fill="url(#gold-bright-5)"/>
+    </g>
+
+    <!-- Side Ribbon Tails (Dangling from banner) -->
+    <g id="ribbon-tail-5">
+      <path d="M 110,430 C 70,450 40,490 20,530 C 50,490 90,480 130,460 Z" fill="url(#red-dark-5)"/>
+      <path d="M 105,435 C 75,455 50,485 35,515 C 60,485 90,475 120,455 Z" fill="url(#red-bright-5)"/>
+      <path d="M 100,430 L 75,450 L 115,450 Z" fill="url(#gold-bright-5)"/>
     </g>
   </defs>
-  <style>
-    .sv5-wL { transform-origin: 300px 140px; animation: sv5wL 2s ease-in-out infinite alternate; }
-    .sv5-wR { transform-origin: 300px 140px; animation: sv5wR 2s ease-in-out infinite alternate; }
-    @keyframes sv5wL { 0% { transform: rotate(0deg); } 100% { transform: rotate(-12deg); } }
-    @keyframes sv5wR { 0% { transform: rotate(0deg); } 100% { transform: rotate(12deg); } }
-    @keyframes sv5flyL { 0%{transform:translate(100px,630px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(150px,300px) scale(1.5) rotate(40deg);} 100%{transform:translate(210px,60px) scale(0) rotate(60deg);opacity:0;} }
-    @keyframes sv5flyR { 0%{transform:translate(500px,630px) scale(0);opacity:0;} 50%{opacity:1;transform:translate(450px,300px) scale(1.5) rotate(-40deg);} 100%{transform:translate(390px,60px) scale(0) rotate(-60deg);opacity:0;} }
-    .sv5-el1 { animation: sv5flyL 1.8s infinite ease-in; }
-    .sv5-er1 { animation: sv5flyR 1.9s infinite ease-in 0.3s; }
-    .sv5-el2 { animation: sv5flyL 2.1s infinite ease-in 0.8s; }
-    .sv5-er2 { animation: sv5flyR 2.0s infinite ease-in 1.2s; }
-    .sv5-el3 { animation: sv5flyL 1.7s infinite ease-in 1.5s; }
-    .sv5-er3 { animation: sv5flyR 1.8s infinite ease-in 1.7s; }
-    .pulse-glow { animation: pulse 3s infinite alternate; }
-    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
-  </style>
 
-  <!-- Ambient Fire Glow Behind -->
-  <circle cx="300" cy="350" r="230" fill="none" stroke="#ff4500" stroke-width="20" class="pulse-glow" filter="url(#sv5-gl)"/>
+  <!-- BACKGROUND IS COMPLETELY ERASED / TRANSPARENT -->
 
-  <!-- Massive Layered Dragon Wings with Wind -->
-  <g filter="url(#sv5-sh)">
-    <path class="sv5-wL" d="M300,140 Q130,80 80,10 Q140,40 210,100 Z" fill="url(#sv5-wing)"/>
-    <path class="sv5-wL" d="M300,160 Q110,120 60,60 Q130,90 200,140 Z" fill="url(#sv5-wing)"/>
-    <path class="sv5-wR" d="M300,140 Q470,80 520,10 Q460,40 390,100 Z" fill="url(#sv5-wing)"/>
-    <path class="sv5-wR" d="M300,160 Q490,120 540,60 Q470,90 400,140 Z" fill="url(#sv5-wing)"/>
+  <!-- ================= FIRE EMBERS ANIMATION ================= -->
+  <g>
+    <use href="#ember-5" x="60" y="420">
+      <animateTransform attributeName="transform" type="translate" values="0 0; -25 -150; 0 -350" dur="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.8s" repeatCount="indefinite"/>
+    </use>
+    <use href="#ember-5" x="440" y="390">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 25 -150; 0 -350" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="3.2s" repeatCount="indefinite"/>
+    </use>
+    <use href="#ember-5" x="110" y="220">
+      <animateTransform attributeName="transform" type="translate" values="0 0; -15 -120; 0 -250" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite"/>
+    </use>
+    <use href="#ember-5" x="390" y="270">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 20 -120; 0 -250" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0; 1; 0" dur="3.5s" repeatCount="indefinite"/>
+    </use>
   </g>
 
-  <!-- Ultimate Massive 3D Ring -->
-  <g filter="url(#sv5-sh)">
-    <circle cx="300" cy="350" r="220" fill="none" stroke="#1f0000" stroke-width="45"/>
-    <circle cx="300" cy="350" r="220" fill="none" stroke="url(#sv5-rbHigh)" stroke-width="35"/>
-    <circle cx="300" cy="350" r="198" fill="none" stroke="url(#sv5-rbBase)" stroke-width="8"/>
+  <!-- ================= SUNBURST AURA BEHIND CROWN ================= -->
+  <!-- Kirnein (Rays) jo taj ke peeche ghoom rahi hain -->
+  <g transform="translate(250, 70)">
+    <g fill="url(#gold-bright-5)" opacity="0.3" filter="url(#glow-5)">
+      <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="10s" repeatCount="indefinite"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(45)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(90)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(135)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(180)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(225)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(270)"/>
+      <polygon points="-5,-100 0,-150 5,-100 20,-20 0,0 -20,-20" transform="rotate(315)"/>
+    </g>
   </g>
 
-  <!-- Heavy Side Shields -->
-  <g filter="url(#sv5-sh)">
-    <path d="M100,350 C70,220 180,140 250,110 C140,180 50,280 130,460 Z" fill="url(#sv5-rbHigh)"/>
-    <path d="M500,350 C530,220 420,140 350,110 C460,180 550,280 470,460 Z" fill="url(#sv5-rbHigh)"/>
+  <!-- ================= SVIP 5 EXTREME RINGS ================= -->
+  <g filter="url(#shadow-5)">
+    <!-- Base Deep Red Heavy Ring -->
+    <circle cx="250" cy="250" r="168" fill="none" stroke="url(#red-dark-5)" stroke-width="26" />
+    
+    <!-- Gold Mechanical Gears/Spikes Ring -->
+    <circle cx="250" cy="250" r="165" fill="none" stroke="url(#gold-bright-5)" stroke-width="10" stroke-dasharray="25 20"/>
+    
+    <!-- Main Crimson Bright Ring -->
+    <circle cx="250" cy="250" r="158" fill="none" stroke="url(#red-bright-5)" stroke-width="14" />
+    
+    <!-- Inner Glowing Gold Trim -->
+    <circle cx="250" cy="250" r="148" fill="none" stroke="url(#gold-bright-5)" stroke-width="5" />
+    
+    <!-- Deep Red Inner Neon Glow -->
+    <circle cx="250" cy="250" r="144" fill="none" stroke="#FF1744" stroke-width="3" filter="url(#glow-5)" opacity="0.9"/>
   </g>
 
-  <!-- Massive Double Royal Crown -->
-  <g filter="url(#sv5-sh)">
-    <path d="M200,120 L240,20 L300,80 L360,20 L400,120 L300,190 Z" fill="url(#sv5-rbHigh)"/>
-    <circle cx="300" cy="80" r="15" fill="#ff0000" filter="url(#sv5-gl)"/>
-    <circle cx="240" cy="30" r="10" fill="#ff0000" filter="url(#sv5-gl)"/>
-    <circle cx="360" cy="30" r="10" fill="#ff0000" filter="url(#sv5-gl)"/>
+  <!-- ================= MASSIVE DRAGON WINGS ================= -->
+  <g filter="url(#shadow-5)">
+    <use href="#dragon-wing-5" x="0" y="0"/>
+    <use href="#dragon-wing-5" x="0" y="0" transform="translate(500, 0) scale(-1, 1)"/>
   </g>
 
-  <!-- Shield Heavy Nameplate -->
-  <g filter="url(#sv5-sh)">
-    <path d="M110,540 Q300,490 490,540 L500,590 Q300,640 100,590 Z" fill="#290000" stroke="url(#sv5-rbHigh)" stroke-width="10"/>
-    <polygon points="300,610 330,640 300,670 270,640" fill="url(#sv5-rbHigh)"/>
+  <!-- ================= ULTIMATE EMPEROR CROWN (7 PRONGS) ================= -->
+  <g filter="url(#shadow-5)">
+    <!-- Crown Base -->
+    <polygon points="250,110 160,65 250,10 340,65" fill="url(#red-dark-5)"/>
+    
+    <!-- Outer Small Prongs -->
+    <path d="M 160,65 L 140,25 L 175,55 Z" fill="url(#gold-dark-5)"/>
+    <path d="M 340,65 L 360,25 L 325,55 Z" fill="url(#gold-dark-5)"/>
+
+    <!-- Mid-Outer Prongs -->
+    <path d="M 190,65 L 175,15 L 210,55 Z" fill="url(#red-bright-5)"/>
+    <path d="M 310,65 L 325,15 L 290,55 Z" fill="url(#red-bright-5)"/>
+
+    <!-- Inner Tall Prongs -->
+    <path d="M 220,65 L 205,5 L 240,55 Z" fill="url(#gold-bright-5)"/>
+    <path d="M 280,65 L 295,5 L 260,55 Z" fill="url(#gold-bright-5)"/>
+
+    <!-- Giant Center Tower Spike -->
+    <path d="M 250,5 L 220,60 L 250,90 L 280,60 Z" fill="url(#gold-bright-5)"/>
+    <path d="M 250,5 L 250,90 L 280,60 Z" fill="#FFFFFF" opacity="0.4"/>
+
+    <!-- The Emperor's Ruby (Center Gem) -->
+    <polygon points="250,30 230,55 250,80 270,55" fill="#FF0000" stroke="#FFF9C4" stroke-width="2" filter="url(#glow-5)">
+      <animate attributeName="opacity" values="0.8; 1; 0.8" dur="1.5s" repeatCount="indefinite"/>
+    </polygon>
+    <polygon points="250,30 250,80 270,55" fill="#FFFFFF" opacity="0.6"/>
+
+    <!-- Base Jewel Core -->
+    <polygon points="250,90 220,105 250,145 280,105" fill="url(#red-bright-5)"/>
+    <polygon points="250,90 250,145 280,105" fill="url(#red-dark-5)"/>
   </g>
 
-  <!-- Intense Fire Embers OVER the frame -->
-  <g opacity="0.95">
-    <use href="#sv5-emb" class="sv5-el1"/><use href="#sv5-emb" class="sv5-er1"/>
-    <use href="#sv5-emb" class="sv5-el2"/><use href="#sv5-emb" class="sv5-er2"/>
-    <use href="#sv5-emb" class="sv5-el3"/><use href="#sv5-emb" class="sv5-er3"/>
+  <!-- ================= HEAVY ROYAL BANNER & TAILS ================= -->
+  <g filter="url(#shadow-5)">
+    <!-- Royal Ribbon Tails hanging from the banner -->
+    <use href="#ribbon-tail-5" x="0" y="-10"/>
+    <use href="#ribbon-tail-5" x="0" y="-10" transform="translate(500, 0) scale(-1, 1)"/>
+
+    <!-- Massive Heavy Base Banner Support -->
+    <path d="M 100,390 L 70,445 L 140,450 Z" fill="url(#red-dark-5)"/>
+    <path d="M 400,390 L 430,445 L 360,450 Z" fill="url(#red-dark-5)"/>
+
+    <!-- Giant V-Shaped Golden Armor Shield (The Banner) -->
+    <path d="M 110,380 C 180,370 220,385 250,395 C 280,385 320,370 390,380 L 405,440 C 320,450 280,465 250,480 C 220,465 180,450 95,440 Z" fill="url(#red-dark-5)"/>
+    
+    <!-- Inner Bright Red Banner Face -->
+    <path d="M 115,385 C 180,375 220,390 250,400 C 280,390 320,375 385,385 L 395,435 C 320,445 280,460 250,470 C 220,460 180,445 105,435 Z" fill="url(#red-bright-5)"/>
+
+    <!-- Ultra-Thick Gold Border -->
+    <path d="M 110,380 C 180,370 220,385 250,395 C 280,385 320,370 390,380 L 405,440 C 320,450 280,465 250,480 C 220,465 180,450 95,440 Z" fill="none" stroke="url(#gold-bright-5)" stroke-width="6"/>
+    
+    <!-- Outer Heavy Claws holding the banner -->
+    <path d="M 100,355 L 135,380 L 110,460 L 70,425 Z" fill="url(#gold-bright-5)"/>
+    <path d="M 400,355 L 365,380 L 390,460 L 430,425 Z" fill="url(#gold-bright-5)"/>
+    
+    <!-- Banner Glass Reflection -->
+    <path d="M 115,385 C 180,375 220,390 250,400 C 280,390 320,375 385,385 L 388,400 C 320,395 280,410 250,420 C 220,410 180,395 112,400 Z" fill="#FFFFFF" opacity="0.25"/>
+
+    <!-- The Giant Pendant Drop at Bottom Center -->
+    <polygon points="250,480 225,505 250,540 275,505" fill="url(#gold-bright-5)" filter="url(#glow-5)"/>
+    <polygon points="250,480 250,540 275,505" fill="#FF8F00" opacity="0.8"/>
+    <polygon points="250,490 235,505 250,525 265,505" fill="#FF0000"/>
   </g>
 
-  <!-- 3D Shadow Text -->
-  <text x="300" y="585" font-family="'Trebuchet MS', sans-serif" font-size="46" font-weight="900" fill="#3d0000" text-anchor="middle" letter-spacing="6">SVIP 5</text>
-  <text x="300" y="582" font-family="'Trebuchet MS', sans-serif" font-size="46" font-weight="900" fill="url(#sv5-rbHigh)" text-anchor="middle" letter-spacing="6">SVIP 5</text>
+  <!-- ================= 3D EMBOSSED TEXT ================= -->
+  <!-- Text size increased and pushed slightly to fit the massive banner -->
+  <text x="250" y="442" dominant-baseline="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="34" fill="url(#text-grad-5)" text-anchor="middle" letter-spacing="5" filter="url(#text-shadow-5)">SVIP 5</text>
+
+  <!-- ================= SPARKLING STARS ================= -->
+  <use href="#sparkle-5" x="80" y="110" transform="scale(0.9)">
+    <animate attributeName="opacity" values="0.2; 1; 0.2" dur="2s" repeatCount="indefinite"/>
+  </use>
+  <use href="#sparkle-5" x="420" y="160" transform="scale(1.2)">
+    <animate attributeName="opacity" values="0.2; 1; 0.2" dur="2.5s" repeatCount="indefinite"/>
+  </use>
+  <use href="#sparkle-5" x="60" y="320" transform="scale(0.8)">
+    <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.8s" repeatCount="indefinite"/>
+  </use>
+
+  <!-- ================= ULTIMATE DIAGONAL SHINE SWEEP ================= -->
+  <g mask="url(#frame-mask-5)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="-250 -150; 850 450" dur="3s" repeatCount="indefinite" />
+      <linearGradient id="shine-sweep-5" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+      </linearGradient>
+      <rect x="0" y="-400" width="50" height="1300" fill="url(#shine-sweep-5)" transform="rotate(35)" />
+      <rect x="80" y="-400" width="100" height="1300" fill="url(#shine-sweep-5)" transform="rotate(35)" opacity="0.5"/>
+    </g>
+  </g>
 </svg>
