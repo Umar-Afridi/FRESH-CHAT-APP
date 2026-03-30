@@ -1,133 +1,111 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <!-- Crisp 3D Drop Shadow -->
     <filter id="crisp-shadow-4" x="-30%" y="-30%" width="160%" height="160%">
       <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="#1A0033" flood-opacity="0.85"/>
     </filter>
-
     <filter id="light-glow-4" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="4" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-
     <filter id="text-shadow-4">
       <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#311B92" flood-opacity="1"/>
       <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#D500F9" flood-opacity="0.8"/>
     </filter>
 
-    <!-- SVIP 4 PURPLE & GOLD GRADIENTS -->
     <linearGradient id="gold-bright" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFF9C4"/>
-      <stop offset="30%" stop-color="#FFD54F"/>
-      <stop offset="70%" stop-color="#FFB300"/>
-      <stop offset="100%" stop-color="#FF8F00"/>
+      <stop offset="0%" stop-color="#FFF9C4"/><stop offset="30%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#FF8F00"/>
     </linearGradient>
-
     <linearGradient id="gold-dark" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FF8F00"/>
-      <stop offset="50%" stop-color="#E65100"/>
-      <stop offset="100%" stop-color="#3E2723"/>
+      <stop offset="0%" stop-color="#FF8F00"/><stop offset="100%" stop-color="#3E2723"/>
     </linearGradient>
-
-    <!-- Purple VIP Gradients -->
     <linearGradient id="purple-neon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#EA80FC"/>
-      <stop offset="40%" stop-color="#D500F9"/>
-      <stop offset="70%" stop-color="#AA00FF"/>
-      <stop offset="100%" stop-color="#6200EA"/>
+      <stop offset="0%" stop-color="#EA80FC"/><stop offset="40%" stop-color="#D500F9"/><stop offset="100%" stop-color="#6200EA"/>
     </linearGradient>
-
     <linearGradient id="purple-deep" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#6A1B9A"/>
-      <stop offset="60%" stop-color="#4A148C"/>
-      <stop offset="100%" stop-color="#1A0033"/>
+      <stop offset="0%" stop-color="#6A1B9A"/><stop offset="100%" stop-color="#1A0033"/>
     </linearGradient>
-
-    <!-- Text & Banner Gradient -->
     <linearGradient id="text-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="40%" stop-color="#FFD54F"/>
-      <stop offset="100%" stop-color="#FF8F00"/>
+      <stop offset="0%" stop-color="#FFFFFF"/><stop offset="40%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#FF8F00"/>
     </linearGradient>
-
     <linearGradient id="plate-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#D500F9"/>
-      <stop offset="20%" stop-color="#AA00FF"/>
-      <stop offset="80%" stop-color="#4A148C"/>
-      <stop offset="100%" stop-color="#1A0033"/>
+      <stop offset="0%" stop-color="#D500F9"/><stop offset="80%" stop-color="#4A148C"/><stop offset="100%" stop-color="#1A0033"/>
     </linearGradient>
 
-    <mask id="frame-mask-4">
-      <rect x="0" y="0" width="500" height="500" fill="#FFFFFF"/>
+    <!-- PERFECT MASK -->
+    <mask id="perfect-mask-4">
+      <circle cx="250" cy="250" r="164" fill="none" stroke="#FFFFFF" stroke-width="24" />
+      <circle cx="250" cy="250" r="162" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-dasharray="25 15"/>
+      <circle cx="250" cy="250" r="156" fill="none" stroke="#FFFFFF" stroke-width="12" />
+      <circle cx="250" cy="250" r="148" fill="none" stroke="#FFFFFF" stroke-width="4" />
+      <g id="mask-wings-4">
+        <path d="M 120,380 C 0,310 -20,150 110,80 C 10,180 20,310 140,360 Z" fill="#FFFFFF"/>
+        <path d="M 130,350 C 30,290 10,160 130,100 C 40,190 40,290 150,330 Z" fill="#FFFFFF"/>
+        <path d="M 140,320 C 60,270 50,180 140,120 C 70,200 70,270 160,300 Z" fill="#FFFFFF"/>
+        <path d="M 100,160 L 10,100 L 70,190 Z" fill="#FFFFFF"/>
+        <path d="M 90,165 L 25,115 L 65,180 Z" fill="#FFFFFF"/>
+        <path d="M 90,240 L -10,230 L 70,280 Z" fill="#FFFFFF"/>
+        <path d="M 80,245 L 5,235 L 60,270 Z" fill="#FFFFFF"/>
+        <path d="M 110,330 L 20,380 L 90,300 Z" fill="#FFFFFF"/>
+        <path d="M 100,320 L 40,360 L 80,305 Z" fill="#FFFFFF"/>
+        <path d="M 210,65 C 150,45 100,90 90,130 C 130,85 180,75 200,80 Z" fill="#FFFFFF"/>
+      </g>
+      <use href="#mask-wings-4"/>
+      <use href="#mask-wings-4" transform="translate(500, 0) scale(-1, 1)"/>
+      <g id="mask-feathers-4">
+        <path d="M 0,0 C -40,10 -80,30 -100,60 C -60,40 -20,25 -5,-5 Z" fill="#FFFFFF"/>
+        <path d="M -15,15 C -50,25 -90,50 -110,85 C -70,60 -30,40 -20,10 Z" fill="#FFFFFF"/>
+      </g>
+      <use href="#mask-feathers-4" x="140" y="405"/>
+      <use href="#mask-feathers-4" x="360" y="405" transform="translate(720, 0) scale(-1, 1)"/>
+      <polygon points="250,100 180,60 250,15 320,60" fill="#FFFFFF"/>
+      <path d="M 180,60 L 160,25 L 195,50 Z" fill="#FFFFFF"/>
+      <path d="M 320,60 L 340,25 L 305,50 Z" fill="#FFFFFF"/>
+      <path d="M 210,60 L 190,15 L 225,50 Z" fill="#FFFFFF"/>
+      <path d="M 290,60 L 310,15 L 275,50 Z" fill="#FFFFFF"/>
+      <path d="M 250,15 L 215,60 L 250,85 L 285,60 Z" fill="#FFFFFF"/>
+      <polygon points="250,85 225,95 250,135 275,95" fill="#FFFFFF"/>
+      <path d="M 110,390 L 80,440 L 150,445 Z" fill="#FFFFFF"/>
+      <path d="M 390,390 L 420,440 L 350,445 Z" fill="#FFFFFF"/>
+      <path d="M 120,380 C 180,375 220,385 250,390 C 280,385 320,375 380,380 L 395,440 C 320,445 280,455 250,470 C 220,455 180,445 105,440 Z" fill="#FFFFFF"/>
+      <path d="M 120,380 C 180,375 220,385 250,390 C 280,385 320,375 380,380 L 395,440 C 320,445 280,455 250,470 C 220,455 180,445 105,440 Z" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+      <path d="M 110,360 L 140,380 L 120,450 L 80,420 Z" fill="#FFFFFF"/>
+      <path d="M 390,360 L 360,380 L 380,450 L 420,420 Z" fill="#FFFFFF"/>
+      <polygon points="250,470 230,490 250,520 270,490" fill="#FFFFFF"/>
+      <text x="250" y="435" dominant-baseline="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">SVIP 4</text>
     </mask>
 
-    <!-- SVIP 4 PHOENIX WINGS (Left Side) -->
     <g id="phoenix-wing-4">
       <path d="M 120,380 C 0,310 -20,150 110,80 C 10,180 20,310 140,360 Z" fill="url(#purple-deep)"/>
       <path d="M 130,350 C 30,290 10,160 130,100 C 40,190 40,290 150,330 Z" fill="url(#gold-bright)"/>
       <path d="M 140,320 C 60,270 50,180 140,120 C 70,200 70,270 160,300 Z" fill="url(#purple-neon)"/>
-
       <path d="M 100,160 L 10,100 L 70,190 Z" fill="url(#gold-bright)" filter="url(#crisp-shadow-4)"/>
       <path d="M 90,165 L 25,115 L 65,180 Z" fill="url(#gold-dark)"/>
       <path d="M 90,240 L -10,230 L 70,280 Z" fill="url(#gold-bright)" filter="url(#crisp-shadow-4)"/>
       <path d="M 80,245 L 5,235 L 60,270 Z" fill="url(#purple-neon)"/>
       <path d="M 110,330 L 20,380 L 90,300 Z" fill="url(#gold-bright)" filter="url(#crisp-shadow-4)"/>
       <path d="M 100,320 L 40,360 L 80,305 Z" fill="url(#gold-dark)"/>
-
       <polygon points="50,200 40,215 50,230 60,215" fill="#FFD54F" filter="url(#light-glow-4)"/>
       <path d="M 210,65 C 150,45 100,90 90,130 C 130,85 180,75 200,80 Z" fill="url(#gold-bright)"/>
     </g>
 
-    <!-- Razor Feathers for Bottom -->
     <g id="razor-feathers-4">
       <path d="M 0,0 C -40,10 -80,30 -100,60 C -60,40 -20,25 -5,-5 Z" fill="url(#gold-bright)"/>
       <path d="M -15,15 C -50,25 -90,50 -110,85 C -70,60 -30,40 -20,10 Z" fill="url(#purple-neon)"/>
     </g>
-
-    <g id="ember-4">
-      <circle cx="0" cy="0" r="3" fill="#FFD54F" filter="url(#light-glow-4)"/>
-      <circle cx="0" cy="0" r="1.5" fill="#FFFFFF"/>
-    </g>
   </defs>
 
-  <!-- BACKGROUND IS ERASED HERE FOR PROFILE PICTURE -->
-
-  <!-- FIRE EMBERS ANIMATION -->
-  <g>
-    <use href="#ember-4" x="70" y="400">
-      <animateTransform attributeName="transform" type="translate" values="0 0; -20 -150; 0 -300" dur="3s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite"/>
-    </use>
-    <use href="#ember-4" x="430" y="380">
-      <animateTransform attributeName="transform" type="translate" values="0 0; 20 -150; 0 -300" dur="3.5s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0; 1; 0" dur="3.5s" repeatCount="indefinite"/>
-    </use>
-    <use href="#ember-4" x="120" y="200">
-      <animateTransform attributeName="transform" type="translate" values="0 0; -10 -100; 0 -200" dur="2.5s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite"/>
-    </use>
-    <use href="#ember-4" x="380" y="250">
-      <animateTransform attributeName="transform" type="translate" values="0 0; 15 -100; 0 -200" dur="4s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0; 1; 0" dur="4s" repeatCount="indefinite"/>
-    </use>
-  </g>
-
-  <!-- UPGRADED MULTI-LAYERED RING -->
   <g filter="url(#crisp-shadow-4)">
     <circle cx="250" cy="250" r="164" fill="none" stroke="url(#purple-deep)" stroke-width="24" />
     <circle cx="250" cy="250" r="162" fill="none" stroke="url(#gold-bright)" stroke-width="8" stroke-dasharray="25 15"/>
     <circle cx="250" cy="250" r="156" fill="none" stroke="url(#purple-neon)" stroke-width="12" />
     <circle cx="250" cy="250" r="148" fill="none" stroke="url(#gold-bright)" stroke-width="4" />
-    <circle cx="250" cy="250" r="145" fill="none" stroke="#EA80FC" stroke-width="3" opacity="0.8" filter="url(#light-glow-4)"/>
   </g>
 
-  <!-- MASSIVE SOLID WINGS -->
   <g filter="url(#crisp-shadow-4)">
     <use href="#phoenix-wing-4" x="0" y="0"/>
     <use href="#phoenix-wing-4" x="0" y="0" transform="translate(500, 0) scale(-1, 1)"/>
   </g>
 
-  <!-- EMPEROR'S 5-POINT CROWN -->
   <g filter="url(#crisp-shadow-4)">
     <polygon points="250,100 180,60 250,15 320,60" fill="url(#purple-deep)"/>
     <path d="M 180,60 L 160,25 L 195,50 Z" fill="url(#gold-dark)"/>
@@ -135,48 +113,31 @@
     <path d="M 210,60 L 190,15 L 225,50 Z" fill="url(#gold-bright)"/>
     <path d="M 290,60 L 310,15 L 275,50 Z" fill="url(#gold-bright)"/>
     <path d="M 250,15 L 215,60 L 250,85 L 285,60 Z" fill="url(#gold-bright)"/>
-    <path d="M 250,15 L 250,85 L 285,60 Z" fill="#FFFFFF" opacity="0.4"/>
-
-    <polygon points="250,35 235,55 250,75 265,55" fill="#D500F9" stroke="#FFF9C4" stroke-width="2" filter="url(#light-glow-4)">
-      <animate attributeName="opacity" values="0.7; 1; 0.7" dur="2s" repeatCount="indefinite"/>
-    </polygon>
-    <polygon points="250,35 250,75 265,55" fill="#FFFFFF" opacity="0.5"/>
-
+    <polygon points="250,35 235,55 250,75 265,55" fill="#D500F9" stroke="#FFF9C4" stroke-width="2" filter="url(#light-glow-4)"/>
     <polygon points="250,85 225,95 250,135 275,95" fill="url(#purple-neon)"/>
     <polygon points="250,85 250,135 275,95" fill="url(#purple-deep)"/>
   </g>
 
-  <!-- HEAVY BOTTOM BANNER -->
   <g filter="url(#crisp-shadow-4)">
     <use href="#razor-feathers-4" x="140" y="405"/>
     <use href="#razor-feathers-4" x="360" y="405" transform="translate(720, 0) scale(-1, 1)"/>
-
     <path d="M 110,390 L 80,440 L 150,445 Z" fill="url(#purple-deep)"/>
     <path d="M 390,390 L 420,440 L 350,445 Z" fill="url(#purple-deep)"/>
-
     <path d="M 120,380 C 180,375 220,385 250,390 C 280,385 320,375 380,380 L 395,440 C 320,445 280,455 250,470 C 220,455 180,445 105,440 Z" fill="url(#plate-grad-4)"/>
     <path d="M 120,380 C 180,375 220,385 250,390 C 280,385 320,375 380,380 L 395,440 C 320,445 280,455 250,470 C 220,455 180,445 105,440 Z" fill="none" stroke="url(#gold-bright)" stroke-width="4"/>
-    
     <path d="M 110,360 L 140,380 L 120,450 L 80,420 Z" fill="url(#gold-bright)"/>
     <path d="M 390,360 L 360,380 L 380,450 L 420,420 Z" fill="url(#gold-bright)"/>
-    
-    <path d="M 123,385 C 180,380 220,390 250,395 C 280,390 320,380 377,385 L 380,400 C 320,395 280,405 250,410 C 220,405 180,395 120,400 Z" fill="#FFFFFF" opacity="0.2"/>
-
     <polygon points="250,470 230,490 250,520 270,490" fill="url(#gold-bright)" filter="url(#light-glow-4)"/>
-    <polygon points="250,470 250,520 270,490" fill="#FF8F00" opacity="0.7"/>
   </g>
 
-  <!-- TEXT -->
   <text x="250" y="435" dominant-baseline="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="32" fill="url(#text-grad-4)" text-anchor="middle" letter-spacing="4" filter="url(#text-shadow-4)">SVIP 4</text>
 
-  <!-- VIP DIAGONAL SHINE SWEEP -->
-  <g mask="url(#frame-mask-4)">
+  <!-- PERFECT SHINE SWEEP -->
+  <g mask="url(#perfect-mask-4)">
     <g>
       <animateTransform attributeName="transform" type="translate" values="-200 -100; 800 400" dur="2.8s" repeatCount="indefinite" />
       <linearGradient id="shine-sweep-4" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
-        <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.9"/>
-        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
       </linearGradient>
       <rect x="0" y="-400" width="45" height="1200" fill="url(#shine-sweep-4)" transform="rotate(35)" />
       <rect x="70" y="-400" width="90" height="1200" fill="url(#shine-sweep-4)" transform="rotate(35)" opacity="0.4"/>
