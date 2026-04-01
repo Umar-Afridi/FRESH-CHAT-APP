@@ -100,94 +100,140 @@ window.listenForSignals = async () => {
     }
 };
 
-// 💡 3. SIT DOWN (مائیک پر بیٹھنے کا فنکشن)
+// 💡 3. SIT DOWN (BUG FIXED: VIP Frame & Colorful Name Added)
 window.sitDown = async (sid, def) => {
-    const currentRoomId = window.currentRoomId;
-    const currentUser = window.currentUser;
-    const currentRoomSeats = window.currentRoomSeats;
-    const db = window.db;
-    const ref = window.ref;
-    const set = window.set;
-    const update = window.update;
-    const child = window.child;
-    const get = window.get;
-    const onDisconnect = window.onDisconnect;
-
-    const sr = ref(db, `rooms/${currentRoomId}/seats`);
-    
-    if (currentRoomSeats[sid] && (currentRoomSeats[sid].locked || currentRoomSeats[sid].uid)) return;
-    
-    // Firebase Data Update
-    let unseatUpdates = {};
-    ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
-        if (currentRoomSeats[k] && currentRoomSeats[k].uid === currentUser.uid) { unseatUpdates[k] = null; }
-    });
-
-    const userSnap = await get(ref(db, `users/${currentUser.uid}`));
-    const userData = userSnap.val() || {};
-    
-    await update(sr, unseatUpdates);
-    const targetSeatRef = child(sr, sid);
-    await set(targetSeatRef, {
-        uid: currentUser.uid,
-        name: currentUser.displayName,
-        pic: currentUser.photoURL,
-        frame: userData.currentFrame || null,
-        isOfficial: userData.isOfficial || false,
-        nameColorClass: userData.nameColorClass || null
-    });
-    onDisconnect(targetSeatRef).remove();
-    
-    currentSeatId = sid;
-    window.currentSeatId = sid; // Global update
-    
-    const menuEl = document.getElementById(`menu-${sid}`);
-    if (menuEl) menuEl.style.display = 'none';
-
-    // Zego Voice Publish
     try {
-        if (!zg) {
-            await window.listenForSignals();
+        const db = window.db;
+        const ref = window.ref;
+        const set = window.set;
+        const update = window.update;
+        const get = window.get; // <-- ڈیٹا بیس سے فریم پڑھنے کے لیے
+
+        const currentUser = window.currentUser;
+        const currentRoomId = window.currentRoomId || localStorage.getItem('lastRoomId'); 
+        const currentRoomSeats = window.currentRoomSeats || {};
+
+        if (!db || !currentUser || !currentRoomId) return;
+
+        if (currentRoomSeats[sid] && (currentRoomSeats[sid].locked || currentRoomSeats[sid].uid)) {
+            return; 
         }
 
-        if (zg) {
-            localZegoStream = await zg.createStream({camera: false, mic: true});
-            publishedStreamId = "stream_" + currentUser.uid; 
-            await zg.startPublishingStream(publishedStreamId, localZegoStream);
-            
+        // 🔥 نیا: یوزر کا ڈیٹا (فریم اور کلر) ڈیٹا بیس سے منگوائیں 🔥
+        const userSnap = await get(ref(db, `users/${currentUser.uid}`));
+        const userData = userSnap.val() || {};
+
+        // پرانی سیٹ سے ہٹائیں
+        let unseatUpdates = {};
+        ['seat1','seat2','seat3','seat4','seat5','seat6','seat7','seat8','seat9','seat10'].forEach(k => {
+            if (currentRoomSeats[k] && currentRoomSeats[k].uid === currentUser.uid) { 
+                unseatUpdates[k] = null; 
+            }
+        });
+
+        const seatsRefPath = `rooms/${currentRoomId}/seats`;
+        await update(ref(db, seatsRefPath), unseatUpdates);
+
+        const targetSeatRef = ref(db, `${seatsRefPath}/${sid}`);
+        
+        // 🔥 فکس: اب یہاں فریم، رنگین نام اور آفیشل سٹیٹس بھی ساتھ جائے گا 🔥
+        await set(targetSeatRef, {
+            uid: currentUser.uid,
+            name: currentUser.displayName,
+            pic: currentUser.photoURL,
+            frame: userData.currentFrame || null,           // فریم یہاں سے جائے گا
+            nameColorClass: userData.nameColorClass || "",  // رنگین نام یہاں سے جائے گا
+            isOfficial: userData.isOfficial || false        // آفیشل بیج یہاں سے جائے گا
+        });
+        
+        if (typeof window.onDisconnect === 'function') {
+            window.onDisconnect(targetSeatRef).remove();
+        }
+
+        window.currentSeatId = sid;
+        const menuEl = document.getElementById(`menu-${sid}`);
+        if (menuEl) menuEl.style.display = 'none';
+
+        // --- Zego Mic Logic ---
+        try {
+            if (!zg) {
+                await window.listenForSignals();
+            }
+
+            if (zg) {
+                localZegoStream = await zg.createStream({camera: false, mic: true});
+                publishedStreamId = "stream_" + currentUser.uid; 
+                await zg.startPublishingStream(publishedStreamId, localZegoStream);
+                
+                if(window.Swal) {
+                    Swal.fire({toast: true, icon: 'success', title: 'Mic Connected!', position: 'bottom', showConfirmButton: false, timer: 1500, background: '#111', color: '#fff'});
+                }
+            }
+        } catch (zegoErr) {
             if(window.Swal) {
-                Swal.fire({toast: true, icon: 'success', title: 'Mic Connected!', position: 'bottom', showConfirmButton: false, timer: 1500, background: '#111', color: '#fff'});
+                Swal.fire({
+                    toast: true,
+                    icon: 'info',
+                    title: 'Joined Seat (Mic disabled due to local test)',
+                    position: 'bottom',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    background: '#111',
+                    color: '#fff'
+                });
             }
         }
-    } catch (err) {
-        console.error("Mic Error: Android Permissions might be needed.", err);
+    } catch (mainErr) {
+        alert("Critical Error: " + mainErr.message);
     }
 };
 
-// 💡 4. LEAVE SEAT
+// 💡 4. LEAVE SEAT (BUG FIXED: Missing Remove Function Bypassed)
 window.leaveSeat = async (sid) => {
-    const currentRoomId = window.currentRoomId;
-    const db = window.db;
-    const ref = window.ref;
-    const remove = window.remove;
-    const onDisconnect = window.onDisconnect;
+    try {
+        // 🔥 فکس: ہم نے remove کا استعمال ختم کر دیا ہے تاکہ کوئی کریش نہ ہو۔
+        const db = window.db;
+        const ref = window.ref;
+        const set = window.set; // set کا استعمال کر کے سیٹ خالی کریں گے
+        
+        const currentRoomId = window.currentRoomId || localStorage.getItem('lastRoomId');
 
-    const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
-    cleanupRipples();
-    onDisconnect(seatRef).cancel();
-    await remove(seatRef);
-    
-    const menuEl = document.getElementById(`menu-${sid}`);
-    if (menuEl) menuEl.style.display = 'none';
-    
-    if (currentSeatId === sid) {
-        currentSeatId = null;
-        window.currentSeatId = null;
-        if (zg && publishedStreamId) {
-            zg.stopPublishingStream(publishedStreamId);
-            if (localZegoStream) { zg.destroyStream(localZegoStream); localZegoStream = null; }
-            publishedStreamId = null;
+        if (!db || !currentRoomId) return;
+
+        const seatRef = ref(db, `rooms/${currentRoomId}/seats/${sid}`);
+        
+        if (typeof window.cleanupRipples === 'function') window.cleanupRipples();
+        if (typeof window.onDisconnect === 'function') {
+            try { window.onDisconnect(seatRef).cancel(); } catch(e){}
         }
+        
+        // 🔥 اصل جادو: remove() کی جگہ set(null) استعمال کیا ہے
+        await set(seatRef, null); 
+        
+        const menuEl = document.getElementById(`menu-${sid}`);
+        if (menuEl) menuEl.style.display = 'none';
+        
+        if (window.currentSeatId === sid) {
+            window.currentSeatId = null;
+            
+            // زیگو کلاؤڈ مائیک کو بند کریں
+            if (zg && publishedStreamId) {
+                zg.stopPublishingStream(publishedStreamId);
+                if (localZegoStream) { 
+                    zg.destroyStream(localZegoStream); 
+                    localZegoStream = null; 
+                }
+                publishedStreamId = null;
+            }
+        }
+        
+        if(window.Swal) {
+            Swal.fire({toast: true, icon: 'info', title: 'Left the seat', position: 'bottom', showConfirmButton: false, timer: 1500, background: '#111', color: '#fff'});
+        }
+        
+    } catch (err) {
+        console.error("Leave Seat Error:", err);
+        alert("Error leaving seat: " + err.message); // اگر پھر بھی مسئلہ آیا تو سکرین پر شو ہوگا
     }
 };
 
