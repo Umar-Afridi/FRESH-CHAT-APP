@@ -762,19 +762,46 @@
         .game-title-img { height: 40px; object-fit: contain; margin-bottom: 2px; }
         .round-text-box { background: rgba(0,0,0,0.5); border-radius: 15px; padding: 2px 20px; font-size: 10px; color: #8b7355; border: 1px solid #331a00; margin-bottom: 8px; }
 
-        /* فروٹ گرڈ (چھوٹے اور پرفیکٹ خانے) */
-        .fruit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 15px; background: #260000; border-radius: 10px; margin: 0 10px; border: 2px solid #5c1e06; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
-        .fruit-item { height: 60px; background: linear-gradient(to bottom, #1a0000, #0d0000); border: 1px solid #ff4500; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .fruit-img { width: 35px; height: 35px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)); margin: auto; z-index: 2; transition: transform 0.2s; }
-        .text-multiplier { font-size: 9px; color: #facc15; font-weight: 900; margin-bottom: 2px; z-index: 10; }
-        .fruit-item.active { border: 2px solid #fff !important; box-shadow: 0 0 15px #fff, inset 0 0 10px #ffeb3b !important; background: radial-gradient(circle, #ff8c00 0%, #8b0000 100%) !important; transform: scale(1.05) !important; }
+        /* فروٹ گرڈ (پروفیشنل سکوئر / لمبے خانے) */
+        .fruit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #260000; border-radius: 12px; margin: 0 10px; border: 2px solid #5c1e06; box-shadow: inset 0 0 15px rgba(0,0,0,0.9); }
+        .fruit-item { height: 85px; background: linear-gradient(to bottom, #1a0000, #0d0000); border: 2px solid #ff4500; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 3px 6px rgba(0,0,0,0.7); transition: transform 0.1s; }
+        .fruit-img { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.9)); margin: auto; z-index: 2; transition: transform 0.2s; }
+        .text-multiplier { font-size: 11px; color: #facc15; font-weight: 900; margin-bottom: 4px; z-index: 10; text-shadow: 1px 1px 2px #000; }
+        .fruit-item.active { border: 2px solid #fff !important; box-shadow: 0 0 20px #fff, inset 0 0 15px #ffeb3b !important; background: radial-gradient(circle, #ff8c00 0%, #8b0000 100%) !important; transform: scale(1.05) !important; }
         
-        /* سینٹر ٹائمر سکرین شاٹ کے مطابق */
-        .center-timer { grid-column: 2 / span 2; grid-row: 2; height: 60px; background: #330000; border: 2px dotted #ff4500; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #ffeb3b; font-family: 'Courier New', monospace; box-shadow: inset 0 0 15px rgba(0,0,0,0.9); }
+        /* سینٹر ٹائمر (2 خانوں کے برابر پرفیکٹ سائز) */
+        .center-timer { grid-column: 2 / span 2; grid-row: 2; height: 85px; background: #330000; border: 3px dotted #ff4500; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 900; color: #ffeb3b; font-family: 'Courier New', monospace; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); text-shadow: 0 4px 6px rgba(0,0,0,0.8); }
 
-        /* بیٹ بٹنز (چپس) سکرین شاٹ کے مطابق (100, 1K, 10K, 50K) */
-        .bet-controls { display: flex; justify-content: space-between; gap: 8px; padding: 12px 15px; width: 100%; }
-        .chip-btn { flex: 1; height: 30px; background: linear-gradient(to bottom, #ffda44, #d97706); color: #3f0000; font-weight: 900; border-radius: 15px; font-size: 11px; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        /* بیٹ بٹنز (چپس) سکرین شاٹ کے مطابق (Swipable up to 5M) */
+        .bet-controls { 
+            display: flex; 
+            gap: 10px; 
+            padding: 12px 15px; 
+            width: 100%; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch; 
+        }
+        .bet-controls::-webkit-scrollbar { display: none; }
+        
+        .chip-btn { 
+            flex-shrink: 0; 
+            min-width: 68px; 
+            height: 32px; 
+            background: linear-gradient(to bottom, #ffda44, #d97706); 
+            color: #3f0000; 
+            font-weight: 900; 
+            border-radius: 16px; 
+            font-size: 11px; 
+            border: 2px solid #fff; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: transform 0.1s; 
+        }
         .chip-btn.selected { border-color: #ff0000; box-shadow: 0 0 15px #ff4500; transform: scale(1.05); color: #fff; background: linear-gradient(to bottom, #ff4500, #8b0000); }
 
         /* بیلنس اور ٹوڈے وننگ */
@@ -2465,10 +2492,15 @@
             </div>
 
             <div class="bet-controls">
-                <button class="chip-btn selected" onclick="selectChip(10000, this)">10K</button>
-                <button class="chip-btn" onclick="selectChip(50000, this)">50K</button>
-                <button class="chip-btn" onclick="selectChip(500000, this)">500K</button>
-                <button class="chip-btn" onclick="selectChip(1000000, this)">1M <i class="fa-brands fa-bitcoin"></i></button>
+                <button class="chip-btn selected" onclick="window.selectChip(10000, this)">10K</button>
+                <button class="chip-btn" onclick="window.selectChip(50000, this)">50K</button>
+                <button class="chip-btn" onclick="window.selectChip(100000, this)">100K</button>
+                <button class="chip-btn" onclick="window.selectChip(500000, this)">500K</button>
+                <button class="chip-btn" onclick="window.selectChip(1000000, this)">1M <i class="fa-brands fa-bitcoin ml-1"></i></button>
+                <button class="chip-btn" onclick="window.selectChip(2000000, this)">2M</button>
+                <button class="chip-btn" onclick="window.selectChip(3000000, this)">3M</button>
+                <button class="chip-btn" onclick="window.selectChip(4000000, this)">4M</button>
+                <button class="chip-btn" onclick="window.selectChip(5000000, this)">5M</button>
             </div>
 
             <div class="game-footer">
@@ -3993,6 +4025,7 @@ function handleGesture(sX, sY, eX, eY) {
                 // اب آپ جیسے ہی ڈائمنڈ کنورٹ کریں گے، ہر جگہ کوائنز خود بخود اپڈیٹ ہوں گے
                 onValue(ref(db, `users/${currentUser.uid}/coins`), (snap) => {
                     currentCoins = snap.exists() ? snap.val() : 0;
+                    window.currentCoins = currentCoins; // <-- (لکی فروٹ گیم کے لیے کنکشن)
                     
                     // پوری ایپ میں جہاں جہاں کوائنز شو ہوتے ہیں، سب کو لائیو اپڈیٹ کر دیں
                     if(document.getElementById('game-balance')) document.getElementById('game-balance').innerText = window.formatNumberShort(currentCoins);
@@ -6589,360 +6622,7 @@ window.leaveRoomFull = () => {
 
         document.querySelectorAll('.chair-bg-img').forEach(img => { img.onerror = () => { img.style.display = 'none'; }; });
         
-        let gameTimer = 30;
-        let isSpinning = false;
-        let currentBet = 10000;
-        let activeBets = {}; 
-        
-        const ODDS = { 0: 5, 1: 5, 2: 5, 3: 5, 4: 0, 5: 0, 6: 10, 7: 15, 8: 25, 9: 45 };
-        const spinPath = [0, 1, 2, 3, 5, 9, 8, 7, 6, 4]; 
-
-        const ROUND_DURATION = 40; 
-        const BET_TIME = 30;
-        let currentRoundId = 0;
-        let resultHistory = []; 
-        let detailedBetHistory = [];
-
-        function getDeterministicWinner(roundId) {
-            let hash = Math.sin(roundId) * 10000;
-            let rand = hash - Math.floor(hash);
-            
-            const items =[
-                {id: 9, weight: 27},
-                {id: 4, weight: 10},
-                {id: 5, weight: 10},
-                {id: 8, weight: 200},
-                {id: 7, weight: 600},
-                {id: 6, weight: 1500},
-                {id: 0, weight: 1913},
-                {id: 1, weight: 1913},
-                {id: 2, weight: 1913},
-                {id: 3, weight: 1914}
-            ];
-
-            let cumulative = 0;
-            let randWeight = rand * 10000;
-            let selectedId = 0;
-
-            for (let i = 0; i < items.length; i++) {
-                cumulative += items[i].weight;
-                if (randWeight <= cumulative) {
-                    selectedId = items[i].id;
-                    break;
-                }
-            }
-
-            return spinPath.indexOf(selectedId);
-        }
-
-        setInterval(() => {
-            if (!currentUser) return;
-            let now = Math.floor(Date.now() / 1000);
-            let roundStart = now - (now % ROUND_DURATION);
-            let newRoundId = roundStart;
-            let elapsed = now - roundStart;
-
-            if (currentRoundId !== newRoundId) {
-                currentRoundId = newRoundId;
-                resetGameLocally();
-            }
-
-            if (elapsed < BET_TIME) {
-                isSpinning = false;
-                let timeLeft = BET_TIME - elapsed;
-                if(document.getElementById('game-timer')) {
-                    document.getElementById('game-timer').innerText = timeLeft;
-                }
-            } else if (elapsed === BET_TIME) {
-                if(!isSpinning) {
-                    isSpinning = true;
-                    if(document.getElementById('game-timer')) document.getElementById('game-timer').innerText = "0";
-                    let winningPathIndex = getDeterministicWinner(currentRoundId);
-                    spinWheelSequential(winningPathIndex);
-                }
-            }
-        }, 1000);
-
-        window.openGame = () => {
-            document.getElementById('game-modal').style.display = 'flex';
-            if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = (currentCoins || 0).toLocaleString(); }
-            
-            let today = new Date().toLocaleDateString();
-            let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
-            if (savedData.date !== today) { savedData.amount = 0; }
-            let displayEl = document.getElementById('game-today-win');
-            if(displayEl) displayEl.innerText = savedData.amount.toLocaleString();
-        };
-
-        window.closeGame = () => { 
-            document.getElementById('game-modal').style.display = 'none'; 
-        };
-
-        window.selectChip = (amt, btn) => { 
-            currentBet = amt; 
-            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected')); 
-            btn.classList.add('selected'); 
-        };
-
-        window.placeBet = (index) => {
-            if(isSpinning) return Swal.fire({toast:true, icon:'warning', title:'Spinning... wait for next round!', position:'top', showConfirmButton:false, timer:1500});
-            if(index === 4 || index === 5) return; 
-            if((currentCoins || 0) < currentBet) { return Swal.fire({toast:true, icon:'error', title:'Not enough coins!', position:'top', showConfirmButton:false, timer:1500}); }
-            
-            currentCoins -= currentBet;
-            update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
-            
-            if(!activeBets[index]) activeBets[index] = 0;
-            activeBets[index] += currentBet;
-            
-            const betBadge = document.getElementById(`bet-${index}`);
-            if(betBadge) betBadge.innerText = activeBets[index];
-            if(document.getElementById('game-balance')) { document.getElementById('game-balance').innerText = currentCoins.toLocaleString(); }
-        };
-
-        function resetGameLocally() {
-            activeBets = {};
-            document.querySelectorAll('.bet-overlay').forEach(el => el.innerText = '');
-            if(document.getElementById('game-win')) document.getElementById('game-win').innerText = "0";
-            document.querySelectorAll('.fruit-item').forEach(el => el.classList.remove('active'));
-            const overlay = document.getElementById('game-result-overlay');
-            if(overlay) {
-                overlay.classList.replace('scale-100', 'scale-0');
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-            }
-        }
-
-        function spinWheelSequential(finalResultPathIndex) {
-            const resultFruitId = spinPath[finalResultPathIndex]; 
-            const totalSteps = (3 * spinPath.length) + finalResultPathIndex;
-            let currentStep = 0;
-            let currentPathIndex = 0;
-
-            function step() {
-                document.querySelectorAll('.fruit-item').forEach(el => el.classList.remove('active'));
-                const activeFruitId = spinPath[currentPathIndex];
-                const el = document.getElementById(`f-${activeFruitId}`);
-                if(el) el.classList.add('active');
-
-                currentStep++;
-                currentPathIndex = (currentPathIndex + 1) % spinPath.length;
-
-                if (currentStep <= totalSteps) {
-                    let nextDelay = 50; 
-                    if (totalSteps - currentStep < 10) nextDelay = 100;
-                    if (totalSteps - currentStep < 5) nextDelay = 250;
-                    if (totalSteps - currentStep < 2) nextDelay = 400;
-                    setTimeout(step, nextDelay);
-                } else {
-                    setTimeout(() => finalizeResult(resultFruitId), 500);
-                }
-            }
-            step();
-        }
-
-        function updateTodayWinnings(winAmt) {
-            let today = new Date().toLocaleDateString();
-            let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
-
-            if (savedData.date !== today) {
-                savedData = { date: today, amount: 0 };
-            }
-
-            savedData.amount += winAmt;
-            localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
-
-            let displayEl = document.getElementById('game-today-win');
-            if(displayEl) displayEl.innerText = savedData.amount.toLocaleString();
-        }
-
-        function finalizeResult(winningFruitId) {
-            let winAmount = 0;
-            let totalBetThisRound = 0;
-            
-            const fruitNames = {0: 'Orange', 1: 'Lemon', 2: 'Grapes', 3: 'Cherry', 4: 'Lucky', 5: 'Lucky', 6: 'Apple', 7: 'Watermelon', 8: 'Mango', 9: 'Strawberry'};
-            const wonFruitName = fruitNames[winningFruitId];
-
-            for(let key in activeBets) { totalBetThisRound += activeBets[key]; }
-
-            if (winningFruitId === 4 || winningFruitId === 5) {
-                let totalBonusBets = (activeBets[4]||0) + (activeBets[5]||0);
-                winAmount = totalBonusBets * 5; 
-            } else {
-                const multiplier = ODDS[winningFruitId] || 0;
-                if(activeBets[winningFruitId]) {
-                    winAmount = activeBets[winningFruitId] * multiplier;
-                }
-            }
-
-            const winningImgElement = document.querySelector(`#f-${winningFruitId} img`);
-            const winningImgSrc = winningImgElement ? winningImgElement.src : 'https://placehold.co/100?text=Win';
-
-            if(winningImgSrc) {
-                resultHistory.unshift(winningImgSrc);
-                if(resultHistory.length > 8) resultHistory.pop();
-                updateHistoryStripUI();
-            }
-
-            if(totalBetThisRound > 0) {
-                const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const roundId = Math.floor(1000 + Math.random() * 9000);
-                
-                let selectedFruitsArray =[];
-                for(let key in activeBets) {
-                    let betImgElement = document.querySelector(`#f-${key} img`);
-                    let betImgSrc = betImgElement ? betImgElement.src : '';
-                    selectedFruitsArray.push({ img: betImgSrc, amount: activeBets[key] });
-                }
-
-                detailedBetHistory.unshift({
-                    round: roundId,
-                    time: timeNow,
-                    selected: selectedFruitsArray,
-                    winImg: winningImgSrc,
-                    totalWin: winAmount,
-                    status: winAmount > 0 ? 'WIN' : 'LOSE'
-                });
-                
-                if(detailedBetHistory.length > 20) detailedBetHistory.pop(); 
-            }
-
-            const popup = document.getElementById('new-result-popup');
-            const popupImg = document.getElementById('popup-fruit-img');
-            const popupText = document.getElementById('popup-text');
-            const popupCircle = document.getElementById('popup-circle');
-            const popupAmount = document.getElementById('popup-amount');
-
-            if(popup) {
-                if(popupImg) popupImg.src = winningImgSrc;
-                if(popupCircle) popupCircle.classList.remove('hidden');
-                if(popupAmount) popupAmount.classList.add('hidden');
-
-                if(winAmount > 0) {
-                    currentCoins += winAmount;
-                    update(ref(db, `users/${currentUser.uid}`), { coins: currentCoins });
-                    
-                    let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
-                    savedData.amount += winAmount;
-                    localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
-
-                    let gameBalanceEl = document.getElementById('game-balance');
-                    if(gameBalanceEl) gameBalanceEl.innerText = currentCoins.toLocaleString();
-                    
-                    let todayWinEl = document.getElementById('game-today-win');
-                    if(todayWinEl) todayWinEl.innerText = savedData.amount.toLocaleString();
-                    
-                    if(popupText) popupText.innerText = "Congratulations! You won";
-                    if(popupCircle) popupCircle.classList.add('hidden');
-                    if(popupAmount) {
-                        popupAmount.classList.remove('hidden');
-                        popupAmount.innerText = winAmount.toLocaleString();
-                    }
-                    
-                    if(typeof broadcastWin === "function"){
-                        broadcastWin(currentUser.displayName, winAmount, currentUser.photoURL);
-                    }
-                } else if (totalBetThisRound > 0) {
-                    if(popupText) popupText.innerText = "You didn't win this round";
-                    if(popupCircle) popupCircle.innerText = "!";
-                } else {
-                    if(popupText) popupText.innerText = "You didn't participate this round";
-                    if(popupCircle) popupCircle.innerText = "!";
-                }
-
-                popup.style.display = 'flex';
-                
-                setTimeout(() => {
-                    popup.style.display = 'none';
-                }, 4000);
-            }
-        }
-
-        window.openGameHistory = () => {
-            const listContainer = document.getElementById('game-history-list');
-            if(!listContainer) return;
-            listContainer.innerHTML = '';
-            
-            if(detailedBetHistory.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-gray-500 mt-10 text-xs">No betting history yet.</div>';
-            } else {
-                detailedBetHistory.forEach(item => {
-                    const isWin = item.status === 'WIN';
-                    
-                    let betsHtml = '';
-                    item.selected.forEach(bet => {
-                        betsHtml += `<div class="flex items-center bg-[#5c2e0b] rounded px-2 py-1 shadow-inner border border-[#8b4513]">
-                            <img src="${bet.img}" class="w-5 h-5 object-contain mr-1">
-                            <span class="text-yellow-200 text-xs font-bold">${bet.amount.toLocaleString()}</span>
-                        </div>`;
-                    });
-
-                    listContainer.innerHTML += `
-                        <div class="relative bg-gradient-to-b from-[#b35e22] to-[#8b4513] p-4 rounded-xl mb-3 shadow-lg overflow-hidden border border-[#d2691e]">
-                            
-                            <div class="flex justify-between items-center text-white font-bold mb-3 border-b border-white/20 pb-2">
-                                <span class="text-sm">Round: ${item.round}</span>
-                                <span class="text-[10px] font-normal opacity-80">${item.time}</span>
-                            </div>
-
-                            <div class="flex mb-3">
-                                <span class="text-white/70 text-xs w-24 flex-shrink-0 pt-1">Selected fruits:</span>
-                                <div class="flex flex-wrap gap-2 flex-1">
-                                    ${betsHtml}
-                                </div>
-                            </div>
-
-                            <div class="flex items-center mb-3">
-                                <span class="text-white/70 text-xs w-24 flex-shrink-0">Winning fruits:</span>
-                                <img src="${item.winImg}" class="w-8 h-8 drop-shadow-md">
-                            </div>
-
-                            <div class="flex items-center relative z-10">
-                                <span class="text-white/70 text-xs w-24 flex-shrink-0">Win coins:</span>
-                                <span class="text-yellow-300 font-bold text-sm">🪙 ${item.totalWin.toLocaleString()}</span>
-                            </div>
-
-                            <div class="absolute -bottom-6 -right-6 w-28 h-28 border-[4px] ${isWin ? 'border-green-400 text-green-400' : 'border-gray-300 text-gray-300'} opacity-30 rounded-full flex items-center justify-center -rotate-12 pointer-events-none">
-                                <div class="border-[2px] ${isWin ? 'border-green-400' : 'border-gray-300'} w-[90%] h-[90%] rounded-full flex items-center justify-center">
-                                    <span class="font-black text-2xl uppercase tracking-widest">${item.status}</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('game-history-modal').classList.remove('hidden');
-            document.getElementById('game-history-modal').classList.add('flex');
-        };
-
-        window.closeGameHistory = () => {
-            const histModal = document.getElementById('game-history-modal');
-            if(histModal) {
-                histModal.classList.add('hidden');
-                histModal.classList.remove('flex');
-            }
-        };
-
-        function updateHistoryStripUI() {
-            const strip = document.getElementById('game-history-strip');
-            if(!strip) return;
-            strip.innerHTML = '<span class="history-label">Results:</span>';
-            resultHistory.forEach((src, index) => {
-                if(index === 0) {
-                    strip.innerHTML += `<div class="history-item newest"><img src="${src}"><div class="new-tag">new</div></div>`;
-                } else {
-                    strip.innerHTML += `<div class="history-item"><img src="${src}"></div>`;
-                }
-            });
-        }
-        
-        setInterval(() => {
-            if(document.getElementById('round-number-display') && currentRoundId > 0) {
-                let roundNum = Math.floor((Date.now() % 86400000) / 40000);
-                document.getElementById('round-number-display').innerText = "Round " + roundNum + " of today";
-            }
-        }, 1000);
-
+     
   
 
 window.openCustomerSupport = async () => {
@@ -7929,6 +7609,7 @@ window.loadCPWeeklyComingSoon = function() {
 <script src="./cp_system.js"></script>
 <script src="./edge_swipe.js"></script>
 <script src="./room_system_ext.js"></script>
+<script src="./lucky_fruit.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
