@@ -1168,6 +1168,29 @@
 .fast-spin {
     animation: fa-spin 0.5s infinite linear !important;
 }
+
+/* ===== NEW: IN ROOM VOICE WAVE ANIMATION ===== */
+.voice-wave-container { 
+    display: flex; 
+    align-items: flex-end; 
+    gap: 2px; 
+    height: 12px; 
+}
+.voice-wave-bar { 
+    width: 3px; 
+    background-color: #fff; 
+    border-radius: 2px; 
+    animation: voiceWave 1s infinite ease-in-out; 
+}
+.voice-wave-bar:nth-child(1) { height: 40%; animation-delay: 0s; }
+.voice-wave-bar:nth-child(2) { height: 100%; animation-delay: -0.2s; }
+.voice-wave-bar:nth-child(3) { height: 60%; animation-delay: -0.4s; }
+.voice-wave-bar:nth-child(4) { height: 80%; animation-delay: -0.6s; }
+
+@keyframes voiceWave {
+    0%, 100% { transform: scaleY(0.5); background-color: #ffffff; }
+    50% { transform: scaleY(1.2); background-color: #facc15; box-shadow: 0 0 5px #facc15; }
+}
     </style>
 <!-- ZEGOCLOUD SDK -->
    <script src="https://cdn.jsdelivr.net/npm/zego-express-engine-webrtc@3.1.0/zego-express-webrtc.js"></script>
@@ -1568,13 +1591,13 @@
 
             <!-- Right Column: نام اور آئی ڈی وغیرہ -->
             <div id="fpv-text-container" class="flex flex-col justify-center flex-1 relative z-40 mt-2 pl-2 transition-all">
-            <div class="flex items-center flex-wrap gap-1.5 mb-1.5 w-full">
-    <h2 id="fpv-name" class="text-[18px] font-extrabold text-white drop-shadow-md max-w-[135px] truncate leading-normal">User Name</h2>
-    <img id="fpv-official" src="./virfication_badge.svg" class="h-[24px] hidden object-contain drop-shadow-md flex-shrink-0 mt-[1px]" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
-    <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-[2px] rounded-full flex items-center justify-center gap-1 font-bold border border-white/30 shadow-sm flex-shrink-0 h-[20px]">
-        <i class="fa-solid fa-mars"></i> 18
-    </span>
-</div>
+                <div class="flex items-center flex-wrap gap-1.5 mb-1.5 w-full">
+                    <h2 id="fpv-name" class="text-[18px] font-extrabold text-white drop-shadow-md max-w-[135px] truncate leading-normal">User Name</h2>
+                    <img id="fpv-official" src="./virfication_badge.svg" class="h-[24px] hidden object-contain drop-shadow-md flex-shrink-0 mt-[1px]" onerror="this.onerror=null; this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';">
+                    <span id="fpv-gender-age" class="bg-blue-400/80 backdrop-blur-sm text-white text-[10px] px-2 py-[2px] rounded-full flex items-center justify-center gap-1 font-bold border border-white/30 shadow-sm flex-shrink-0 h-[20px]">
+                        <i class="fa-solid fa-mars"></i> 18
+                    </span>
+                </div>
                 <div class="flex items-center gap-3 text-xs font-bold text-gray-200 drop-shadow-md mt-1">
                     <div class="bg-black/60 px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
                         ID: <span id="fpv-id" class="text-white">0000</span> <i class="fa-regular fa-copy text-[10px] cursor-pointer hover:text-white" onclick="copyToClipboard(document.getElementById('fpv-id').innerText)"></i>
@@ -1585,7 +1608,19 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- 🔥 NEW IN ROOM BUTTON (اب یہ بالکل آپ کے ریڈ سرکل کی جگہ شو ہوگا) 🔥 -->
+        <div id="fpv-in-room-btn" class="hidden absolute right-6 bottom-10 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(216,70,239,0.8)] border border-white/30 active:scale-95 transition-all z-[100]">
+            <div class="voice-wave-container">
+                <div class="voice-wave-bar"></div>
+                <div class="voice-wave-bar"></div>
+                <div class="voice-wave-bar"></div>
+                <div class="voice-wave-bar"></div>
+            </div>
+            <span class="text-[11px] font-black text-white tracking-widest uppercase" style="text-shadow: 1px 1px 2px black;">In Room</span>
+        </div>
+
+    </div> <!-- ٹاپ بلیک ایریا کا اختتام -->
 
     <!-- وائٹ بورڈ (اب پوری طرح اسکرول ہو گا) -->
     <div class="fpv-white-board">
@@ -4988,10 +5023,7 @@ window.joinRoom = async (rid) => {
     document.getElementById('guest-touch-blocker').style.display = 'none'; 
     document.getElementById('empty-state-trigger').style.display = 'flex'; 
     
-    if(rid === currentUser.uid) { 
-        update(ref(db, `rooms/${rid}`), { isLive: true }); 
-        onDisconnect(ref(db, `rooms/${rid}/isLive`)).set(false); 
-    } 
+     
 
     // REALTIME LISTENER FOR ROOM SETTINGS (Type & Super Mic)
     onValue(ref(db, `rooms/${rid}`), (s) => {
@@ -6025,12 +6057,29 @@ const hpContainer = document.getElementById('hp-visual-container');
                 }
             }
 
-            // Followers - Calculate correctly from data if possible, else fallback
+             // Followers - Calculate correctly from data if possible, else fallback
             let followersCount = d.friends ? Object.keys(d.friends).length : 0;
             document.getElementById('fpv-followers').innerText = followersCount;
 
+            // 🔥 NEW: CHECK IF USER IS IN ROOM AND SHOW BUTTON (FIXED) 🔥
+            const inRoomBtn = document.getElementById('fpv-in-room-btn');
+            if (inRoomBtn) {
+                if (d.currentRoom && d.currentRoom !== null && d.currentRoom !== "") {
+                    inRoomBtn.classList.remove('hidden');
+                    inRoomBtn.style.display = 'flex'; // زبردستی Flex کر دیا تاکہ ہر حال میں شو ہو
+                    inRoomBtn.onclick = () => {
+                        closeFullProfileView(); 
+                        setTimeout(() => { window.fastJoinRoom(d.currentRoom); }, 300); // ہلکا سا ڈیلے تاکہ پروفائل سموتھ بند ہو
+                    };
+                } else {
+                    inRoomBtn.classList.add('hidden');
+                    inRoomBtn.style.display = 'none'; // چھپا دیا
+                    inRoomBtn.onclick = null;
+                }
+            }
+
             // FIX: lvl یہاں ڈیفائن نہیں تھا جس کی وجہ سے ایپ کریش ہو رہی تھی اور CP ڈیٹا لوڈ نہیں ہو رہا تھا
-            let currentLevel = getUserLevel(d.userExp || 0); 
+            let currentLevel = getUserLevel(d.userExp || 0);
 
             renderFPVFrames(d); 
             renderFPVMedals(d, currentLevel); 
@@ -6510,6 +6559,9 @@ window.leaveRoomFull = () => {
     let tempRoomId = currentRoomId;
     currentRoomId = null; 
     currentRoomData = null; 
+    
+    // 🔥 NEW: Remove User's Current Room Status
+    update(ref(db, `users/${currentUser.uid}`), { currentRoom: null }); 
 
     switchTab('view-home', document.querySelector('#btn-home')); 
     localStorage.removeItem('lastRoomId'); 

@@ -71,6 +71,14 @@ async function fetchAllLeaderboardsVIP() {
     if(usersSnap.exists()) {
         usersSnap.forEach(s => { 
             let u = s.val(); u.uid = s.key;
+            
+            // 🔥 LOCATION ISOLATION LOGIC 🔥
+            let uCountry = u.country || "Unknown";
+            let myC = window.myUserCountry || "Unknown";
+            if (!window.currentUserIsOfficial && uCountry !== "Unknown" && myC !== "Unknown" && uCountry !== myC) {
+                return; // دوسرے ملک کے یوزر کو سکپ کر دو
+            }
+
             let uDailyMatch = (u.lastGiftDate === timeKeys.daily);
             let uWeeklyMatch = (u.lastGiftWeek === timeKeys.weekly);
             let uMonthlyMatch = (u.lastGiftMonth === timeKeys.monthly);
@@ -224,6 +232,13 @@ window.updateHomeTopDPs = async () => {
     if(usersSnap.exists()) {
         usersSnap.forEach(s => { 
             let u = s.val(); u.uid = s.key;
+            
+            // 🔥 LOCATION ISOLATION LOGIC 🔥
+            let uCountry = u.country || "Unknown";
+            let myC = window.myUserCountry || "Unknown";
+            if (!window.currentUserIsOfficial && uCountry !== "Unknown" && myC !== "Unknown" && uCountry !== myC) {
+                return; // دوسرے ملک کے یوزر کو سکپ کر دو
+            }
             
             // Daily, Weekly, Monthly Scores Collect Karna
             u.exp_d = (u.lastGiftDate === tKeys.daily) ? (Number(u.userExp_daily) || 0) : 0;
