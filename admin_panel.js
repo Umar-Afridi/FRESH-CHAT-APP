@@ -81,6 +81,13 @@ const adminPanelHTML = `
                     <div class="w-10 h-10 bg-teal-500/20 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-trash-arrow-up text-teal-500 text-lg"></i></div>
                     <span class="text-teal-500 font-bold text-[10px] uppercase tracking-wide text-center">Recover ID</span>
                 </div>
+                
+                <!-- 🔥 نیا لوکیشن تبدیل کرنے کا بٹن 🔥 -->
+                <div class="bg-indigo-500/10 border border-indigo-500/30 p-3.5 rounded-xl flex flex-col items-center justify-center cursor-pointer active:scale-95 transition hover:bg-indigo-500/20" onclick="adminAction('location')">
+                    <div class="w-10 h-10 bg-indigo-500/20 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-earth-americas text-indigo-500 text-lg"></i></div>
+                    <span class="text-indigo-500 font-bold text-[10px] uppercase tracking-wide text-center">Change Location</span>
+                </div>
+
                 <div class="col-span-2 bg-gray-500/10 border border-gray-500/30 p-3 rounded-xl flex flex-row items-center justify-center gap-3 cursor-pointer active:scale-95 transition hover:bg-gray-500/20 mt-1" onclick="adminAction('delete')">
                     <i class="fa-solid fa-trash text-gray-400 text-base"></i>
                     <span class="text-gray-400 font-bold text-[10px] uppercase tracking-wide">Delete Account Permanently</span>
@@ -337,6 +344,34 @@ window.adminAction = async function(action) {
                 isDeleted: null
             });
             window.showNotice("Account Recovered");
+        }
+        // 🔥 نیا لوکیشن اپڈیٹ کرنے کا لاجک 🔥
+        else if(action === 'location') {
+            if(!isHeadOfficial) return window.showNotice("Denied: Head Admin Only");
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Change User Location',
+                html:
+                    '<input id="swal-country" class="swal2-input" placeholder="Country Name (e.g. India)">' +
+                    '<input id="swal-flag" class="swal2-input" placeholder="Flag Emoji (e.g. 🇮🇳)">',
+                focusConfirm: false,
+                background: '#111', color: '#fff',
+                showCancelButton: true,
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-country').value,
+                        document.getElementById('swal-flag').value
+                    ]
+                }
+            });
+
+            if (formValues && formValues[0]) {
+                await window.update(window.ref(window.db, `users/${adminTargetUid}`), { 
+                    country: formValues[0],
+                    flag: formValues[1] || '🏳️'
+                });
+                window.showNotice("Location Updated Successfully");
+            }
         }
 
     } catch (error) {
