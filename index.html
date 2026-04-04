@@ -1605,7 +1605,7 @@
             <div id="fpv-tab-profile" class="block">
                 <!-- Location -->
                 <div class="flex items-center gap-2 text-gray-600 text-sm mb-2 font-medium mt-2">
-                    <i class="fa-solid fa-location-dot text-gray-400"></i> <span>Pakistan</span>
+                    <i class="fa-solid fa-location-dot text-gray-400"></i> <span id="fpv-location">Loading...</span>
                 </div>
                 
                 <!-- Bio -->
@@ -2442,7 +2442,44 @@
         </div>
     </div>
 
+    <!-- ================= ROCKET REWARD POPUP (PREMIUM GRID DESIGN) ================= -->
+<style>
+    @keyframes dropInSmooth { 0% { transform: scale(0.8) translateY(-30px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+    .rocket-popup-container { animation: dropInSmooth 0.4s ease-out forwards; background: linear-gradient(145deg, #0f0c29, #302b63, #24243e); border: 2px solid #facc15; box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(250, 204, 21, 0.15); }
+    .top-rank-box { background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.7)); border-radius: 16px; padding: 10px 4px; border: 1px solid rgba(255,255,255,0.15); position: relative; display: flex; flex-direction: column; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     
+    /* یہ کلاس کوائنز، XP اور فریم کو باکس کی شکل دے گی */
+    .reward-grid-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; width: 30px; height: 42px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+    .reward-grid-item img { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); margin-bottom: 2px; }
+    .reward-grid-item span { font-size: 8px; font-weight: 900; }
+</style>
+
+<div id="rocket-reward-result-modal" class="fixed inset-0 z-[9999] bg-black/85 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300">
+    <div class="rocket-popup-container w-full max-w-[360px] rounded-3xl p-5 flex flex-col items-center relative">
+        
+        <!-- Premium Title (Crown Hata Dia Gaya Hai) -->
+        <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 tracking-widest mt-2 drop-shadow-lg text-center" style="-webkit-text-stroke: 1px #713f12;">CONGRATULATIONS!</h2>
+        <p class="text-gray-300 text-[10px] font-bold mb-5 tracking-wide uppercase">Rocket Launch Rewards Distributed</p>
+
+        <!-- TOP 3 Section (اب گریڈ اور باکسز میں شو ہوگا) -->
+        <div class="flex justify-center items-end w-full gap-2 mb-5" id="rocket-top3-rewards">
+            <!-- Data will be loaded via JS -->
+        </div>
+
+        <!-- Lucky Users Section -->
+        <div class="w-full bg-black/40 rounded-2xl p-3 border border-white/10 shadow-inner">
+            <h3 class="text-yellow-400 text-xs font-bold mb-2 flex items-center justify-center gap-1"><i class="fa-solid fa-clover"></i> Lucky Viewers</h3>
+            <div id="rocket-lucky-list" class="flex flex-col gap-1.5 max-h-[100px] overflow-y-auto pr-1" style="scrollbar-width: none;">
+                <!-- Data will be loaded via JS -->
+            </div>
+        </div>
+
+        <!-- Awesome Button -->
+        <button onclick="closeRocketRewardPopup()" class="mt-6 w-[80%] bg-gradient-to-b from-yellow-400 to-orange-500 text-black font-black text-lg py-3 rounded-full shadow-[0_5px_20px_rgba(250,204,21,0.5)] active:scale-95 transition-transform uppercase tracking-widest border-b-4 border-orange-700 active:border-b-0">
+            AWESOME!
+        </button>
+    </div>
+</div>
 
     <!-- LUCKY FRUIT GAME MODAL -->
     <div id="game-modal">
@@ -2810,6 +2847,8 @@
         let currentCoins = 50000; 
         let currentDiamonds = 0;
         let currentUserExp = 0;
+        let myUserCountry = "Unknown"; // نیا
+        let myUserFlag = "🏳️"; // نیا
 
         let selectedGiftTargetUid = null;
         let selectedGiftTargetName = "";
@@ -3311,19 +3350,12 @@ window.executeSendGift = async () => {
             const sSnap = await get(ref(db, `users/${currentUser.uid}`));
             let sData = sSnap.val() || {};
 
-            currentUserExp += totalCost;
-            let exp_d = (sData.lastGiftDate === timeKeys.daily) ? (Number(sData.userExp_daily) || 0) : 0;
-            let exp_w = (sData.lastGiftWeek === timeKeys.weekly) ? (Number(sData.userExp_weekly) || 0) : 0;
-            let exp_m = (sData.lastGiftMonth === timeKeys.monthly) ? (Number(sData.userExp_monthly) || 0) : 0;
-
+            // XP (userExp) is REMOVED from here. Only Coins and Charm/Wealth will be updated.
             await update(ref(db, `users/${currentUser.uid}`), { 
-                coins: currentCoins, userExp: currentUserExp,
-                userExp_daily: exp_d + totalCost, userExp_weekly: exp_w + totalCost, userExp_monthly: exp_m + totalCost,
-                lastGiftDate: timeKeys.daily, lastGiftWeek: timeKeys.weekly, lastGiftMonth: timeKeys.monthly
+                coins: currentCoins
             });
 
             if(document.getElementById('gift-modal-coins')) document.getElementById('gift-modal-coins').innerText = currentCoins.toLocaleString();
-            updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
             let targetNamesForChat =[];
             let receiverUidsArray =[];
@@ -3784,16 +3816,24 @@ function handleGesture(sX, sY, eX, eY) {
                 } 
                 
                 if (shouldShow) { 
-                    hasLive = true; 
                     const p = get(ref(db, `users/${d.owner}`)).then(uSnap => { 
                         const uData = uSnap.exists() ? uSnap.val() : {}; 
+                        
+                        // 🔥 Region Lock Logic: اگر روم کا مالک کسی اور ملک کا ہے تو اسے Null کر دو 🔥
+                        if (!window.currentUserIsOfficial && uData.country && uData.country !== myUserCountry && uData.country !== "Unknown") {
+                            return null;
+                        }
+                        
                         return { ...d, id: roomId, gender: uData.gender || 'male', nameColorClass: uData.nameColorClass || '', liveUserName: uData.username || d.ownerName }; 
                     }); 
                     promises.push(p); 
                 } 
             }); 
             
-            let results = await Promise.all(promises);
+            let allResults = await Promise.all(promises);
+            // Null رزلٹس کو ہٹا دیں (جو دوسرے ملک کے تھے)
+            let results = allResults.filter(res => res !== null);
+            if(results.length > 0) hasLive = true;
             
             // 🔥 چیک: ڈیٹا آنے کے بعد دوبارہ چیک کریں (نو ڈبلنگ)
             if (currentRenderId !== window.homeRenderCounter) return;
@@ -3992,6 +4032,8 @@ function handleGesture(sX, sY, eX, eY) {
                 updateGenderUI(d.lastGenderChange);
                 
                 currentUserExp = d.userExp || 0; 
+                myUserCountry = d.country || "Unknown"; // یوزر کا ملک
+                myUserFlag = d.flag || "🏳️"; // یوزر کا فلیگ 
 
                 updateLevelBadgeUI('profile-level-badge', currentUserExp);
 
@@ -4272,25 +4314,30 @@ function handleGesture(sX, sY, eX, eY) {
             else if (type === 'rocket' && data.rocketRewards) {
                 Object.entries(data.rocketRewards).reverse().forEach(([key, val]) => {
                     let collectBtn = val.claimed ? 
-                        `<button class="w-full mt-3 bg-gray-200 text-gray-500 font-bold py-2 rounded-xl text-xs" disabled>Claimed</button>` :
-                        `<button onclick="collectRocketReward('${key}', ${val.amount}, this)" class="w-full mt-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 rounded-xl text-xs shadow-md active:scale-95 transition">Collect Reward</button>`;
+                        `<button class="w-full mt-3 bg-gray-800 border border-gray-700 text-gray-500 font-bold py-2.5 rounded-xl text-[11px] shadow-inner uppercase tracking-wider" disabled>Already Claimed</button>` :
+                        `<button onclick="collectRocketReward('${key}', ${val.amount}, this)" class="w-full mt-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black py-2.5 rounded-xl text-[11px] shadow-[0_4px_15px_rgba(250,204,21,0.4)] active:scale-95 transition uppercase tracking-wider">Collect Coins</button>`;
                     
                     container.innerHTML += `
-                    <div class="flex flex-col mb-4">
-                        <span class="text-[10px] text-gray-400 text-center mb-2">${new Date(val.timestamp).toLocaleString()}</span>
-                        <div class="flex items-start gap-2">
-                            <img src="./yaraan_dp.png" class="w-10 h-10 rounded-full border border-gray-200">
-                            <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%] w-full">
-                                <h4 class="font-bold text-gray-900 text-sm mb-2">Congrats!!!</h4>
-                                <p class="text-xs text-gray-600 leading-relaxed">${val.message}</p>
-                                <div class="flex items-center justify-between bg-gray-50 mt-3 p-2 rounded-lg border border-gray-100">
+                    <div class="flex flex-col mb-4 w-full">
+                        <span class="text-[9px] text-gray-400 text-center mb-1.5">${new Date(val.timestamp).toLocaleString()}</span>
+                        <div class="flex items-start gap-2 w-full">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-b from-yellow-400 to-orange-500 p-[2px] shadow-[0_0_10px_rgba(250,204,21,0.5)]">
+                                <img src="./yaraan_dp.png" class="w-full h-full rounded-full object-cover border border-black">
+                            </div>
+                            <div class="bg-gradient-to-br from-[#2a1b3d] to-[#120b1a] p-4 rounded-2xl rounded-tl-sm shadow-lg border border-purple-500/30 max-w-[88%] w-full relative overflow-hidden">
+                                <div class="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <h4 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 text-sm mb-1 tracking-wide">Congrats!!!</h4>
+                                <p class="text-[11px] text-gray-300 leading-relaxed mb-4">${val.message}</p>
+                                
+                                <div class="flex items-center justify-around bg-black/50 p-3 rounded-xl border border-white/5 shadow-inner">
                                     <div class="flex flex-col items-center">
-                                        <img src="./coin_icon.png" class="w-8 h-8" onerror="this.src='https://placehold.co/30?text=C'">
-                                        <span class="text-[10px] font-bold text-yellow-600 mt-1">x${val.amount}</span>
+                                        <img src="./coin_icon.png" class="w-8 h-8 drop-shadow-md">
+                                        <span class="text-[11px] font-black text-yellow-400 mt-1">+${val.amount.toLocaleString()}</span>
                                     </div>
+                                    <div class="h-8 w-px bg-white/10"></div>
                                     <div class="flex flex-col items-center">
-                                        <img src="./rocket1.png" class="w-8 h-8 object-contain">
-                                        <span class="text-[10px] font-bold text-gray-600 mt-1">Level ${val.level || 1}</span>
+                                        <img src="./rocket${val.level || 1}.png" class="w-8 h-8 object-contain drop-shadow-md" onerror="this.src='./rocket1.png'">
+                                        <span class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wide">Lv.${val.level || 1}</span>
                                     </div>
                                 </div>
                                 ${collectBtn}
@@ -5179,6 +5226,9 @@ window.joinRoom = async (rid) => {
                         // 🔥 SVIP Badge in Chat Logic
                         let chatSvipHtml = (m.svipLevel && m.svipLevel > 0) ? `<img src="./svip${m.svipLevel}_badge.svg" style="height: 38px; width: auto; object-fit: contain; margin-left: 2px; margin-right: 4px; margin-top: -10px; margin-bottom: -10px;">` : '';
                         
+                        // 🔥 فلیگ دکھانے کا لاجک 🔥
+                        let flagHtml = m.flag ? `<span style="font-size: 13px; margin-right: 2px;">${m.flag}</span>` : '';
+
                         chatArea.innerHTML += `
                         <div class="flex flex-col mb-3">
                             <!-- اوپر والی لائن: DP, Level, SVIP, Name -->
@@ -5190,7 +5240,7 @@ window.joinRoom = async (rid) => {
                                 <!-- SVIP Badge Render -->
                                 ${chatSvipHtml}
                                 
-                                <span ${clickableAction} class="text-[13px] font-black ${colorClass} drop-shadow-md tracking-wide cursor-pointer" style="text-shadow: 1px 1px 0px rgba(0,0,0,0.8);">${m.name}</span>
+                                <span ${clickableAction} class="text-[13px] font-black ${colorClass} drop-shadow-md tracking-wide cursor-pointer flex items-center" style="text-shadow: 1px 1px 0px rgba(0,0,0,0.8);">${flagHtml}${m.name}</span>
                             </div>
                             
                             <!-- نیچے والی لائن: Message Text -->
@@ -5874,11 +5924,26 @@ const hpContainer = document.getElementById('hp-visual-container');
             // ==============================================================
 
             document.getElementById('fpv-id').innerText = d.customId || '0000';
-            document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
-            
-            let profilePic = d.photoURL || 'https://placehold.co/100';
-            document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
-            
+                    document.getElementById('fpv-bio').innerText = d.bio || "No bio added yet.";
+                    
+                    // ==========================================
+                    // FAST LOCATION FIX (Country First, Flag Second)
+                    // ==========================================
+                    const locEl = document.getElementById('fpv-location');
+                    if(locEl) {
+                        let c = d.country || "Unknown";
+                        let f = d.flag || "";
+                        
+                        if (c === "Unknown" || !c) {
+                            locEl.innerHTML = `Location not set`; 
+                        } else {
+                            locEl.innerHTML = `${c} ${f}`; 
+                        }
+                    }
+                    // ==========================================
+                    
+                    let profilePic = d.photoURL || 'https://placehold.co/100';
+                    document.getElementById('fpv-cover').style.backgroundImage = `url(${profilePic})`;
             const fpvContainer = document.getElementById('fpv-visual-container');
             if(fpvContainer) {
                 let fpvHtml = `<div class="visual-root"><img src="${profilePic}" class="visual-img shadow-lg" style="border: 2px solid white;">`;
@@ -6535,9 +6600,10 @@ window.leaveRoomFull = () => {
                     text: text, 
                     type: 'chat',
                     userExp: currentUserExp || 0,
-                    svipLevel: uData.svipLevel || 0, // <--- SVIP LEVEL ADDED FOR CHAT BADGE
+                    svipLevel: uData.svipLevel || 0, 
                     nameColorClass: uData.nameColorClass || null,
                     bubbleClass: uData.currentBubbleClass || null,
+                    flag: myUserFlag, // 🔥 یہاں فلیگ میسج کے ساتھ جا رہا ہے 🔥
                     timestamp: Date.now()
                 });
                 input.value=''; 
@@ -6744,18 +6810,15 @@ window.openCustomerSupport = async () => {
 
         window.cleanOldRocketRewards = async () => {
             if (!currentUser) return;
-            const pktOffset = 5 * 60 * 60 * 1000;
-            const dayStart = new Date();
-            dayStart.setUTCHours(0,0,0,0);
-            const today5amPKT = dayStart.getTime() + pktOffset;
-            
+            const now = Date.now();
             const rewardsSnap = await get(ref(db, `users/${currentUser.uid}/inbox/rocketRewards`));
             if (!rewardsSnap.exists()) return;
             
             const updates = {};
             rewardsSnap.forEach(child => {
                 const data = child.val();
-                if (data.timestamp < today5amPKT) {
+                // ٹھیک 24 گھنٹے (86400000 ms) بعد ڈیلیٹ ہو جائے گا
+                if (now - data.timestamp > 86400000) {
                     updates[child.key] = null;
                 }
             });
@@ -7610,6 +7673,7 @@ window.loadCPWeeklyComingSoon = function() {
 <script src="./edge_swipe.js"></script>
 <script src="./room_system_ext.js"></script>
 <script src="./lucky_fruit.js"></script>
+<script src="./location_system.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
