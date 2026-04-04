@@ -5,18 +5,15 @@
 // 1. Time Logic (12 AM to 5 AM Dead Zone & PKT Time)
 window.getLeaderboardTimeKeys = () => {
     let now = new Date();
-    // Pakistan Standard Time (UTC+5)
     let pktTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5 * 60 * 60 * 1000));
     let hour = pktTime.getHours();
 
-    let dailyStr = "";
-    // رات 12 بجے سے صبح 5 بجے تک ڈیڈ زون (رینکنگ کاؤنٹ نہیں ہوگی)
+    // 🔥 5 AM Reset Fix: اب گفٹ ضائع نہیں ہوں گے۔ 12 سے 5 تک کل کا دن کاؤنٹ ہوگا!
+    let targetDate = new Date(pktTime);
     if (hour >= 0 && hour < 5) {
-        dailyStr = "DEAD_ZONE_" + pktTime.getDate(); 
-    } else {
-        // صبح 5 بجے نیا دن کاؤنٹ ہونا شروع ہوگا
-        dailyStr = pktTime.getFullYear() + '-' + String(pktTime.getMonth() + 1).padStart(2, '0') + '-' + String(pktTime.getDate()).padStart(2, '0');
+        targetDate.setDate(targetDate.getDate() - 1);
     }
+    let dailyStr = targetDate.getFullYear() + '-' + String(targetDate.getMonth() + 1).padStart(2, '0') + '-' + String(targetDate.getDate()).padStart(2, '0');
 
     // Weekly and Monthly keys
     let weekStr = pktTime.getFullYear() + '-W' + Math.ceil(pktTime.getDate() / 7);
@@ -68,15 +65,18 @@ async function fetchAllLeaderboardsVIP() {
     let timeKeys = window.getLeaderboardTimeKeys();
     let timeKeyStr = timeKeys[currentLbSubTab]; 
 
+    // اپنے یوزر کا ملک نکالیں
+    let myC = window.myUserCountry || "Unknown";
+
     if(usersSnap.exists()) {
         usersSnap.forEach(s => { 
             let u = s.val(); u.uid = s.key;
             
-            // 🔥 LOCATION ISOLATION LOGIC 🔥
+            // 🔥🔥 STRICT LOCATION ISOLATION LOGIC 🔥🔥
             let uCountry = u.country || "Unknown";
-            let myC = window.myUserCountry || "Unknown";
-            if (!window.currentUserIsOfficial && uCountry !== "Unknown" && myC !== "Unknown" && uCountry !== myC) {
-                return; // دوسرے ملک کے یوزر کو سکپ کر دو
+            // اگر یوزر ایڈمن نہیں ہے، اور اس کا ملک میرے ملک سے نہیں ملتا، تو فوری سکپ کریں
+            if (!window.currentUserIsOfficial && uCountry !== myC) {
+                return; 
             }
 
             let uDailyMatch = (u.lastGiftDate === timeKeys.daily);
@@ -98,6 +98,14 @@ async function fetchAllLeaderboardsVIP() {
     if(roomsSnap.exists()) {
         roomsSnap.forEach(s => { 
             let r = s.val(); r.id = s.key;
+            
+            // 🔥🔥 ROOMS COUNTRY FILTER 🔥🔥
+            // ہم چیک کریں گے کہ کیا کمرے کا مالک ہماری اوپر والی (فلٹر شدہ) لسٹ میں موجود ہے یا نہیں
+            let isOwnerInMyCountry = uArr.some(usr => usr.uid === r.owner);
+            if (!window.currentUserIsOfficial && !isOwnerInMyCountry) {
+                return; // اگر کمرے کا مالک میرے ملک کا نہیں ہے تو روم لیڈر بورڈ میں شو نہ کرو
+            }
+
             let rDailyMatch = (r.lastGiftDate === timeKeys.daily);
             let rWeeklyMatch = (r.lastGiftWeek === timeKeys.weekly);
             let rMonthlyMatch = (r.lastGiftMonth === timeKeys.monthly);
@@ -233,18 +241,20 @@ window.updateHomeTopDPs = async () => {
         usersSnap.forEach(s => { 
             let u = s.val(); u.uid = s.key;
             
-            // 🔥 LOCATION ISOLATION LOGIC 🔥
+            // 🔥 STRICT LOCATION ISOLATION LOGIC (For Home Top 3 DPs) 🔥
             let uCountry = u.country || "Unknown";
             let myC = window.myUserCountry || "Unknown";
-            if (!window.currentUserIsOfficial && uCountry !== "Unknown" && myC !== "Unknown" && uCountry !== myC) {
-                return; // دوسرے ملک کے یوزر کو سکپ کر دو
+            
+            // اگر یوزر آفیشل نہیں ہے اور اس کا ملک میرے ملک سے میچ نہیں کرتا،
+            // تو اسے فوراً نکال دو! (تاکہ دوسرے ملک میں خانے 1, 2, 3 بالکل خالی شو ہوں)
+            if (!window.currentUserIsOfficial && uCountry !== myC) {
+                return; 
             }
             
             // Daily, Weekly, Monthly Scores Collect Karna
             u.exp_d = (u.lastGiftDate === tKeys.daily) ? (Number(u.userExp_daily) || 0) : 0;
             u.exp_w = (u.lastGiftWeek === tKeys.weekly) ? (Number(u.userExp_weekly) || 0) : 0;
             u.exp_m = (u.lastGiftMonth === tKeys.monthly) ? (Number(u.userExp_monthly) || 0) : 0;
-
             u.charm_d = (u.lastGiftDate === tKeys.daily) ? (Number(u.charm_daily) || 0) : 0;
             u.charm_w = (u.lastGiftWeek === tKeys.weekly) ? (Number(u.charm_weekly) || 0) : 0;
             u.charm_m = (u.lastGiftMonth === tKeys.monthly) ? (Number(u.charm_monthly) || 0) : 0;

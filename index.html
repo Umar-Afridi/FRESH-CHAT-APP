@@ -1609,15 +1609,15 @@
             </div>
         </div>
 
-        <!-- 🔥 NEW IN ROOM BUTTON (اب یہ بالکل آپ کے ریڈ سرکل کی جگہ شو ہوگا) 🔥 -->
-        <div id="fpv-in-room-btn" class="hidden absolute right-6 bottom-10 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(216,70,239,0.8)] border border-white/30 active:scale-95 transition-all z-[100]">
+        <!-- 🔥 NEW IN ROOM BUTTON (بالکل آپ کے ریڈ سرکل کی جگہ شو ہوگا اور پلس/بلنک کرے گا) 🔥 -->
+        <div id="fpv-in-room-btn" class="hidden absolute right-6 bottom-[35px] bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-1.5 rounded-full items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(34,197,94,0.6)] border border-white/50 active:scale-95 transition-all z-[100] animate-pulse">
             <div class="voice-wave-container">
-                <div class="voice-wave-bar"></div>
-                <div class="voice-wave-bar"></div>
-                <div class="voice-wave-bar"></div>
-                <div class="voice-wave-bar"></div>
+                <div class="voice-wave-bar bg-white"></div>
+                <div class="voice-wave-bar bg-white"></div>
+                <div class="voice-wave-bar bg-white"></div>
             </div>
-            <span class="text-[11px] font-black text-white tracking-widest uppercase" style="text-shadow: 1px 1px 2px black;">In Room</span>
+            <span class="text-[12px] font-black text-white tracking-wider uppercase drop-shadow-md">In Room</span>
+            <i class="fa-solid fa-chevron-right text-white text-[10px]"></i>
         </div>
 
     </div> <!-- ٹاپ بلیک ایریا کا اختتام -->
@@ -4999,7 +4999,8 @@ window.joinRoom = async (rid) => {
         } 
     } 
     
-    // --- NEW PASSWORD LOGIC ADDED HERE ---
+    
+     // --- NEW PASSWORD LOGIC ADDED HERE ---
     const roomSnap = await get(ref(db, `rooms/${rid}`));
     const roomDataTemp = roomSnap.val();
     
@@ -5011,6 +5012,19 @@ window.joinRoom = async (rid) => {
 
     currentRoomId = rid; 
     currentUserJoinTime = Date.now(); 
+
+    // 🔥 سالے یہ لائن مسنگ تھی! اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں آ گیا ہے 🔥
+    await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
+    
+    // --- SINGLE CLEAN ROOM DATA LOGIC ---
+
+    // 🔥 سالے یہ لائن مسنگ تھی! اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں آ گیا ہے 🔥
+    await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
+    
+    // --- SINGLE CLEAN ROOM DATA LOGIC ---
+
+    // 🔥🔥 یس سالے! یہ لائن تو نے مس کر دی تھی۔ اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں ہے 🔥🔥
+    await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
     
     // --- SINGLE CLEAN ROOM DATA LOGIC ---
     currentRoomData = roomDataTemp; 
@@ -6061,19 +6075,42 @@ const hpContainer = document.getElementById('hp-visual-container');
             let followersCount = d.friends ? Object.keys(d.friends).length : 0;
             document.getElementById('fpv-followers').innerText = followersCount;
 
+            // 🔥🔥 CROSS-COUNTRY PROFILE RESTRICTION & IN-ROOM LOGIC 🔥🔥
+            let myC = window.myUserCountry || "Unknown";
+            let targetC = d.country || "Unknown";
+            let isOutOfeRegion = (!isMe && !window.currentUserIsOfficial && targetC !== myC);
+
+            if (isOutOfeRegion) {
+                // اگر یوزر دوسرے کنٹری کا ہے تو اس کا سب کچھ چھپا دو
+                document.getElementById('fpv-followers').innerText = "***";
+                document.getElementById('fpv-id').innerText = "***";
+                document.getElementById('fpv-bio').innerText = "This user is from another region.";
+                document.getElementById('fpv-bottom-actions').classList.add('hidden'); // Chat/Follow Hide
+            } else if (!isMe) {
+                // اپنے کنٹری کا ہے تو بٹن شو کرو
+                document.getElementById('fpv-bottom-actions').classList.remove('hidden');
+            }
+
             // 🔥 NEW: CHECK IF USER IS IN ROOM AND SHOW BUTTON (FIXED) 🔥
             const inRoomBtn = document.getElementById('fpv-in-room-btn');
             if (inRoomBtn) {
                 if (d.currentRoom && d.currentRoom !== null && d.currentRoom !== "") {
                     inRoomBtn.classList.remove('hidden');
-                    inRoomBtn.style.display = 'flex'; // زبردستی Flex کر دیا تاکہ ہر حال میں شو ہو
+                    inRoomBtn.style.display = 'flex';
+                    
                     inRoomBtn.onclick = () => {
-                        closeFullProfileView(); 
-                        setTimeout(() => { window.fastJoinRoom(d.currentRoom); }, 300); // ہلکا سا ڈیلے تاکہ پروفائل سموتھ بند ہو
+                        if (isOutOfeRegion) {
+                            // دوسرے ملک کے روم پر کلک کرنے پر الرٹ
+                            Swal.fire({icon: 'error', title: 'Region Blocked', text: 'You cannot join a room in another country region.', background: '#111', color: '#fff'});
+                        } else {
+                            // اپنے ملک کے روم میں چلا جائے گا
+                            closeFullProfileView(); 
+                            setTimeout(() => { window.fastJoinRoom(d.currentRoom); }, 300);
+                        }
                     };
                 } else {
                     inRoomBtn.classList.add('hidden');
-                    inRoomBtn.style.display = 'none'; // چھپا دیا
+                    inRoomBtn.style.display = 'none';
                     inRoomBtn.onclick = null;
                 }
             }
@@ -7267,6 +7304,15 @@ async function loadCPRankingData() {
         usersSnap.forEach(function(snap) {
             var u = snap.val();
             u.uid = snap.key;
+            
+            // 🔥🔥 STRICT COUNTRY FILTER (ہر ملک کے لیے الگ CP سٹار) 🔥🔥
+            let myC = window.myUserCountry || "Unknown";
+            let uC = u.country || "Unknown";
+            
+            // اگر یوزر ایڈمن/آفیشل نہیں ہے، اور ملک میچ نہیں کر رہا، تو اسے سکپ کر دو!
+            if (!window.currentUserIsOfficial && uC !== myC) {
+                return; 
+            }
             
             if(u.cp && u.cp.partnerUid) {
                 var pairKey = [u.uid, u.cp.partnerUid].sort().join('_');
