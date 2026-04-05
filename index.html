@@ -784,8 +784,8 @@
 }
 
 .fruit-box .fruit-img {
-    width: 55%;
-    height: 55%;
+    width: 85%;
+    height: 85%;
     object-fit: contain;
     filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8));
     transition: transform 0.2s;
@@ -2638,7 +2638,7 @@
             </div>
 
             <!-- Round Number Display (Clean UI Style) -->
-            <div id="round-number-display" class="absolute flex items-center justify-center text-white/90 text-[10px] font-semibold z-20 tracking-wide" style="left: 25%; top: 20.5%; width: 50%; height: 3%;">Round ... of today</div>
+            <div id="round-number-display" class="absolute flex items-center justify-center text-[#d1b8c0] text-[10px] font-semibold z-20 tracking-wide" style="left: 25%; top: 20.5%; width: 50%; height: 3%;">Round ... of today</div>
 
             <!-- FRUIT GRID (10 Boxes + Timer) Aligned to Perfect Square Grid using INLINE STYLES -->
             
@@ -2649,12 +2649,12 @@
             <div id="f-3" onclick="placeBet(3)" class="fruit-box absolute" style="left: 66.66%; top: 25.83%; width: 15%; height: 11.66%;"><img src="./cherry.png" onerror="this.src='https://placehold.co/100?text=Che'" class="fruit-img"><span class="multiplier">5x</span><div class="bet-overlay" id="bet-3"></div></div>
             
             <!-- Middle Row -->
-            <div id="f-4" class="fruit-box absolute" style="left: 16.66%; top: 39.16%; width: 15%; height: 11.66%;"><img src="./small_bonus.png" onerror="this.src='https://placehold.co/100?text=S.Bon'" class="fruit-img" style="width: 65%; height: 65%;"></div>
+            <div id="f-4" class="fruit-box absolute" style="left: 16.66%; top: 39.16%; width: 15%; height: 11.66%;"><img src="./small_bonus.png" onerror="this.src='https://placehold.co/100?text=S.Bon'" class="fruit-img" style="width: 85%; height: 85%;"></div>
             
             <!-- Central Timer -->
             <div id="game-timer" class="absolute flex items-center justify-center text-5xl font-black text-[#ffeb3b] font-mono" style="left: 33.33%; top: 39.16%; width: 31.66%; height: 11.66%; text-shadow: 0 4px 6px rgba(0,0,0,0.9);">30</div>
             
-            <div id="f-5" class="fruit-box absolute" style="left: 66.66%; top: 39.16%; width: 15%; height: 11.66%;"><img src="./big_bonus.png" onerror="this.src='https://placehold.co/100?text=B.Bon'" class="fruit-img" style="width: 65%; height: 65%;"></div>
+            <div id="f-5" class="fruit-box absolute" style="left: 66.66%; top: 39.16%; width: 15%; height: 11.66%;"><img src="./big_bonus.png" onerror="this.src='https://placehold.co/100?text=B.Bon'" class="fruit-img" style="width: 85%; height: 85%;"></div>
 
             <!-- Bottom Row -->
             <div id="f-6" onclick="placeBet(6)" class="fruit-box absolute" style="left: 16.66%; top: 52.50%; width: 15%; height: 11.66%;"><img src="./apple.png" onerror="this.src='https://placehold.co/100?text=App'" class="fruit-img"><span class="multiplier">10x</span><div class="bet-overlay" id="bet-6"></div></div>
@@ -2681,8 +2681,8 @@
                 </button>
             </div>
         <!-- Footer: Balance & Winnings (Clean UI Style) -->
-            <div class="absolute flex items-center justify-start text-white/90 font-semibold text-[11px] z-10 overflow-hidden tracking-wide" style="left: 15%; top: 83.5%; width: 30%; height: 3.5%;" id="game-balance">0</div>
-            <div class="absolute flex items-center justify-start text-white/90 font-semibold text-[11px] z-10 overflow-hidden tracking-wide" style="left: 62.5%; top: 83.5%; width: 30%; height: 3.5%;" id="game-today-win">0</div>
+            <div class="absolute flex items-center justify-start text-[#ffffff] font-bold text-[12px] z-10 overflow-hidden tracking-wide drop-shadow-sm" style="left: 15%; top: 83.5%; width: 30%; height: 3.5%;" id="game-balance">0</div>
+            <div class="absolute flex items-center justify-start text-[#ffffff] font-bold text-[12px] z-10 overflow-hidden tracking-wide drop-shadow-sm" style="left: 62.5%; top: 83.5%; width: 30%; height: 3.5%;" id="game-today-win">0</div>
             <!-- Bottom History Strip WITH "Results:" TEXT -->
             <div class="absolute left-[4%] top-[88.3%] w-[92%] h-[10%] flex items-center z-10 px-1 overflow-hidden">
                 <span class="text-[#d4901c] font-black text-[13px] mr-2 drop-shadow-md italic">Results:</span>
