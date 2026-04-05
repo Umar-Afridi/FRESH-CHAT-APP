@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 300" width="100%" height="100%">
+  <defs>
+    <!-- ڈراپ شیڈو (زمین کا سایہ) -->
+    <filter id="floor-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="30" result="offsetblur" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.6" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+
+    <!-- ریئلسٹک براؤن بیس کا کلر (Metal Finish) -->
+    <linearGradient id="base-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#df9a4e" />
+      <stop offset="40%" stop-color="#8d5015" />
+      <stop offset="100%" stop-color="#311903" />
+    </linearGradient>
+
+    <!-- بیس کے سوراخ کا اندھیرا (گہرائی) -->
+    <linearGradient id="base-hole" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#140a01" />
+      <stop offset="100%" stop-color="#68390b" />
+    </linearGradient>
+
+    <!-- گولڈن بٹن کی سائیڈ کی موٹائی -->
+    <linearGradient id="gold-side" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c98114" />
+      <stop offset="50%" stop-color="#fcbf38" />
+      <stop offset="100%" stop-color="#693f00" />
+    </linearGradient>
+
+    <!-- الٹرا ریئلسٹک گولڈ ٹاپ (3D چمک) -->
+    <radialGradient id="gold-top" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" /> <!-- لائٹ سورس کی تیز چمک -->
+      <stop offset="20%" stop-color="#ffdf4a" /> <!-- پیور گولڈ -->
+      <stop offset="70%" stop-color="#d18100" /> <!-- ڈارک گولڈ -->
+      <stop offset="100%" stop-color="#633900" /> <!-- کناروں کا اندھیرا -->
+    </radialGradient>
+  </defs>
+
+  <g id="realistic-off-btn">
+    <!-- 1. زمین کا سایہ -->
+    <ellipse cx="175" cy="220" rx="130" ry="50" fill="#000000" filter="url(#floor-shadow)" />
+
+    <!-- 2. بیس کی 3D موٹائی -->
+    <path d="M 45,170 A 130,50 0 0,0 305,170 L 305,210 A 130,50 0 0,1 45,210 Z" fill="url(#base-body)" />
+    
+    <!-- 3. بیس کا سوراخ اور رم (کنارے کی ہائی لائٹ) -->
+    <ellipse cx="175" cy="170" rx="130" ry="50" fill="url(#base-hole)" />
+    <ellipse cx="175" cy="170" rx="128" ry="48" fill="none" stroke="#f0b675" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- 4. گولڈن بٹن کی سائیڈ (موٹائی) -->
+    <path d="M 55,120 A 120,45 0 0,0 295,120 L 295,165 A 120,45 0 0,1 55,165 Z" fill="url(#gold-side)" />
+
+    <!-- 5. گولڈن بٹن کا ٹاپ حصہ -->
+    <ellipse cx="175" cy="120" rx="120" ry="45" fill="url(#gold-top)" />
+
+    <!-- 6. شیشے جیسی چمک (Glossy Reflection - ریئلٹی کے لیے سب سے اہم) -->
+    <ellipse cx="175" cy="100" rx="80" ry="18" fill="#ffffff" opacity="0.3" filter="blur(1px)"/>
+  </g>
+</svg>

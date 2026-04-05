@@ -1,5 +1,5 @@
 // ==========================================
-// LUCKY FRUIT GAME SYSTEM (WITH M, B, T FORMATTING & PERFECT UI)
+// LUCKY FRUIT GAME SYSTEM (WITH M, B, T FORMATTING & SVG 3D BUTTONS)
 // ==========================================
 
 window.gameTimer = 30;
@@ -77,6 +77,12 @@ function formatMassiveNumber(num) {
     return num.toLocaleString();
 }
 
+function formatShortBet(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return num;
+}
+
 setInterval(() => {
     if (!window.currentUser) return;
     let now = Math.floor(Date.now() / 1000);
@@ -109,10 +115,68 @@ setInterval(() => {
     }
 }, 1000);
 
+// ================= NEW SVG BET BUTTONS SYSTEM =================
+let allBetAmounts = [1000, 10000, 50000, 100000, 500000, 1000000, 2000000, 5000000];
+let currentBetPage = 0;
+let selectedBetAmount = 10000; // Default selection
+
+window.renderSVGBetButtons = function() {
+    const container = document.getElementById('bet-buttons-container');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    // ایک وقت میں 4 کوائنز کی ویلیو دکھائے گا
+    let startIdx = currentBetPage * 4;
+    let currentDisplayAmounts = allBetAmounts.slice(startIdx, startIdx + 4);
+
+    currentDisplayAmounts.forEach(amount => {
+        let isSelected = (amount === selectedBetAmount);
+        
+        // یہاں آپ کے بتائے گئے SVG فائلز کے نام ہیں
+        let svgImage = isSelected ? './gamebutton_on.svg' : './gamebutton_of.svg';
+        let pillClass = isSelected ? 'bet-pill-on' : 'bet-pill-off';
+        
+        // سلیکٹ ہونے پر تھوڑا سا چھوٹا (دبا ہوا) نظر آئے گا
+        let imgScale = isSelected ? 'scale-95' : 'scale-100 hover:scale-105';
+
+        let btnHtml = `
+        <div class="flex flex-col items-center justify-end w-[23%] h-full">
+            <!-- Coin Pill -->
+            <div class="bet-amount-pill ${pillClass}">
+                <img src="./coin_icon.png" class="w-3 h-3" onerror="this.src='https://placehold.co/20'">
+                <span>${formatShortBet(amount)}</span>
+            </div>
+            <!-- SVG Button -->
+            <img src="${svgImage}" class="w-full object-contain cursor-pointer transition-transform duration-200 drop-shadow-xl ${imgScale}" 
+                 onclick="window.selectSVGBet(${amount})" onerror="console.log('SVG not found!');">
+        </div>
+        `;
+        container.innerHTML += btnHtml;
+    });
+
+    // تیر کے نشانات (Arrows) کو شو/ہائیڈ کرنا
+    const leftArrow = document.getElementById('bet-nav-left');
+    const rightArrow = document.getElementById('bet-nav-right');
+    if(leftArrow) leftArrow.style.display = currentBetPage > 0 ? 'block' : 'none';
+    if(rightArrow) rightArrow.style.display = (startIdx + 4) < allBetAmounts.length ? 'block' : 'none';
+};
+
+window.changeBetPage = function(direction) {
+    currentBetPage += direction;
+    renderSVGBetButtons();
+};
+
+window.selectSVGBet = function(amount) {
+    selectedBetAmount = amount;
+    window.currentBet = amount; // گیم کو بتانا کہ کونسی بیٹ سلیکٹ ہے
+    renderSVGBetButtons(); // بٹن کا ڈیزائن اپڈیٹ کرنا (Off سے On)
+};
+
+// ==============================================================
+
 window.openGame = () => {
     document.getElementById('game-modal').style.display = 'flex';
     if(document.getElementById('game-balance')) { 
-        // یہاں بیلنس کو شارٹ فارمیٹ (M/B) میں کر دیا گیا ہے
         document.getElementById('game-balance').innerText = formatMassiveNumber(window.currentCoins || 0); 
     }
     
@@ -121,28 +185,17 @@ window.openGame = () => {
     if (savedData.date !== today) { savedData.amount = 0; }
     let displayEl = document.getElementById('game-today-win');
     if(displayEl) {
-        // وننگ کو بھی شارٹ کر دیا گیا ہے
         displayEl.innerText = formatMassiveNumber(savedData.amount);
     }
+
+    // گیم اوپن ہوتے ہی نئے SVG بٹن لوڈ کر دو
+    window.currentBet = selectedBetAmount; 
+    window.renderSVGBetButtons();
 };
 
 window.closeGame = () => { 
     document.getElementById('game-modal').style.display = 'none'; 
 };
-
-window.selectChip = (amt, btn) => { 
-    window.currentBet = amt; 
-    document.querySelectorAll('.chip-btn-new').forEach(b => b.classList.remove('active-bet')); 
-    document.querySelectorAll('.bet-item-wrapper').forEach(w => w.classList.remove('active-wrapper'));
-    btn.classList.add('active-bet'); 
-    btn.parentElement.classList.add('active-wrapper');
-};
-
-function formatShortBet(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    return num;
-}
 
 window.placeBet = (index) => {
     if(window.isSpinning) return Swal.fire({toast:true, icon:'warning', title:'Wait for next round!', position:'top', showConfirmButton:false, timer:1500});
@@ -185,7 +238,6 @@ window.placeBet = (index) => {
     }
     
     if(document.getElementById('game-balance')) { 
-        // لائیو کٹنے پر بھی بیلنس شارٹ ہی نظر آئے گا
         document.getElementById('game-balance').innerText = formatMassiveNumber(window.currentCoins); 
     }
 };
@@ -293,7 +345,6 @@ function finalizeResult(winningFruitId) {
             localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
 
             let gameBalanceEl = document.getElementById('game-balance');
-            // وننگ ملنے کے بعد بھی بیلنس شارٹ میں شو ہوگا
             if(gameBalanceEl) gameBalanceEl.innerText = formatMassiveNumber(window.currentCoins);
             
             let todayWinEl = document.getElementById('game-today-win');
@@ -303,7 +354,7 @@ function finalizeResult(winningFruitId) {
             if(popupCircle) popupCircle.classList.add('hidden');
             if(popupAmount) {
                 popupAmount.classList.remove('hidden');
-                popupAmount.innerText = formatMassiveNumber(winAmount); // پاپ اپ پر بھی شارٹ نمبر
+                popupAmount.innerText = formatMassiveNumber(winAmount);
             }
             
             if(typeof window.broadcastWin === "function"){

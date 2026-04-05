@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 300" width="100%" height="100%">
+  <defs>
+    <!-- ڈراپ شیڈو (زمین کا سایہ) -->
+    <filter id="floor-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="30" result="offsetblur" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.6" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+
+    <!-- بیس کے سوراخ کے اندر کا شیڈو (جب بٹن دب جائے تو سایہ پڑتا ہے) -->
+    <filter id="inner-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="8" result="offsetblur" />
+      <feFlood flood-color="#000" flood-opacity="0.8"/>
+      <feComposite in2="offsetblur" operator="in" />
+      <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff" />
+      <feFlood flood-color="#000" flood-opacity="0.8"/>
+      <feComposite in2="shadowDiff" operator="in" />
+      <feComposite in2="SourceGraphic" operator="over" />
+    </filter>
+
+    <!-- ریئلسٹک براؤن بیس -->
+    <linearGradient id="base-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#df9a4e" />
+      <stop offset="40%" stop-color="#8d5015" />
+      <stop offset="100%" stop-color="#311903" />
+    </linearGradient>
+
+    <linearGradient id="base-hole" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#140a01" />
+      <stop offset="100%" stop-color="#68390b" />
+    </linearGradient>
+
+    <!-- الٹرا ریئلسٹک ریڈ ٹاپ (3D چمک) -->
+    <radialGradient id="red-top" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" /> <!-- شیشے کی چمک -->
+      <stop offset="20%" stop-color="#ff4747" /> <!-- برائٹ ریڈ -->
+      <stop offset="60%" stop-color="#b30000" /> <!-- ڈارک ریڈ -->
+      <stop offset="100%" stop-color="#330000" /> <!-- گہرا میرون -->
+    </radialGradient>
+
+    <!-- دبے ہوئے بٹن کی ہلکی سی موٹائی -->
+    <linearGradient id="red-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#660000" />
+      <stop offset="100%" stop-color="#1a0000" />
+    </linearGradient>
+  </defs>
+
+  <g id="realistic-on-btn">
+    <!-- 1. زمین کا سایہ (سیم پوزیشن) -->
+    <ellipse cx="175" cy="220" rx="130" ry="50" fill="#000000" filter="url(#floor-shadow)" />
+
+    <!-- 2. بیس کی 3D موٹائی (سیم پوزیشن) -->
+    <path d="M 45,170 A 130,50 0 0,0 305,170 L 305,210 A 130,50 0 0,1 45,210 Z" fill="url(#base-body)" />
+    
+    <!-- 3. بیس کا سوراخ (سیم پوزیشن) -->
+    <ellipse cx="175" cy="170" rx="130" ry="50" fill="url(#base-hole)" />
+
+    <!-- 4. ریڈ بٹن کی موٹائی (بٹن اندر چلا گیا ہے اس لیے `cy` 170 کے قریب کر دیا ہے) -->
+    <path d="M 55,172 A 120,45 0 0,0 295,172 L 295,176 A 120,45 0 0,1 55,176 Z" fill="url(#red-side)" />
+
+    <!-- 5. ریڈ بٹن کا ٹاپ حصہ (گہرائی میں دبا ہوا) -->
+    <ellipse cx="175" cy="172" rx="120" ry="45" fill="url(#red-top)" filter="url(#inner-shadow)" />
+
+    <!-- 6. شیشے جیسی چمک (یہاں بھی چمک دی ہے تاکہ ریڈ بٹن پلاسٹک/شیشے کا لگے) -->
+    <ellipse cx="175" cy="152" rx="80" ry="18" fill="#ffffff" opacity="0.25" filter="blur(1px)"/>
+
+    <!-- 7. بیس کی کنارے کی ہائی لائٹ (سوراخ کے اوپر) -->
+    <ellipse cx="175" cy="170" rx="128" ry="48" fill="none" stroke="#f0b675" stroke-width="2" opacity="0.8"/>
+  </g>
+</svg>
