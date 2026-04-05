@@ -141,13 +141,13 @@ window.renderSVGBetButtons = function() {
 
         let btnHtml = `
         <div class="flex flex-col items-center justify-end w-[23%] h-full">
-            <!-- Coin Pill -->
+            <!-- Coin Pill (اپنی جگہ پر فکس رہے گا) -->
             <div class="bet-amount-pill ${pillClass}">
                 <img src="./coin_icon.png" class="w-3 h-3" onerror="this.src='https://placehold.co/20'">
                 <span>${formatShortBet(amount)}</span>
             </div>
-            <!-- SVG Button -->
-            <img src="${svgImage}" class="w-full object-contain cursor-pointer transition-transform duration-200 drop-shadow-xl ${imgScale}" 
+            <!-- SVG Button (صرف بٹن اوپر جائے گا) -->
+            <img src="${svgImage}" class="w-full object-contain cursor-pointer transition-transform duration-200 drop-shadow-xl ${imgScale} relative -top-4" 
                  onclick="window.selectSVGBet(${amount})" onerror="console.log('SVG not found!');">
         </div>
         `;
@@ -180,9 +180,15 @@ window.openGame = () => {
         document.getElementById('game-balance').innerText = formatMassiveNumber(window.currentCoins || 0); 
     }
     
+    // 24 Hour Winnings Logic Fix
     let today = new Date().toLocaleDateString();
     let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
-    if (savedData.date !== today) { savedData.amount = 0; }
+    
+    if (savedData.date !== today) { 
+        savedData = { date: today, amount: 0 }; 
+        localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
+    }
+    
     let displayEl = document.getElementById('game-today-win');
     if(displayEl) {
         displayEl.innerText = formatMassiveNumber(savedData.amount);
@@ -200,6 +206,18 @@ window.closeGame = () => {
 window.placeBet = (index) => {
     if(window.isSpinning) return Swal.fire({toast:true, icon:'warning', title:'Wait for next round!', position:'top', showConfirmButton:false, timer:1500});
     if(index === 4 || index === 5) return; 
+
+    // --- NEW LOGIC: MAX 6 FRUITS ALLOWED ---
+    let currentBetCount = Object.keys(window.activeBets).length;
+    if(currentBetCount >= 6 && !window.activeBets.hasOwnProperty(index)) {
+        return Swal.fire({toast:true, icon:'error', title:'You can only bet on 6 items max!', position:'top', showConfirmButton:false, timer:1500, background: '#111', color: '#fff'});
+    }
+
+    // --- NEW LOGIC: MAX 5M PER FRUIT ---
+    let currentAmountOnThisFruit = window.activeBets[index] || 0;
+    if(currentAmountOnThisFruit + window.currentBet > 5000000) {
+        return Swal.fire({toast:true, icon:'error', title:'Max bet limit is 5M per item!', position:'top', showConfirmButton:false, timer:1500, background: '#111', color: '#fff'});
+    }
     
     if((window.currentCoins || 0) < window.currentBet) { 
         Swal.fire({
@@ -340,11 +358,17 @@ function finalizeResult(winningFruitId) {
             window.currentCoins += winAmount;
             window.update(window.ref(window.db, `users/${window.currentUser.uid}`), { coins: window.currentCoins });
             
+            // Winning Save Fix for 24 Hours
+            let today = new Date().toLocaleDateString();
             let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
+            if (savedData.date !== today) {
+                savedData = { date: today, amount: 0 };
+            }
             savedData.amount += winAmount;
             localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
 
             let gameBalanceEl = document.getElementById('game-balance');
+            
             if(gameBalanceEl) gameBalanceEl.innerText = formatMassiveNumber(window.currentCoins);
             
             let todayWinEl = document.getElementById('game-today-win');
