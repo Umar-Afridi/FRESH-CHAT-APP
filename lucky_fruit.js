@@ -1,5 +1,5 @@
 // ==========================================
-// LUCKY FRUIT GAME SYSTEM (EXTERNAL MODULE)
+// LUCKY FRUIT GAME SYSTEM (WITH M, B, T FORMATTING & PERFECT UI)
 // ==========================================
 
 window.gameTimer = 30;
@@ -13,10 +13,10 @@ const spinPath = [0, 1, 2, 3, 5, 9, 8, 7, 6, 4];
 const ROUND_DURATION = 40; 
 const BET_TIME = 30;
 window.currentRoundId = 0;
+window.currentDailyRound = 0; 
 window.resultHistory = []; 
 window.detailedBetHistory = [];
 
-// پھلوں کی تصویریں لانے کا فنکشن (ہسٹری کے لیے)
 function getFruitImageById(id) {
     const imgs = {
         0: './orange.png', 1: './lemon.png', 2: './grapes.png', 3: './cherry.png',
@@ -29,26 +29,10 @@ function getFruitImageById(id) {
 function getDeterministicWinner(roundId) {
     let hash = Math.sin(roundId) * 10000;
     let rand = hash - Math.floor(hash);
-    
-    // یوزر کی مرضی کی پرسنٹیج: 
-    // دن میں ٹوٹل 2160 راؤنڈز ہوتے ہیں۔
-    // 45x(id 9) = 30 بار (Weight: 138)
-    // 25x(id 8) = 20 بار (Weight: 92)
-    // 15x(id 7) = 60 بار (Weight: 277)
-    // 10x(id 6) = 150 بار (Weight: 694)
-    // Lucky(id 4,5) = 10 بار ٹوٹل (Weight: 23, 23)
-    // باقی ماندہ 5x میں برابر تقسیم (Weight: 2188 each)
     const items =[
-        {id: 9, weight: 138},
-        {id: 8, weight: 92},
-        {id: 7, weight: 277},
-        {id: 6, weight: 694},
-        {id: 4, weight: 23},
-        {id: 5, weight: 23},
-        {id: 0, weight: 2188},
-        {id: 1, weight: 2188},
-        {id: 2, weight: 2188},
-        {id: 3, weight: 2189}
+        {id: 9, weight: 138}, {id: 8, weight: 92}, {id: 7, weight: 277}, {id: 6, weight: 694},
+        {id: 4, weight: 23}, {id: 5, weight: 23}, {id: 0, weight: 2188}, {id: 1, weight: 2188},
+        {id: 2, weight: 2188}, {id: 3, weight: 2189}
     ];
 
     let cumulative = 0;
@@ -62,11 +46,9 @@ function getDeterministicWinner(roundId) {
             break;
         }
     }
-
     return spinPath.indexOf(selectedId);
 }
 
-// آٹو ہسٹری جنریٹر (گیم بند کر کے کھولنے پر بھی رزلٹ شو ہوگا)
 function generateGlobalHistory() {
     window.resultHistory = [];
     let now = Math.floor(Date.now() / 1000);
@@ -81,8 +63,19 @@ function generateGlobalHistory() {
     updateHistoryStripUI();
 }
 
-// گیم کھلتے ہی پچھلے 8 رزلٹس آٹو لوڈ کر دو
 setTimeout(generateGlobalHistory, 1000);
+
+// ================= نیا فارمیٹنگ فنکشن (Million, Billion, Trillion) =================
+function formatMassiveNumber(num) {
+    if(!num) return "0";
+    num = Number(num);
+    if (num >= 1e15) return (num / 1e15).toFixed(2).replace(/\.00$/, '') + 'Q';  // Quadrillion
+    if (num >= 1e12) return (num / 1e12).toFixed(2).replace(/\.00$/, '') + 'T';  // Trillion
+    if (num >= 1e9)  return (num / 1e9).toFixed(2).replace(/\.00$/, '') + 'B';   // Billion
+    if (num >= 1e6)  return (num / 1e6).toFixed(2).replace(/\.00$/, '') + 'M';   // Million
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';   // Thousand
+    return num.toLocaleString();
+}
 
 setInterval(() => {
     if (!window.currentUser) return;
@@ -90,6 +83,10 @@ setInterval(() => {
     let roundStart = now - (now % ROUND_DURATION);
     let newRoundId = roundStart;
     let elapsed = now - roundStart;
+
+    window.currentDailyRound = Math.floor((Date.now() % 86400000) / (ROUND_DURATION * 1000));
+    let roundDisplay = document.getElementById('round-number-display');
+    if(roundDisplay) roundDisplay.innerText = "Round " + window.currentDailyRound + " of today";
 
     if (window.currentRoundId !== newRoundId) {
         window.currentRoundId = newRoundId;
@@ -99,15 +96,15 @@ setInterval(() => {
     if (elapsed < BET_TIME) {
         window.isSpinning = false;
         let timeLeft = BET_TIME - elapsed;
-        if(document.getElementById('game-timer')) {
-            document.getElementById('game-timer').innerText = timeLeft;
-        }
-    } else if (elapsed === BET_TIME) {
-        if(!window.isSpinning) {
+        if(document.getElementById('game-timer')) document.getElementById('game-timer').innerText = timeLeft;
+    } else {
+        let spinTimeLeft = ROUND_DURATION - elapsed;
+        if(document.getElementById('game-timer')) document.getElementById('game-timer').innerText = spinTimeLeft;
+
+        if (elapsed === BET_TIME && !window.isSpinning) {
             window.isSpinning = true;
-            if(document.getElementById('game-timer')) document.getElementById('game-timer').innerText = "0";
             let winningPathIndex = getDeterministicWinner(window.currentRoundId);
-            spinWheelSequential(winningPathIndex);
+            spinWheelSequential(winningPathIndex); 
         }
     }
 }, 1000);
@@ -115,14 +112,18 @@ setInterval(() => {
 window.openGame = () => {
     document.getElementById('game-modal').style.display = 'flex';
     if(document.getElementById('game-balance')) { 
-        document.getElementById('game-balance').innerText = (window.currentCoins || 0).toLocaleString(); 
+        // یہاں بیلنس کو شارٹ فارمیٹ (M/B) میں کر دیا گیا ہے
+        document.getElementById('game-balance').innerText = formatMassiveNumber(window.currentCoins || 0); 
     }
     
     let today = new Date().toLocaleDateString();
     let savedData = JSON.parse(localStorage.getItem('luckyFruitWinnings') || '{"date":"","amount":0}');
     if (savedData.date !== today) { savedData.amount = 0; }
     let displayEl = document.getElementById('game-today-win');
-    if(displayEl) displayEl.innerText = savedData.amount.toLocaleString();
+    if(displayEl) {
+        // وننگ کو بھی شارٹ کر دیا گیا ہے
+        displayEl.innerText = formatMassiveNumber(savedData.amount);
+    }
 };
 
 window.closeGame = () => { 
@@ -131,11 +132,12 @@ window.closeGame = () => {
 
 window.selectChip = (amt, btn) => { 
     window.currentBet = amt; 
-    document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected')); 
-    btn.classList.add('selected'); 
+    document.querySelectorAll('.chip-btn-new').forEach(b => b.classList.remove('active-bet')); 
+    document.querySelectorAll('.bet-item-wrapper').forEach(w => w.classList.remove('active-wrapper'));
+    btn.classList.add('active-bet'); 
+    btn.parentElement.classList.add('active-wrapper');
 };
 
-// یہ فنکشن اماؤنٹ کو شارٹ کر کے بیٹ کے اوپر لکھے گا تاکہ ڈیزائن خراب نہ ہو (مثال: 5M)
 function formatShortBet(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
@@ -143,13 +145,12 @@ function formatShortBet(num) {
 }
 
 window.placeBet = (index) => {
-    if(window.isSpinning) return Swal.fire({toast:true, icon:'warning', title:'Wait for the next round!', position:'top', showConfirmButton:false, timer:1500});
+    if(window.isSpinning) return Swal.fire({toast:true, icon:'warning', title:'Wait for next round!', position:'top', showConfirmButton:false, timer:1500});
     if(index === 4 || index === 5) return; 
     
-    // اگر کوائنز کم ہیں تو خوبصورت ریچارج پاپ اپ شو کریں
     if((window.currentCoins || 0) < window.currentBet) { 
         Swal.fire({
-            html: '<div class="text-[#a16207] font-bold text-lg mt-2 mb-4 leading-relaxed">Insufficient gold coins, please<br>recharge first.</div>',
+            html: '<div class="text-[#a16207] font-bold text-lg mt-2 mb-4 leading-relaxed">Insufficient coins, please<br>recharge first.</div>',
             showCancelButton: true,
             confirmButtonText: 'Recharge',
             cancelButtonText: 'Cancel',
@@ -163,16 +164,13 @@ window.placeBet = (index) => {
             backdrop: 'rgba(0,0,0,0.6)'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.closeGame(); // گیم بند کریں
-                if(typeof window.openRechargeModal === 'function') {
-                    window.openRechargeModal(); // ریچارج پیج اوپن کریں
-                }
+                window.closeGame(); 
+                if(typeof window.openRechargeModal === 'function') window.openRechargeModal(); 
             }
         });
         return; 
     }
     
-    // کوائنز کاٹنا اور بیٹ لگانا
     window.currentCoins -= window.currentBet;
     window.update(window.ref(window.db, `users/${window.currentUser.uid}`), { coins: window.currentCoins });
     
@@ -180,23 +178,24 @@ window.placeBet = (index) => {
     window.activeBets[index] += window.currentBet;
     
     const betBadge = document.getElementById(`bet-${index}`);
-    if(betBadge) betBadge.innerText = formatShortBet(window.activeBets[index]);
+    if(betBadge) {
+        betBadge.innerText = formatShortBet(window.activeBets[index]);
+        betBadge.style.transform = 'scale(1.3)';
+        setTimeout(() => { betBadge.style.transform = 'scale(1)'; }, 100);
+    }
     
     if(document.getElementById('game-balance')) { 
-        document.getElementById('game-balance').innerText = window.currentCoins.toLocaleString(); 
+        // لائیو کٹنے پر بھی بیلنس شارٹ ہی نظر آئے گا
+        document.getElementById('game-balance').innerText = formatMassiveNumber(window.currentCoins); 
     }
 };
 
 function resetGameLocally() {
     window.activeBets = {};
     document.querySelectorAll('.bet-overlay').forEach(el => el.innerText = '');
-    if(document.getElementById('game-win')) document.getElementById('game-win').innerText = "0";
-    document.querySelectorAll('.fruit-item').forEach(el => el.classList.remove('active'));
-    const overlay = document.getElementById('game-result-overlay');
-    if(overlay) {
-        overlay.classList.replace('scale-100', 'scale-0');
-        setTimeout(() => { overlay.style.display = 'none'; }, 300);
-    }
+    document.querySelectorAll('.fruit-box').forEach(el => el.classList.remove('active'));
+    const popup = document.getElementById('new-result-popup');
+    if(popup) popup.style.display = 'none';
 }
 
 function spinWheelSequential(finalResultPathIndex) {
@@ -206,7 +205,7 @@ function spinWheelSequential(finalResultPathIndex) {
     let currentPathIndex = 0;
 
     function step() {
-        document.querySelectorAll('.fruit-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.fruit-box').forEach(el => el.classList.remove('active'));
         const activeFruitId = spinPath[currentPathIndex];
         const el = document.getElementById(`f-${activeFruitId}`);
         if(el) el.classList.add('active');
@@ -244,7 +243,7 @@ function finalizeResult(winningFruitId) {
     }
 
     const winningImgElement = document.querySelector(`#f-${winningFruitId} img`);
-    const winningImgSrc = winningImgElement ? winningImgElement.src : 'https://placehold.co/100?text=Win';
+    const winningImgSrc = winningImgElement ? winningImgElement.src : './orange.png';
 
     if(winningImgSrc) {
         window.resultHistory.unshift(winningImgSrc);
@@ -254,7 +253,6 @@ function finalizeResult(winningFruitId) {
 
     if(totalBetThisRound > 0) {
         const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        const roundId = Math.floor(1000 + Math.random() * 9000);
         
         let selectedFruitsArray =[];
         for(let key in window.activeBets) {
@@ -264,7 +262,7 @@ function finalizeResult(winningFruitId) {
         }
 
         window.detailedBetHistory.unshift({
-            round: roundId,
+            round: window.currentDailyRound,
             time: timeNow,
             selected: selectedFruitsArray,
             winImg: winningImgSrc,
@@ -295,16 +293,17 @@ function finalizeResult(winningFruitId) {
             localStorage.setItem('luckyFruitWinnings', JSON.stringify(savedData));
 
             let gameBalanceEl = document.getElementById('game-balance');
-            if(gameBalanceEl) gameBalanceEl.innerText = window.currentCoins.toLocaleString();
+            // وننگ ملنے کے بعد بھی بیلنس شارٹ میں شو ہوگا
+            if(gameBalanceEl) gameBalanceEl.innerText = formatMassiveNumber(window.currentCoins);
             
             let todayWinEl = document.getElementById('game-today-win');
-            if(todayWinEl) todayWinEl.innerText = savedData.amount.toLocaleString();
+            if(todayWinEl) todayWinEl.innerText = formatMassiveNumber(savedData.amount);
             
             if(popupText) popupText.innerText = "Congratulations! You won";
             if(popupCircle) popupCircle.classList.add('hidden');
             if(popupAmount) {
                 popupAmount.classList.remove('hidden');
-                popupAmount.innerText = winAmount.toLocaleString();
+                popupAmount.innerText = formatMassiveNumber(winAmount); // پاپ اپ پر بھی شارٹ نمبر
             }
             
             if(typeof window.broadcastWin === "function"){
@@ -329,7 +328,7 @@ window.openGameHistory = () => {
     listContainer.innerHTML = '';
     
     if(window.detailedBetHistory.length === 0) {
-        listContainer.innerHTML = '<div class="text-center text-gray-500 mt-10 text-xs">No betting history yet.</div>';
+        listContainer.innerHTML = '<div class="text-center text-gray-400 mt-10 font-bold">No betting history yet.</div>';
     } else {
         window.detailedBetHistory.forEach(item => {
             const isWin = item.status === 'WIN';
@@ -345,23 +344,23 @@ window.openGameHistory = () => {
             listContainer.innerHTML += `
                 <div class="relative bg-gradient-to-b from-[#b35e22] to-[#8b4513] p-4 rounded-xl mb-3 shadow-lg overflow-hidden border border-[#d2691e]">
                     <div class="flex justify-between items-center text-white font-bold mb-3 border-b border-white/20 pb-2">
-                        <span class="text-sm">Round: ${item.round}</span>
-                        <span class="text-[10px] font-normal opacity-80">${item.time}</span>
+                        <span class="text-sm text-yellow-300">Round: ${item.round}</span>
+                        <span class="text-[10px] font-normal opacity-80 bg-black/30 px-2 py-0.5 rounded-full">${item.time}</span>
                     </div>
                     <div class="flex mb-3">
                         <span class="text-white/70 text-xs w-24 flex-shrink-0 pt-1">Selected fruits:</span>
                         <div class="flex flex-wrap gap-2 flex-1">${betsHtml}</div>
                     </div>
                     <div class="flex items-center mb-3">
-                        <span class="text-white/70 text-xs w-24 flex-shrink-0">Winning fruits:</span>
-                        <img src="${item.winImg}" class="w-8 h-8 drop-shadow-md">
+                        <span class="text-white/70 text-xs w-24 flex-shrink-0">Winning fruit:</span>
+                        <div class="bg-white/10 p-1 rounded-lg border border-white/20"><img src="${item.winImg}" class="w-8 h-8 drop-shadow-md"></div>
                     </div>
                     <div class="flex items-center relative z-10">
                         <span class="text-white/70 text-xs w-24 flex-shrink-0">Win coins:</span>
-                        <span class="text-yellow-300 font-bold text-sm">🪙 ${item.totalWin.toLocaleString()}</span>
+                        <span class="text-yellow-300 font-black text-lg drop-shadow-md">🪙 ${formatMassiveNumber(item.totalWin)}</span>
                     </div>
-                    <div class="absolute -bottom-6 -right-6 w-28 h-28 border-[4px] ${isWin ? 'border-green-400 text-green-400' : 'border-gray-300 text-gray-300'} opacity-30 rounded-full flex items-center justify-center -rotate-12 pointer-events-none">
-                        <div class="border-[2px] ${isWin ? 'border-green-400' : 'border-gray-300'} w-[90%] h-[90%] rounded-full flex items-center justify-center">
+                    <div class="absolute -bottom-6 -right-6 w-28 h-28 border-[4px] ${isWin ? 'border-green-400 text-green-400' : 'border-gray-400 text-gray-400'} opacity-30 rounded-full flex items-center justify-center -rotate-12 pointer-events-none">
+                        <div class="border-[2px] ${isWin ? 'border-green-400' : 'border-gray-400'} w-[90%] h-[90%] rounded-full flex items-center justify-center">
                             <span class="font-black text-2xl uppercase tracking-widest">${item.status}</span>
                         </div>
                     </div>
@@ -384,19 +383,19 @@ window.closeGameHistory = () => {
 function updateHistoryStripUI() {
     const strip = document.getElementById('game-history-strip');
     if(!strip) return;
-    strip.innerHTML = '<span class="history-label">Results:</span>';
+    strip.innerHTML = '';
     window.resultHistory.forEach((src, index) => {
         if(index === 0) {
-            strip.innerHTML += `<div class="history-item newest"><img src="${src}"><div class="new-tag">new</div></div>`;
+            strip.innerHTML += `
+            <div class="relative w-[30px] h-[30px] flex-shrink-0 flex items-center justify-center">
+                <img src="${src}" class="w-full h-full object-contain filter drop-shadow-md scale-110">
+                <div class="absolute -bottom-1 -right-1 bg-red-600 text-white text-[7px] font-black px-1 rounded border border-white">NEW</div>
+            </div>`;
         } else {
-            strip.innerHTML += `<div class="history-item"><img src="${src}"></div>`;
+            strip.innerHTML += `
+            <div class="relative w-[24px] h-[24px] flex-shrink-0 flex items-center justify-center opacity-80">
+                <img src="${src}" class="w-full h-full object-contain">
+            </div>`;
         }
     });
 }
-
-setInterval(() => {
-    if(document.getElementById('round-number-display') && window.currentRoundId > 0) {
-        let roundNum = Math.floor((Date.now() % 86400000) / 40000);
-        document.getElementById('round-number-display').innerText = "Round " + roundNum + " of today";
-    }
-}, 1000);

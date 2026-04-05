@@ -752,71 +752,133 @@
 @keyframes holo-shine { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
 @keyframes supreme-fire { 0% {background-position: 0% 50%;} 100% {background-position: 100% 50%;} }
         
-        /* LUCKY FRUIT GAME STYLES */
-    /* ہوبہو سکرین شاٹ جیسا گیم کنٹینر */
-        #game-modal { background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; position: fixed; inset: 0; padding-bottom: 0; }
-        .game-container { width: 100%; max-width: 500px; height: auto; background: linear-gradient(to bottom, #3b0000, #1a0000); border-top: 4px solid #b8860b; border-top-left-radius: 20px; border-top-right-radius: 20px; position: relative; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); }
-        
-        /* گیم کا ہیڈر اور راؤنڈ ٹیکسٹ */
-        .game-header-top { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px; position: relative; }
-        .game-title-img { height: 40px; object-fit: contain; margin-bottom: 2px; }
-        .round-text-box { background: rgba(0,0,0,0.5); border-radius: 15px; padding: 2px 20px; font-size: 10px; color: #8b7355; border: 1px solid #331a00; margin-bottom: 8px; }
+        /* ================= NEW LUCKY FRUIT SVG DESIGN CSS ================= */
+.game-svg-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    aspect-ratio: 1 / 2; /* 600x1200 SVG Ratio */
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+}
 
-        /* فروٹ گرڈ (پروفیشنل سکوئر / لمبے خانے) */
-        .fruit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #260000; border-radius: 12px; margin: 0 10px; border: 2px solid #5c1e06; box-shadow: inset 0 0 15px rgba(0,0,0,0.9); }
-        .fruit-item { height: 85px; background: linear-gradient(to bottom, #1a0000, #0d0000); border: 2px solid #ff4500; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 3px 6px rgba(0,0,0,0.7); transition: transform 0.1s; }
-        .fruit-img { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.9)); margin: auto; z-index: 2; transition: transform 0.2s; }
-        .text-multiplier { font-size: 11px; color: #facc15; font-weight: 900; margin-bottom: 4px; z-index: 10; text-shadow: 1px 1px 2px #000; }
-        .fruit-item.active { border: 2px solid #fff !important; box-shadow: 0 0 20px #fff, inset 0 0 15px #ffeb3b !important; background: radial-gradient(circle, #ff8c00 0%, #8b0000 100%) !important; transform: scale(1.05) !important; }
-        
-        /* سینٹر ٹائمر (2 خانوں کے برابر پرفیکٹ سائز) */
-        .center-timer { grid-column: 2 / span 2; grid-row: 2; height: 85px; background: #330000; border: 3px dotted #ff4500; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 900; color: #ffeb3b; font-family: 'Courier New', monospace; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); text-shadow: 0 4px 6px rgba(0,0,0,0.8); }
+.fruit-box {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
 
-        /* بیٹ بٹنز (چپس) سکرین شاٹ کے مطابق (Swipable up to 5M) */
-        .bet-controls { 
-            display: flex; 
-            gap: 10px; 
-            padding: 12px 15px; 
-            width: 100%; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
-            -webkit-overflow-scrolling: touch; 
-        }
-        .bet-controls::-webkit-scrollbar { display: none; }
-        
-        .chip-btn { 
-            flex-shrink: 0; 
-            min-width: 68px; 
-            height: 32px; 
-            background: linear-gradient(to bottom, #ffda44, #d97706); 
-            color: #3f0000; 
-            font-weight: 900; 
-            border-radius: 16px; 
-            font-size: 11px; 
-            border: 2px solid #fff; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.6); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            cursor: pointer; 
-            transition: transform 0.1s; 
-        }
-        .chip-btn.selected { border-color: #ff0000; box-shadow: 0 0 15px #ff4500; transform: scale(1.05); color: #fff; background: linear-gradient(to bottom, #ff4500, #8b0000); }
+.fruit-box.active {
+    box-shadow: inset 0 0 25px rgba(255, 235, 59, 0.8), 0 0 15px rgba(255, 255, 255, 0.5);
+    background: radial-gradient(circle, rgba(255, 165, 0, 0.5) 0%, transparent 80%);
+    transform: scale(1.05);
+    border: 2px solid #fff;
+}
 
-        /* بیلنس اور ٹوڈے وننگ */
-        .game-footer { display: flex; justify-content: space-between; padding: 5px 20px; }
-        .footer-box { display: flex; flex-direction: column; align-items: center; }
-        .footer-label { font-size: 10px; color: #8b7355; font-weight: bold; margin-bottom: 2px; }
-        .footer-value { font-size: 12px; color: #8b7355; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+.fruit-box .fruit-img {
+    width: 55%;
+    height: 55%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8));
+    transition: transform 0.2s;
+    z-index: 2;
+}
 
-        /* رزلٹ ہسٹری (نیچے والی پٹی) */
-        .history-strip { display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: #261300; border-top: 1px solid #331a00; overflow-x: auto; width: 100%; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-        .history-label { font-size: 11px; color: #6b5335; font-weight: bold; }
-        .history-item { position: relative; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .history-item img { width: 100%; height: 100%; object-fit: contain; filter: opacity(0.7); }
-        .history-item.newest img { filter: opacity(1); transform: scale(1.2); }
-        .new-tag { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: transparent; border: 1px solid #d97706; color: #d97706; font-size: 7px; padding: 0 4px; border-radius: 8px; font-weight: bold; }
+.fruit-box:active .fruit-img { transform: scale(0.9); }
+
+.fruit-box .multiplier {
+    font-size: 11px;
+    color: #facc15;
+    font-weight: 900;
+    margin-top: 2px;
+    text-shadow: 1px 1px 2px #000;
+    z-index: 3;
+}
+
+.bet-overlay {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 5px;
+    border-radius: 6px;
+    z-index: 10;
+    border: 1px solid #facc15;
+}
+
+/* ================= نئے بیٹ بٹنز کا ڈیزائن (Screenshot کے مطابق) ================= */
+.new-bet-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: flex-end; /* بٹنز کو نیچے سے الائن کرنے کے لیے */
+    padding: 0 8px;
+}
+.new-bet-scroll::-webkit-scrollbar { display: none; }
+
+.bet-item-wrapper {
+    flex: 0 0 calc(25% - 4.5px); /* بالکل پرفیکٹ 4 بٹن نظر آئیں گے */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    scroll-snap-align: start;
+    height: 100%;
+}
+
+.bet-amount-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 10px; /* سائز چھوٹا اور خوبصورت */
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.chip-btn-new {
+    width: 90%;
+    height: 35px; /* بٹن کی ہائٹ */
+    background: linear-gradient(to bottom, #fde047, #d97706);
+    border: 2px solid #fff;
+    border-radius: 12px; /* گولائی کم کی ہے سکرین شاٹ کے مطابق */
+    box-shadow: 0 6px 0 #92400e, 0 8px 10px rgba(0,0,0,0.7); /* 3D پیڈسٹل ایفیکٹ */
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+/* اندر دبنے والا ایفیکٹ (Pressed) */
+.chip-btn-new.active-bet {
+    transform: translateY(6px); /* بٹن نیچے دبے گا */
+    box-shadow: 0 0 0 #92400e, 0 0 15px rgba(250,204,21,0.8), inset 0 4px 8px rgba(0,0,0,0.5);
+    background: linear-gradient(to bottom, #b45309, #451a03);
+    border-color: #fef08a;
+}
+.bet-item-wrapper.active-wrapper .bet-amount-display {
+    background: rgba(250, 204, 21, 0.2);
+    border-color: #facc15;
+    color: #facc15;
+}
+         .new-tag { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: transparent; border: 1px solid #d97706; color: #d97706; font-size: 7px; padding: 0 4px; border-radius: 8px; font-weight: bold; }
 
         /* نیا رزلٹ پاپ اپ سکرین شاٹ کے مطابق */
         #new-result-popup { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 320px; background: #e67e22; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); display: none; flex-direction: column; overflow: hidden; z-index: 5000; border: 2px solid #f39c12; }
@@ -2516,90 +2578,207 @@
     </div>
 </div>
 
-    <!-- LUCKY FRUIT GAME MODAL -->
-    <div id="game-modal">
-        <div class="game-container">
+    <!-- ================= LUCKY FRUIT GAME MODAL (SVG DESIGN) ================= -->
+    <div id="game-modal" class="fixed inset-0 z-[8000] bg-black/90 hidden flex-col items-center justify-center p-2 backdrop-blur-md">
+        
+        <div class="game-svg-wrapper">
             
-            <div class="game-header-top">
-                <button onclick="closeGame()" class="absolute top-2 right-4 text-[#8b7355] text-xl z-50 hover:text-red-500"><i class="fa-solid fa-circle-xmark"></i></button>
-                <button onclick="openGameHistory()" class="absolute top-2 left-4 text-[#8b7355] text-xl z-50 hover:text-yellow-400"><i class="fa-solid fa-clock-rotate-left"></i></button>
-                
-                <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#ffda44] to-[#d97706] tracking-wider mb-1" style="-webkit-text-stroke: 1px #5c1e06;">LUCKY FRUIT</h2>
-                <div class="round-text-box" id="round-number-display">Round ... of today</div>
+            <!-- 1. BACKGROUND SVG CODE -->
+            <div class="absolute inset-0 pointer-events-none z-0">
+                <svg viewBox="0 0 600 1200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/></filter>
+                    <filter id="light-shadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/></filter>
+                    <filter id="fruit-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000000" flood-opacity="0.8"/></filter>
+                    <radialGradient id="premium-full-bg" cx="50%" cy="40%" r="75%"><stop offset="0%" stop-color="#8a5a19" /><stop offset="60%" stop-color="#3d2403" /><stop offset="100%" stop-color="#1a0f00" /></radialGradient>
+                    <linearGradient id="bg-dark" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3d0a04" /><stop offset="50%" stop-color="#1f0301" /><stop offset="100%" stop-color="#3d0a04" /></linearGradient>
+                    <linearGradient id="gold-border" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fff299" /><stop offset="25%" stop-color="#d4901c" /><stop offset="50%" stop-color="#fff7b0" /><stop offset="75%" stop-color="#a86807" /><stop offset="100%" stop-color="#fff299" /></linearGradient>
+                    <linearGradient id="header-red" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e33017" /><stop offset="50%" stop-color="#a11503" /><stop offset="100%" stop-color="#6e0b00" /></linearGradient>
+                    <linearGradient id="text-3d-gold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="30%" stop-color="#ffe259" /><stop offset="70%" stop-color="#ffa751" /><stop offset="100%" stop-color="#8a4300" /></linearGradient>
+                    <linearGradient id="box-inner" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#330602" /><stop offset="100%" stop-color="#120100" /></linearGradient>
+                    <linearGradient id="panel-brown" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4d2417" /><stop offset="100%" stop-color="#2b1109" /></linearGradient>
+                    <pattern id="grid-dots" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#240702" /><circle cx="5" cy="5" r="1.5" fill="#4a1205" /></pattern>
+                    <radialGradient id="apple-3d" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#d9ff66" /><stop offset="35%" stop-color="#55cc00" /><stop offset="80%" stop-color="#1a4d00" /><stop offset="100%" stop-color="#0d2600" /></radialGradient>
+                    <radialGradient id="grape-3d" cx="30%" cy="30%" r="60%"><stop offset="0%" stop-color="#e6b3ff" /><stop offset="40%" stop-color="#8000ff" /><stop offset="85%" stop-color="#26004d" /><stop offset="100%" stop-color="#130026" /></radialGradient>
+                    <radialGradient id="lemon-3d" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff" /><stop offset="20%" stop-color="#ffea00" /><stop offset="70%" stop-color="#cc8800" /><stop offset="100%" stop-color="#4d3300" /></radialGradient>
+                    <radialGradient id="cherry-3d" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#ff99a8" /><stop offset="30%" stop-color="#cc0022" /><stop offset="80%" stop-color="#4d000d" /><stop offset="100%" stop-color="#260006" /></radialGradient>
+                    <linearGradient id="leaf-3d" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#88cc00" /><stop offset="100%" stop-color="#224d00" /></linearGradient>
+                    <style>.normal-box { fill: url(#box-inner); stroke: #5c0f05; stroke-width: 3; rx: 12; filter: url(#light-shadow); } .center-box-base { fill: url(#box-inner); stroke: #8a1103; stroke-width: 4; rx: 15; filter: url(#light-shadow); } .title-font { font-family: 'Arial Black', Impact, sans-serif; font-weight: 900; font-size: 42px; font-style: italic; } .label-text { font-family: Arial, sans-serif; font-size: 16px; fill: #d1a586; font-weight: bold; } .coin-text { font-family: 'Arial Black', Impact, sans-serif; font-size: 8px; fill: #5c2f00; font-weight: bold; text-anchor: middle; dominant-baseline: central; } .highlight { fill: #ffffff; opacity: 0.4; }</style>
+                  </defs>
+                  <rect width="600" height="1200" rx="45" ry="45" fill="url(#premium-full-bg)" />
+                  <g transform="translate(0, 80)">
+                    <path d="M 20 80 Q 20 50 50 50 L 550 50 Q 580 50 580 80 L 580 850 Q 580 880 550 880 L 50 880 Q 20 880 20 850 Z" fill="url(#gold-border)" filter="url(#shadow)" />
+                    <path d="M 28 80 Q 28 58 50 58 L 550 58 Q 572 58 572 80 L 572 842 Q 572 864 550 864 L 50 864 Q 28 864 28 842 Z" fill="url(#bg-dark)" />
+                    <g id="top-fruits" filter="url(#fruit-shadow)">
+                      <g><animateTransform attributeName="transform" type="rotate" values="-2 160 60; 3 160 60; -2 160 60" dur="4s" repeatCount="indefinite" /><path d="M 160 35 Q 180 15 195 25 Q 180 40 160 35 Z" fill="url(#leaf-3d)" /><path d="M 155 40 Q 158 20 165 15" fill="none" stroke="#331a00" stroke-width="3" stroke-linecap="round" /><path d="M 160 35 C 190 35, 200 65, 190 85 C 180 100, 140 100, 130 85 C 120 65, 130 35, 160 35 Z" fill="url(#apple-3d)" /><ellipse cx="145" cy="55" rx="8" ry="15" class="highlight" transform="rotate(-30 145 55)" /></g>
+                      <g><animateTransform attributeName="transform" type="rotate" values="2 280 45; -3 280 45; 2 280 45" dur="3.5s" repeatCount="indefinite" /><path d="M 275 30 Q 250 10 240 25 Q 260 40 275 30 Z" fill="url(#leaf-3d)" /><circle cx="265" cy="45" r="14" fill="url(#grape-3d)" /><circle cx="295" cy="45" r="14" fill="url(#grape-3d)" /><circle cx="250" cy="60" r="14" fill="url(#grape-3d)" /><circle cx="310" cy="60" r="14" fill="url(#grape-3d)" /><circle cx="280" cy="55" r="15" fill="url(#grape-3d)" /><circle cx="265" cy="75" r="14" fill="url(#grape-3d)" /><circle cx="295" cy="75" r="14" fill="url(#grape-3d)" /><circle cx="280" cy="90" r="13" fill="url(#grape-3d)" /></g>
+                      <g><animateTransform attributeName="transform" type="rotate" values="-3 380 45; 4 380 45; -3 380 45" dur="4.2s" repeatCount="indefinite" /><path d="M 370 25 Q 390 5 410 20 Q 380 35 370 25 Z" fill="url(#leaf-3d)" /><path d="M 345 55 C 335 45, 360 25, 380 30 C 400 35, 420 50, 415 65 C 410 80, 380 80, 360 75 C 340 70, 355 65, 345 55 Z" fill="url(#lemon-3d)" /><ellipse cx="370" cy="45" rx="15" ry="6" class="highlight" transform="rotate(-20 370 45)" /></g>
+                      <g><animateTransform attributeName="transform" type="rotate" values="3 445 50; -3 445 50; 3 445 50" dur="3.8s" repeatCount="indefinite" /><path d="M 445 15 Q 465 5 475 20 Q 455 30 445 15 Z" fill="url(#leaf-3d)" /><path d="M 430 55 Q 440 20 445 15 Q 455 25 460 50" fill="none" stroke="#4d2600" stroke-width="2.5" stroke-linecap="round" /><circle cx="428" cy="62" r="16" fill="url(#cherry-3d)" /><ellipse cx="422" cy="56" rx="5" ry="3" class="highlight" transform="rotate(-30 422 56)" /><circle cx="462" cy="58" r="16" fill="url(#cherry-3d)" /><ellipse cx="456" cy="52" rx="5" ry="3" class="highlight" transform="rotate(-30 456 52)" /></g>
+                    </g>
+                    <path d="M 70 90 L 30 115 L 70 140 Z" fill="url(#gold-border)" />
+                    <path d="M 530 90 L 570 115 L 530 140 Z" fill="url(#gold-border)" />
+                    <rect x="50" y="80" width="500" height="70" rx="35" fill="url(#header-red)" stroke="url(#gold-border)" stroke-width="4" filter="url(#shadow)" />
+                    <text x="300" y="132" class="title-font" fill="#2b0000" stroke="#2b0000" stroke-width="12" stroke-linejoin="round" text-anchor="middle">Lucky Fruit Pro</text>
+                    <text x="300" y="129" class="title-font" fill="#5c0000" stroke="#5c0000" stroke-width="6" stroke-linejoin="round" text-anchor="middle">Lucky Fruit Pro</text>
+                    <text x="300" y="127" class="title-font" fill="url(#text-3d-gold)" text-anchor="middle" filter="url(#light-shadow)">Lucky Fruit Pro</text>
+                    <rect id="placeholder-round-text" x="150" y="165" width="300" height="30" rx="15" fill="#140202" stroke="#4a1505" stroke-width="2" />
+                    <rect x="40" y="210" width="520" height="470" rx="20" fill="url(#grid-dots)" stroke="url(#gold-border)" stroke-width="5" filter="url(#shadow)" />
+                    <rect x="48" y="218" width="504" height="454" rx="14" fill="none" stroke="#fce688" stroke-width="4" stroke-dasharray="4 16" stroke-linecap="round">
+                      <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="0.6s" repeatCount="indefinite" /><animate attributeName="opacity" values="1; 0.4; 1" dur="0.8s" repeatCount="indefinite" />
+                    </rect>
+                    <rect id="box-top-1" class="normal-box" x="65" y="240" width="105" height="120" />
+                    <rect id="box-top-2" class="normal-box" x="185" y="240" width="105" height="120" />
+                    <rect id="box-top-3" class="normal-box" x="305" y="240" width="105" height="120" />
+                    <rect id="box-top-4" class="normal-box" x="425" y="240" width="105" height="120" />
+                    <rect id="box-mid-left" class="normal-box" x="65" y="385" width="105" height="120" />
+                    <g id="box-center-large">
+                      <rect class="center-box-base" x="185" y="385" width="225" height="120" />
+                      <rect x="193" y="393" width="209" height="104" rx="10" fill="none" stroke="#ff3333" stroke-width="4" stroke-dasharray="4 36" stroke-linecap="round"><animate attributeName="stroke-dashoffset" from="0" to="-40" dur="0.8s" repeatCount="indefinite" /></rect>
+                    </g>
+                    <rect id="box-mid-right" class="normal-box" x="425" y="385" width="105" height="120" />
+                    <rect id="box-bot-1" class="normal-box" x="65" y="530" width="105" height="120" />
+                    <rect id="box-bot-2" class="normal-box" x="185" y="530" width="105" height="120" />
+                    <rect id="box-bot-3" class="normal-box" x="305" y="530" width="105" height="120" />
+                    <rect id="box-bot-4" class="normal-box" x="425" y="530" width="105" height="120" />
+                    <g transform="translate(20, 895)">
+                      <rect x="0" y="0" width="275" height="70" rx="10" fill="url(#panel-brown)" stroke="#7a371c" stroke-width="2" />
+                      <text x="137" y="25" class="label-text" text-anchor="middle">Balance</text>
+                      <g filter="url(#light-shadow)"><circle cx="40" cy="50" r="12" fill="url(#gold-border)" /><circle cx="40" cy="50" r="8" fill="none" stroke="#a36014" stroke-width="1.5" /><text x="40" y="51" class="coin-text">YR</text></g>
+                      <rect x="285" y="0" width="275" height="70" rx="10" fill="url(#panel-brown)" stroke="#7a371c" stroke-width="2" />
+                      <text x="422" y="25" class="label-text" text-anchor="middle">Today's Winnings</text>
+                      <g filter="url(#light-shadow)"><circle cx="325" cy="50" r="12" fill="url(#gold-border)" /><circle cx="325" cy="50" r="8" fill="none" stroke="#a36014" stroke-width="1.5" /><text x="325" y="51" class="coin-text">YR</text></g>
+                    </g>
+                    <g transform="translate(0, 980)">
+                      <rect x="0" y="0" width="600" height="120" rx="25" ry="25" fill="url(#gold-border)" opacity="0.1" />
+                      <rect x="0" y="0" width="600" height="120" rx="25" ry="25" fill="#4d2417" opacity="0.6" />
+                    </g>
+                  </g>
+                </svg>
             </div>
 
-            <div id="new-result-popup">
-                <div class="popup-header-bar">
-                    <div style="width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 5px; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-                        <img id="popup-fruit-img" src="" alt="Fruit">
+            <!-- 2. INTERACTIVE HTML ELEMENTS OVER SVG -->
+            
+            <!-- Top Controls (ہسٹری اور کراس بٹن) -->
+            <button onclick="openGameHistory()" class="absolute top-[2%] left-[4%] w-[45px] h-[45px] bg-black/60 border-2 border-[#d4901c] rounded-full flex items-center justify-center text-yellow-400 hover:scale-110 hover:bg-black/80 transition z-50 shadow-lg">
+                <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+            </button>
+            <button onclick="closeGame()" class="absolute top-[2%] right-[4%] w-[45px] h-[45px] bg-red-700 border-2 border-[#ff99a8] rounded-full flex items-center justify-center text-white hover:scale-110 transition z-50 shadow-lg">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+
+            <!-- Round Number Display -->
+            <div id="round-number-display" class="absolute left-[25%] top-[20.4%] w-[50%] h-[2.5%] flex items-center justify-center text-yellow-500 text-[11px] font-bold">Round ... of today</div>
+
+            <!-- FRUIT GRID (10 Boxes + Timer) mapped with Exact Percentages -->
+            <!-- Top Row -->
+            <div id="f-0" onclick="placeBet(0)" class="fruit-box absolute left-[10.8%] top-[26.6%] w-[17.5%] h-[10%]"><img src="./orange.png" onerror="this.src='https://placehold.co/100?text=Org'" class="fruit-img"><span class="multiplier">5x</span><div class="bet-overlay" id="bet-0"></div></div>
+            <div id="f-1" onclick="placeBet(1)" class="fruit-box absolute left-[30.8%] top-[26.6%] w-[17.5%] h-[10%]"><img src="./lemon.png" onerror="this.src='https://placehold.co/100?text=Lem'" class="fruit-img"><span class="multiplier">5x</span><div class="bet-overlay" id="bet-1"></div></div>
+            <div id="f-2" onclick="placeBet(2)" class="fruit-box absolute left-[50.8%] top-[26.6%] w-[17.5%] h-[10%]"><img src="./grapes.png" onerror="this.src='https://placehold.co/100?text=Grp'" class="fruit-img"><span class="multiplier">5x</span><div class="bet-overlay" id="bet-2"></div></div>
+            <div id="f-3" onclick="placeBet(3)" class="fruit-box absolute left-[70.8%] top-[26.6%] w-[17.5%] h-[10%]"><img src="./cherry.png" onerror="this.src='https://placehold.co/100?text=Che'" class="fruit-img"><span class="multiplier">5x</span><div class="bet-overlay" id="bet-3"></div></div>
+            
+            <!-- Middle Row -->
+            <div id="f-4" class="fruit-box absolute left-[10.8%] top-[38.75%] w-[17.5%] h-[10%]"><img src="./small_bonus.png" onerror="this.src='https://placehold.co/100?text=S.Bon'" class="fruit-img" style="width: 75%; height: 75%;"></div>
+            
+            <!-- Central Timer -->
+            <div id="game-timer" class="absolute left-[30.8%] top-[38.75%] w-[37.5%] h-[10%] flex items-center justify-center text-5xl font-black text-[#ffeb3b] font-mono" style="text-shadow: 0 4px 6px rgba(0,0,0,0.9);">30</div>
+            
+            <div id="f-5" class="fruit-box absolute left-[70.8%] top-[38.75%] w-[17.5%] h-[10%]"><img src="./big_bonus.png" onerror="this.src='https://placehold.co/100?text=B.Bon'" class="fruit-img" style="width: 75%; height: 75%;"></div>
+
+            <!-- Bottom Row -->
+            <div id="f-6" onclick="placeBet(6)" class="fruit-box absolute left-[10.8%] top-[50.8%] w-[17.5%] h-[10%]"><img src="./apple.png" onerror="this.src='https://placehold.co/100?text=App'" class="fruit-img"><span class="multiplier">10x</span><div class="bet-overlay" id="bet-6"></div></div>
+            <div id="f-7" onclick="placeBet(7)" class="fruit-box absolute left-[30.8%] top-[50.8%] w-[17.5%] h-[10%]"><img src="./melon.png" onerror="this.src='https://placehold.co/100?text=Mel'" class="fruit-img"><span class="multiplier">15x</span><div class="bet-overlay" id="bet-7"></div></div>
+            <div id="f-8" onclick="placeBet(8)" class="fruit-box absolute left-[50.8%] top-[50.8%] w-[17.5%] h-[10%]"><img src="./mango.png" onerror="this.src='https://placehold.co/100?text=Man'" class="fruit-img"><span class="multiplier">25x</span><div class="bet-overlay" id="bet-8"></div></div>
+            <div id="f-9" onclick="placeBet(9)" class="fruit-box absolute left-[70.8%] top-[50.8%] w-[17.5%] h-[10%]"><img src="./berry.png" onerror="this.src='https://placehold.co/100?text=Ber'" class="fruit-img"><span class="multiplier">45x</span><div class="bet-overlay" id="bet-9"></div></div>
+
+            <!-- Swipeable Bet Buttons (1K to 5M) -->
+            <div class="new-bet-scroll absolute left-0 top-[63.5%] w-full h-[12%] z-20">
+                <!-- 1K -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 1K</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(1000, this)"></div>
+                </div>
+                <!-- 10K -->
+                <div class="bet-item-wrapper active-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 10K</div>
+                    <div class="chip-btn-new active-bet" onclick="window.selectChip(10000, this)"></div>
+                </div>
+                <!-- 50K -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 50K</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(50000, this)"></div>
+                </div>
+                <!-- 100K -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 100K</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(100000, this)"></div>
+                </div>
+                <!-- 500K -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 500K</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(500000, this)"></div>
+                </div>
+                <!-- 1M -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 1M</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(1000000, this)"></div>
+                </div>
+                <!-- 2M -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 2M</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(2000000, this)"></div>
+                </div>
+                <!-- 3M -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 3M</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(3000000, this)"></div>
+                </div>
+                <!-- 4M -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 4M</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(4000000, this)"></div>
+                </div>
+                <!-- 5M -->
+                <div class="bet-item-wrapper">
+                    <div class="bet-amount-display"><img src="./coin_icon.png" class="w-3 h-3"> 5M</div>
+                    <div class="chip-btn-new" onclick="window.selectChip(5000000, this)"></div>
+                </div>
+            </div>
+
+            <!-- Footer: Balance & Winnings (کوائن کے بالکل سامنے اور ڈبے کے اندر پرفیکٹ) -->
+            <div class="absolute left-[16%] top-[84%] w-[29%] h-[3%] flex items-center justify-start text-[#ffeb3b] font-black text-[12px] drop-shadow-md z-10 overflow-hidden tracking-wider" id="game-balance">0</div>
+            
+            <div class="absolute left-[63.5%] top-[84%] w-[29%] h-[3%] flex items-center justify-start text-[#ffeb3b] font-black text-[12px] drop-shadow-md z-10 overflow-hidden tracking-wider" id="game-today-win">0</div>
+
+            <!-- Bottom History Strip -->
+            <div class="absolute left-[15%] top-[88.3%] w-[80%] h-[10%] flex items-center gap-2 overflow-x-auto scrollbar-hide z-10 px-2" id="game-history-strip">
+                <!-- JS will load history here -->
+            </div>
+
+            <!-- Win Popup Overlay (Center screen) -->
+            <div id="new-result-popup" class="absolute top-[40%] left-1/2 transform -translate-x-1/2 w-[80%] bg-gradient-to-b from-[#e67e22] to-[#d35400] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.9)] hidden flex-col overflow-hidden z-[9000] border-2 border-[#f39c12]">
+                <div class="flex items-center bg-gradient-to-r from-[#f39c12] to-[#f1c40f] p-3 border-b-2 border-dashed border-white/50">
+                    <div class="w-12 h-12 bg-white/30 rounded-lg flex items-center justify-center mr-3 shadow-inner">
+                        <img id="popup-fruit-img" src="" class="w-10 h-10 object-contain drop-shadow-md">
                     </div>
-                    <span id="popup-text">You didn't participate this round</span>
+                    <span id="popup-text" class="text-[13px] font-bold text-white text-shadow-md flex-1 text-center">You didn't participate this round</span>
                 </div>
-                <div class="popup-body">
-                    <div id="popup-circle" class="popup-icon-circle">!</div>
-                    <div id="popup-amount" class="popup-win-amount hidden"></div>
-                </div>
-            </div>
-            
-            <div class="fruit-grid">
-                <div class="fruit-item" id="f-0" onclick="placeBet(0)"><img src="./orange.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137000.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-0"></div></div>
-                <div class="fruit-item" id="f-1" onclick="placeBet(1)"><img src="./lemon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1182/1182141.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-1"></div></div>
-                <div class="fruit-item" id="f-2" onclick="placeBet(2)"><img src="./grapes.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137042.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-2"></div></div>
-                <div class="fruit-item" id="f-3" onclick="placeBet(3)"><img src="./cherry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137014.png'" class="fruit-img"><div class="text-multiplier">5 times</div><div class="bet-overlay" id="bet-3"></div></div>
-                
-                <div class="fruit-item" id="f-4">
-                    <img src="./small_bonus.png" onerror="this.src='https://placehold.co/100x100/00bfff/white?text=Lucky'" class="fruit-img" style="width: 80%; height: 80%;">
-                </div>
-                
-                <div class="center-timer" id="game-timer">30</div>
-                
-                <div class="fruit-item" id="f-5">
-                    <img src="./big_bonus.png" onerror="this.src='https://placehold.co/100x100/ff00ff/white?text=Lucky'" class="fruit-img" style="width: 80%; height: 80%;">
-                </div>
-                
-                <div class="fruit-item" id="f-6" onclick="placeBet(6)"><img src="./apple.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/415/415733.png'" class="fruit-img"><div class="text-multiplier">10 times</div><div class="bet-overlay" id="bet-6"></div></div>
-                <div class="fruit-item" id="f-7" onclick="placeBet(7)"><img src="./melon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3137/3137030.png'" class="fruit-img"><div class="text-multiplier">15 times</div><div class="bet-overlay" id="bet-7"></div></div>
-                <div class="fruit-item" id="f-8" onclick="placeBet(8)"><img src="./mango.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6864/6864273.png'" class="fruit-img"><div class="text-multiplier">25 times</div><div class="bet-overlay" id="bet-8"></div></div>
-                <div class="fruit-item" id="f-9" onclick="placeBet(9)"><img src="./berry.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/590/590685.png'" class="fruit-img"><div class="text-multiplier">45 times</div><div class="bet-overlay" id="bet-9"></div></div>
-            </div>
-
-            <div class="bet-controls">
-                <button class="chip-btn selected" onclick="window.selectChip(10000, this)">10K</button>
-                <button class="chip-btn" onclick="window.selectChip(50000, this)">50K</button>
-                <button class="chip-btn" onclick="window.selectChip(100000, this)">100K</button>
-                <button class="chip-btn" onclick="window.selectChip(500000, this)">500K</button>
-                <button class="chip-btn" onclick="window.selectChip(1000000, this)">1M <i class="fa-brands fa-bitcoin ml-1"></i></button>
-                <button class="chip-btn" onclick="window.selectChip(2000000, this)">2M</button>
-                <button class="chip-btn" onclick="window.selectChip(3000000, this)">3M</button>
-                <button class="chip-btn" onclick="window.selectChip(4000000, this)">4M</button>
-                <button class="chip-btn" onclick="window.selectChip(5000000, this)">5M</button>
-            </div>
-
-            <div class="game-footer">
-                <div class="footer-box">
-                    <span class="footer-label">Balance</span>
-                    <span class="footer-value"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" style="width:12px;"> <span id="game-balance">0</span></span>
-                </div>
-                <div class="footer-box">
-                    <span class="footer-label">Today's Winnings</span>
-                    <span class="footer-value"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" style="width:12px;"> <span id="game-today-win">0</span></span>
+                <div class="flex flex-col items-center justify-center p-6 bg-[#d35400]">
+                    <div id="popup-circle" class="w-14 h-14 border-4 border-white/50 rounded-full flex items-center justify-center text-4xl text-white/70 font-black mb-2">!</div>
+                    <div id="popup-amount" class="hidden text-3xl font-black text-white drop-shadow-lg tracking-wider"></div>
                 </div>
             </div>
 
-            <div class="history-strip" id="game-history-strip">
-                <span class="history-label">Results:</span>
+            <!-- History Full Modal -->
+            <div id="game-history-modal" class="absolute inset-0 bg-black/95 z-[9900] hidden flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-yellow-700 bg-gradient-to-b from-[#3d0a04] to-[#1f0301]">
+                    <h3 class="text-yellow-400 font-black text-lg tracking-widest"><i class="fa-solid fa-clock-rotate-left mr-2"></i>HISTORY</h3>
+                    <button onclick="closeGameHistory()" class="text-white bg-red-600 w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="game-history-list" class="flex-1 overflow-y-auto p-3 space-y-3 pb-[80px]"></div>
             </div>
 
-            <div id="game-history-modal" class="absolute inset-0 bg-black/95 z-[100] hidden flex-col">
-                <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-900">
-                    <h3 class="text-white font-bold"><i class="fa-solid fa-clock-rotate-left text-yellow-400 mr-2"></i>Bet History</h3>
-                    <button onclick="closeGameHistory()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div id="game-history-list" class="flex-1 overflow-y-auto p-2 space-y-2"></div>
-            </div>
-        </div>
+        </div> <!-- End Aspect Ratio Wrapper -->
     </div>
-
     <!-- LEVEL SYSTEM MODAL (FULL SCREEN) -->
     <div id="level-system-modal" class="transition-transform transform translate-x-full duration-300 ease-in-out">
         <div class="level-modal-content">
