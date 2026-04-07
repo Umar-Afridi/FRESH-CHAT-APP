@@ -348,18 +348,7 @@
 .settings-icon-btn span { font-size: 11px; color: #374151; font-weight: 600; }
 .settings-icon-btn:active { transform: scale(0.95); }
 
-/* Theme Grid */
-.theme-grid-new { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
-.theme-card-new {
-    border-radius: 12px; overflow: hidden; position: relative; aspect-ratio: 3/4;
-    border: 2px solid transparent; cursor: pointer; background: #f3f4f6;
-}
-.theme-card-new.active { border-color: #8b5cf6; }
-.theme-card-new img { width: 100%; height: 100%; object-fit: cover; }
-.theme-custom-add {
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; color: #8b5cf6; background: #f5f3ff;
-}
+
         /* ROOM VIEW */
         #view-room { display: none; flex-direction: column; height: 100dvh; width: 100%; padding-bottom: 0 !important; background: #000 !important; position: fixed; inset: 0; z-index: 60; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); overflow: hidden; }
         #room-top-content { flex-shrink: 0; }
@@ -1498,37 +1487,8 @@
                 <button id="btn-confirm-add-admin" onclick="confirmAddAdmin()" class="w-full py-3.5 rounded-full text-white font-bold transition-all duration-300 bg-[#00d1c1] opacity-50 pointer-events-none text-lg tracking-wide shadow-lg">Add</button>
             </div>
         </div>
-        <!-- NEW THEME MODAL -->
-        <div id="theme-modal" class="bottom-sheet-modal" onclick="closeThemeModal()">
-            <div class="bottom-sheet-content" onclick="event.stopPropagation()">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="flex gap-4 border-b-2 border-transparent">
-                        <span class="font-bold text-gray-900 border-b-2 border-purple-500 pb-2">Room theme</span>
-                        <span class="font-bold text-gray-400 pb-2">Room Decoration</span>
-                    </div>
-                    <i class="fa-solid fa-xmark text-gray-400 text-xl cursor-pointer" onclick="closeThemeModal()"></i>
-                </div>
-
-                <div class="theme-grid-new" id="theme-list-container">
-                    <!-- Upload Box -->
-                    <div class="theme-card-new theme-custom-add" onclick="triggerCustomThemeUpload()">
-                        <i class="fa-solid fa-plus"></i>
-                        <input type="file" id="custom-theme-upload" accept="image/*" class="hidden" onchange="uploadCustomTheme(event)">
-                    </div>
-                    
-                    <!-- Themes (Handled by JS toggle) -->
-                    <div class="theme-card-new cursor-pointer" onclick="toggleThemeStatus('theme1.png', this)">
-                        <img src="./theme1.png" onerror="this.src='https://placehold.co/200x300?text=Theme+1'">
-                        <div class="theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition">Use</div>
-                    </div>
-                    
-                    <div class="theme-card-new cursor-pointer" onclick="toggleThemeStatus('theme2.png', this)">
-                        <img src="./theme2.png" onerror="this.src='https://placehold.co/200x300?text=Theme+2'">
-                        <div class="theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition">Use</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
+        
 
   
 
@@ -5016,77 +4976,6 @@ function handleGesture(sX, sY, eX, eY) {
             }
         });
 
-        // Theme Modal Logic
-        window.openThemeModal = async () => { 
-            closeRoomSettings(); 
-            document.getElementById('theme-modal').style.display = 'flex'; 
-            
-            // تھیم کا موجودہ اسٹیٹس چیک کریں
-            const snap = await get(ref(db, `rooms/${currentRoomId}`));
-            const currentTheme = snap.val().theme;
-            
-            document.querySelectorAll('.theme-card-new').forEach(card => {
-                const btn = card.querySelector('.theme-btn');
-                if(btn) {
-                    const onclickAttr = card.getAttribute('onclick');
-                    if(onclickAttr && currentTheme && onclickAttr.includes(currentTheme)) {
-                        btn.innerText = "Using";
-                        btn.className = "theme-btn absolute bottom-0 w-full bg-green-500 text-white text-center text-xs py-1.5 font-bold transition";
-                    } else {
-                        btn.innerText = "Use";
-                        btn.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
-                    }
-                }
-            });
-        };
-        
-        window.closeThemeModal = () => document.getElementById('theme-modal').style.display = 'none';
-
-        // نیا فنکشن جو Use اور Using کو ٹوگل کرے گا
-        window.toggleThemeStatus = async (themeData, element) => {
-            const btn = element.querySelector('.theme-btn');
-            
-            if(btn.innerText === "Using") {
-                await removeTheme(); // تھیم ہٹا دے گا (ڈیفالٹ بلیک)
-                btn.innerText = "Use";
-                btn.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
-            } else {
-                // سب کو واپس Use کر دو
-                document.querySelectorAll('.theme-btn').forEach(b => {
-                    b.innerText = "Use";
-                    b.className = "theme-btn absolute bottom-0 w-full bg-black/60 text-white text-center text-xs py-1.5 font-bold transition";
-                });
-                await applyTheme(themeData); // نئی تھیم اپلائی کرے گا
-                btn.innerText = "Using";
-                btn.className = "theme-btn absolute bottom-0 w-full bg-green-500 text-white text-center text-xs py-1.5 font-bold transition";
-            }
-        };
-        
-        window.triggerCustomThemeUpload = () => document.getElementById('custom-theme-upload').click();
-        window.uploadCustomTheme = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    customThemeBase64 = event.target.result;
-                    applyTheme(customThemeBase64);
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        window.applyTheme = async (themeData) => { 
-            if(!currentRoomId || currentRoomId !== currentUser.uid) return; 
-            await update(ref(db, `rooms/${currentRoomId}`), { theme: themeData }); 
-            Swal.fire({toast:true, icon:'success', title:'Theme Applied', position:'top', timer:1500, showConfirmButton:false}); 
-            closeThemeModal(); 
-        }
-        window.removeTheme = async () => { 
-            if(!currentRoomId || currentRoomId !== currentUser.uid) return; 
-            await update(ref(db, `rooms/${currentRoomId}`), { theme: null }); 
-            Swal.fire({toast:true, icon:'info', title:'Theme Removed', position:'top', timer:1500, showConfirmButton:false}); 
-            closeThemeModal(); 
-        }
         // ================= HALF SCREEN YOUTUBE LOGIC =================
         window.handleGuestTap = () => { };
         
@@ -5298,7 +5187,8 @@ window.joinRoom = async (rid) => {
             }
         }
 
-        const theme = rtData.theme; 
+        // روم میں جاتے ہی ڈیفالٹ theme1.webp چلے گی
+        const theme = rtData.theme || 'theme1.webp'; 
         const imgBg = document.getElementById('theme-image-bg'); 
         const videoBg = document.getElementById('theme-video-bg');
         
@@ -8010,6 +7900,7 @@ window.loadCPWeeklyComingSoon = function() {
 <script src="./room_system_ext.js"></script>
 <script src="./lucky_fruit.js"></script>
 <script src="./location_system.js"></script>
+<script src="./theme_system.js"></script>
 <!-- Universal Slim Notification Strip -->
 <div id="uni-slim-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-8 py-2.5 rounded-full shadow-2xl border border-gray-100 hidden z-[10000] flex items-center justify-center min-w-[220px] pointer-events-none">
     <span id="uni-toast-text" class="text-black text-[13px] font-bold text-center tracking-wide"></span>
@@ -8030,7 +7921,7 @@ window.loadCPWeeklyComingSoon = function() {
 }
 #view-room.video-room-bg #room-top-content,
 #view-room.video-room-bg #room-lower-half { background: transparent !important; }
-
+#view-room.video-room-bg #theme-image-bg { display: none !important; }
 /* پرانے ان پٹ اور پلے بٹن کو ہمیشہ کے لیے غائب کر دیا */
 #view-room.video-room-bg #video-controls-wrapper { display: none !important; }
 
