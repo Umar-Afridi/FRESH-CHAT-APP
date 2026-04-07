@@ -5156,13 +5156,20 @@ window.joinRoom = async (rid) => {
     localStorage.setItem('lastRoomId', rid);
     // ======================================================
     
+     // ===== KICK LIMIT LOGIC (10 MINUTES) =====
     const kickSnap = await get(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`)); 
     if (kickSnap.exists()) { 
-        if (Date.now() - kickSnap.val() < 20 * 60 * 1000) { 
+        const kickTime = kickSnap.val();
+        const tenMinutes = 10 * 60 * 1000; // 10 Minutes
+        if (Date.now() - kickTime < tenMinutes) { 
             localStorage.removeItem('lastRoomId'); 
-            return Swal.fire('Banned', 'Kicked from room.', 'error'); 
-        } 
-    } 
+            let minsLeft = Math.ceil((tenMinutes - (Date.now() - kickTime)) / 60000);
+            return Swal.fire('Kicked', `You were kicked from this room. Try again in ${minsLeft} minutes.`, 'error'); 
+        } else {
+            // اگر 10 منٹ گزر چکے ہیں تو کک لسٹ سے نام ہٹا دیں تاکہ وہ واپس آ سکے
+            await remove(ref(db, `rooms/${rid}/kicked/${currentUser.uid}`));
+        }
+    }
     
     
      // --- NEW PASSWORD LOGIC ADDED HERE ---
@@ -5192,10 +5199,26 @@ window.joinRoom = async (rid) => {
     await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
     
     // --- SINGLE CLEAN ROOM DATA LOGIC ---
-    currentRoomData = roomDataTemp; 
+     currentRoomData = roomDataTemp; 
     currentRoomOwner = currentRoomData.owner; 
+    
+    // 🔥 NEW: Auto-Sit Owner on Seat 1 (اونر کی آٹو انٹری مائیک پر) 🔥
+    if (currentUser.uid === currentRoomOwner) {
+        const uSnap = await get(ref(db, `users/${currentUser.uid}`));
+        const uD = uSnap.val() || {};
+        await update(ref(db, `rooms/${rid}/seats/seat1`), {
+            uid: currentUser.uid,
+            name: currentUser.displayName,
+            pic: currentUser.photoURL,
+            gender: uD.gender || 'male',
+            nameColorClass: uD.nameColorClass || null,
+            frame: uD.currentFrame || null,
+            isOfficial: uD.isOfficial || false
+        });
+    }
+
     const rCover = currentRoomData.roomCover || `https://ui-avatars.com/api/?name=${currentRoomData.roomName}`; 
-    document.getElementById('room-header-cover').src = rCover; 
+    document.getElementById('room-header-cover').src = rCover;
     document.getElementById('room-header-name').innerText = currentRoomData.roomName; 
     // 🔥 FIX: یہاں اب یوزر آئی ڈی کی بجائے 6-Digit والا روم آئی ڈی شو ہوگا
     document.getElementById('room-header-id').innerText = currentRoomData.roomId || rid; 
@@ -5387,21 +5410,39 @@ window.joinRoom = async (rid) => {
         } 
     }); 
     
-    // ========== 10 SEATS LISTENER (UPDATED) ==========
+    // ========== 10 SEATS LISTENER (CHAT ROOM VS VIDEO ROOM LOGIC) ==========
     onValue(child(rr, 'seats'), s => { 
         currentRoomSeats = s.val() || {}; 
-        window.currentRoomSeats = currentRoomSeats; // 🔥 یہ لائن ایڈ کی ہے تاکہ گفٹ اینیمیشن کو مائیک کی لوکیشن مل سکے
-        updateSeat('seat1', currentRoomSeats.seat1, "Owner"); 
-        updateSeat('seat2', currentRoomSeats.seat2, "Super"); 
-        updateSeat('seat3', currentRoomSeats.seat3, "1"); 
-        updateSeat('seat4', currentRoomSeats.seat4, "2"); 
-        updateSeat('seat5', currentRoomSeats.seat5, "3"); 
-        updateSeat('seat6', currentRoomSeats.seat6, "4"); 
-        updateSeat('seat7', currentRoomSeats.seat7, "5"); 
-        updateSeat('seat8', currentRoomSeats.seat8, "6"); 
-        updateSeat('seat9', currentRoomSeats.seat9, "7"); 
-        updateSeat('seat10', currentRoomSeats.seat10, "8"); 
+        window.currentRoomSeats = currentRoomSeats; 
         
+        // 🛑 چیک کرے گا کہ ابھی ویڈیو روم اوپن ہے یا چیٹ روم
+        let isVideoRoom = document.getElementById('view-room').classList.contains('video-room-bg');
+        
+        updateSeat('seat1', currentRoomSeats.seat1, "Owner"); 
+        
+        if (isVideoRoom) {
+            // 🔴 ویڈیو روم: Super غائب، 1 سے 7 تک گنتی
+            updateSeat('seat2', currentRoomSeats.seat2, "1"); 
+            updateSeat('seat3', currentRoomSeats.seat3, "2"); 
+            updateSeat('seat4', currentRoomSeats.seat4, "3"); 
+            updateSeat('seat5', currentRoomSeats.seat5, "4"); 
+            updateSeat('seat6', currentRoomSeats.seat6, "5"); 
+            updateSeat('seat7', currentRoomSeats.seat7, "6"); 
+            updateSeat('seat8', currentRoomSeats.seat8, "7"); 
+        } else {
+            // 🟢 چیٹ روم: پرانا سٹائل (Super شو ہوگا)
+            updateSeat('seat2', currentRoomSeats.seat2, "Super"); 
+            updateSeat('seat3', currentRoomSeats.seat3, "1"); 
+            updateSeat('seat4', currentRoomSeats.seat4, "2"); 
+            updateSeat('seat5', currentRoomSeats.seat5, "3"); 
+            updateSeat('seat6', currentRoomSeats.seat6, "4"); 
+            updateSeat('seat7', currentRoomSeats.seat7, "5"); 
+            updateSeat('seat8', currentRoomSeats.seat8, "6"); 
+            updateSeat('seat9', currentRoomSeats.seat9, "7"); 
+            updateSeat('seat10', currentRoomSeats.seat10, "8"); 
+        }
+        
+        // دھڑکن (Heartbeat) اینیمیشن کا لاجک
         const hc = document.getElementById('heartbeat-container'); 
         const seat1Occupied = currentRoomSeats.seat1 && currentRoomSeats.seat1.uid; 
         const seat2Occupied = currentRoomSeats.seat2 && currentRoomSeats.seat2.uid; 
@@ -5415,13 +5456,10 @@ window.joinRoom = async (rid) => {
         
         document.querySelectorAll('.action-menu-overlay').forEach(b => b.style.display = 'none'); 
         
-        // نیا: سیٹ بدلنے پر کنکشن دوبارہ بنائیں
         if (typeof setupAllPeerConnections === 'function') {
             setupAllPeerConnections();
         }
-    }); 
-
-    
+    });
 
     onValue(child(rr, 'messages'), s => { 
         const chatArea = document.getElementById('chat-display-area'); 
@@ -5516,11 +5554,19 @@ window.joinRoom = async (rid) => {
             container.setAttribute('onclick', `handleSeatTap('${seatId}', '${defaultName}', event)`);
             
             if (data && data.locked) { 
-                visualDiv.innerHTML = `<div class="visual-root"><i class="fa-solid fa-lock text-red-500 text-xl" style="filter:drop-shadow(0 0 5px black);"></i></div>`; 
-                container.classList.add('seat-locked'); 
-                nameSpan.innerText = "Locked"; 
-                nameSpan.className = "seat-name text-red-500"; 
-            } 
+            // 🔥 شیشے والے ڈیزائن کے اندر لاک آئیکن 🔥
+            visualDiv.innerHTML = `
+            <div class="visual-root">
+                <div class="absolute w-[42px] h-[42px] rounded-full bg-transparent border border-white/30 flex items-center justify-center z-20" style="box-shadow: inset 0 0 8px rgba(255,255,255,0.2);">
+                    <i class="fa-solid fa-lock text-red-500 text-lg" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));"></i>
+                </div>
+            </div>`; 
+            container.classList.add('seat-locked'); 
+            
+            // 🔥 "Locked" ہٹا کر کرسی کا اصل نام یا نمبر شو کریں 🔥
+            nameSpan.innerText = defaultName; 
+            nameSpan.className = "seat-name text-gray-300"; /* لال رنگ ختم کر کے نارمل سفید/گرے کر دیا */
+        }
             else if (data && data.uid) { 
                 container.classList.add('seat-occupied'); 
                 let html = `<div class="visual-root">`; 
@@ -5555,15 +5601,15 @@ window.joinRoom = async (rid) => {
                 */
             } 
             else { 
-                // پلس کی جگہ ایک خوبصورت گول شیڈو والا مائیک آئیکن لگا دیا گیا ہے
+                // 🔥 مائیک کو کالا ہونے کے بجائے پیور شیشے (Pure Glass) کی طرح بنا دیا گیا ہے (سائز سیم ہے) 🔥
                 visualDiv.innerHTML = `
                 <div class="visual-root">
-                    <div class="absolute w-[42px] h-[42px] rounded-full bg-black/40 border border-white/20 flex items-center justify-center z-20 backdrop-blur-sm" style="box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
-                        <i class="fa-solid fa-microphone text-white/70 text-lg" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8));"></i>
+                    <div class="absolute w-[42px] h-[42px] rounded-full bg-transparent border border-white/30 flex items-center justify-center z-20" style="box-shadow: inset 0 0 8px rgba(255,255,255,0.2);">
+                        <i class="fa-solid fa-microphone text-white/90 text-lg" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));"></i>
                     </div>
                 </div>`;
                 nameSpan.innerText = defaultName; 
-                nameSpan.className = "seat-name text-gray-400"; 
+                nameSpan.className = "seat-name text-gray-200"; 
             } 
         };
 
@@ -5596,18 +5642,25 @@ window.joinRoom = async (rid) => {
         };
 
         // ================= NEW MODERN MIC MENU (White Bottom Sheet) =================
-        window.openMicMenuSheet = (seatId, defName) => {
+         window.openMicMenuSheet = (seatId, defName) => {
+            const amIOwner = currentUser.uid === currentRoomOwner; 
+            
+            // 🔥 BLOCK OTHER USERS: اگر سیٹ 1 (Owner Seat) ہے اور کلک کرنے والا اونر نہیں ہے، تو کوئی پاپ اپ شو نہیں ہوگا
+            if (seatId === 'seat1' && !amIOwner) return;
+
             const sheet = document.getElementById('mic-action-sheet');
             const content = document.getElementById('mic-sheet-content');
             const seatData = currentRoomSeats[seatId]; 
-            const amIOwner = currentUser.uid === currentRoomOwner; 
             const amISitting = seatData && seatData.uid === currentUser.uid; 
             
             let html = '';
 
             if (amISitting) { 
-                html += `<div class="p-4 text-center text-red-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="leaveSeat('${seatId}'); closeMicSheet(event);">Leave Seat</div>`; 
-            } 
+                // 🔥 NO LEAVE FOR OWNER: اونر اپنی کرسی نہیں چھوڑ سکتا، باقی لوگ چھوڑ سکتے ہیں
+                if (seatId !== 'seat1') {
+                    html += `<div class="p-4 text-center text-red-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="leaveSeat('${seatId}'); closeMicSheet(event);">Leave Seat</div>`; 
+                }
+            }
             else if (seatData && seatData.locked) { 
                 if (amIOwner) { 
                     html += `<div class="p-4 text-center text-blue-600 font-bold text-lg border-b border-gray-100 cursor-pointer active:bg-gray-50" onclick="toggleLock('${seatId}', false); closeMicSheet(event);">Unlock Seat</div>`; 
@@ -5665,7 +5718,9 @@ window.joinRoom = async (rid) => {
 
             // Fetch User Data
             const snap = await get(ref(db, `users/${uid}`));
-            const d = snap.val() || {};
+            let d = snap.val();
+            // اگر یوزر آف لائن ہو گیا ہے تو کریش ہونے کے بجائے یہ ڈیٹا دو تاکہ پروفائل کھل جائے
+            if (!d) d = { username: 'Offline User', customId: '00000', photoURL: 'https://placehold.co/100', isGhost: true };
 
             // 🔥 لائیو پارٹنر ڈی پی فکس (LIVE PARTNER DATA FETCH) 🔥
             if (d.cp && d.cp.partnerUid) {
@@ -5780,16 +5835,11 @@ const hpContainer = document.getElementById('hp-visual-container');
             const ownerActions = document.getElementById('hp-owner-actions');
             const amIOwner = (currentUser.uid === currentRoomOwner);
 
-            if (isMe) {
-                // اگر اپنی پروفائل پر کلک کیا ہے تو Follow/Chat چھپا دو اور Leave Seat دکھاؤ
+           if (isMe) {
+                // 🔥 Leave Seat بٹن کو ہمیشہ کے لیے چھپا دیا گیا ہے تاکہ UI کیوٹ لگے
                 mainBtns.style.display = 'none';
-                selfActions.style.display = 'block';
+                selfActions.style.display = 'none'; 
                 ownerActions.classList.add('hidden');
-
-                document.getElementById('hp-leave-seat-btn').onclick = () => {
-                    leaveSeat(seatId);
-                    closeHalfProfile();
-                };
             } else {
                 // اگر کسی اور کی پروفائل ہے تو Follow/Chat دکھاؤ
                 mainBtns.style.display = 'flex';
@@ -5828,18 +5878,21 @@ const hpContainer = document.getElementById('hp-visual-container');
                 if (amIOwner) {
                     ownerActions.classList.remove('hidden');
                     
-                    document.getElementById('hp-remove-seat-btn').onclick = () => {
-                        unseatUser(seatId); 
+                    document.getElementById('hp-remove-seat-btn').onclick = async () => {
+                        // گوسٹ یوزر کو ہٹانے کے لیے ڈیٹا بیس سے کرسی ڈائریکٹ ڈیلیٹ کرو
+                        await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`));
+                        if (typeof window.unseatUser === 'function' && !d.isGhost) window.unseatUser(seatId);
                         closeHalfProfile();
+                        Swal.fire({toast:true, icon:'success', title:'Seat Cleared', position:'top', timer:1500, showConfirmButton:false});
                     };
                     
-                    document.getElementById('hp-kick-btn').onclick = () => {
+                    document.getElementById('hp-kick-btn').onclick = async () => {
+                        await remove(ref(db, `rooms/${currentRoomId}/seats/${seatId}`)); // کرسی بھی خالی کرو
                         kickUserFromRoom(seatId, uid);
                         closeHalfProfile();
                     };
                     
                     document.getElementById('hp-mute-mic-btn').onclick = async () => {
-                        // Firebase Update for Mute Mic (Block Mic)
                         await update(ref(db, `rooms/${currentRoomId}/seats/${seatId}`), { forceMute: true });
                         Swal.fire({toast:true, icon:'success', title:'Mic Blocked', position:'top', timer:1500, showConfirmButton:false});
                         closeHalfProfile();
@@ -8037,14 +8090,15 @@ window.loadCPWeeklyComingSoon = function() {
     z-index: 1 !important; 
 }
 
-/* 🔥 تصویر اور مائیک کا کنٹینر بالکل کرسی کے سینٹر میں کر دیا گیا ہے 🔥 */
+/* 🔥 تصویر اور مائیک کا کنٹینر (اب بالکل کرسی کی ٹیک کے سینٹر میں آئے گا) 🔥 */
+/* 🔥 تصویر اور مائیک کا کنٹینر (کرسی کی ٹیک کے سینٹر میں) 🔥 */
 .video-mode-mics .user-dp-visual { 
     position: absolute !important; 
-    top: 45% !important; /* 🔥 مائیک بالکل سینٹر میں 🔥 */
+    top: 32% !important; 
     left: 50% !important; 
     transform: translate(-50%, -50%) !important; 
-    width: 40px !important; /* سائز تھوڑا سمارٹ کیا تاکہ کرسی پیاری لگے */
-    height: 40px !important; 
+    width: 44px !important; 
+    height: 44px !important; 
     z-index: 5 !important; 
     border-radius: 50% !important;
 }
@@ -8069,15 +8123,15 @@ window.loadCPWeeklyComingSoon = function() {
     transform: none !important; 
 }
 
-/* خالی کرسی کا مائیک (گلاس ڈیزائن) */
+/* 🔥 خالی کرسی کا مائیک (پیور گلاس / Pure Transparent Glass) 🔥 */
 .video-mode-mics .visual-root > div {
     width: 100% !important;
     height: 100% !important;
-    background: rgba(255, 255, 255, 0.1) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15), inset 0 0 8px rgba(255,255,255,0.2) !important; 
-    backdrop-filter: blur(1.5px) !important; 
-    -webkit-backdrop-filter: blur(1.5px) !important;
+    background: transparent !important; /* 🔥 کالا پن بالکل ختم 🔥 */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* شیشے کا بارڈر */
+    box-shadow: inset 0 0 8px rgba(255,255,255,0.2) !important; /* اندرونی چمک */
+    backdrop-filter: blur(0px) !important; /* 🔥 بلر ختم تاکہ کرسی صاف نظر آئے 🔥 */
+    -webkit-backdrop-filter: blur(0px) !important;
     border-radius: 50% !important; 
     display: flex !important;
     align-items: center !important;
@@ -8085,22 +8139,23 @@ window.loadCPWeeklyComingSoon = function() {
     overflow: hidden !important; 
 }
 
+/* آئیکنز کو برائٹ وائٹ کیا تاکہ شیشے میں پیارے لگیں */
 .video-mode-mics i.fa-microphone,
 .video-mode-mics i.fa-lock { 
     font-size: 16px !important; 
     color: rgba(255,255,255,0.95) !important; 
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)) !important; 
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)) !important;
     transform: none !important; 
     margin: 0 !important;
 }
 
 .video-mode-mics .visual-frame { display: none !important; }
 
-/* میوٹ آئیکن (Mute Badge) کی سیٹنگ */
+/* ================= MUTE ICON POSITION FIX ================= */
 .video-mode-mics .seat-mute-badge {
     position: absolute !important;
     bottom: auto !important; 
-    top: 25% !important; 
+    top: 15% !important; 
     right: 18px !important; 
     width: 16px !important;
     height: 16px !important;
@@ -8114,10 +8169,10 @@ window.loadCPWeeklyComingSoon = function() {
     color: #ef4444 !important;
 }
 
-/* 🔥 نام اور نمبر (جیسے آپ نے تصویر میں 1, 2 لکھا تھا، کرسی کے کشن کے اندر) 🔥 */
+/* 🔥 نام اور نمبر (تھوڑا سا نیچے، کرسی کے بیس کے بالکل سینٹر میں) 🔥 */
 .video-mode-mics .seat-name { 
     position: absolute !important; 
-    bottom: 10px !important; /* 🔥 کرسی کے لال کشن کے بالکل اندر سینٹر میں 🔥 */
+    bottom: 12px !important; /* 🔥 یہ ویلیو کم کر دی ہے تاکہ نام تھوڑا سا نیچے آ جائے 🔥 */
     left: 50% !important; 
     transform: translateX(-50%) !important; 
     z-index: 15 !important; 
