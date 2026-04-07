@@ -5087,9 +5087,58 @@ function handleGesture(sX, sY, eX, eY) {
             Swal.fire({toast:true, icon:'info', title:'Theme Removed', position:'top', timer:1500, showConfirmButton:false}); 
             closeThemeModal(); 
         }
+        // ================= HALF SCREEN YOUTUBE LOGIC =================
         window.handleGuestTap = () => { };
-        window.playDirectVideo = () => { const input = document.getElementById('direct-yt-link'); const val = input.value.trim(); if(!val) return; let videoId = ''; const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = val.match(ytRegExp); if (match && match[2].length == 11) { videoId = match[2]; } else if(val.includes('shorts/')) { const parts = val.split('shorts/'); if(parts[1]) videoId = parts[1].split('?')[0]; } if(videoId && videoId.length > 5) { playVideoById(videoId); input.value = ""; } else { Swal.fire({toast:true, icon:'error', title:'Invalid YouTube Link', position:'top'}); } };
-        function playVideoById(id) { set(ref(db, `rooms/${currentRoomId}/videoId`), {type:'yt', id:id, timestamp: Date.now()}); push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `${currentUser.displayName} started a video.`, type: 'system', timestamp: Date.now() }); }
+        
+        window.openYtSheet = () => {
+            if(currentRoomOwner !== currentUser.uid) {
+                return Swal.fire({toast:true, icon:'warning', title:'Only owner can play video', position:'top', showConfirmButton:false, timer:1500});
+            }
+            const sheet = document.getElementById('yt-bottom-sheet');
+            sheet.classList.remove('hidden');
+            sheet.style.display = 'flex';
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                sheet.children[0].classList.remove('translate-y-full');
+            }, 10);
+        };
+
+        window.closeYtSheet = (e) => {
+            if(e) e.stopPropagation();
+            const sheet = document.getElementById('yt-bottom-sheet');
+            sheet.classList.add('opacity-0');
+            sheet.children[0].classList.add('translate-y-full');
+            setTimeout(() => {
+                sheet.classList.add('hidden');
+                sheet.style.display = 'none';
+            }, 300);
+        };
+
+        window.processYtLink = () => {
+            const input = document.getElementById('yt-search-input');
+            const val = input.value.trim(); 
+            if(!val) return; 
+            let videoId = ''; 
+            const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
+            const match = val.match(ytRegExp); 
+            
+            if (match && match[2].length == 11) { 
+                videoId = match[2]; 
+            } else if(val.includes('shorts/')) { 
+                const parts = val.split('shorts/'); 
+                if(parts[1]) videoId = parts[1].split('?')[0]; 
+            } 
+            
+            if(videoId && videoId.length > 5) { 
+                set(ref(db, `rooms/${currentRoomId}/videoId`), {type:'yt', id:videoId, timestamp: Date.now()}); 
+                push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `${currentUser.displayName} started a video.`, type: 'system', timestamp: Date.now() });
+                
+                input.value = ""; 
+                closeYtSheet();
+            } else { 
+                Swal.fire({toast:true, icon:'error', title:'Invalid YouTube Link', position:'top'}); 
+            }
+        };
 
         // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی کے ساتھ) =================
 // ================= اپڈیٹڈ جوائن روم فنکشن (ویب آرٹی سی، 10 سیٹس، اور پاسورڈ کے ساتھ) =================
@@ -5160,27 +5209,47 @@ window.joinRoom = async (rid) => {
         const rtData = s.val();
         if(!rtData) return;
         
-        // Chat vs Video Room Switcher
+        // Chat vs Video Room Switcher (PERFECT LAYOUT WITH YT HALF SCREEN)
         const videoWrapper = document.getElementById('video-area-wrapper');
-        const bottomMicsRow = document.getElementById('bottom-4-mics-row'); 
-        const roomHeaderInfo = document.getElementById('room-header-info'); // روم کا نام اور ڈی پی
-        const micsArea = document.getElementById('mics-scroll-area'); // مائیکس کا کنٹینر
+        const viewRoom = document.getElementById('view-room'); 
+        const roomHeaderInfo = document.getElementById('room-header-info'); 
+        const micsArea = document.getElementById('mics-scroll-area'); 
         
         if(videoWrapper) {
             if (rtData.roomType === 'video') {
                 videoWrapper.classList.remove('hidden');
-                if(bottomMicsRow) bottomMicsRow.classList.add('hidden'); // نیچے والے 4 مائیک غائب
-                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // 🔥 ویڈیو روم میں بھی نام اور ڈی پی شو کرو
+                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none');
                 
-                // 🔥 ویڈیو روم کے لیے مائیکس کو اوپر کر دیں (فاصلہ کم کر دیں)
-                if(micsArea) micsArea.style.setProperty('padding-top', '5px', 'important');
+                // ویڈیو سکرین پر کلک کرنے پر ہاف سکرین یوٹیوب مینو اوپن کرنا
+                document.querySelector('.cinema-frame').setAttribute('onclick', 'openYtSheet()');
+                
+                // --- ویڈیو روم فل سکرین ریڈ تھیم اور 8 سیٹس لے آؤٹ ---
+                if(viewRoom) viewRoom.classList.add('video-room-bg');
+                if(micsArea) {
+                    micsArea.classList.add('video-mode-mics'); 
+                }
+                
+                // تمام کرسیوں کو Stylish Chair (SVG) سے بدل دیں
+                document.querySelectorAll('.chair-bg-img').forEach(img => {
+                    img.src = './stylish_chair.svg';
+                });
+
             } else {
                 videoWrapper.classList.add('hidden');
-                if(bottomMicsRow) bottomMicsRow.classList.remove('hidden'); // چیٹ روم میں مائیک شو
-                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none'); // چیٹ روم میں نام شو کرو
+                if(roomHeaderInfo) roomHeaderInfo.classList.remove('opacity-0', 'pointer-events-none');
                 
-                // 🔥 وائس چیٹ کے لیے مائیکس کو پرفیکٹ جگہ پر واپس نیچے کر دیں
-                if(micsArea) micsArea.style.setProperty('padding-top', '48px', 'important');
+                document.querySelector('.cinema-frame').removeAttribute('onclick');
+
+                // --- وائس چیٹ روم پرانا 10 سیٹس والا لے آؤٹ ---
+                if(viewRoom) viewRoom.classList.remove('video-room-bg');
+                if(micsArea) {
+                    micsArea.classList.remove('video-mode-mics'); 
+                }
+                
+                // کرسیوں کو واپس پرانی چیئر پر سیٹ کر دیں
+                document.querySelectorAll('.chair-bg-img').forEach(img => {
+                    img.src = './chair_beautiful.png';
+                });
             }
         }
 
@@ -7899,6 +7968,168 @@ window.loadCPWeeklyComingSoon = function() {
     to { opacity: 1; transform: translate(-50%, -50%); } 
 }
 .animate-uni-toast { animation: toastIn 0.3s ease-out forwards; }
+
+/* ================= VIDEO ROOM EXCLUSIVE UI (PERFECT DESIGN) ================= */
+
+/* پورے روم کا ڈارک ریڈ بیک گراؤنڈ */
+#view-room.video-room-bg {
+    background: radial-gradient(circle at center, #4a0000 0%, #150000 100%) !important;
+}
+#view-room.video-room-bg #room-top-content,
+#view-room.video-room-bg #room-lower-half { background: transparent !important; }
+
+/* پرانے ان پٹ اور پلے بٹن کو ہمیشہ کے لیے غائب کر دیا */
+#view-room.video-room-bg #video-controls-wrapper { display: none !important; }
+
+/* ویڈیو پلیئر کا بارڈر */
+#view-room.video-room-bg .cinema-frame {
+    border-color: #5a0000 !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.8) !important;
+    cursor: pointer !important;
+}
+
+/* 4x4 مائیک گرڈ سسٹم (ویڈیو سکرین کے بالکل نیچے فٹ کیا گیا) */
+.video-mode-mics .mics-container-main {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0px 5px !important; /* 🔥 فکس: قطاروں کے درمیان کا فاصلہ ختم کر دیا 🔥 */
+    padding-top: 0px !important; 
+    margin-top: -35px !important; /* 🔥 فکس: کرسیوں کو اوپر سکرین کے بالکل قریب کر دیا 🔥 */
+    width: 100% !important;
+}
+
+.video-mode-mics #super-mics-row,
+.video-mode-mics .bottom-mic-row,
+.video-mode-mics #bottom-4-mics-row { display: contents !important; }
+
+/* 9 اور 10 نمبر مائیک ویڈیو روم میں نہیں ہوں گے */
+.video-mode-mics #wrapper-seat9,
+.video-mode-mics #wrapper-seat10 { display: none !important; }
+
+/* ================= CHAIR DESIGN (کرسی کی پرفیکٹ ہائٹ) ================= */
+.video-mode-mics .mic-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    height: 78px !important; /* 🔥 فکس: ہائٹ کم کی تاکہ اوپر اور نیچے والی کرسیاں آپس میں قریب آ جائیں 🔥 */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+}
+.video-mode-mics .seat-base { 
+    width: 100% !important; 
+    height: 100% !important; 
+    border-radius: 0 !important; 
+    position: absolute !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+}
+
+.video-mode-mics .chair-bg-img { 
+    width: 100% !important; 
+    height: 100% !important; 
+    object-fit: contain !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)) !important; 
+    opacity: 1 !important; 
+    display: block !important; 
+    z-index: 1 !important; 
+}
+
+/* 🔥 تصویر اور مائیک کا کنٹینر بالکل کرسی کے سینٹر میں کر دیا گیا ہے 🔥 */
+.video-mode-mics .user-dp-visual { 
+    position: absolute !important; 
+    top: 45% !important; /* 🔥 مائیک بالکل سینٹر میں 🔥 */
+    left: 50% !important; 
+    transform: translate(-50%, -50%) !important; 
+    width: 40px !important; /* سائز تھوڑا سمارٹ کیا تاکہ کرسی پیاری لگے */
+    height: 40px !important; 
+    z-index: 5 !important; 
+    border-radius: 50% !important;
+}
+
+.video-mode-mics .visual-root { 
+    width: 100% !important; 
+    height: 100% !important; 
+    border-radius: 50% !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.video-mode-mics .visual-img { 
+    width: 100% !important; 
+    height: 100% !important; 
+    border-radius: 50% !important; 
+    object-fit: cover !important; 
+    border: 1.5px solid rgba(255,255,255,0.4) !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+    transform: none !important; 
+}
+
+/* خالی کرسی کا مائیک (گلاس ڈیزائن) */
+.video-mode-mics .visual-root > div {
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(255, 255, 255, 0.1) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15), inset 0 0 8px rgba(255,255,255,0.2) !important; 
+    backdrop-filter: blur(1.5px) !important; 
+    -webkit-backdrop-filter: blur(1.5px) !important;
+    border-radius: 50% !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important; 
+}
+
+.video-mode-mics i.fa-microphone,
+.video-mode-mics i.fa-lock { 
+    font-size: 16px !important; 
+    color: rgba(255,255,255,0.95) !important; 
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)) !important; 
+    transform: none !important; 
+    margin: 0 !important;
+}
+
+.video-mode-mics .visual-frame { display: none !important; }
+
+/* میوٹ آئیکن (Mute Badge) کی سیٹنگ */
+.video-mode-mics .seat-mute-badge {
+    position: absolute !important;
+    bottom: auto !important; 
+    top: 25% !important; 
+    right: 18px !important; 
+    width: 16px !important;
+    height: 16px !important;
+    background: rgba(0,0,0,0.8) !important;
+    border: 1px solid #ef4444 !important;
+    z-index: 30 !important;
+}
+.video-mode-mics .seat-mute-badge i {
+    font-size: 8px !important;
+    transform: none !important;
+    color: #ef4444 !important;
+}
+
+/* 🔥 نام اور نمبر (جیسے آپ نے تصویر میں 1, 2 لکھا تھا، کرسی کے کشن کے اندر) 🔥 */
+.video-mode-mics .seat-name { 
+    position: absolute !important; 
+    bottom: 10px !important; /* 🔥 کرسی کے لال کشن کے بالکل اندر سینٹر میں 🔥 */
+    left: 50% !important; 
+    transform: translateX(-50%) !important; 
+    z-index: 15 !important; 
+    color: #ffffff !important; 
+    font-size: 10px !important; 
+    font-weight: 900 !important; 
+    width: 80% !important; 
+    text-align: center !important; 
+    margin-top: 0 !important; 
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.8) !important; 
+    pointer-events: none !important;
+}
 </style>
 
 <script>
@@ -8028,5 +8259,31 @@ window.showNotice = function(text) {
 </div>
 <!-- ================= LINK NEW JS FILE ================= -->
 <script src="./daily_reward.js"></script>
+<!-- ================= HALF SCREEN YOUTUBE MENU ================= -->
+<div id="yt-bottom-sheet" class="fixed inset-0 bg-black/70 z-[7000] hidden flex-col justify-end transition-opacity duration-300 opacity-0" onclick="closeYtSheet(event)">
+    <div class="bg-[#1a0000] w-full h-[60vh] rounded-t-[30px] flex flex-col overflow-hidden transform translate-y-full transition-transform duration-300 border-t-2 border-red-800 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]" onclick="event.stopPropagation()">
+        
+        <div class="w-full flex justify-center py-3"><div class="w-12 h-1.5 bg-gray-500 rounded-full"></div></div>
+        
+        <h3 class="text-white text-center font-bold text-xl mb-4 flex items-center justify-center gap-2">
+            <i class="fa-brands fa-youtube text-red-600 text-3xl drop-shadow-md"></i> YouTube Video
+        </h3>
+        
+        <div class="px-5 flex flex-col gap-3 mb-4 mt-2">
+            <label class="text-xs text-gray-400 font-bold tracking-wider uppercase ml-1">Video Link</label>
+            <div class="flex gap-2">
+                <input type="text" id="yt-search-input" placeholder="Paste YouTube Link here..." class="flex-1 bg-black/60 border border-red-800/50 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-red-500 shadow-inner">
+                <button onclick="processYtLink()" class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold shadow-[0_5px_15px_rgba(220,38,38,0.4)] active:scale-95 transition-transform"><i class="fa-solid fa-play text-lg"></i></button>
+            </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto px-5 pb-5 flex flex-col items-center justify-center">
+            <i class="fa-solid fa-video text-red-900/40 text-6xl mb-3"></i>
+            <p class="text-gray-400 text-xs text-center font-medium leading-relaxed max-w-[250px]">
+                Paste a YouTube link above to start playing the video on the main room screen. Works flawlessly on Android apps.
+            </p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
