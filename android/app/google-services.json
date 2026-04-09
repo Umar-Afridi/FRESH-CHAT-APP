@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "740464208491-54vrc980qpudcftbv02rkb6tta9l3k79.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.umar.yaraan",
+            "certificate_hash": "63c480d8efa2a09cb2b1474ffb6192317c071a01"
+          }
+        },
+        {
           "client_id": "740464208491-r63hohlm9o2lvc40f8gffitrbe6pceq8.apps.googleusercontent.com",
           "client_type": 3
         }
