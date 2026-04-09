@@ -23,6 +23,19 @@
             --bottom-bar-height: 45px; 
         }
         
+        /* ====== SUPER MIC TOGGLE SWITCH CSS ====== */
+        .toggle-switch {
+            width: 46px; height: 24px; background-color: #d1d5db; border-radius: 9999px;
+            position: relative; cursor: pointer; transition: background-color 0.3s;
+        }
+        .toggle-switch.active { background-color: #22c55e; } /* سبز رنگ جب ON ہو */
+        .toggle-circle {
+            width: 20px; height: 20px; background-color: white; border-radius: 50%;
+            position: absolute; top: 2px; left: 2px; transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch.active .toggle-circle { transform: translateX(22px); }
+        
         /* ====== NEW PURE COLOR CHAT BUBBLES FOR SVIP (FIXED NORMAL SIZE) ====== */
 .svip-bubble-1, .svip-bubble-2, .svip-bubble-3, .svip-bubble-4, .svip-bubble-5 {
     color: #ffffff !important;
@@ -5440,14 +5453,14 @@ window.joinRoom = async (rid) => {
             // پرانا onclick ہٹا کر نیا handleSeatTap لگا رہے ہیں
             container.setAttribute('onclick', `handleSeatTap('${seatId}', '${defaultName}', event)`);
             
-            if (data && data.locked) { 
+             if (data && data.locked) { 
             // 🔥 شیشے والے ڈیزائن کے اندر لاک آئیکن 🔥
             visualDiv.innerHTML = `
             <div class="visual-root">
                 <div class="absolute w-[42px] h-[42px] rounded-full bg-transparent border border-white/30 flex items-center justify-center z-20" style="box-shadow: inset 0 0 8px rgba(255,255,255,0.2);">
-                    <i class="fa-solid fa-lock text-red-500 text-lg" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));"></i>
+                    <i class="fa-solid fa-lock text-white/90 text-lg" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));"></i>
                 </div>
-            </div>`; 
+            </div>`;
             container.classList.add('seat-locked'); 
             
             // 🔥 "Locked" ہٹا کر کرسی کا اصل نام یا نمبر شو کریں 🔥
@@ -8043,8 +8056,8 @@ window.loadCPWeeklyComingSoon = function() {
 .video-mode-mics .seat-mute-badge {
     position: absolute !important;
     bottom: auto !important; 
-    top: 15% !important; 
-    right: 18px !important; 
+    top: 30% !important; /* تصویر سے نیچے کیا گیا ہے */
+    right: 12px !important; /* صحیح دائیں طرف شفٹ کیا گیا ہے */
     width: 16px !important;
     height: 16px !important;
     background: rgba(0,0,0,0.8) !important;
