@@ -2264,10 +2264,18 @@
                     </div>
                 </div>
 
+                <!-- ================= YARAAN OFFICIAL WELCOME MESSAGE ================= -->
+                <div class="mx-4 mt-4 mb-1 z-20 relative pointer-events-none">
+                    <!-- max-w-[250px] لگانے سے ٹیکسٹ بالکل لال لکیر سے ٹوٹ کر نیچے آ جائے گا -->
+                    <p class="text-[12px] font-medium text-[#c084fc] leading-[1.4] max-w-[250px]" style="text-shadow: 0px 1px 4px rgba(0,0,0,0.9);">
+                        Welcome to Yaraan. Please respect each other and chat in a decent manner.
+                    </p>
+                </div>
+
                 <!-- ROOM NOTICE MARQUEE BANNER (TRANSPARENT) -->
-                <div id="room-notice-display" class="hidden mx-4 mt-2 mb-2 px-2 py-1 bg-transparent flex items-center gap-3 z-20 border-none shadow-none">
+                <div id="room-notice-display" class="hidden mx-4 mt-1 mb-1 px-2 py-1 bg-transparent flex items-center gap-3 z-20 border-none shadow-none">
                     <i class="fa-solid fa-bullhorn text-yellow-400 text-sm animate-pulse" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));"></i>
-                    <marquee id="room-notice-text" class="text-white text-[13px] font-extrabold tracking-wide" style="text-shadow: 0 2px 4px rgba(0,0,0,0.9);" scrollamount="4"></marquee>
+                    <marquee id="room-notice-text" class="text-white text-[12px] font-bold tracking-wide" style="text-shadow: 0 2px 4px rgba(0,0,0,0.9);" scrollamount="4"></marquee>
                 </div>
 
                 <!-- ENTRY MESSAGE BANNER AREA (FIXED POSITION - RED LINE LOCATION) -->
@@ -5032,7 +5040,14 @@ function handleGesture(sX, sY, eX, eY) {
             } 
             
             if(videoId && videoId.length > 5) { 
-                set(ref(db, `rooms/${currentRoomId}/videoId`), {type:'yt', id:videoId, timestamp: Date.now()}); 
+                // 🔥 نیا فائر بیس سٹرکچر جس میں ٹائم اور پلے سٹیٹس بھی شامل ہے 🔥
+                set(ref(db, `rooms/${currentRoomId}/videoSync`), {
+                    videoId: videoId, 
+                    state: 1, // 1 = Playing
+                    time: 0,
+                    timestamp: Date.now()
+                }); 
+                
                 push(ref(db, `rooms/${currentRoomId}/messages`), { name: "System", text: `${currentUser.displayName} started a video.`, type: 'system', timestamp: Date.now() });
                 
                 input.value = ""; 
@@ -5285,30 +5300,97 @@ window.joinRoom = async (rid) => {
     });
     // ===========================================
     
-    onValue(child(rr, 'videoId'), s => { 
-        const v = s.val(); 
+     // ================= NEW ADVANCED YOUTUBE SYNC LISTENER =================
+    onValue(child(rr, 'videoSync'), s => { 
+        const vData = s.val(); 
         const iframe = document.getElementById('video-iframe'); 
         const trigger = document.getElementById('empty-state-trigger'); 
         const local = document.getElementById('local-video-player'); 
-        if(local) local.classList.add('hidden'); 
-        if(v) { 
-            if(trigger) trigger.style.display = 'none'; 
-            if(iframe) {
-                iframe.classList.remove('hidden'); 
-                if(v.type === 'yt') { 
-                    const origin = window.location.origin; 
-                    const embedUrl = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=0&controls=1&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; 
-                    if(iframe.src !== embedUrl) iframe.src = embedUrl; 
-                } 
-            }
-        } else { 
+        if(local) local.classList.add('hidden');
+        
+        const amIOwner = (currentUser.uid === currentRoomOwner);
+
+        // 🔥 1. اگر ڈیٹا بیس میں ویڈیو نہیں ہے (Host نے Clear کر دیا ہے یا ختم ہو گئی ہے) تو سکرین کلیئر کر دو 🔥
+        if(!vData || !vData.videoId) { 
             if(trigger) trigger.style.display = 'flex'; 
             if(iframe) {
                 iframe.classList.add('hidden'); 
                 iframe.src = ""; 
             }
+            if(ytPlayerInstance && typeof ytPlayerInstance.stopVideo === 'function') {
+                ytPlayerInstance.stopVideo();
+                ytPlayerInstance = null;
+            }
+            return;
+        }
+
+        // 🔥 2. اگر ویڈیو موجود ہے تو پلے کرو 🔥
+        if(trigger) trigger.style.display = 'none'; 
+        if(iframe) iframe.classList.remove('hidden'); 
+
+        const origin = window.location.origin; 
+        // صرف Host کو کنٹرولز شو ہوں گے تاکہ Guests چھیڑ چھاڑ نہ کر سکیں
+        const embedUrl = `https://www.youtube.com/embed/${vData.videoId}?autoplay=1&mute=0&controls=${amIOwner ? 1 : 0}&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`; 
+
+        // نیا پلیئر سیٹ اپ
+        if(!ytPlayerInstance || iframe.src === "" || !iframe.src.includes(vData.videoId)) {
+            iframe.src = embedUrl;
+            
+            setTimeout(() => {
+                if (window.YT && window.YT.Player) {
+                    ytPlayerInstance = new window.YT.Player('video-iframe', {
+                        events: {
+                            'onStateChange': function(event) {
+                                // 🔴 صرف روم کا مالک (Host) ہی فائر بیس میں کنٹرول (Play/Pause/Seek) بھیجے گا 🔴
+                                if (amIOwner && !isHostSyncing) {
+                                    isHostSyncing = true;
+                                    let currentState = event.data;
+                                    let currentTime = ytPlayerInstance.getCurrentTime();
+
+                                    // جب ویڈیو مکمل طور پر ختم ہو جائے (ENDED = 0) تو سکرین کلیئر ہو جائے گی
+                                    if (currentState === window.YT.PlayerState.ENDED) {
+                                        window.clearScreen(); 
+                                    } 
+                                    // جب ویڈیو پلے (1) یا پاز (2) ہو
+                                    else if (currentState === window.YT.PlayerState.PLAYING || currentState === window.YT.PlayerState.PAUSED) {
+                                        update(ref(db, `rooms/${currentRoomId}/videoSync`), {
+                                            videoId: vData.videoId,
+                                            state: currentState,
+                                            time: currentTime,
+                                            timestamp: Date.now()
+                                        });
+                                    }
+                                    setTimeout(() => { isHostSyncing = false; }, 500);
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 1000);
         } 
+        else {
+            // 🔵 دوسرے یوزرز (Guests) کے لیے فائر بیس سے ڈیٹا لے کر ویڈیو کو Sync کرنا 🔵
+            if (!amIOwner && ytPlayerInstance && typeof ytPlayerInstance.getPlayerState === 'function') {
+                try {
+                    let localState = ytPlayerInstance.getPlayerState();
+                    let localTime = ytPlayerInstance.getCurrentTime();
+                    
+                    // اگر Host نے ویڈیو آگے پیچھے کی ہے (3 سیکنڈ کا فرق) تو Guests کی ویڈیو بھی وہیں لے جاؤ
+                    if (Math.abs(localTime - vData.time) > 3) { 
+                        ytPlayerInstance.seekTo(vData.time, true);
+                    }
+
+                    // Play / Pause Sync
+                    if (vData.state === 1 && localState !== 1) { // Playing
+                        ytPlayerInstance.playVideo();
+                    } else if (vData.state === 2 && localState !== 2) { // Paused
+                        ytPlayerInstance.pauseVideo();
+                    }
+                } catch(e) { console.log("YT Sync Wait..."); }
+            }
+        }
     }); 
+    // ======================================================================
     
     // ========== 10 SEATS LISTENER (CHAT ROOM VS VIDEO ROOM LOGIC) ==========
     onValue(child(rr, 'seats'), s => { 
@@ -6845,7 +6927,40 @@ window.leaveRoomFull = () => {
 
         window.showRoomUserList = async () => { if(!currentRoomId) return; const usersSnap = await get(ref(db, `rooms/${currentRoomId}/activeUsers`)); const listContainer = document.getElementById('room-users-list'); listContainer.innerHTML = ''; if(usersSnap.exists()) { const users = usersSnap.val(); for (const [uid, name] of Object.entries(users)) { const uSnap = await get(ref(db, `users/${uid}`)); const uData = uSnap.val() || {}; const pic = uData.photoURL || `https://ui-avatars.com/api/?name=${name}`; listContainer.innerHTML += `<div class="flex items-center justify-between bg-gray-800 p-2 rounded"><div class="flex items-center gap-3"><img src="${pic}" class="w-8 h-8 rounded-full border border-gray-600"><span class="text-white text-sm font-medium">${name}</span></div></div>`; } } else { listContainer.innerHTML = '<p class="text-gray-400 text-center text-sm">No users found.</p>'; } document.getElementById('room-users-modal').classList.add('open'); };
         window.closeRoomUsers = () => document.getElementById('room-users-modal').classList.remove('open');
-        window.clearScreen = () => { set(ref(db, `rooms/${currentRoomId}/videoId`), null); document.getElementById('local-video-player').classList.add('hidden'); document.getElementById('local-video-player').src = ""; document.getElementById('screen-placeholder').classList.remove('hidden'); document.getElementById('video-iframe').classList.add('hidden'); document.getElementById('video-iframe').src = ""; };
+        // === YOUTUBE API GLOBAL SETUP ===
+        let ytPlayerInstance = null;
+        let isHostSyncing = false;
+        
+        // Load YouTube API Script automatically
+        if (!window.YT) {
+            let tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            let firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        window.clearScreen = () => { 
+            if(!currentRoomId) return;
+            // فائر بیس سے ویڈیو کا ڈیٹا مکمل ڈیلیٹ کریں (تاکہ سب کے پاس بند ہو جائے)
+            set(ref(db, `rooms/${currentRoomId}/videoSync`), null); 
+            
+            document.getElementById('local-video-player').classList.add('hidden'); 
+            document.getElementById('local-video-player').src = ""; 
+            
+            // یوٹیوب پلیئر کو روکیں
+            if(ytPlayerInstance && typeof ytPlayerInstance.stopVideo === 'function') {
+                ytPlayerInstance.stopVideo();
+                ytPlayerInstance = null;
+            }
+            
+            // سکرین کو واپس نارمل حالت (Play Video آئیکن) میں لائیں
+            document.getElementById('empty-state-trigger').style.display = 'flex'; 
+            document.getElementById('video-iframe').classList.add('hidden'); 
+            document.getElementById('video-iframe').src = ""; 
+            
+            // اگر یوٹیوب کا مینو کھلا ہے تو اسے بند کر دیں
+            if(typeof closeYtSheet === 'function') closeYtSheet();
+        };
         
         
         
