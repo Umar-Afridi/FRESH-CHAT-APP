@@ -94,9 +94,12 @@ const themeSystemHTML = `
             
             <!-- 1. Custom Image Upload (Gallery) -->
             <div class="theme-card-new theme-custom-add" onclick="window.triggerCustomThemeUpload()">
-                <i class="fa-solid fa-cloud-arrow-up text-3xl mb-1"></i>
-                <span class="text-[10px] font-bold text-white uppercase tracking-widest">Gallery</span>
+                <div class="flex flex-col items-center justify-center h-[calc(100%-32px)] w-full">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl mb-1"></i>
+                    <span class="text-[10px] font-bold text-white uppercase tracking-widest">Gallery</span>
+                </div>
                 <input type="file" id="custom-theme-upload" accept="image/*" class="hidden" onchange="window.uploadCustomTheme(event)">
+                <div class="theme-btn bg-gray-800 text-white">Use</div>
             </div>
 
             <!-- 2. Theme 1 (Official) -->
@@ -136,8 +139,9 @@ window.openThemeModal = async () => {
     // Check Current Theme from Database
     const snap = await window.get(window.ref(window.db, `rooms/${window.currentRoomId}`));
     const currentTheme = (snap.exists() && snap.val().theme) ? snap.val().theme : 'theme1.webp';
+    let isCustomTheme = currentTheme.startsWith('data:image') || currentTheme.startsWith('http');
     
-    // سب سے پہلے سب بٹنز کو "USE" (گرے رنگ) پر سیٹ کریں
+    // 1. سب سے پہلے سب بٹنز کو "USE" (گرے رنگ) پر سیٹ کریں
     document.querySelectorAll('.theme-card-new').forEach(card => {
         const btn = card.querySelector('.theme-btn');
         if(btn) {
@@ -147,18 +151,32 @@ window.openThemeModal = async () => {
         }
     });
 
-    // جو تھیم اپلائی ہے اسے تلاش کر کے "USING" (سبز رنگ) کریں
-    document.querySelectorAll('.theme-card-new').forEach(card => {
-        const btn = card.querySelector('.theme-btn');
-        const onclickAttr = card.getAttribute('onclick');
-        if(onclickAttr && onclickAttr.includes(currentTheme)) {
+    // 2. جو تھیم اپلائی ہے اسے تلاش کر کے "USING" (سبز رنگ) کریں
+    if (isCustomTheme) {
+        // اگر گیلری کی تصویر لگی ہوئی ہے تو گیلری والے بٹن کو سبز کریں
+        const customCard = document.querySelector('.theme-custom-add');
+        if (customCard) {
+            const btn = customCard.querySelector('.theme-btn');
             if(btn) {
                 btn.innerText = "USING";
                 btn.className = "theme-btn bg-green-500 text-white shadow-[0_-2px_10px_rgba(34,197,94,0.5)]";
-                card.classList.add('active'); // Green border
+                customCard.classList.add('active');
             }
         }
-    });
+    } else {
+        // نارمل تھیمز کو چیک کریں
+        document.querySelectorAll('.theme-card-new').forEach(card => {
+            const btn = card.querySelector('.theme-btn');
+            const onclickAttr = card.getAttribute('onclick');
+            if(onclickAttr && onclickAttr.includes(currentTheme)) {
+                if(btn) {
+                    btn.innerText = "USING";
+                    btn.className = "theme-btn bg-green-500 text-white shadow-[0_-2px_10px_rgba(34,197,94,0.5)]";
+                    card.classList.add('active'); // Green border
+                }
+            }
+        });
+    }
 };
 
 window.closeThemeModal = () => {
@@ -204,6 +222,22 @@ window.uploadCustomTheme = (e) => {
         const reader = new FileReader();
         reader.onload = function(event) {
             customThemeBase64 = event.target.result;
+            
+            // گیلری والے بٹن کو فوراً سبز کر دیں
+            const customCard = document.querySelector('.theme-custom-add');
+            if (customCard) {
+                document.querySelectorAll('.theme-card-new').forEach(c => {
+                    const b = c.querySelector('.theme-btn');
+                    if(b) { b.innerText = "USE"; b.className = "theme-btn bg-gray-800 text-white"; c.classList.remove('active'); }
+                });
+                const btn = customCard.querySelector('.theme-btn');
+                if(btn) {
+                    btn.innerText = "USING";
+                    btn.className = "theme-btn bg-green-500 text-white shadow-[0_-2px_10px_rgba(34,197,94,0.5)]";
+                    customCard.classList.add('active');
+                }
+            }
+            
             window.applyTheme(customThemeBase64);
         };
         reader.readAsDataURL(file);

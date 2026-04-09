@@ -5071,25 +5071,17 @@ window.joinRoom = async (rid) => {
     }
     // -------------------------------------
 
-    currentRoomId = rid; 
+     currentRoomId = rid; 
+    window.currentRoomId = rid; // 🔥 فکس: گلوبل ویری ایبل تاکہ تھیم سسٹم کو مل سکے
+    
     currentUserJoinTime = Date.now(); 
 
-    // 🔥 سالے یہ لائن مسنگ تھی! اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں آ گیا ہے 🔥
+    // 🔥 فائر بیس کو پتہ چلے گا کہ یوزر روم میں آ گیا ہے 🔥
     await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
     
-    // --- SINGLE CLEAN ROOM DATA LOGIC ---
-
-    // 🔥 سالے یہ لائن مسنگ تھی! اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں آ گیا ہے 🔥
-    await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
-    
-    // --- SINGLE CLEAN ROOM DATA LOGIC ---
-
-    // 🔥🔥 یس سالے! یہ لائن تو نے مس کر دی تھی۔ اب فائر بیس کو پتہ چلے گا کہ یوزر روم میں ہے 🔥🔥
-    await update(ref(db, `users/${currentUser.uid}`), { currentRoom: rid });
-    
-    // --- SINGLE CLEAN ROOM DATA LOGIC ---
-     currentRoomData = roomDataTemp; 
+    currentRoomData = roomDataTemp; 
     currentRoomOwner = currentRoomData.owner; 
+    window.currentRoomOwner = currentRoomData.owner; // 🔥 فکس: گلوبل ویری ایبل
     
     // 🔥 NEW: Auto-Sit Owner on Seat 1 (اونر کی آٹو انٹری مائیک پر) 🔥
     if (currentUser.uid === currentRoomOwner) {
@@ -5196,14 +5188,19 @@ window.joinRoom = async (rid) => {
             if(theme.endsWith('.mp4')) { 
                 if(imgBg) { imgBg.classList.add('hidden'); imgBg.style.backgroundImage = 'none'; }
                 if(videoBg) {
-                    videoBg.src = `./${theme}`; 
+                    videoBg.src = (theme.startsWith('http') || theme.startsWith('data:')) ? theme : `./${theme}`; 
                     videoBg.classList.remove('hidden'); 
                     videoBg.play().catch(e => console.log("Auto-play prevented")); 
                 }
             } else { 
                 if(videoBg) { videoBg.classList.add('hidden'); videoBg.pause(); }
                 if(imgBg) {
-                    imgBg.style.backgroundImage = `url('./${theme}')`; 
+                    // 🔥 فکس: گیلری سے اپلوڈ ہونے والے Base64 امیجز کے لیے
+                    if (theme.startsWith('http') || theme.startsWith('data:image')) {
+                        imgBg.style.backgroundImage = `url('${theme}')`; 
+                    } else {
+                        imgBg.style.backgroundImage = `url('./${theme}')`; 
+                    }
                     imgBg.classList.remove('hidden');
                 }
             } 
